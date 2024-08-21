@@ -48,6 +48,7 @@ EXTENSIONS = [
     Extension("VK_KHR_wayland_surface"),
     Extension("VK_KHR_xcb_surface"),
     Extension("VK_KHR_win32_surface"),
+    Extension("VK_KHR_android_surface"),
     Extension("VK_EXT_swapchain_colorspace"),
 ]
 
@@ -151,6 +152,10 @@ zink_create_instance(struct zink_screen *screen, struct zink_instance_info *inst
    bool have_layer_${layer.pure_name()} = false;
 %endfor
 
+#if defined(MVK_VERSION)
+   bool have_moltenvk_layer = false;
+#endif
+
    GET_PROC_ADDR_INSTANCE_LOCAL(screen, NULL, EnumerateInstanceExtensionProperties);
    GET_PROC_ADDR_INSTANCE_LOCAL(screen, NULL, EnumerateInstanceLayerProperties);
    if (!vk_EnumerateInstanceExtensionProperties ||
@@ -202,6 +207,7 @@ zink_create_instance(struct zink_screen *screen, struct zink_instance_info *inst
 %endfor
 #if defined(MVK_VERSION)
                   if (!strcmp(layer_props[i].layerName, "MoltenVK")) {
+                     have_moltenvk_layer = true;
                      layers[num_layers++] = "MoltenVK";
                   }
 #endif
