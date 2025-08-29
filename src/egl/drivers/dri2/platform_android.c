@@ -464,10 +464,7 @@ droid_get_window_size(struct dri2_egl_surface *dri2_surf, int *w, int *h) {
 static void
 update_buffer_size(struct dri2_egl_surface *dri2_surf)
 {
-   _eglLog(_EGL_WARNING, "update_buffer_size: dri2_surf->buffer %p", dri2_surf->buffer);
    droid_get_window_size(dri2_surf, &dri2_surf->base.Width, &dri2_surf->base.Height);
-   // dri2_surf->base.Width = dri2_surf->buffer->width;
-   // dri2_surf->base.Height = dri2_surf->buffer->height;
 }
 
 static int
@@ -1319,37 +1316,46 @@ dri2_initialize_android(_EGLDisplay *disp)
    struct dri2_egl_display *dri2_dpy = dri2_egl_display(disp);
    const char *err;
 
-   // dri2_dpy->gralloc = u_gralloc_create(U_GRALLOC_TYPE_AUTO);
-   // if (dri2_dpy->gralloc == NULL) {
-      // err = "DRI2: failed to get gralloc";
-      // goto cleanup;
-   // }
+    if (disp->Options.Zink) {
+        dri2_dpy->driver_name = strdup("zink");
+        dri2_dpy->loader_extensions = droid_kopper_image_loader_extensions;
+        dri2_dpy->fd_render_gpu = -1;
+        dri2_dpy->pure_swrast = true;
+        dri2_detect_swrast_kopper(disp);
+        if (!dri2_create_screen(disp)) {
+            err = "DRI2: Failed to create swrast screen";
+            goto cleanup;
+        }
 
-   bool force_pure_swrast = debug_get_bool_option("MESA_ANDROID_NO_KMS_SWRAST", false);
+        device_opened = EGL_TRUE;
+    } else {
+        dri2_dpy->gralloc = u_gralloc_create(U_GRALLOC_TYPE_AUTO);
+        if (dri2_dpy->gralloc == NULL) {
+            err = "DRI2: failed to get gralloc";
+            goto cleanup;
+        }
 
-   if (!force_pure_swrast)
-      device_opened = droid_open_device(disp, disp->Options.ForceSoftware);
+        bool force_pure_swrast = debug_get_bool_option("MESA_ANDROID_NO_KMS_SWRAST", false);
 
-   if ((!device_opened && disp->Options.ForceSoftware) ||
-       force_pure_swrast) {
-      if (disp->Options.Zink) {
-         dri2_dpy->driver_name = strdup("zink");
-         dri2_dpy->loader_extensions = droid_kopper_image_loader_extensions;
-      } else {
-         dri2_dpy->driver_name = strdup("swrast");
-         dri2_dpy->loader_extensions = droid_swrast_image_loader_extensions;
-      }
-      dri2_dpy->fd_render_gpu = -1;
-      dri2_dpy->pure_swrast = true;
-      dri2_detect_swrast_kopper(disp);
+        if (!force_pure_swrast)
+            device_opened = droid_open_device(disp, disp->Options.ForceSoftware);
 
-      if (!dri2_create_screen(disp)) {
-         err = "DRI2: Failed to create swrast screen";
-         goto cleanup;
-      }
+        if ((!device_opened && disp->Options.ForceSoftware) ||
+            force_pure_swrast) {
+            dri2_dpy->driver_name = strdup("swrast");
+            dri2_dpy->loader_extensions = droid_swrast_image_loader_extensions;
+            dri2_dpy->fd_render_gpu = -1;
+            dri2_dpy->pure_swrast = true;
+            dri2_detect_swrast_kopper(disp);
 
-      device_opened = EGL_TRUE;
-   }
+            if (!dri2_create_screen(disp)) {
+                err = "DRI2: Failed to create swrast screen";
+                goto cleanup;
+            }
+
+            device_opened = EGL_TRUE;
+        }
+    }
 
    if (!device_opened) {
       err = "DRI2: failed to open device";
