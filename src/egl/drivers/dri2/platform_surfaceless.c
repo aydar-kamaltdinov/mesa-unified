@@ -224,6 +224,11 @@ static const __DRIextension *swrast_loader_extensions[] = {
    &kopper_loader_extension.base,         NULL,
 };
 
+static const __DRIextension *kopper_loader_extensions[] = {
+   &kopper_pbuffer_loader_extension.base, &image_lookup_extension.base,
+   &image_lookup_extension.base, NULL,
+};
+
 static bool
 surfaceless_probe_device(_EGLDisplay *disp, bool swrast, bool zink)
 {
@@ -268,13 +273,14 @@ surfaceless_probe_device(_EGLDisplay *disp, bool swrast, bool zink)
          dri2_dpy->driver_name = driver_name;
       }
 
-      if (dri2_dpy->driver_name && dri2_load_driver(disp)) {
-         if (swrast || zink)
+      if (dri2_dpy->driver_name) {
+         dri2_detect_swrast_kopper(disp);
+         if (dri2_dpy->kopper)
+            dri2_dpy->loader_extensions = kopper_loader_extensions;
+         else if (swrast)
             dri2_dpy->loader_extensions = swrast_loader_extensions;
          else
             dri2_dpy->loader_extensions = image_loader_extensions;
-
-         dri2_dpy->fd_display_gpu = dri2_dpy->fd_render_gpu;
 
          if (!dri2_create_screen(disp)) {
             _eglLog(_EGL_WARNING, "DRI2: failed to create screen");
@@ -336,13 +342,12 @@ surfaceless_probe_device_sw(_EGLDisplay *disp)
    if (!dri2_dpy->driver_name)
       return false;
 
-   if (!dri2_load_driver(disp)) {
-      free(dri2_dpy->driver_name);
-      dri2_dpy->driver_name = NULL;
-      return false;
-   }
+   dri2_detect_swrast_kopper(disp);
 
-   dri2_dpy->loader_extensions = swrast_loader_extensions;
+   if (dri2_dpy->kopper)
+      dri2_dpy->loader_extensions = kopper_loader_extensions;
+   else
+      dri2_dpy->loader_extensions = swrast_loader_extensions;
 
    dri2_dpy->fd_display_gpu = dri2_dpy->fd_render_gpu;
 

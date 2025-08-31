@@ -172,6 +172,16 @@ dri2_get_pbuffer_drawable_info(struct dri_drawable *draw, int *x, int *y, int *w
    *h = dri2_surf->base.Height;
 }
 
+static void
+dri2_kopper_get_pbuffer_drawable_info(struct dri_drawable *draw,
+                                      int *w, int *h, void *loaderPrivate)
+{
+    struct dri2_egl_surface *dri2_surf = loaderPrivate;
+
+    *w = dri2_surf->base.Width;
+    *h = dri2_surf->base.Height;
+}
+
 static int
 dri2_get_bytes_per_pixel(struct dri2_egl_surface *dri2_surf)
 {
@@ -259,6 +269,12 @@ const __DRIswrastLoaderExtension swrast_pbuffer_loader_extension = {
    .getDrawableInfo = dri2_get_pbuffer_drawable_info,
    .putImage = dri2_put_image,
    .getImage = dri2_get_image,
+};
+
+const __DRIkopperLoaderExtension kopper_pbuffer_loader_extension = {
+        .base = {__DRI_KOPPER_LOADER, 1},
+        .GetDrawableInfo = dri2_kopper_get_pbuffer_drawable_info,
+        .SetSurfaceCreateInfo = NULL,
 };
 
 static const EGLint dri2_to_egl_attribute_map[__DRI_ATTRIB_MAX] = {
@@ -585,18 +601,16 @@ const __DRIimageLookupExtension image_lookup_extension = {
    .lookupEGLImageValidated = dri2_lookup_egl_image_validated,
 };
 
-EGLBoolean
-dri2_load_driver(_EGLDisplay *disp)
+void
+dri2_detect_swrast_kopper(_EGLDisplay *disp)
 {
-   struct dri2_egl_display *dri2_dpy = dri2_egl_display(disp);
+    struct dri2_egl_display *dri2_dpy = dri2_egl_display(disp);
 
-   dri2_dpy->kopper = disp->Options.Zink && !debug_get_bool_option("LIBGL_KOPPER_DISABLE", false);
-   dri2_dpy->kopper_without_modifiers = dri2_dpy->kopper && debug_get_bool_option("LIBGL_KOPPER_DRI2", false);
-   dri2_dpy->swrast = (disp->Options.ForceSoftware && !dri2_dpy->kopper && strcmp(dri2_dpy->driver_name, "vmwgfx")) ||
-                      !dri2_dpy->driver_name || strstr(dri2_dpy->driver_name, "swrast");
-   dri2_dpy->swrast_not_kms = dri2_dpy->swrast && (!dri2_dpy->driver_name || strcmp(dri2_dpy->driver_name, "kms_swrast"));
-
-   return EGL_TRUE;
+    dri2_dpy->kopper = dri2_dpy->driver_name && !strcmp(dri2_dpy->driver_name, "zink") &&
+                       !debug_get_bool_option("LIBGL_KOPPER_DISABLE", false);
+    dri2_dpy->swrast = (disp->Options.ForceSoftware && !dri2_dpy->kopper && strcmp(dri2_dpy->driver_name, "vmwgfx")) ||
+                       !dri2_dpy->driver_name || strstr(dri2_dpy->driver_name, "swrast");
+    dri2_dpy->swrast_not_kms = dri2_dpy->swrast && (!dri2_dpy->driver_name || strcmp(dri2_dpy->driver_name, "kms_swrast"));
 }
 
 static const char *
@@ -897,6 +911,9 @@ dri2_initialize(_EGLDisplay *disp)
       p_atomic_inc(&dri2_dpy->ref_count);
       return EGL_TRUE;
    }
+   dri2_dpy = dri2_display_create(disp);
+   if (!dri2_dpy)
+      return EGL_FALSE;
 
    loader_set_logger(_eglLog);
 
@@ -925,8 +942,10 @@ dri2_initialize(_EGLDisplay *disp)
       return EGL_FALSE;
    }
 
-   if (!ret)
+   if (!ret) {
+      dri2_display_destroy(disp);
       return EGL_FALSE;
+   }
 
    if (_eglGetArraySize(disp->Configs) == 0) {
       _eglError(EGL_NOT_INITIALIZED, "failed to add any EGLConfigs");
