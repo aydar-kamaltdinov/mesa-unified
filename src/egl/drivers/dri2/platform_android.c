@@ -1618,7 +1618,7 @@ kopperSetSurfaceCreateInfo(void *_draw, struct kopper_loader_info *out)
 }
 
 static void
-kopperGetDrawableInfo(struct dri_drawable *draw, int *w, int *h, void *loaderPrivate)
+kopperGetDrawableInfo(__DRIdrawable *draw, int *w, int *h, void *loaderPrivate)
 {
    struct dri2_egl_surface *dri2_surf = loaderPrivate;
 
@@ -1845,11 +1845,15 @@ dri2_initialize_android(_EGLDisplay *disp)
 {
    _EGLDevice *dev;
    bool device_opened = false;
-   struct dri2_egl_display *dri2_dpy;
+   struct dri2_egl_display *dri2_dpy = NULL;
    const char *err;
    int ret;
 
-   // dri2_dpy->gralloc = u_gralloc_create(U_GRALLOC_TYPE_AUTO);
+    dri2_dpy = calloc(1, sizeof(*dri2_dpy));
+    if (!dri2_dpy)
+        return _eglError(EGL_BAD_ALLOC, "eglInitialize");
+
+    // dri2_dpy->gralloc = u_gralloc_create(U_GRALLOC_TYPE_AUTO);
    // if (dri2_dpy->gralloc == NULL) {
       // err = "DRI2: failed to get gralloc";
       // goto cleanup;
