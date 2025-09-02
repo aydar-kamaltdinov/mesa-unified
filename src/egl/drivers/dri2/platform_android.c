@@ -666,7 +666,7 @@ droid_swap_buffers_kopper(_EGLDisplay *disp, _EGLSurface *draw)
       return EGL_TRUE;
    }
 
-    dri2_dpy->kopper->swapBuffers(dri2_surf->dri_drawable);
+    dri2_dpy->kopper->swapBuffers(dri2_surf->dri_drawable, __DRI2_FLUSH_INVALIDATE_ANCILLARY);
 
    /* Update the shared buffer mode */
    if (has_mutable_rb &&
