@@ -814,10 +814,7 @@ droid_get_window_size(struct dri2_egl_surface *dri2_surf, int *w, int *h) {
 static void
 update_buffer_size(struct dri2_egl_surface *dri2_surf)
 {
-   _eglLog(_EGL_WARNING, "update_buffer_size: dri2_surf->buffer %p", dri2_surf->buffer);
    droid_get_window_size(dri2_surf, &dri2_surf->base.Width, &dri2_surf->base.Height);
-   // dri2_surf->base.Width = dri2_surf->buffer->width;
-   // dri2_surf->base.Height = dri2_surf->buffer->height;
 }
 
 static int
@@ -1860,18 +1857,42 @@ dri2_initialize_android(_EGLDisplay *disp)
    // }
 
    disp->DriverData = (void *) dri2_dpy;
-   device_opened = droid_open_device(disp, disp->Options.ForceSoftware);
+    if (disp->Options.Zink) {
+        dri2_dpy->driver_name = strdup("zink");
+        dri2_dpy->loader_extensions = droid_kopper_image_loader_extensions;
+        if (!dri2_load_driver_swrast(disp)) {
+            err = "DRI2: failed to load driver";
+            goto cleanup;
+        }
 
-   if (!device_opened) {
-      err = "DRI2: failed to open device";
-      goto cleanup;
-   }
+        device_opened = EGL_TRUE;
 
-   dev = _eglAddDevice(dri2_dpy->fd, false);
-   if (!dev) {
-      err = "DRI2: failed to find EGLDevice";
-      goto cleanup;
-   }
+        if (!dri2_create_screen(disp)) {
+            _eglLog(_EGL_WARNING, "DRI2: failed to create screen");
+            droid_unload_driver(disp);
+            goto cleanup;
+        }
+
+        dev = _eglAddDevice(dri2_dpy->fd, true);
+        if (!dev) {
+            err = "DRI2: failed to find EGLDevice";
+            goto cleanup;
+        }
+    }
+    else {
+        device_opened = droid_open_device(disp, disp->Options.ForceSoftware);
+
+        if (!device_opened) {
+            err = "DRI2: failed to open device";
+            goto cleanup;
+        }
+
+        dev = _eglAddDevice(dri2_dpy->fd, false);
+        if (!dev) {
+            err = "DRI2: failed to find EGLDevice";
+            goto cleanup;
+        }
+    }
 
    disp->Device = dev;
 
