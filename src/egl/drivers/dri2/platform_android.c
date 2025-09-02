@@ -1320,6 +1320,8 @@ dri2_initialize_android(_EGLDisplay *disp)
     if (!dri2_dpy)
         return _eglError(EGL_BAD_ALLOC, "eglInitialize");
 
+    dri2_dpy->fd_render_gpu = -1;
+    dri2_dpy->fd_display_gpu = -1;
     // dri2_dpy->gralloc = u_gralloc_create(U_GRALLOC_TYPE_AUTO);
    // if (dri2_dpy->gralloc == NULL) {
       // err = "DRI2: failed to get gralloc";
@@ -1343,7 +1345,7 @@ dri2_initialize_android(_EGLDisplay *disp)
             goto cleanup;
         }
 
-        dev = _eglAddDevice(dri2_dpy->fd, true);
+        dev = _eglFindDevice(dri2_dpy->fd_render_gpu, true);
         if (!dev) {
             err = "DRI2: failed to find EGLDevice";
             goto cleanup;
@@ -1357,14 +1359,15 @@ dri2_initialize_android(_EGLDisplay *disp)
             goto cleanup;
         }
 
-        dev = _eglAddDevice(dri2_dpy->fd, false);
+        dev = _eglFindDevice(dri2_dpy->fd_render_gpu, false);
         if (!dev) {
             err = "DRI2: failed to find EGLDevice";
             goto cleanup;
         }
     }
+    dri2_dpy->fd_display_gpu = dri2_dpy->fd_render_gpu;
 
-   disp->Device = dev;
+    disp->Device = dev;
 
    if (!dri2_setup_extensions(disp)) {
       err = "DRI2: failed to setup extensions";
