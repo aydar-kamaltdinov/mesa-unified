@@ -1860,7 +1860,7 @@ dri2_initialize_android(_EGLDisplay *disp)
     if (disp->Options.Zink) {
         dri2_dpy->driver_name = strdup("zink");
         dri2_dpy->loader_extensions = droid_kopper_image_loader_extensions;
-        if (!dri2_load_driver_swrast(disp)) {
+        if (!dri2_load_driver(disp)) {
             err = "DRI2: failed to load driver";
             goto cleanup;
         }
