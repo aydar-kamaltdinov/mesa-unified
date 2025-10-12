@@ -2839,7 +2839,7 @@ init_driver_workarounds(struct zink_screen *screen)
       /* CWE usage needs EDS1 */
       screen->info.have_EXT_color_write_enable = false;
    }
-   if (zink_driverid(screen) == VK_DRIVER_ID_AMD_PROPRIETARY)
+   if (zink_driverid(screen) == VK_DRIVER_ID_AMD_PROPRIETARY || zink_driverid(screen) == VK_DRIVER_ID_SAMSUNG_PROPRIETARY)
       /* this completely breaks xfb somehow */
       screen->info.have_EXT_extended_dynamic_state2 = false;
    /* EDS3 is only used with EDS2 */
@@ -2921,6 +2921,7 @@ init_driver_workarounds(struct zink_screen *screen)
 
    if (zink_driverid(screen) == VK_DRIVER_ID_AMD_OPEN_SOURCE || 
        zink_driverid(screen) == VK_DRIVER_ID_AMD_PROPRIETARY || 
+       zink_driverid(screen) == VK_DRIVER_ID_SAMSUNG_PROPRIETARY || 
        zink_driverid(screen) == VK_DRIVER_ID_NVIDIA_PROPRIETARY || 
        zink_driverid(screen) == VK_DRIVER_ID_MESA_RADV)
       screen->driver_workarounds.z24_unscaled_bias = 1<<23;
@@ -3051,6 +3052,7 @@ init_driver_workarounds(struct zink_screen *screen)
    case VK_DRIVER_ID_MESA_RADV:
    case VK_DRIVER_ID_AMD_OPEN_SOURCE:
    case VK_DRIVER_ID_AMD_PROPRIETARY:
+   case VK_DRIVER_ID_SAMSUNG_PROPRIETARY:
       /* this has bad perf on AMD */
       screen->info.have_KHR_push_descriptor = false;
       /* Interpolation is not consistent between two triangles of a rectangle. */

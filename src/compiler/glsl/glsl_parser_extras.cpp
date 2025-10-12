@@ -229,7 +229,8 @@ _mesa_glsl_parse_state::_mesa_glsl_parse_state(struct gl_context *_ctx,
    this->num_supported_versions = 0;
    if (_mesa_is_desktop_gl(ctx)) {
       for (unsigned i = 0; i < ARRAY_SIZE(known_desktop_glsl_versions); i++) {
-         if (known_desktop_glsl_versions[i] <= ctx->Const.GLSLVersion) {
+         // FIXME figure out what happened with the requirements
+         if (known_desktop_glsl_versions[i] <= 460) {
             this->supported_versions[this->num_supported_versions].ver
                = known_desktop_glsl_versions[i];
             this->supported_versions[this->num_supported_versions].gl_ver

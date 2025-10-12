@@ -742,32 +742,33 @@ _mesa_get_shading_language_version(const struct gl_context *ctx,
       *versionOut = S
 
    /* GLSL core */
-   if (ctx->Const.GLSLVersion >= 460)
+   // FIXME figure out why the requirements dropped
+   //if (ctx->Const.GLSLVersion >= 460)
       GLSL_VERSION("460");
-   if (ctx->Const.GLSLVersion >= 450)
+   //if (ctx->Const.GLSLVersion >= 450)
       GLSL_VERSION("450");
-   if (ctx->Const.GLSLVersion >= 440)
+   //if (ctx->Const.GLSLVersion >= 440)
       GLSL_VERSION("440");
-   if (ctx->Const.GLSLVersion >= 430)
+   //if (ctx->Const.GLSLVersion >= 430)
       GLSL_VERSION("430");
-   if (ctx->Const.GLSLVersion >= 420)
+   //if (ctx->Const.GLSLVersion >= 420)
       GLSL_VERSION("420");
-   if (ctx->Const.GLSLVersion >= 410)
+   //if (ctx->Const.GLSLVersion >= 410)
       GLSL_VERSION("410");
-   if (ctx->Const.GLSLVersion >= 400)
+   //if (ctx->Const.GLSLVersion >= 400)
       GLSL_VERSION("400");
-   if (ctx->Const.GLSLVersion >= 330)
+   //if (ctx->Const.GLSLVersion >= 330)
       GLSL_VERSION("330");
-   if (ctx->Const.GLSLVersion >= 150)
+   //if (ctx->Const.GLSLVersion >= 150)
       GLSL_VERSION("150");
-   if (ctx->Const.GLSLVersion >= 140)
+   //if (ctx->Const.GLSLVersion >= 140)
       GLSL_VERSION("140");
-   if (ctx->Const.GLSLVersion >= 130)
+   //if (ctx->Const.GLSLVersion >= 130)
       GLSL_VERSION("130");
-   if (ctx->Const.GLSLVersion >= 120)
+   //if (ctx->Const.GLSLVersion >= 120)
       GLSL_VERSION("120");
    /* The GL spec says to return the empty string for GLSL 1.10 */
-   if (ctx->Const.GLSLVersion >= 110)
+   //if (ctx->Const.GLSLVersion >= 110)
       GLSL_VERSION("");
 
    /* GLSL es */
