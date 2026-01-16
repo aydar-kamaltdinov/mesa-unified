@@ -479,18 +479,14 @@ struct fd_dev_info {
        * expected:
        */
       bool has_salu_int_narrowing_quirk;
-
       /* Whether the device supports the image processing opcode */
       bool has_image_processing;
-
       /* The amount of valid draw state IDs. */
       uint32_t max_draw_states;
-
       /* Whether GRAS_CL_INTERP_CNTL has FACENESS/CENTERRHW and thus
        * being able to avoid setting ij_linear_sample for FragFace/FragCoord.
        */
       bool has_implicit_fragface_fragcoord_ij_linear;
-
       uint32_t max_texel_buffer_range_elements;
       uint32_t max_storage_buffer_range_bytes;
 
@@ -501,6 +497,9 @@ struct fd_dev_info {
        * predt/predf and prede).
        */
       bool alias_predication_quirk;
+
+      /* If GMEM needs to be disabled for this GPU */
+      bool disable_gmem;
    } props;
 };
 
