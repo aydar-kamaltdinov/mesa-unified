@@ -297,7 +297,11 @@ main(int argc, char **argv)
          NIR_PASS(_, s, nir_trivialize_registers);
 
          /* nir_lower_explicit_io will create unpack_64 we need to lower */
-         NIR_PASS(_, s, nir_opt_algebraic);
+         bool progress = false;
+         do {
+            progress = false;
+            NIR_PASS(progress, s, nir_opt_algebraic);
+         } while (progress);
 
          nir_shader_gather_info(s, nir_shader_get_entrypoint(s));
          struct nir_to_msl_options options = {};
