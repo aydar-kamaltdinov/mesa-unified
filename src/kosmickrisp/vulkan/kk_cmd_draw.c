@@ -932,8 +932,7 @@ kk_unroll_geometry(struct kk_cmd_buffer *cmd, struct kk_draw_data data,
       .mode = data.prim,
    };
 
-   struct mtl_size grid = {1, 1, 1};
-   libkk_unroll_geometry_and_restart_struct(cmd, grid, true, info);
+   libkk_unroll_geometry_and_restart_struct(cmd, kk_grid_1d(1), true, info);
 
    data.indirect_buffer = out_draw->map;
    data.index_buffer = dev->heap->map;
@@ -1196,9 +1195,8 @@ kk_CmdDrawIndirectCount(VkCommandBuffer commandBuffer, VkBuffer _buffer,
    uint64_t count_addr =
       vk_buffer_address(&count_buffer->vk, countBufferOffset);
 
-   struct mtl_size grid = {maxDrawCount, 1u, 1u};
-   libkk_predicate_indirect(cmd, grid, true, patched->gpu, in, count_addr,
-                            stride / 4, false);
+   libkk_predicate_indirect(cmd, kk_grid_1d(maxDrawCount), true, patched->gpu,
+                            in, count_addr, stride / 4, false);
 
    for (unsigned i = 0; i < maxDrawCount; ++i) {
       /* TODO_KOSMICKRISP
@@ -1245,9 +1243,8 @@ kk_CmdDrawIndexedIndirectCount(VkCommandBuffer commandBuffer, VkBuffer _buffer,
    uint64_t count_addr =
       vk_buffer_address(&count_buffer->vk, countBufferOffset);
 
-   struct mtl_size grid = {maxDrawCount, 1u, 1u};
-   libkk_predicate_indirect(cmd, grid, true, patched->gpu, in, count_addr,
-                            stride / 4, true);
+   libkk_predicate_indirect(cmd, kk_grid_1d(maxDrawCount), true, patched->gpu,
+                            in, count_addr, stride / 4, true);
 
    for (unsigned i = 0; i < maxDrawCount; ++i) {
       /* TODO_KOSMICKRISP
