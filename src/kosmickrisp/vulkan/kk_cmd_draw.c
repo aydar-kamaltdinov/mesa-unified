@@ -19,7 +19,10 @@
 #include "kosmickrisp/bridge/mtl_bridge.h"
 #include "kosmickrisp/bridge/vk_to_mtl_map.h"
 
+#include "kosmickrisp/libkk/kk_tessellator.h"
+
 #include "poly/geometry.h"
+#include "poly/tessellator.h"
 
 #include "vulkan/util/vk_format.h"
 
@@ -695,10 +698,226 @@ kk_flush_pipeline(struct kk_cmd_buffer *cmd)
       if (gfx->depth_stencil_state)
          mtl_set_depth_stencil_state(enc, gfx->depth_stencil_state);
    }
+
+   /* Merge tess info before GS construction since that depends on
+    * gfx->tess.prim
+    */
+   if ((IS_SHADER_DIRTY(TESS_CTRL) || IS_SHADER_DIRTY(TESS_EVAL)) &&
+       cmd->state.shaders[MESA_SHADER_TESS_CTRL]) {
+      struct kk_shader *tesc = cmd->state.shaders[MESA_SHADER_TESS_CTRL];
+      struct kk_shader *tese = cmd->state.shaders[MESA_SHADER_TESS_EVAL];
+
+      gfx->tess.info =
+         kk_tess_info_merge(tese->info.tess.info, tesc->info.tess.info);
+
+      /* Determine primitive based on the merged state */
+      if (gfx->tess.info.points) {
+         gfx->tess.prim = MESA_PRIM_POINTS;
+      } else if (gfx->tess.info.mode == TESS_PRIMITIVE_ISOLINES) {
+         gfx->tess.prim = MESA_PRIM_LINES;
+      } else {
+         gfx->tess.prim = MESA_PRIM_TRIANGLES;
+      }
+   }
 }
 
 static void
-kk_flush_dynamic_state(struct kk_cmd_buffer *cmd)
+kk_init_heap(const void *data)
+{
+   struct kk_cmd_buffer *cmd = (struct kk_cmd_buffer *)data;
+   struct kk_device *dev = kk_cmd_buffer_device(cmd);
+
+   size_t size = 128 * 1024 * 1024;
+   kk_alloc_bo(dev, &dev->vk.base, size, 0, &dev->heap);
+
+   struct poly_heap *map = (struct poly_heap *)dev->heap->cpu;
+
+   /* TODO_KOSMICKRISP Self-contained until we have rodata at the device. */
+   *map = (struct poly_heap){
+      .base = dev->heap->gpu + sizeof(struct poly_heap),
+      .size = size - sizeof(struct poly_heap),
+   };
+}
+
+static uint64_t
+kk_heap(struct kk_cmd_buffer *cmd)
+{
+   struct kk_device *dev = kk_cmd_buffer_device(cmd);
+
+   util_call_once_data(&dev->heap_init_once, kk_init_heap, cmd);
+
+   /* We need to free all allocations after each command buffer execution */
+   if (!cmd->uses_heap) {
+      uint64_t addr = dev->heap->gpu;
+
+      /* Zeroing the allocated index frees everything */
+      kk_cmd_write(cmd, (struct libkk_imm_write){
+                           addr + offsetof(struct poly_heap, bottom), 0});
+
+      cmd->uses_heap = true;
+   }
+
+   return dev->heap->gpu;
+}
+
+struct kk_draw_data {
+   union {
+      /* Vertex/index count and instance count. */
+      uint32_t count[2];
+      mtl_buffer *indirect_buffer;
+   };
+   mtl_buffer *index_buffer;
+   uint64_t index_buffer_offset;
+   uint64_t indirect_buffer_offset;
+   uint32_t index_buffer_range_B;
+   uint32_t first_index;
+   uint32_t first_vertex;
+   uint32_t first_instance;
+   enum mesa_prim prim;
+   uint8_t index_size;
+   bool indirect;
+   bool indexed;
+   bool restart;
+};
+
+static uint64_t
+kk_upload_vertex_params(struct kk_cmd_buffer *cmd, struct kk_draw_data data)
+{
+   struct kk_descriptor_state *desc = &cmd->state.gfx.descriptors;
+
+   const uint32_t wg_size[3] = {1, 1, 1};
+
+   struct poly_vertex_params params;
+   poly_vertex_params_init(&params, 0, wg_size);
+
+   /* XXX: We should deduplicate this logic */
+   bool indirect = data.indirect || data.restart;
+
+   if (!indirect)
+      poly_vertex_params_set_draw(&params, data.count[0], data.count[1]);
+
+   if (data.indexed) {
+      params.index_buffer = mtl_buffer_get_gpu_address(data.index_buffer) +
+                            data.index_buffer_offset;
+
+      params.index_buffer_range_el =
+         data.index_buffer_range_B / data.index_size;
+   }
+
+   if (cmd->state.shaders[MESA_SHADER_TESS_EVAL]) {
+      struct kk_shader *vs = cmd->state.shaders[MESA_SHADER_VERTEX];
+      params.outputs = vs->info.vs.outputs_written;
+
+      if (!indirect) {
+         uint32_t verts = data.count[0], instances = data.count[1];
+         unsigned vb_size =
+            poly_tcs_in_size(verts * instances, vs->info.vs.outputs_written);
+
+         /* Allocate if there are any outputs, or use the null sink to trap
+          * reads if there aren't. Those reads are undefined but should not
+          * fault. Affects:
+          *
+          *    dEQP-VK.pipeline.monolithic.no_position.explicit_declarations.basic.single_view.v0_g1
+          */
+         if (vb_size) {
+            struct kk_bo *vb_bo = kk_cmd_allocate_buffer(cmd, vb_size, 4);
+            params.output_buffer = vb_bo->gpu;
+         } else
+            params.output_buffer = 0u;
+      }
+   }
+
+   desc->root.draw.vertex_outputs = params.outputs;
+
+   struct kk_pool pool = kk_pool_upload(cmd, &params, sizeof(params), 8);
+   return pool.gpu;
+}
+
+static void
+kk_upload_tess_params(struct kk_cmd_buffer *cmd, struct poly_tess_params *out,
+                      struct kk_draw_data draw)
+{
+   struct kk_device *dev = kk_cmd_buffer_device(cmd);
+   struct vk_dynamic_graphics_state *dyn = &cmd->vk.dynamic_graphics_state;
+   struct kk_graphics_state *gfx = &cmd->state.gfx;
+   struct kk_shader *tcs = cmd->state.shaders[MESA_SHADER_TESS_CTRL];
+
+   enum poly_tess_partitioning partitioning =
+      gfx->tess.info.spacing == TESS_SPACING_EQUAL
+         ? POLY_TESS_PARTITIONING_INTEGER
+      : gfx->tess.info.spacing == TESS_SPACING_FRACTIONAL_ODD
+         ? POLY_TESS_PARTITIONING_FRACTIONAL_ODD
+         : POLY_TESS_PARTITIONING_FRACTIONAL_EVEN;
+
+   struct poly_tess_params args = {
+      .heap = kk_heap(cmd),
+      .tcs_stride_el = tcs->info.tess.tcs_output_stride / 4,
+      .statistic = 0u,
+      .input_patch_size = dyn->ts.patch_control_points,
+      .output_patch_size = tcs->info.tess.tcs_output_patch_size,
+      .tcs_patch_constants = tcs->info.tess.tcs_nr_patch_outputs,
+      .tcs_per_vertex_outputs = tcs->info.tess.tcs_per_vertex_outputs,
+      .partitioning = partitioning,
+      .points_mode = gfx->tess.info.points,
+      .isolines = gfx->tess.info.mode == TESS_PRIMITIVE_ISOLINES,
+   };
+
+   if (!args.points_mode && gfx->tess.info.mode != TESS_PRIMITIVE_ISOLINES) {
+      args.ccw = gfx->tess.info.ccw;
+      args.ccw ^=
+         dyn->ts.domain_origin == VK_TESSELLATION_DOMAIN_ORIGIN_LOWER_LEFT;
+   }
+
+   uint32_t draw_stride_el = 5;
+   size_t draw_stride_B = draw_stride_el * sizeof(uint32_t);
+
+   /* heap is allocated by kk_heap */
+   /* TODO_KOSMICKRISP Self-contained until we have rodata at the device. */
+   args.patch_coord_buffer = dev->heap->gpu + sizeof(struct poly_heap);
+
+   if (!draw.indirect) {
+      unsigned in_patches = draw.count[0] / args.input_patch_size;
+      unsigned unrolled_patches = in_patches * draw.count[1];
+
+      uint32_t alloc = 0;
+      uint32_t tcs_out_offs = alloc;
+      alloc += unrolled_patches * args.tcs_stride_el * sizeof(uint32_t);
+
+      uint32_t patch_coord_offs = alloc;
+      alloc += unrolled_patches * sizeof(uint32_t);
+
+      uint32_t count_offs = alloc;
+      alloc += unrolled_patches * sizeof(uint32_t);
+
+      /* Single API draw */
+      uint32_t draw_offs = alloc;
+      alloc += draw_stride_B;
+
+      struct kk_bo *bo = kk_cmd_allocate_buffer(cmd, alloc, 4);
+      gfx->tess.out_draws_buffer = bo->map;
+      gfx->tess.out_draws_offset = draw_offs;
+      uint64_t addr = bo->gpu;
+      args.tcs_buffer = addr + tcs_out_offs;
+      args.patches_per_instance = in_patches;
+      args.coord_allocs = addr + patch_coord_offs;
+      args.nr_patches = unrolled_patches;
+      args.out_draws = addr + draw_offs;
+      args.counts = addr + count_offs;
+   } else {
+      /* Allocate 3x indirect global+local grids for VS/TCS/tess */
+      uint32_t grid_stride = sizeof(uint32_t) * 3;
+      gfx->tess.indirect = kk_cmd_allocate_buffer(cmd, grid_stride * 3, 4)->map;
+
+      struct kk_bo *bo = kk_cmd_allocate_buffer(cmd, draw_stride_B, 4);
+      gfx->tess.out_draws_buffer = bo->map;
+      args.out_draws = bo->gpu;
+   }
+
+   memcpy(out, &args, sizeof(args));
+}
+
+static void
+kk_flush_dynamic_state(struct kk_cmd_buffer *cmd, struct kk_draw_data data)
 {
    struct kk_graphics_state *gfx = &cmd->state.gfx;
    struct kk_descriptor_state *desc = &gfx->descriptors;
@@ -742,16 +961,17 @@ kk_flush_dynamic_state(struct kk_cmd_buffer *cmd)
         IS_DIRTY(VP_SCISSOR_COUNT) || IS_DIRTY(VP_SCISSORS)))
       kk_flush_vp_state(cmd);
 
-   if (IS_DIRTY(VP_DEPTH_CLIP_NEGATIVE_ONE_TO_ONE)) {
-      desc->root.draw.clip_z_coeff =
-         dyn->vp.depth_clip_negative_one_to_one ? 0.5f : 0.0f;
-      desc->root_dirty = true;
-   }
-
-   if (IS_DIRTY(RS_FRONT_FACE)) {
-      mtl_set_front_face_winding(
-         enc, vk_front_face_to_mtl_winding(
-                 cmd->vk.dynamic_graphics_state.rs.front_face));
+   if (IS_DIRTY(RS_FRONT_FACE) || IS_DIRTY(TS_DOMAIN_ORIGIN) ||
+       IS_SHADER_DIRTY(TESS_CTRL) || IS_SHADER_DIRTY(TESS_EVAL)) {
+      bool front_face_ccw = dyn->rs.front_face != VK_FRONT_FACE_CLOCKWISE;
+      if (cmd->state.shaders[MESA_SHADER_TESS_EVAL]) {
+         front_face_ccw ^= gfx->tess.info.ccw;
+         front_face_ccw ^=
+            dyn->ts.domain_origin == VK_TESSELLATION_DOMAIN_ORIGIN_LOWER_LEFT;
+      }
+      mtl_set_front_face_winding(enc, front_face_ccw
+                                         ? MTL_WINDING_COUNTER_CLOCKWISE
+                                         : MTL_WINDING_CLOCKWISE);
    }
 
    if (IS_DIRTY(RS_DEPTH_BIAS_FACTORS) || IS_DIRTY(RS_DEPTH_BIAS_ENABLE)) {
@@ -806,8 +1026,23 @@ kk_flush_dynamic_state(struct kk_cmd_buffer *cmd)
       desc->root_dirty = true;
    }
 
-   if (desc->root_dirty)
+   struct kk_bo *tess_args = NULL;
+   if (cmd->state.shaders[MESA_SHADER_TESS_EVAL]) {
+      gfx->descriptors.root.draw.index_size = data.index_size;
+      gfx->descriptors.root.draw.base_vertex = data.first_vertex;
+      desc->root.draw.vertex_params = kk_upload_vertex_params(cmd, data);
+      tess_args =
+         kk_cmd_allocate_buffer(cmd, sizeof(struct poly_tess_params), 4);
+      gfx->descriptors.root.draw.tess_params = tess_args->gpu;
+      gfx->descriptors.root_dirty = true;
+   }
+
+   if (desc->root_dirty) {
       kk_upload_descriptor_root(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS);
+      if (tess_args) {
+         kk_upload_tess_params(cmd, tess_args->cpu, data);
+      }
+   }
 
    struct kk_bo *root_buffer = desc->root.root_buffer;
    if (root_buffer) {
@@ -822,7 +1057,7 @@ kk_flush_dynamic_state(struct kk_cmd_buffer *cmd)
 }
 
 static void
-kk_flush_gfx_state(struct kk_cmd_buffer *cmd)
+kk_flush_gfx_state(struct kk_cmd_buffer *cmd, struct kk_draw_data data)
 {
    struct kk_graphics_state *gfx = &cmd->state.gfx;
    struct kk_descriptor_state *desc = &gfx->descriptors;
@@ -832,7 +1067,7 @@ kk_flush_gfx_state(struct kk_cmd_buffer *cmd)
    if (desc->push_dirty)
       kk_cmd_buffer_flush_push_descriptors(cmd, desc);
 
-   kk_flush_dynamic_state(cmd);
+   kk_flush_dynamic_state(cmd, data);
 
    cmd->state.dirty_shaders = 0u;
    cmd->state.gfx.dirty = 0u;
@@ -1022,26 +1257,139 @@ kk_dispatch_draw(struct kk_cmd_buffer *cmd, struct kk_draw_data data)
                                      index_buffer_offset, data.count[1],
                                      data.first_vertex, data.first_instance);
       } else {
-         mtl_draw_primitives(enc, primitive_type, data.first_vertex,
-                             data.count[0], data.count[1], data.first_instance);
+         /* Avoid Metal validation error. Empty draws from tessellation will
+          * have values set to 0. */
+         if (data.count[0] != 0 && data.count[1] != 0)
+            mtl_draw_primitives(enc, primitive_type, data.first_vertex,
+                                data.count[0], data.count[1],
+                                data.first_instance);
       }
    }
 }
 
 static bool
-requires_index_promotion(struct kk_cmd_buffer *cmd)
+requires_index_promotion(struct kk_draw_data data)
 {
-   const struct vk_dynamic_graphics_state *dyn =
-      &cmd->vk.dynamic_graphics_state;
-   switch (dyn->ia.primitive_topology) {
-   case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
-   case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP:
-   case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
-      return (!dyn->ia.primitive_restart_enable &&
-              cmd->state.gfx.index.bytes_per_index < sizeof(uint32_t));
+   switch (data.prim) {
+   case MESA_PRIM_LINE_STRIP:
+   case MESA_PRIM_TRIANGLE_STRIP:
+   case MESA_PRIM_TRIANGLE_FAN:
+      return (!data.restart && data.index_size < sizeof(uint32_t));
    default:
       return false;
    }
+}
+
+static void
+kk_dispatch_compute(mtl_compute_encoder *enc, struct kk_grid grid,
+                    struct mtl_size local_size)
+{
+   if (grid.mode == KK_GRID_DIRECT)
+      mtl_dispatch_threads(enc, grid.size, local_size);
+   else
+      mtl_dispatch_threadgroups_with_indirect_buffer(enc, grid.indirect,
+                                                     grid.offset, local_size);
+}
+
+static struct kk_draw_data
+kk_launch_tess(struct kk_cmd_buffer *cmd, struct kk_draw_data draw)
+{
+   struct kk_device *dev = kk_cmd_buffer_device(cmd);
+   struct kk_graphics_state *gfx = &cmd->state.gfx;
+   struct kk_grid grid_vs, grid_tcs, grid_tess;
+
+   struct kk_shader *vs = cmd->state.shaders[MESA_SHADER_VERTEX];
+   struct kk_shader *tcs = cmd->state.shaders[MESA_SHADER_TESS_CTRL];
+
+   struct vk_dynamic_graphics_state *dyn = &cmd->vk.dynamic_graphics_state;
+   uint32_t input_patch_size = dyn->ts.patch_control_points;
+   uint64_t state = gfx->descriptors.root.draw.tess_params;
+   struct kk_tess_info info = gfx->tess.info;
+
+   /* Setup grids */
+   if (draw.indirect) {
+      struct libkk_tess_setup_indirect_args args = {
+         .p = state,
+         .grids = mtl_buffer_get_gpu_address(gfx->tess.indirect),
+         .indirect = mtl_buffer_get_gpu_address(draw.indirect_buffer) +
+                     draw.indirect_buffer_offset,
+         .vp = gfx->descriptors.root.draw.vertex_params,
+         .vertex_outputs = vs->info.vs.outputs_written,
+         .tcs_statistic = 0,
+      };
+
+      if (draw.indexed) {
+         args.in_index_buffer = mtl_buffer_get_gpu_address(draw.index_buffer) +
+                                draw.index_buffer_offset;
+         args.in_index_size_B = draw.index_size;
+         args.in_index_buffer_range_el = draw.index_buffer_range_B;
+      }
+
+      libkk_tess_setup_indirect_struct(cmd, kk_grid_1d(1), true, args);
+
+      uint32_t grid_stride = sizeof(uint32_t) * 3;
+      grid_vs = kk_grid_indirect(gfx->tess.indirect, 0u * grid_stride);
+      grid_tcs = kk_grid_indirect(gfx->tess.indirect, 1u * grid_stride);
+      grid_tess = kk_grid_indirect(gfx->tess.indirect, 2u * grid_stride);
+   } else {
+      uint32_t patches = draw.count[0] / input_patch_size;
+      grid_vs = grid_tcs = kk_grid_2d(draw.count[0], draw.count[1]);
+
+      grid_tcs.size.x = patches;
+      grid_tess = kk_grid_1d(patches * draw.count[1]);
+   }
+
+   /* First launch the VS and TCS */
+
+   mtl_compute_encoder *enc = kk_encoder_pre_gfx_encoder(cmd);
+   {
+      mtl_compute_pipeline_state *pipeline = vs->pipeline.gfx.pre_render[0];
+      struct mtl_size local_size = {1, 1, 1};
+      mtl_compute_set_pipeline_state(enc, pipeline);
+      mtl_compute_set_buffer(enc, gfx->descriptors.root.root_buffer->map, 0u,
+                             0u);
+      kk_dispatch_compute(enc, grid_vs, local_size);
+      /* TODO_KOSMICKRISP Maybe too big of a barrier? We could definitely just
+       * barrier the buffers we know we modify. */
+      mtl_memory_barrier_with_scope(enc, MTL_BARRIER_SCOPE_BUFFERS);
+   }
+   {
+      mtl_compute_pipeline_state *pipeline = vs->pipeline.gfx.pre_render[1];
+      struct mtl_size local_size = {tcs->info.tess.tcs_output_patch_size, 1, 1};
+      /* Avoid Metal validation error by trying to launch empty compute. Return
+       * empty data. We set restart to true to avoid unroll. */
+      if (grid_tcs.mode == KK_GRID_DIRECT && grid_tcs.size.x == 0u)
+         return (struct kk_draw_data){.restart = true};
+      mtl_compute_set_pipeline_state(enc, pipeline);
+      kk_dispatch_compute(enc, grid_tcs, local_size);
+      mtl_memory_barrier_with_scope(enc, MTL_BARRIER_SCOPE_BUFFERS);
+   }
+
+   /* First generate counts, then prefix sum them, and then tessellate. */
+   libkk_tessellate(cmd, grid_tess, true, info.mode, POLY_TESS_MODE_COUNT,
+                    state);
+   mtl_memory_barrier_with_scope(enc, MTL_BARRIER_SCOPE_BUFFERS);
+
+   libkk_prefix_sum_tess(cmd, kk_grid_1d(1u), true, state);
+   mtl_memory_barrier_with_scope(enc, MTL_BARRIER_SCOPE_BUFFERS);
+
+   libkk_tessellate(cmd, grid_tess, true, info.mode, POLY_TESS_MODE_WITH_COUNTS,
+                    state);
+   mtl_memory_barrier_with_scope(enc, MTL_BARRIER_SCOPE_BUFFERS);
+
+   draw.indirect_buffer = gfx->tess.out_draws_buffer;
+   draw.indirect_buffer_offset = gfx->tess.out_draws_offset;
+
+   draw.index_buffer = dev->heap->map;
+   draw.index_size = sizeof(uint32_t);
+   /* TODO_KOSMICKRISP Self-contained until we have rodata at the device. */
+   draw.index_buffer_range_B = dev->heap->size_B - sizeof(struct poly_heap);
+   draw.index_buffer_offset = sizeof(struct poly_heap);
+   draw.prim = gfx->tess.prim;
+   draw.indirect = true;
+   draw.indexed = true;
+   draw.restart = false;
+   return draw;
 }
 
 static void
@@ -1051,17 +1399,20 @@ kk_draw(struct kk_cmd_buffer *cmd, struct kk_draw_data data)
    if (!data.indirect && (data.count[0] == 0u || data.count[1] == 0u))
       return;
 
-   kk_flush_gfx_state(cmd);
+   kk_flush_gfx_state(cmd, data);
+   data.restart = cmd->vk.dynamic_graphics_state.ia.primitive_restart_enable;
+
+   bool tess = cmd->state.shaders[MESA_SHADER_TESS_EVAL];
+
+   if (tess)
+      data = kk_launch_tess(cmd, data);
 
    /* If the restart bool is set, it means that primitive restart is disabled
     * but index type is not uint32_t which requires promoting the type to
     * uint32_t since we cannot disable primitive restart in Metal. */
-   bool promote_index_type = requires_index_promotion(cmd);
+   bool promote_index_type = requires_index_promotion(data);
 
-   /* We always need to unroll triangle fans. */
-   data.restart = (data.prim == MESA_PRIM_TRIANGLE_FAN);
-
-   if (promote_index_type || data.restart)
+   if ((data.prim == MESA_PRIM_TRIANGLE_FAN) || promote_index_type)
       data = kk_unroll_geometry(cmd, data, promote_index_type);
 
    kk_dispatch_draw(cmd, data);
