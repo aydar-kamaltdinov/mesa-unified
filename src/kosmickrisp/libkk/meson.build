@@ -4,8 +4,11 @@
 
 libkk_shader_files = files(
   'kk_draws.cl',
-  'kk_triangle_fan.cl',
+  'kk_geometry.cl',
   'kk_query.cl',
+  'kk_tessellation.cl',
+  'kk_tessellator.cl',
+  'kk_triangle_fan.cl',
 )
 
 libkk_spv = custom_target(

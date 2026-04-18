@@ -152,6 +152,16 @@ struct kk_graphics_state {
       mtl_buffer *handles[KK_MAX_VBUFS];
    } vb;
 
+   /* Tessellation state */
+   struct {
+      /* Grid buffer for when the draw is indirect */
+      mtl_buffer *indirect;
+      mtl_buffer *out_draws_buffer;
+      uint64_t out_draws_offset;
+      struct kk_tess_info info;
+      enum mesa_prim prim;
+   } tess;
+
    /* Needed by vk_command_buffer::dynamic_graphics_state */
    struct vk_vertex_input_state _dynamic_vi;
    struct vk_sample_locations_state _dynamic_sl;
