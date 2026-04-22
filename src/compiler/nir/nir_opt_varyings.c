@@ -2719,6 +2719,77 @@ nir_ht_scalar_equal(const void *a, const void *b)
    return nir_scalar_equal(*(nir_scalar*)a, *(nir_scalar*)b);
 }
 
+static void *
+allocate_deduplicate_data(struct hash_table *table, uint32_t index)
+{
+   struct list_node *node = ralloc(table, struct list_node);
+   list_inithead(&node->head);
+   node->instr = (nir_intrinsic_instr *)(uintptr_t)index;
+   return node;
+}
+
+static void *
+get_deduplicate_data(struct hash_table *table, uint32_t index, bool is_tcs)
+{
+   if (is_tcs)
+      return allocate_deduplicate_data(table, index);
+
+   return (void *)(uintptr_t)index;
+}
+
+struct found_slots {
+   uint32_t origin;
+   uint32_t duplicate;
+};
+
+/* Assumes both stores' lists are ordered in such a way that intrinsics that are part of the
+ * same block are grouped together and blocks are ordered. Returns an index pair with which
+ * slot to use as the origin and which to remove as duplicate. */
+static struct found_slots
+find_duplicated_slots(struct linkage_info *linkage, struct hash_table *table,
+                      struct hash_entry *entry, uint32_t current_index)
+{
+   if (linkage->producer_stage != MESA_SHADER_TESS_CTRL)
+      return (struct found_slots){ .origin = (uintptr_t)entry->data, .duplicate = current_index };
+
+   struct scalar_slot *current_slot = &linkage->slot[current_index];
+   struct list_head *list = &((struct list_node *)entry->data)->head;
+   list_for_each_entry(struct list_node, iter, list, head) {
+      uint32_t origin_index = (uintptr_t)iter->instr;
+      struct scalar_slot *origin_slot = &linkage->slot[origin_index];
+      struct list_head *left = &origin_slot->producer.stores;
+      struct list_head *right = &current_slot->producer.stores;
+      struct list_node *origin = list_first_entry(left, struct list_node, head);
+      struct list_node *duplicate = list_first_entry(right, struct list_node, head);
+      do {
+         const nir_block *left_b = origin->instr->instr.block;
+         const nir_block *right_b = duplicate->instr->instr.block;
+         if (left_b != right_b)
+            break;
+
+         /* Advance to next block */
+         while (&origin->head != left && origin->instr->instr.block == left_b)
+            origin = container_of(origin->head.next, struct list_node, head);
+         while (&duplicate->head != right && duplicate->instr->instr.block == right_b)
+            duplicate = container_of(duplicate->head.next, struct list_node, head);
+
+      } while (&origin->head != left && &duplicate->head != right);
+
+      if (origin->instr->instr.block != duplicate->instr->instr.block)
+         continue;
+
+      if (&duplicate->head == right)
+         return (struct found_slots){ .origin = origin_index, .duplicate = current_index };
+
+      iter->instr = (nir_intrinsic_instr *)(uintptr_t)current_index;
+      return (struct found_slots){ .origin = current_index, .duplicate = origin_index };
+   }
+
+   struct list_head *node = allocate_deduplicate_data(table, current_index);
+   list_addtail(node, list);
+   return (struct found_slots){ .origin = UINT32_MAX };
+}
+
 static void
 deduplicate_outputs(struct linkage_info *linkage,
                     nir_opt_varyings_progress *progress,
@@ -2762,12 +2833,18 @@ deduplicate_outputs(struct linkage_info *linkage,
 
       struct hash_entry *entry = _mesa_hash_table_search(*table, &value);
       if (!entry) {
-         _mesa_hash_table_insert(*table, &value, (void *)(uintptr_t)i);
+         void *data = get_deduplicate_data(*table, i, linkage->producer_stage == MESA_SHADER_TESS_CTRL);
+         _mesa_hash_table_insert(*table, &value, data);
          continue;
       }
 
+      struct found_slots duplicate_pair = find_duplicated_slots(linkage, *table, entry, i);
+      if (duplicate_pair.origin == UINT32_MAX)
+         continue;
+
       /* We've found a duplicate. Redirect loads and remove stores. */
-      struct scalar_slot *found_slot = &linkage->slot[(uintptr_t)entry->data];
+      slot = &linkage->slot[duplicate_pair.duplicate];
+      struct scalar_slot *found_slot = &linkage->slot[duplicate_pair.origin];
       nir_intrinsic_instr *store =
          list_first_entry(&found_slot->producer.stores,
                           struct list_node, head)
@@ -2815,7 +2892,7 @@ deduplicate_outputs(struct linkage_info *linkage,
       }
 
       /* Remove all duplicated stores now that loads have been redirected. */
-      remove_all_stores_and_clear_slot(linkage, i, progress);
+      remove_all_stores_and_clear_slot(linkage, duplicate_pair.duplicate, progress);
    }
 
    for (unsigned i = 0; i < ARRAY_SIZE(tables); i++)
