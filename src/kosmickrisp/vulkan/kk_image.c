@@ -512,6 +512,22 @@ kk_image_init(struct kk_device *dev, struct kk_image *image,
               const VkImageCreateInfo *pCreateInfo)
 {
    vk_image_init(&dev->vk, &image->vk, pCreateInfo);
+   VkImageCreateInfo patched_ci = *pCreateInfo;
+   // Metal does not support linear images with miplevels
+   if (pCreateInfo->tiling == VK_IMAGE_TILING_LINEAR && pCreateInfo->mipLevels > 1) {
+      patched_ci.tiling = VK_IMAGE_TILING_OPTIMAL;
+   }
+   // Metal does not support linear 3D images
+   if (pCreateInfo->tiling == VK_IMAGE_TILING_LINEAR && pCreateInfo->imageType == VK_IMAGE_TYPE_3D) {
+      patched_ci.tiling = VK_IMAGE_TILING_OPTIMAL;
+   }
+   // Metal does not support linear images with layers
+   if (pCreateInfo->tiling == VK_IMAGE_TILING_LINEAR && pCreateInfo->arrayLayers > 1) {
+      patched_ci.tiling = VK_IMAGE_TILING_OPTIMAL;
+   }
+
+
+   pCreateInfo = &patched_ci;
 
    if ((image->vk.usage & (VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
                            VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT)) &&
