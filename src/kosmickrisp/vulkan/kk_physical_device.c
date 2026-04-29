@@ -164,6 +164,7 @@ kk_get_device_features(
       .depthClamp = true,
       .drawIndirectFirstInstance = true,
       .dualSrcBlend = true,
+      .fillModeNonSolid = true,
       .fragmentStoresAndAtomics = true,
       .fullDrawIndexUint32 = true,
       .imageCubeArray = true,
