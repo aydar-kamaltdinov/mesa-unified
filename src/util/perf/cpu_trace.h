@@ -33,7 +33,7 @@
  *
  *   https://github.com/android/ndk/issues/1178
  */
-#elif defined(ANDROID) && !defined(__cplusplus)
+#elif 0
 
 #include <cutils/trace.h>
 
@@ -108,5 +108,22 @@ util_cpu_trace_init()
    util_perfetto_init();
    util_gpuvis_init();
 }
-
+/* these use the slow category */
+#define MESA_TRACE_BEGIN_SLOW(name)                                          \
+   _MESA_TRACE_BEGIN(UTIL_PERFETTO_CATEGORY_SLOW, name)
+#define MESA_TRACE_END_SLOW() _MESA_TRACE_END(UTIL_PERFETTO_CATEGORY_SLOW)
+#define MESA_TRACE_SCOPE_SLOW(name)                                          \
+   _MESA_TRACE_SCOPE(UTIL_PERFETTO_CATEGORY_SLOW, name)
+#define MESA_TRACE_FUNC_SLOW()                                               \
+   _MESA_TRACE_SCOPE(UTIL_PERFETTO_CATEGORY_SLOW, __func__)
+static inline void
+util_cpu_trace_init()
+{
+#ifdef HAVE_PERFETTO
+   util_perfetto_init();
+#elif 0
+   atrace_init();
+#endif /* HAVE_PERFETTO */
+   util_gpuvis_init();
+}
 #endif /* CPU_TRACE_H */
