@@ -24,6 +24,10 @@ struct fd_device *msm_device_new(int fd, drmVersionPtr version);
 struct fd_device *virtio_device_new(int fd, drmVersionPtr version);
 #endif
 
+#ifdef HAVE_FREEDRENO_KGSL
+struct fd_device *kgsl_device_new(int fd);
+#endif
+
 uint64_t os_page_size = 4096;
 
 struct fd_device *

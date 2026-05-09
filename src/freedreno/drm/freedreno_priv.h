@@ -260,6 +260,8 @@ struct fd_device {
    struct util_queue submit_queue;
 
    struct fd_rd_output rd;
+
+   uint32_t features;
 };
 
 static inline bool
@@ -296,6 +298,7 @@ struct fd_pipe_funcs {
    struct fd_ringbuffer *(*ringbuffer_new_object)(struct fd_pipe *pipe,
                                                   uint32_t size);
    struct fd_submit *(*submit_new)(struct fd_pipe *pipe);
+   int (*reset_status)(struct fd_pipe *pipe, enum fd_reset_status *status);
 
    /**
     * Flush any deferred submits (if deferred submits are supported by

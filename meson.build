@@ -318,6 +318,9 @@ with_any_llvmpipe = with_gallium_llvmpipe or with_swrast_vk
 with_gallium_or_lvp = with_gallium or with_swrast_vk
 
 freedreno_kmds = get_option('freedreno-kmds')
+if freedreno_kmds.contains('kgsl')
+  pre_args += '-DHAVE_FREEDRENO_KGSL'
+endif
 if freedreno_kmds.length() != 0 and freedreno_kmds != [ 'msm' ] and with_freedreno_vk
   if freedreno_kmds.contains('msm')
       warning('Turnip with the DRM KMD will require libdrm to always be present at runtime which may not always be the case on platforms such as Android.')
@@ -352,11 +355,6 @@ with_vdrm = [
   with_asahi_vk,
   with_intel_virtio,
 ].contains(true)
-
-
-if freedreno_kmds.contains('kgsl')
-  pre_args += '-DHAVE_FREEDRENO_KGSL'
-endif
 
 with_dri = false
 if with_gallium and (system_has_kms_drm or (freedreno_kmds.contains('kgsl') and with_gallium_zink))
