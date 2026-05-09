@@ -58,7 +58,7 @@
  *
  *   https://github.com/android/ndk/issues/1178
  */
-#elif DETECT_OS_ANDROID && !defined(__cplusplus)
+#elif 0
 
 #include <cutils/trace.h>
 
@@ -160,7 +160,12 @@ _mesa_trace_scope_end(UNUSED int *scope)
 static inline void
 util_cpu_trace_init()
 {
+#ifdef 0
    util_perfetto_init();
+#elif 0
+   atrace_init();
+#endif /* HAVE_PERFETTO */
+
    util_gpuvis_init();
 }
 
