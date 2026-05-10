@@ -71,7 +71,8 @@ bool msl_nir_fs_io_types(nir_shader *nir);
 bool msl_nir_vs_io_types(nir_shader *nir);
 bool msl_nir_fake_guard_for_discards(struct nir_shader *nir);
 bool msl_nir_lower_sample_shading(nir_shader *nir);
-void msl_lower_nir_late(nir_shader *nir);
+void msl_nir_lower_clip_cull_distance(nir_shader *nir,
+                                      unsigned num_cull_distances);
 
 static const nir_shader_compiler_options kk_nir_options = {
    .lower_fdph = true,
