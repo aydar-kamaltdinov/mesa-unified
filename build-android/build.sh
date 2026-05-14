@@ -9,7 +9,7 @@ install_ndk() {
 	export ANDROID_NDK_HOME="$(pwd)/android-ndk-r29"
 }
 
-if [ -z "${ANDROID_NDK_HOME}" ]; then
+if [ -d "${ANDROID_NDK_HOME}" ]; then
 	echo "NDK not found. Set ANDROID_NDK_HOME if you want to use a preinstalled NDK"
 	install_ndk
 fi
