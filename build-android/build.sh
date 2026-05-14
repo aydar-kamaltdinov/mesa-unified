@@ -15,11 +15,12 @@ if [ ! -d "${ANDROID_NDK_HOME}" ]; then
 fi
 
 echo "Will use NDK at ${ANDROID_NDK_HOME}"
+echo "Arch (matrix): ${MATRIX_ARCH}"
 
 echo "Begin building Mesa"
 envsubst <crossfile >build-crossfile
 meson setup .. "build-android" \
-        --prefix=/tmp/zink-$MESON_CPU_FAMILY \
+        --prefix=/tmp/zink-${MATRIX_ARCH} \
         --cross-file "build-crossfile" \
             -Dplatforms=android \
 	    -Dbuildtype=release \

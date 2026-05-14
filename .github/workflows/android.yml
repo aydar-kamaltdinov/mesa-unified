@@ -24,6 +24,7 @@ jobs:
     - name: Build for Android ${{matrix.arch}}
       run: |
         echo "Building on: ${{ matrix.arch }}"
+        export MATRIX_ARCH="${{ matrix.arch }}"
         pushd build-android
         bash ./build_${{ matrix.arch }}.sh
         popd
