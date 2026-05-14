@@ -22,6 +22,8 @@ meson setup .. "build-android" \
         --prefix=/tmp/zink-$MESON_CPU_FAMILY \
         --cross-file "build-crossfile" \
             -Dplatforms=android \
+	    -Dbuildtype=release \
+	    -Dstrip=true \
             -Dplatform-sdk-version=29 \
             -Dandroid-stub=true \
             -Dxlib-lease=disabled \
