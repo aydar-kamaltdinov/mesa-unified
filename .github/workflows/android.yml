@@ -30,10 +30,10 @@ jobs:
 
     - name: Compress artifacts
       run: |
-        pushd /tmp/zink-${{matrix.arch}} && zip -j "$OLDPWD/mesa-${{matrix.arch}}.zip" libEGL_mesa.so libvulkan_freedreno.so libgallium_dri.so || true; popd
+        pushd /tmp/zink-${{matrix.arch}}/lib && zip -j "$OLDPWD/mesa-${{matrix.arch}}.zip" libEGL_mesa.so libvulkan_freedreno.so libgallium_dri.so || true; popd
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: mesa-${{ matrix.arch }}.zip
-        path: .
+        name: mesa-${{ matrix.arch }}
+        path: ./mesa-${{ matrix.arch }}.zip
 
