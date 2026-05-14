@@ -1,5 +1,22 @@
 #!/bin/sh
 rm build-crossfile
+
+install_ndk() {
+	# install ndk
+	echo "Installing NDK"
+	curl https://dl.google.com/android/repository/android-ndk-r29-linux.zip --output android-ndk-r29-linux.zip
+	unzip android-ndk-r29-linux.zip
+	export ANDROID_NDK_HOME="$(pwd)/android-ndk-r29"
+}
+
+if [ -z "${ANDROID_NDK_HOME}" ]; then
+	echo "NDK not found. Set ANDROID_NDK_HOME if you want to use a preinstalled NDK"
+	install_ndk
+fi
+
+echo "Will use NDK at ${ANDROID_NDK_HOME}"
+
+echo "Begin building Mesa"
 envsubst <crossfile >build-crossfile
 meson setup "build-android" \
         --prefix=/tmp/zink-$MESON_CPU_FAMILY \
