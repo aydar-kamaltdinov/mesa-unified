@@ -2,4 +2,5 @@
 export TARGET_TRIPLE=armv7a-linux-androideabi26
 export MESON_CPU_FAMILY=arm
 export MESON_CPU=armv7
+export EXTRA_ARGS="-Dfreedreno-kmds=kgsl -Dgallium-drivers=zink,freedreno -Dvulkan-drivers=freedreno"
 exec ./build.sh

@@ -31,10 +31,7 @@ meson setup .. "build-android" \
             -Dgles1=disabled \
             -Dgles2=enabled \
             -Dopengl=true \
-	    -Dfreedreno-kmds=kgsl \
             -Degl-lib-suffix=_mesa \
             -Dandroid-libbacktrace=disabled \
-            -Dgallium-drivers=freedreno,zink \
-	    -Dvulkan-drivers=freedreno \
-	    -Dallow-fallback-for=libdrm
+	    -Dallow-fallback-for=libdrm ${EXTRA_ARGS}
 ninja -C "build-android" install
