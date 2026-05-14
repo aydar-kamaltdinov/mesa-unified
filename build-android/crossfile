@@ -7,7 +7,7 @@ cpp_ld = 'lld'
 strip = '$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip'
 
 [host_machine]
-system = 'android'
-cpu_family = 'aarch64'
-cpu = 'armv8'
+system = 'linux'
+cpu_family = '$MESON_CPU_FAMILY'
+cpu = '$MESON_CPU'
 endian = 'little'

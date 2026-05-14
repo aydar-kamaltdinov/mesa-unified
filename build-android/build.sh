@@ -5,7 +5,7 @@ meson setup "build-android" \
         --prefix=/tmp/zink-$MESON_CPU_FAMILY \
         --cross-file "build-crossfile" \
             -Dplatforms=android \
-            -Dplatform-sdk-version=34 \
+            -Dplatform-sdk-version=29 \
             -Dandroid-stub=true \
             -Dxlib-lease=disabled \
             -Degl=enabled \
@@ -15,10 +15,10 @@ meson setup "build-android" \
             -Dgles2=enabled \
             -Dopengl=true \
 	    -Dfreedreno-kmds=kgsl \
-            -Dvulkan-drivers="" \
             -Degl-lib-suffix=_mesa \
             -Dandroid-libbacktrace=disabled \
             -Dgallium-drivers=freedreno,zink \
+	    -Dvulkan-drivers=freedreno \
 	    -Dallow-fallback-for=libdrm \
        ..
 ninja -C "build-android" install
