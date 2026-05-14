@@ -9,7 +9,7 @@ install_ndk() {
 	export ANDROID_NDK_HOME="$(pwd)/android-ndk-r29"
 }
 
-if [ -d "${ANDROID_NDK_HOME}" ]; then
+if [ ! -d "${ANDROID_NDK_HOME}" ]; then
 	echo "NDK not found. Set ANDROID_NDK_HOME if you want to use a preinstalled NDK"
 	install_ndk
 fi
@@ -18,7 +18,7 @@ echo "Will use NDK at ${ANDROID_NDK_HOME}"
 
 echo "Begin building Mesa"
 envsubst <crossfile >build-crossfile
-meson setup "build-android" \
+meson setup .. "build-android" \
         --prefix=/tmp/zink-$MESON_CPU_FAMILY \
         --cross-file "build-crossfile" \
             -Dplatforms=android \
@@ -36,6 +36,5 @@ meson setup "build-android" \
             -Dandroid-libbacktrace=disabled \
             -Dgallium-drivers=freedreno,zink \
 	    -Dvulkan-drivers=freedreno \
-	    -Dallow-fallback-for=libdrm \
-       ..
+	    -Dallow-fallback-for=libdrm
 ninja -C "build-android" install
