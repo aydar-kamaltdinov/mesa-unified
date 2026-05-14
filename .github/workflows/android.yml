@@ -17,7 +17,9 @@ jobs:
     - name: Build for Android ${{matrix.arch}}
       run: |
         echo "Building on: ${{ matrix.arch }}"
-        build-android/build_${{ matrix.arch }}.sh
+        pushd build-android
+        bash ./build_${{ matrix.arch }}.sh
+        popd
 
     - name: Compress artifacts
       run: |
