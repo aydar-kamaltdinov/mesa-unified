@@ -46,6 +46,6 @@ meson setup .. "build-android" \
             -Dandroid-libbacktrace=disabled ${EXTRA_ARGS}
 ninja -C "build-android" install
 echo "Installing DRM dependencies"
-cp -rv /tmp/drm-static/lib/*.so /tmp/zink-${MATRIX_ARCH}
+cp -rv /tmp/drm-static/lib/*.so /tmp/zink-${MATRIX_ARCH}/lib/
 echo "Removing temporary stuff"
 rm -rf /tmp/drm-static
