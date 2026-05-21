@@ -160,7 +160,7 @@ _mesa_trace_scope_end(UNUSED int *scope)
 static inline void
 util_cpu_trace_init()
 {
-#ifdef 0
+#ifdef HAVE_PERFETTO
    util_perfetto_init();
 #elif 0
    atrace_init();
