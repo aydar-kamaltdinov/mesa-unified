@@ -114,6 +114,5 @@ util_cpu_trace_init()
    atrace_init();
 #endif /* HAVE_PERFETTO */
 
-   util_gpuvis_init();
 }
 #endif /* CPU_TRACE_H */

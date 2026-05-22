@@ -40,10 +40,9 @@ meson setup .. "build-android" \
             -Dgbm=disabled \
             -Dglx=disabled \
             -Dgles1=disabled \
-            -Dgles2=enabled \
+            -Dgles2=disabled \
             -Dopengl=true \
-            -Degl-lib-suffix=_mesa \
-            -Dandroid-libbacktrace=disabled ${EXTRA_ARGS}
+            -Degl-lib-suffix=_legacy ${EXTRA_ARGS}
 ninja -C "build-android" install
 echo "Installing DRM dependencies"
 cp -rv /tmp/drm-static/lib/*.so /tmp/zink-${MATRIX_ARCH}/lib/
