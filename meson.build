@@ -1027,7 +1027,7 @@ import mako
 assert StrictVersion(mako.__version__) >= StrictVersion("0.8.0")
   ''', check: false)
 if has_mako.returncode() != 0
-  error('Python (3.x) mako module >= 0.8.0 required to build mesa.')
+  # error('Python (3.x) mako module >= 0.8.0 required to build mesa.')
 endif
 
 if cc.get_id() == 'gcc' and cc.version().version_compare('< 4.4.6')

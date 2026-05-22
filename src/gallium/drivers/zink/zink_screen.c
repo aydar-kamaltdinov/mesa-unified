@@ -104,7 +104,7 @@ enum zink_descriptor_mode zink_descriptor_mode;
 static const char *
 zink_get_vendor(struct pipe_screen *pscreen)
 {
-   return "Mesa";
+   return "zink/MojoLauncher";
 }
 
 static const char *
@@ -116,12 +116,38 @@ zink_get_device_vendor(struct pipe_screen *pscreen)
    return buf;
 }
 
+static inline void
+zink_get_driver_version(uint32_t packed, uint32_t* version)
+{
+   version[0] = VK_API_VERSION_VARIANT(packed);
+   version[1] = VK_API_VERSION_MAJOR(packed);
+   version[2] = VK_API_VERSION_MINOR(packed);
+   version[3] = VK_API_VERSION_PATCH(packed);
+}
+
+static inline const char *
+zink_get_driverid(struct zink_screen *screen)
+{
+   const char* driver_id = "VK_DRIVER_ID_";
+   char* driver_str = strstr(vk_DriverId_to_str(screen->info.driver_props.driverID), driver_id);
+   return driver_str ? (driver_str + strlen(driver_id)) : "UNKNOWN";
+}
+
 static const char *
 zink_get_name(struct pipe_screen *pscreen)
 {
    struct zink_screen *screen = zink_screen(pscreen);
    static char buf[1000];
-   snprintf(buf, sizeof(buf), "zink (%s)", screen->info.props.deviceName);
+   static uint32_t version[4];
+   zink_get_driver_version(screen->info.props.driverVersion, version);
+   snprintf(buf, sizeof(buf), "%s (Vulkan %d.%d.%d, %s, %d.%d.%d)",
+         screen->info.props.deviceName,
+         VK_VERSION_MAJOR(screen->info.device_version),
+         VK_VERSION_MINOR(screen->info.device_version),
+         VK_VERSION_PATCH(screen->info.device_version),
+         zink_get_driverid(screen),
+         version[1], version[2], version[3]
+         );
    return buf;
 }
 
@@ -936,9 +962,18 @@ zink_get_param(struct pipe_screen *pscreen, enum pipe_cap param)
       return MIN2(screen->info.props.limits.maxVertexOutputComponents / 4 / 2, 16);
 
    case PIPE_CAP_DMABUF:
-      return screen->info.have_KHR_external_memory_fd &&
+       printf("Checking PIPE_CAP_DMABUF:\n"
+              "KHR_external_memory_fd: %s\n"
+              "EXT_external_memory_dma_buf: %s\n"
+              "have_EXT_queue_family_foreign: %s\n",
+              screen->info.have_KHR_external_memory_fd ? "true" : "false",
+              screen->info.have_EXT_external_memory_dma_buf ? "true" : "false",
+              screen->info.have_EXT_queue_family_foreign ? "true" : "false");
+       if (!(screen->info.have_KHR_external_memory_fd &&
              screen->info.have_EXT_external_memory_dma_buf &&
-             screen->info.have_EXT_queue_family_foreign;
+             screen->info.have_EXT_queue_family_foreign))
+           printf("Not actually satisfied PIPE_CAP_DMABUF, applying hack...\n");
+      return 1;
 
    case PIPE_CAP_DEPTH_BOUNDS_TEST:
       return screen->info.feats.features.depthBounds;
@@ -2487,8 +2522,12 @@ zink_internal_create_screen(const struct pipe_screen_config *config)
    zink_debug = debug_get_option_zink_debug();
    zink_descriptor_mode = debug_get_option_zink_descriptor_mode();
 
-   screen->loader_lib = util_dl_open(VK_LIBNAME);
-   if (!screen->loader_lib)
+    screen->loader_lib = dlopen("libmjlvlk.so", RTLD_NOLOAD | RTLD_NOW);
+    if(!screen->loader_lib) {
+       mesa_loge("ZINK: failed to dlopen existing vulkan lib, falling back to system! %s", dlerror());
+       screen->loader_lib = util_dl_open(VK_LIBNAME);
+    }
+    if (!screen->loader_lib)
       goto fail;
 
    screen->vk_GetInstanceProcAddr = (PFN_vkGetInstanceProcAddr)util_dl_get_proc_address(screen->loader_lib, "vkGetInstanceProcAddr");

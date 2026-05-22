@@ -32,7 +32,7 @@
  *
  *   https://github.com/android/ndk/issues/1178
  */
-#elif defined(ANDROID) && !defined(__cplusplus)
+#elif 0
 
 #include <cutils/trace.h>
 
@@ -105,5 +105,14 @@ _mesa_trace_scope_end(int *scope)
    _MESA_TRACE_SCOPE(UTIL_PERFETTO_CATEGORY_SLOW, name)
 #define MESA_TRACE_FUNC_SLOW()                                               \
    _MESA_TRACE_SCOPE(UTIL_PERFETTO_CATEGORY_SLOW, __func__)
+static inline void
+util_cpu_trace_init()
+{
+#ifdef HAVE_PERFETTO
+   util_perfetto_init();
+#elif 0
+   atrace_init();
+#endif /* HAVE_PERFETTO */
 
+}
 #endif /* CPU_TRACE_H */
