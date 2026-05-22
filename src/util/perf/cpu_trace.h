@@ -102,12 +102,6 @@ _mesa_trace_scope_end(UNUSED int *scope)
 #define MESA_TRACE_SCOPE(name) _MESA_TRACE_SCOPE(name)
 #define MESA_TRACE_FUNC() _MESA_TRACE_SCOPE(__func__)
 
-static inline void
-util_cpu_trace_init()
-{
-   util_perfetto_init();
-   util_gpuvis_init();
-}
 /* these use the slow category */
 #define MESA_TRACE_BEGIN_SLOW(name)                                          \
    _MESA_TRACE_BEGIN(UTIL_PERFETTO_CATEGORY_SLOW, name)

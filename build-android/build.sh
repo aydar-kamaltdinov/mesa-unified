@@ -40,9 +40,9 @@ meson setup .. "build-android" \
             -Dgbm=disabled \
             -Dglx=disabled \
             -Dgles1=disabled \
-            -Dgles2=enabled \
+            -Dgles2=disabled \
             -Dopengl=true \
-            -Degl-lib-suffix=_mesa \
+            -Degl-lib-suffix=_legacy \
             -Dandroid-libbacktrace=disabled ${EXTRA_ARGS}
 ninja -C "build-android" install
 echo "Installing DRM dependencies"
