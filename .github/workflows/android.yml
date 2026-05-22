@@ -6,7 +6,7 @@ jobs:
   build:
     strategy:
       matrix:
-        arch: [ "arm64", "armv7", "x86", "x86_64" ]
+        arch: [ "arm64", "armv7" ]
       fail-fast: false
 
     runs-on: ubuntu-latest
