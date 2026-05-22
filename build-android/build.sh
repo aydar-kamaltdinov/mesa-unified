@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 rm build-crossfile
 
 install_ndk() {
