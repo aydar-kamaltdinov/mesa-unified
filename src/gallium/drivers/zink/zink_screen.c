@@ -2496,12 +2496,11 @@ zink_internal_create_screen(const struct pipe_screen_config *config)
    zink_debug = debug_get_option_zink_debug();
    zink_descriptor_mode = debug_get_option_zink_descriptor_mode();
 
-    const char* preloaded_ptr = getenv("VULKAN_PTR");
-    if (preloaded_ptr)
-        printf("VULKAN_PTR = 0x%s\n", preloaded_ptr);
-    else
-        printf("VULKAN_PTR not set, using system VK\n");
-    screen->loader_lib = preloaded_ptr ? (void*) strtoul(preloaded_ptr, NULL, 0x10) : util_dl_open(VK_LIBNAME);
+    screen->loader_lib = dlopen("libmjlvlk.so", RTLD_NOLOAD | RTLD_NOW);
+    if(!screen->loader_lib) {
+       mesa_loge("ZINK: failed to dlopen existing vulkan lib, falling back to system! %s", dlerror());
+       screen->loader_lib = util_dl_open(VK_LIBNAME);
+    }
     if (!screen->loader_lib)
       goto fail;
 
