@@ -65,16 +65,6 @@ jobs:
       with:
         name: mesa-armv7
         path: mesazip
-    - name: Get mesa-x86
-      uses: actions/download-artifact@v4
-      with:
-        name: mesa-x86
-        path: mesazip
-    - name: Get mesa-x86_64
-      uses: actions/download-artifact@v4
-      with:
-        name: mesa-x86_64
-        path: mesazip
     - name: Pack AAR
       run: |
         export SKIP_X86=1
