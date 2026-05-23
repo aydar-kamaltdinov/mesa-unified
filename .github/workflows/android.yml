@@ -45,4 +45,42 @@ jobs:
       with:
         name: mesa-${{ matrix.arch }}
         path: ./mesa-${{ matrix.arch }}.zip
-
+  aar:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get packaging script
+      uses: actions/checkout@v6
+      with:
+        repository: 'whitebelyash/mesaunified-packager'
+    - name: Install zip
+      run: sudo apt -y install zip unzip
+    - name: Get mesa-arm64
+      uses: actions/download-artifact@v4
+      with:
+        name: mesa-arm64
+        path: mesazip
+    - name: Get mesa-armv7
+      uses: actions/download-artifact@v4
+      with:
+        name: mesa-armv7
+        path: mesazip
+    - name: Get mesa-x86
+      uses: actions/download-artifact@v4
+      with:
+        name: mesa-x86
+        path: mesazip
+    - name: Get mesa-x86_64
+      uses: actions/download-artifact@v4
+      with:
+        name: mesa-x86_64
+        path: mesazip
+    - name: Pack AAR
+      run: |
+        export SKIP_X86=1
+        bash create_aar.sh $GITHUB_WORKSPACE/mesazip
+    - name: Upload packaging result
+      uses: actions/upload-artifact@v7
+      with:
+        name: mesa-aar
+        path: mesa.aar
