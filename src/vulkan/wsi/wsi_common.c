@@ -1006,6 +1006,7 @@ wsi_CreateSwapchainKHR(VkDevice _device,
     * bool deferred_allocation = pCreateInfo->flags & VK_SWAPCHAIN_CREATE_DEFERRED_MEMORY_ALLOCATION_BIT_EXT;
     */
 
+   fprintf(stderr, "sgpu: CreateSwapchainKHR called\n");
    VkResult result = iface->create_swapchain(surface, _device, wsi_device,
                                              &info, alloc,
                                              &swapchain);

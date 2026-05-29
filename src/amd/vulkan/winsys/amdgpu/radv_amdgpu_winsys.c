@@ -41,6 +41,15 @@ do_winsys_init(struct radv_amdgpu_winsys *ws, int fd)
    if (!ac_query_gpu_info(fd, ws->dev, &ws->info, true))
       return false;
 
+   /* sgpu reports wrong gfx_level, force GFX10_3 for Xclipse 920 */
+   if (ws->info.gfx_level != GFX10_3) {
+      fprintf(stderr, "sgpu: overriding gfx_level %d -> GFX10_3\n", ws->info.gfx_level);
+      ws->info.gfx_level = GFX10_3;
+      ws->info.family = CHIP_VANGOGH;
+   }
+   ws->info.has_timeline_syncobj = false;
+   ws->info.has_userptr = false;
+
    if (!radv_is_gpu_supported(&ws->info))
       return false;
 
@@ -201,7 +210,7 @@ static int
 radv_amdgpu_winsys_get_fd(struct radeon_winsys *rws)
 {
    struct radv_amdgpu_winsys *ws = (struct radv_amdgpu_winsys *)rws;
-   return amdgpu_device_get_fd(ws->dev);
+   return ws->fd;
 }
 
 static const struct vk_sync_type *const *
@@ -264,6 +273,7 @@ radv_amdgpu_winsys_create(int fd, uint64_t debug_flags, uint64_t perftest_flags,
 
    ws->refcount = 1;
    ws->dev = dev;
+   ws->fd = fd;
    ws->info.drm_major = drm_major;
    ws->info.drm_minor = drm_minor;
    if (!do_winsys_init(ws, fd))
@@ -284,7 +294,7 @@ radv_amdgpu_winsys_create(int fd, uint64_t debug_flags, uint64_t perftest_flags,
    }
    int num_sync_types = 0;
 
-   ws->syncobj_sync_type = vk_drm_syncobj_get_type(amdgpu_device_get_fd(ws->dev));
+   ws->syncobj_sync_type = vk_drm_syncobj_get_type(ws->fd);
    if (ws->syncobj_sync_type.features) {
       /* multi wait is always supported */
       ws->syncobj_sync_type.features |= VK_SYNC_FEATURE_GPU_MULTI_WAIT;

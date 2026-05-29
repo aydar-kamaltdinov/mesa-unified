@@ -2339,18 +2339,27 @@ radv_shader_binary_upload(struct radv_device *device, const struct radv_shader_b
       ac_rtld_close(&rtld_binary);
 
       if (shader->code) {
-         /* Instead of running RTLD twice, just copy the relocated binary back from VRAM.
-          * Use streaming memcpy to reduce penalty of copying from uncachable memory.
-          */
-         util_streaming_load_memcpy(shader->code, dest_ptr, shader->code_size);
+         volatile uint8_t *d_rtld = (volatile uint8_t *)shader->code;
+         const volatile uint8_t *s_rtld = (const volatile uint8_t *)dest_ptr;
+         for (size_t i = 0; i < shader->code_size; i++) {
+            d_rtld[i] = s_rtld[i];
+            __asm__ volatile("" : : : "memory");
+         }
       }
 #endif
    } else {
       struct radv_shader_binary_legacy *bin = (struct radv_shader_binary_legacy *)binary;
-      memcpy(dest_ptr, bin->data + bin->stats_size, bin->code_size);
+      volatile uint8_t *d = (volatile uint8_t *)dest_ptr;
+      const uint8_t *s = (const uint8_t *)(bin->data + bin->stats_size);
+      for (size_t i = 0; i < bin->code_size; i++) {
+         d[i] = s[i];
+         __asm__ volatile("" : : : "memory");
+      }
 
       if (shader->code) {
-         memcpy(shader->code, bin->data + bin->stats_size, bin->code_size);
+         volatile uint8_t *d_cache = (volatile uint8_t *)shader->code;
+         const uint8_t *s_cache = (const uint8_t *)(bin->data + bin->stats_size);
+         for (size_t i = 0; i < bin->code_size; i++) { d_cache[i] = s_cache[i]; }
       }
    }
 

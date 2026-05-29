@@ -806,13 +806,8 @@ bool
 wsi_drm_image_needs_buffer_blit(const struct wsi_device *wsi,
                                 const struct wsi_drm_image_params *params)
 {
-   if (!params->same_gpu)
-      return true;
-
-   if (params->num_modifier_lists > 0 || wsi->supports_scanout)
-      return false;
-
-   return true;
+   /* sgpu: same_gpu check skipped, always use direct scanout */
+   return false;
 }
 
 VkResult

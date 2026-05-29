@@ -1,3 +1,4 @@
+
 /*
  * Copyright © 2016 Red Hat.
  * Copyright © 2016 Bas Nieuwenhuizen
@@ -379,7 +380,7 @@ radv_physical_device_init_mem_types(struct radv_physical_device *pdev)
       pdev->heaps |= RADV_HEAP_GTT;
       pdev->memory_properties.memoryHeaps[gart_index] = (VkMemoryHeap){
          .size = gtt_size,
-         .flags = 0,
+         .flags = VK_MEMORY_HEAP_DEVICE_LOCAL_BIT, // Forțează heap-ul GTT să fie local
       };
    }
 
@@ -414,7 +415,7 @@ radv_physical_device_init_mem_types(struct radv_physical_device *pdev)
       pdev->memory_domains[type_count] = RADEON_DOMAIN_GTT;
       pdev->memory_flags[type_count] = RADEON_FLAG_GTT_WC | RADEON_FLAG_CPU_ACCESS;
       pdev->memory_properties.memoryTypes[type_count++] = (VkMemoryType){
-         .propertyFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+         .propertyFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
          .heapIndex = gart_index,
       };
    }
@@ -518,7 +519,7 @@ radv_physical_device_get_supported_extensions(const struct radv_physical_device 
    const struct vk_device_extension_table ext = {
       .KHR_8bit_storage = true,
       .KHR_16bit_storage = true,
-      .KHR_acceleration_structure = radv_enable_rt(pdev, false),
+      .KHR_acceleration_structure = (pdev->info.pci_id == 0x73a0) ? true : radv_enable_rt(pdev, false),
       .KHR_calibrated_timestamps = radv_calibrated_timestamps_enabled(pdev),
       .KHR_compute_shader_derivatives = true,
       .KHR_cooperative_matrix = pdev->info.gfx_level >= GFX11 && !pdev->use_llvm,
@@ -577,10 +578,10 @@ radv_physical_device_get_supported_extensions(const struct radv_physical_device 
       .KHR_present_wait =
          instance->drirc.enable_khr_present_wait || wsi_common_vk_instance_supports_present_wait(&instance->vk),
       .KHR_push_descriptor = true,
-      .KHR_ray_query = radv_enable_rt(pdev, false),
-      .KHR_ray_tracing_maintenance1 = radv_enable_rt(pdev, false),
-      .KHR_ray_tracing_pipeline = radv_enable_rt(pdev, true),
-      .KHR_ray_tracing_position_fetch = radv_enable_rt(pdev, false),
+      .KHR_ray_query = (pdev->info.pci_id == 0x73a0) ? true : radv_enable_rt(pdev, false),
+      .KHR_ray_tracing_maintenance1 = (pdev->info.pci_id == 0x73a0) ? true : radv_enable_rt(pdev, false),
+      .KHR_ray_tracing_pipeline = (pdev->info.pci_id == 0x73a0) ? true : radv_enable_rt(pdev, true),
+      .KHR_ray_tracing_position_fetch = (pdev->info.pci_id == 0x73a0) ? true : radv_enable_rt(pdev, false),
       .KHR_relaxed_block_layout = true,
       .KHR_sampler_mirror_clamp_to_edge = true,
       .KHR_sampler_ycbcr_conversion = true,
@@ -688,7 +689,7 @@ radv_physical_device_get_supported_extensions(const struct radv_physical_device 
 #endif
       .EXT_pipeline_creation_cache_control = true,
       .EXT_pipeline_creation_feedback = true,
-      .EXT_pipeline_library_group_handles = radv_enable_rt(pdev, true),
+      .EXT_pipeline_library_group_handles = (pdev->info.pci_id == 0x73a0) ? true : radv_enable_rt(pdev, true),
       .EXT_pipeline_robustness = !pdev->use_llvm,
       .EXT_post_depth_coverage = pdev->info.gfx_level >= GFX10,
       .EXT_primitive_topology_list_restart = true,
@@ -1078,7 +1079,7 @@ radv_physical_device_get_features(const struct radv_physical_device *pdev, struc
 
       /* VK_KHR_ray_tracing_maintenance1 */
       .rayTracingMaintenance1 = true,
-      .rayTracingPipelineTraceRaysIndirect2 = radv_enable_rt(pdev, true),
+      .rayTracingPipelineTraceRaysIndirect2 = (pdev->info.pci_id == 0x73a0) ? true : radv_enable_rt(pdev, true),
 
       /* VK_KHR_ray_tracing_position_fetch */
       .rayTracingPositionFetch = true,
@@ -2311,8 +2312,7 @@ VkResult
 create_drm_physical_device(struct vk_instance *vk_instance, struct _drmDevice *device, struct vk_physical_device **out)
 {
 #ifndef _WIN32
-   if (!(device->available_nodes & (1 << DRM_NODE_RENDER)) || device->bustype != DRM_BUS_PCI ||
-       device->deviceinfo.pci->vendor_id != ATI_VENDOR_ID)
+   if (!(device->available_nodes & (1 << DRM_NODE_RENDER)))
       return VK_ERROR_INCOMPATIBLE_DRIVER;
 
    return radv_physical_device_try_create((struct radv_instance *)vk_instance, device,

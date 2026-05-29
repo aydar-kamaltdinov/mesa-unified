@@ -1,0 +1,3 @@
+[submodule "build-android/drm"]
+	path = build-android/drm
+	url = https://gitlab.freedesktop.org/mesa/libdrm

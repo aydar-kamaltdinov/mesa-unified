@@ -34,6 +34,7 @@
 
 #include <unistd.h>
 #include <fcntl.h>
+int memfd_create(const char*, unsigned int);
 #include <errno.h>
 #include <stdlib.h>
 

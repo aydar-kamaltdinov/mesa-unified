@@ -1,26 +1,18 @@
 /*
- * Copyright © 2016 Red Hat.
- * Copyright © 2016 Bas Nieuwenhuizen
- *
- * based on amdgpu winsys.
- * Copyright © 2011 Marek Olšák <maraeo@gmail.com>
- * Copyright © 2015 Advanced Micro Devices, Inc.
+ * Copyright u00a9 2016 Red Hat.
+ * Copyright u00a9 2016 Bas Nieuwenhuizen
  *
  * SPDX-License-Identifier: MIT
  */
 
 #include <stdio.h>
-
+#include <sys/mman.h>
+#include <errno.h>
 #include "radv_amdgpu_bo.h"
 #include "radv_debug.h"
-
-#include <amdgpu.h>
-#include <inttypes.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <xf86drm.h>
 #include "drm-uapi/amdgpu_drm.h"
 #include <sys/mman.h>
+#include <errno.h>
 
 #include "util/os_time.h"
 #include "util/u_atomic.h"
@@ -464,7 +456,7 @@ radv_amdgpu_winsys_bo_create(struct radeon_winsys *_ws, uint64_t size, unsigned 
    if ((initial_domain & RADEON_DOMAIN_VRAM_GTT) && (flags & RADEON_FLAG_NO_INTERPROCESS_SHARING) &&
        ((ws->perftest & RADV_PERFTEST_LOCAL_BOS) || (flags & RADEON_FLAG_PREFER_LOCAL_BO))) {
       bo->base.is_local = true;
-      request.flags |= AMDGPU_GEM_CREATE_VM_ALWAYS_VALID;
+      
    }
 
    if (initial_domain & RADEON_DOMAIN_VRAM) {
@@ -475,6 +467,7 @@ radv_amdgpu_winsys_bo_create(struct radeon_winsys *_ws, uint64_t size, unsigned 
    if (flags & RADEON_FLAG_DISCARDABLE && ws->info.drm_minor >= 47)
       request.flags |= AMDGPU_GEM_CREATE_DISCARDABLE;
 
+   fprintf(stderr, "sgpu: bo_alloc heap=%u flags=0x%lx size=%"PRIu64" align=%"PRIu64"\n", request.preferred_heap, request.flags, request.alloc_size, request.phys_alignment);
    r = amdgpu_bo_alloc(ws->dev, &request, &buf_handle);
    if (r) {
       fprintf(stderr, "radv/amdgpu: Failed to allocate a buffer:\n");
@@ -551,22 +544,21 @@ radv_amdgpu_winsys_bo_map(struct radeon_winsys *_ws, struct radeon_winsys_bo *_b
 
    assert(!bo->cpu_map);
 
-   union drm_amdgpu_gem_mmap args;
-   memset(&args, 0, sizeof(args));
-   args.in.handle = bo->bo_handle;
-
-   int ret =
-      drmCommandWriteRead(amdgpu_device_get_fd(radv_amdgpu_winsys(_ws)->dev), DRM_AMDGPU_GEM_MMAP, &args, sizeof(args));
-   if (ret)
-      return NULL;
-
-   void *data = mmap(fixed_addr, bo->base.size, PROT_READ | PROT_WRITE, MAP_SHARED | (use_fixed_addr ? MAP_FIXED : 0),
-                     amdgpu_device_get_fd(radv_amdgpu_winsys(_ws)->dev), args.out.addr_ptr);
-   if (data == MAP_FAILED)
+   void *data = NULL;
+   int ret = amdgpu_bo_cpu_map(bo->bo, &data);
+   fprintf(stderr, "sgpu: amdgpu_bo_cpu_map ret=%d data=%p\n", ret, data);
+   if (ret == 0 && data) {
+      uintptr_t page_start = (uintptr_t)data & ~((uintptr_t)4095);
+      if (mprotect((void *)page_start, bo->base.size, PROT_READ | PROT_WRITE) != 0) {
+         fprintf(stderr, "sgpu: mprotect failed! errno=%d\n", errno);
+      }
+   }
+   if (ret || !data)
       return NULL;
 
    bo->cpu_map = data;
    return data;
+
 }
 
 static void
@@ -786,11 +778,14 @@ radv_amdgpu_winsys_get_fd(struct radeon_winsys *_ws, struct radeon_winsys_bo *_b
    enum amdgpu_bo_handle_type type = amdgpu_bo_handle_type_dma_buf_fd;
    int r;
    unsigned handle;
+   fprintf(stderr, "sgpu: exporting bo=%p, type=%d\n", bo->bo, type);
    r = amdgpu_bo_export(bo->bo, type, &handle);
+   fprintf(stderr, "sgpu: amdgpu_bo_export returned r=%d, handle=%u\n", r, handle);
    if (r)
       return false;
 
    *fd = (int)handle;
+   fprintf(stderr, "sgpu: exported fd successfully: %d\n", *fd);
    return true;
 }
 

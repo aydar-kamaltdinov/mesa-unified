@@ -148,3 +148,11 @@
 #endif
 
 #endif /* DETECT_OS_H */
+/* Android missing declarations */
+#ifdef HAVE_MEMFD_CREATE
+#include <linux/memfd.h>
+int memfd_create(const char*, unsigned int);
+#endif
+#ifdef HAVE_GETRANDOM
+#include <sys/random.h>
+#endif

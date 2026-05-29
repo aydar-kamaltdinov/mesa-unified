@@ -459,6 +459,7 @@ radv_reset_cmd_buffer(struct vk_command_buffer *vk_cmd_buffer, UNUSED VkCommandB
    util_dynarray_clear(&cmd_buffer->ray_history);
 
    radv_rra_accel_struct_buffers_unref(device, cmd_buffer->accel_struct_buffers);
+   cmd_buffer->accel_struct_buffers = NULL;
 
    cmd_buffer->push_constant_stages = 0;
    cmd_buffer->scratch_size_per_wave_needed = 0;

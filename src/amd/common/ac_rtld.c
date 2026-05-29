@@ -716,7 +716,14 @@ int ac_rtld_upload(struct ac_rtld_upload_info *u)
    int size = 0;
    if (u->binary->options.halt_at_entry) {
       /* s_sethalt 1 */
-      *(uint32_t *)u->rx_ptr = util_cpu_to_le32(0xbf8d0001);
+      {
+         uint32_t halt_val = util_cpu_to_le32(0xbf8d0001);
+         uint8_t *b_ptr = (uint8_t *)u->rx_ptr;
+         b_ptr[0] = halt_val & 0xFF;
+         b_ptr[1] = (halt_val >> 8) & 0xFF;
+         b_ptr[2] = (halt_val >> 16) & 0xFF;
+         b_ptr[3] = (halt_val >> 24) & 0xFF;
+      }
    }
 
    /* First pass: upload raw section data and lay out private LDS symbols. */
@@ -739,20 +746,34 @@ int ac_rtld_upload(struct ac_rtld_upload_info *u)
 
          if (i > 0 && first_section && u->binary->options.waitcnt_wa) {
             assert(s->offset >= 4);
-            *(uint32_t *)(u->rx_ptr + s->offset - 4) = util_cpu_to_le32(0xbf880fff);
+            {
+               uint32_t wait_val = util_cpu_to_le32(0xbf880fff);
+               uint8_t *b_ptr = (uint8_t *)(u->rx_ptr + s->offset - 4);
+               b_ptr[0] = wait_val & 0xFF;
+               b_ptr[1] = (wait_val >> 8) & 0xFF;
+               b_ptr[2] = (wait_val >> 16) & 0xFF;
+               b_ptr[3] = (wait_val >> 24) & 0xFF;
+            }
             first_section = false;
          }
 
-         memcpy(u->rx_ptr + s->offset, data->d_buf, shdr->sh_size);
+         {
+            volatile uint8_t *dst_sc = (volatile uint8_t *)(u->rx_ptr + s->offset);
+            const uint8_t *src_sc = (const uint8_t *)data->d_buf;
+            for (size_t idx = 0; idx < shdr->sh_size; idx++) { dst_sc[idx] = src_sc[idx]; }
+         }
 
          size = MAX2(size, s->offset + shdr->sh_size);
       }
    }
 
    if (u->binary->rx_end_markers) {
-      uint32_t *dst = (uint32_t *)(u->rx_ptr + u->binary->rx_end_markers);
-      for (unsigned i = 0; i < DEBUGGER_NUM_MARKERS; ++i)
-         *dst++ = util_cpu_to_le32(DEBUGGER_END_OF_CODE_MARKER);
+      uint32_t marker_val = util_cpu_to_le32(DEBUGGER_END_OF_CODE_MARKER);
+      char *dst_ptr = u->rx_ptr + u->binary->rx_end_markers;
+      for (unsigned i = 0; i < DEBUGGER_NUM_MARKERS; ++i) {
+         memcpy(dst_ptr, &marker_val, 4);
+         dst_ptr += 4;
+      }
       size += 4 * DEBUGGER_NUM_MARKERS;
    }
 

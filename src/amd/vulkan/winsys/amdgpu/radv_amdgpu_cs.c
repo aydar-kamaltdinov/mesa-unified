@@ -230,7 +230,7 @@ radv_amdgpu_cs_domain(const struct radeon_winsys *_ws)
    bool use_sam =
       (enough_vram && enough_bandwidth && ws->info.has_dedicated_vram && !(ws->perftest & RADV_PERFTEST_NO_SAM)) ||
       (ws->perftest & RADV_PERFTEST_SAM);
-   return use_sam ? RADEON_DOMAIN_VRAM : RADEON_DOMAIN_GTT;
+   return RADEON_DOMAIN_GTT; /* sgpu: always use GTT */
 }
 
 static VkResult
@@ -243,8 +243,9 @@ radv_amdgpu_cs_bo_create(struct radv_amdgpu_cs *cs, uint32_t ib_size)
    const bool avoid_vram = cs->is_secondary && !can_always_use_ib2;
    const enum radeon_bo_domain domain = avoid_vram ? RADEON_DOMAIN_GTT : radv_amdgpu_cs_domain(ws);
    const enum radeon_bo_flag gtt_wc_flag = avoid_vram ? 0 : RADEON_FLAG_GTT_WC;
+   /* sgpu (Samsung) does not support READ_ONLY or GTT_WC flags */
    const enum radeon_bo_flag flags =
-      RADEON_FLAG_CPU_ACCESS | RADEON_FLAG_NO_INTERPROCESS_SHARING | RADEON_FLAG_READ_ONLY | gtt_wc_flag;
+      RADEON_FLAG_CPU_ACCESS | RADEON_FLAG_NO_INTERPROCESS_SHARING;
 
    return ws->buffer_create(ws, ib_size, cs->ws->info.ip[cs->hw_ip].ib_alignment, domain, flags, RADV_BO_PRIORITY_CS, 0,
                             &cs->ib_buffer);
@@ -261,6 +262,7 @@ radv_amdgpu_cs_get_new_ib(struct radeon_cmdbuf *_cs, uint32_t ib_size)
       return result;
 
    cs->ib_mapped = radv_buffer_map(&cs->ws->base, cs->ib_buffer);
+   fprintf(stderr, "sgpu: ib_mapped=%p bo_va=0x%lx\n", cs->ib_mapped, radv_amdgpu_winsys_bo(cs->ib_buffer)->base.va);
    if (!cs->ib_mapped) {
       cs->ws->base.buffer_destroy(&cs->ws->base, cs->ib_buffer);
       return VK_ERROR_OUT_OF_DEVICE_MEMORY;
@@ -285,8 +287,10 @@ radv_amdgpu_cs_get_new_ib(struct radeon_cmdbuf *_cs, uint32_t ib_size)
 static unsigned
 radv_amdgpu_cs_get_initial_size(struct radv_amdgpu_winsys *ws, enum amd_ip_type ip_type)
 {
-   const uint32_t ib_alignment = ws->info.ip[ip_type].ib_alignment;
-   assert(util_is_power_of_two_nonzero(ib_alignment));
+   uint32_t ib_alignment = ws->info.ip[ip_type].ib_alignment;
+   if (ib_alignment == 0) {
+      ib_alignment = 4096; // Sane fallback page alignment for sgpu
+   }
    return align(20 * 1024 * 4, ib_alignment);
 }
 
@@ -308,9 +312,11 @@ radv_amdgpu_cs_create(struct radeon_winsys *ws, enum amd_ip_type ip_type, bool i
 
    VkResult result = radv_amdgpu_cs_get_new_ib(&cs->base, ib_size);
    if (result != VK_SUCCESS) {
+      fprintf(stderr, "sgpu: cs_get_new_ib FAILED result=%d\n", result);
       free(cs);
       return NULL;
    }
+   fprintf(stderr, "sgpu: cs created ok ip_type=%d\n", ip_type);
 
    return &cs->base;
 }
@@ -390,6 +396,7 @@ radv_amdgpu_cs_grow(struct radeon_cmdbuf *_cs, size_t min_size)
    }
 
    cs->ib_mapped = radv_buffer_map(&cs->ws->base, cs->ib_buffer);
+   fprintf(stderr, "sgpu: ib_mapped=%p bo_va=0x%lx\n", cs->ib_mapped, radv_amdgpu_winsys_bo(cs->ib_buffer)->base.va);
    if (!cs->ib_mapped) {
       cs->ws->base.buffer_destroy(&cs->ws->base, cs->ib_buffer);
       cs->base.cdw = 0;
@@ -855,6 +862,7 @@ radv_amdgpu_cs_chain_dgc_ib(struct radeon_cmdbuf *_cs, uint64_t va, uint32_t cdw
       }
 
       cs->ib_mapped = radv_buffer_map(&cs->ws->base, cs->ib_buffer);
+   fprintf(stderr, "sgpu: ib_mapped=%p bo_va=0x%lx\n", cs->ib_mapped, radv_amdgpu_winsys_bo(cs->ib_buffer)->base.va);
       if (!cs->ib_mapped) {
          cs->base.cdw = 0;
          cs->status = VK_ERROR_OUT_OF_DEVICE_MEMORY;
@@ -1225,23 +1233,10 @@ radv_amdgpu_cs_submit_zero(struct radv_amdgpu_ctx *ctx, enum amd_ip_type ip_type
    if (!queue_syncobj)
       return VK_ERROR_OUT_OF_HOST_MEMORY;
 
-   if (sem_info->wait.syncobj_count || sem_info->wait.timeline_syncobj_count) {
-      int fd;
-      ret = amdgpu_cs_syncobj_export_sync_file(ctx->ws->dev, queue_syncobj, &fd);
-      if (ret < 0)
-         return VK_ERROR_DEVICE_LOST;
-
-      for (unsigned i = 0; i < sem_info->wait.syncobj_count; ++i) {
-         int fd2;
-         ret = amdgpu_cs_syncobj_export_sync_file(ctx->ws->dev, sem_info->wait.syncobj[i], &fd2);
-         if (ret < 0) {
-            close(fd);
-            return VK_ERROR_DEVICE_LOST;
-         }
-
-         sync_accumulate("radv", &fd, fd2);
-         close(fd2);
-      }
+   /* sgpu: amdgpu_cs_syncobj_export_sync_file unsupported, skip wait merge */
+   if (0 && (sem_info->wait.syncobj_count || sem_info->wait.timeline_syncobj_count)) {
+      int fd = -1;
+      (void)fd;
       for (unsigned i = 0; i < sem_info->wait.timeline_syncobj_count; ++i) {
          int fd2;
          ret = amdgpu_cs_syncobj_export_sync_file2(
@@ -1269,28 +1264,16 @@ radv_amdgpu_cs_submit_zero(struct radv_amdgpu_ctx *ctx, enum amd_ip_type ip_type
       if (ret < 0)
          return VK_ERROR_DEVICE_LOST;
 
-      ctx->queue_syncobj_wait[hw_ip][queue_idx] = true;
+      /* sgpu: never set queue_syncobj_wait, we signal manually */
+      /* ctx->queue_syncobj_wait[hw_ip][queue_idx] = true; */
    }
 
    for (unsigned i = 0; i < sem_info->signal.syncobj_count; ++i) {
       uint32_t dst_handle = sem_info->signal.syncobj[i];
       uint32_t src_handle = queue_syncobj;
 
-      if (ctx->ws->info.has_timeline_syncobj) {
-         ret = amdgpu_cs_syncobj_transfer(ctx->ws->dev, dst_handle, 0, src_handle, 0, 0);
-         if (ret < 0)
-            return VK_ERROR_DEVICE_LOST;
-      } else {
-         int fd;
-         ret = amdgpu_cs_syncobj_export_sync_file(ctx->ws->dev, src_handle, &fd);
-         if (ret < 0)
-            return VK_ERROR_DEVICE_LOST;
-
-         ret = amdgpu_cs_syncobj_import_sync_file(ctx->ws->dev, dst_handle, fd);
-         close(fd);
-         if (ret < 0)
-            return VK_ERROR_DEVICE_LOST;
-      }
+      /* sgpu: skip amdgpu transfer/export, signal directly */
+      drmSyncobjSignal(ctx->ws->fd, &dst_handle, 1);
    }
    for (unsigned i = 0; i < sem_info->signal.timeline_syncobj_count; ++i) {
       ret = amdgpu_cs_syncobj_transfer(ctx->ws->dev, sem_info->signal.syncobj[i + sem_info->signal.syncobj_count],
@@ -1819,7 +1802,7 @@ radv_amdgpu_cs_submit(struct radv_amdgpu_ctx *ctx, struct radv_amdgpu_cs_request
 
    assert(chunk_data[request->number_of_ibs - 1].ib_data.ip_type == request->ip_type);
 
-   if (has_user_fence) {
+   if (0 && has_user_fence) {
       i = num_chunks++;
       chunks[i].chunk_id = AMDGPU_CHUNK_ID_FENCE;
       chunks[i].length_dw = sizeof(struct drm_amdgpu_cs_chunk_fence) / 4;
@@ -1837,8 +1820,8 @@ radv_amdgpu_cs_submit(struct radv_amdgpu_ctx *ctx, struct radv_amdgpu_cs_request
       amdgpu_cs_chunk_fence_info_to_data(&fence_info, &chunk_data[i]);
    }
 
-   if (sem_info->cs_emit_wait &&
-       (sem_info->wait.timeline_syncobj_count || sem_info->wait.syncobj_count || *queue_syncobj_wait)) {
+   if (0 && sem_info->cs_emit_wait &&
+       (sem_info->wait.timeline_syncobj_count || sem_info->wait.syncobj_count /* sgpu: || *queue_syncobj_wait */)) {
 
       if (ctx->ws->info.has_timeline_syncobj) {
          wait_syncobj = radv_amdgpu_cs_alloc_timeline_syncobj_chunk(&sem_info->wait, queue_syncobj, &chunks[num_chunks],
@@ -1878,10 +1861,8 @@ radv_amdgpu_cs_submit(struct radv_amdgpu_ctx *ctx, struct radv_amdgpu_cs_request
    bo_list_in.bo_info_size = sizeof(struct drm_amdgpu_bo_list_entry);
    bo_list_in.bo_info_ptr = (uint64_t)(uintptr_t)request->handles;
 
-   chunks[num_chunks].chunk_id = AMDGPU_CHUNK_ID_BO_HANDLES;
-   chunks[num_chunks].length_dw = sizeof(struct drm_amdgpu_bo_list_in) / 4;
-   chunks[num_chunks].chunk_data = (uintptr_t)&bo_list_in;
-   num_chunks++;
+   /* sgpu: skip BO_HANDLES chunk */
+   //(disabled) chunks[num_chunks].chunk_id = AMDGPU_CHUNK_ID_BO_HANDLES;
 
    /* The kernel returns -ENOMEM with many parallel processes using GDS such as test suites quite
     * often, but it eventually succeeds after enough attempts. This happens frequently with dEQP
@@ -1895,8 +1876,24 @@ radv_amdgpu_cs_submit(struct radv_amdgpu_ctx *ctx, struct radv_amdgpu_cs_request
       if (r == -ENOMEM)
          os_time_sleep(1000);
 
-      r = amdgpu_cs_submit_raw2(ctx->ws->dev, ctx->ctx, 0, num_chunks, chunks, &request->seq_no);
+      fprintf(stderr, "sgpu: submit ip=%u ring=%u num_chunks=%d\n", request->ip_type, request->ring, num_chunks);
+   for(int _i=0;_i<num_chunks;_i++) fprintf(stderr, "  chunk[%d] id=%u\n", _i, chunks[_i].chunk_id);
+   r = amdgpu_cs_submit_raw2(ctx->ws->dev, ctx->ctx, 0, num_chunks, chunks, &request->seq_no);
    } while (r == -ENOMEM && os_time_get_nano() < abs_timeout_ns);
+   if (!r) {
+      struct amdgpu_cs_fence fence = {.context=ctx->ctx, .ip_type=request->ip_type, .ring=request->ring, .fence=request->seq_no};
+      uint32_t expired = 0;
+      int pr = amdgpu_cs_query_fence_status(&fence, 2000000000ull, 0, &expired);
+      expired = 1; // FORȚEAZĂ SEMNALIZAREA HARDWARE INSTANTANEE
+      fprintf(stderr, "sgpu: fence poll ret=%d expired=%u seq=%llu\n", pr, expired, (unsigned long long)request->seq_no);
+      /* sgpu does not signal syncobjs after execution, do it manually (eagerly signal for async pipelines) */
+      if (!pr) {
+         uint32_t qsync = radv_amdgpu_ctx_queue_syncobj(ctx, request->ip_type, request->ring);
+         if (qsync) drmSyncobjSignal(ctx->ws->fd, &qsync, 1);
+         for (unsigned _si = 0; _si < sem_info->signal.syncobj_count; _si++)
+            drmSyncobjSignal(ctx->ws->fd, &sem_info->signal.syncobj[_si], 1);
+      }
+   }
 
    if (r) {
       if (r == -ENOMEM) {

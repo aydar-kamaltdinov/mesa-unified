@@ -23,10 +23,12 @@
  */
 
 #include "detect_os.h"
+ssize_t getrandom(void*, size_t, unsigned int);
+
 
 #if !DETECT_OS_WINDOWS
 #if defined(HAVE_GETRANDOM)
-#include <sys/random.h>
+
 #endif
 #include <unistd.h>
 #include <fcntl.h>

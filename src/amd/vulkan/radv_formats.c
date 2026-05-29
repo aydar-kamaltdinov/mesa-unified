@@ -842,6 +842,20 @@ radv_GetPhysicalDeviceFormatProperties2(VkPhysicalDevice physicalDevice, VkForma
                                   vk_find_struct(pFormatProperties, DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT));
    radv_list_drm_format_modifiers_2(pdev, format, &format_props,
                                     vk_find_struct(pFormatProperties, DRM_FORMAT_MODIFIER_PROPERTIES_LIST_2_EXT));
+
+   // Forced BC support for Xclipse 920 hardware override
+   if (pdev->info.pci_id == 0x73a0) {
+      if (format >= VK_FORMAT_BC1_RGB_UNORM_BLOCK && format <= VK_FORMAT_BC7_SRGB_BLOCK) {
+         pFormatProperties->formatProperties.linearTilingFeatures |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
+         pFormatProperties->formatProperties.optimalTilingFeatures |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
+         pFormatProperties->formatProperties.bufferFeatures |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
+         if (format_props_extended) {
+            format_props_extended->linearTilingFeatures |= VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_BIT;
+            format_props_extended->optimalTilingFeatures |= VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_BIT;
+            format_props_extended->bufferFeatures |= VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_BIT;
+         }
+      }
+   }
 }
 
 static VkResult

@@ -1202,10 +1202,8 @@ _x11_swapchain_result(struct x11_swapchain *chain, VkResult result,
 
    /* If we have a new error, mark it as permanent on the chain and return. */
    if (result < 0) {
-#ifndef NDEBUG
-      fprintf(stderr, "%s:%d: Swapchain status changed to %s\n",
+      fprintf(stderr, "sgpu: swapchain error %s:%d: %s\n",
               file, line, vk_Result_to_str(result));
-#endif
       chain->status = result;
       return result;
    }
@@ -1896,10 +1894,20 @@ x11_manage_event_queue(void *state)
       }
 
       if (assume_forward_progress) {
-         /* Only yield lock when blocking on X11 event. */
+         /* sgpu/Termux: X server never sends PresentCompleteNotify, so
+          * xcb_wait_for_special_event blocks forever. Poll with timeout
+          * and synthesize completion if no event arrives. */
          mtx_unlock(&chain->thread_state_lock);
-         xcb_generic_event_t *event =
-               xcb_wait_for_special_event(chain->conn, chain->special_event);
+
+         /* Poll for event with 4ms timeout using xcb_poll */
+         xcb_generic_event_t *event = xcb_poll_for_special_event(chain->conn, chain->special_event);
+         if (!event) {
+            /* No event yet — flush and try once more after brief sleep */
+            xcb_flush(chain->conn);
+            usleep(4000);
+            event = xcb_poll_for_special_event(chain->conn, chain->special_event);
+         }
+
          mtx_lock(&chain->thread_state_lock);
 
          /* Re-check status since we dropped the lock while waiting for X. */
@@ -1907,14 +1915,15 @@ x11_manage_event_queue(void *state)
 
          if (result >= 0) {
             if (event) {
-               /* Queue thread will be woken up if anything interesting happened in handler.
-                * Queue thread blocks on:
-                * - Presentation events completing
-                * - Presentation requests from application
-                * - WaitForFence workaround if applicable */
                result = x11_handle_dri3_present_event(chain, (void *) event);
             } else {
-               result = VK_ERROR_SURFACE_LOST_KHR;
+               /* sgpu: no completion event — mark images idle to unblock acquire+FIFO */
+               for (uint32_t _i = 0; _i < chain->base.image_count; _i++) {
+                  chain->images[_i].present_queued_count = 0;
+               }
+               chain->last_present_msc++;
+               u_cnd_monotonic_broadcast(&chain->thread_state_cond);
+               result = VK_SUCCESS;
             }
          }
 
@@ -2103,14 +2112,16 @@ x11_image_init(VkDevice device_h, struct x11_swapchain *chain,
    }
    image->pixmap = xcb_generate_id(chain->conn);
 
-   if (image->base.drm_modifier != DRM_FORMAT_MOD_INVALID) {
+   if (image->base.drm_modifier != DRM_FORMAT_MOD_INVALID && image->base.num_planes > 1) {
       /* If the image has a modifier, we must have DRI3 v1.2. */
       assert(chain->has_dri3_modifiers);
 
       /* XCB requires an array of file descriptors but we only have one */
       int fds[4] = { -1, -1, -1, -1 };
+      fprintf(stderr, "sgpu: wsi_x11 duplicating fd=%d for %d planes\n", image->base.dma_buf_fd, image->base.num_planes);
       for (int i = 0; i < image->base.num_planes; i++) {
          fds[i] = os_dupfd_cloexec(image->base.dma_buf_fd);
+         fprintf(stderr, "sgpu: plane %d dup fd res = %d\n", i, fds[i]);
          if (fds[i] == -1) {
             for (int j = 0; j < i; j++)
                close(fds[j]);
@@ -2118,6 +2129,7 @@ x11_image_init(VkDevice device_h, struct x11_swapchain *chain,
             return VK_ERROR_OUT_OF_HOST_MEMORY;
          }
       }
+      fprintf(stderr, "sgpu: calling xcb_dri3_pixmap_from_buffers_checked...\n");
 
       cookie =
          xcb_dri3_pixmap_from_buffers_checked(chain->conn,
@@ -2146,6 +2158,17 @@ x11_image_init(VkDevice device_h, struct x11_swapchain *chain,
       if (fd == -1)
          return VK_ERROR_OUT_OF_HOST_MEMORY;
 
+      fprintf(stderr, "sgpu: DRI3 legacy params:\n");
+      fprintf(stderr, "  conn = %p\n", (void*)chain->conn);
+      fprintf(stderr, "  pixmap = %u\n", image->pixmap);
+      fprintf(stderr, "  window = %u\n", chain->window);
+      fprintf(stderr, "  size0 = %llu\n", (unsigned long long)image->base.sizes[0]);
+      fprintf(stderr, "  width = %u, height = %u\n", pCreateInfo->imageExtent.width, pCreateInfo->imageExtent.height);
+      fprintf(stderr, "  stride0 = %u\n", image->base.row_pitches[0]);
+      fprintf(stderr, "  depth = %u, bpp = %u\n", chain->depth, bpp);
+      fprintf(stderr, "  fd = %d\n", fd);
+      fprintf(stderr, "sgpu: invoking xcb_dri3_pixmap_from_buffer_checked...\n");
+
       cookie =
          xcb_dri3_pixmap_from_buffer_checked(chain->conn,
                                              image->pixmap,
@@ -2155,9 +2178,13 @@ x11_image_init(VkDevice device_h, struct x11_swapchain *chain,
                                              pCreateInfo->imageExtent.height,
                                              image->base.row_pitches[0],
                                              chain->depth, bpp, fd);
+      fprintf(stderr, "sgpu: xcb_dri3_pixmap_from_buffer_checked returned safely, cookie seq=%u\n", cookie.sequence);
+      fprintf(stderr, "sgpu: calling xcb_request_check...\n");
    }
 
-   error = xcb_request_check(chain->conn, cookie);
+   // sgpu bypass sync request check to avoid libxcb socket flush crash
+   error = NULL;
+   (void)cookie; // evită avertismentul de variabilă nefolosită
    if (error != NULL) {
       free(error);
       goto fail_image;
@@ -2576,6 +2603,7 @@ x11_surface_create_swapchain(VkIcdSurfaceBase *icd_surface,
    const uint16_t cur_width = geometry->width;
    const uint16_t cur_height = geometry->height;
    free(geometry);
+   fprintf(stderr, "sgpu: x11 swapchain geometry ok %dx%d\n", cur_width, cur_height);
 
    /* Allocate the actual swapchain. The size depends on image count. */
    size_t size = sizeof(*chain) + num_images * sizeof(chain->images[0]);
@@ -2644,14 +2672,7 @@ x11_surface_create_swapchain(VkIcdSurfaceBase *icd_surface,
       drm_image_params = (struct wsi_drm_image_params) {
          .base.image_type = WSI_IMAGE_TYPE_DRM,
          .same_gpu = wsi_x11_check_dri3_compatible(wsi_device, conn),
-         .explicit_sync =
-#ifdef HAVE_DRI3_EXPLICIT_SYNC
-            wsi_conn->has_dri3_explicit_sync &&
-            (present_caps & XCB_PRESENT_CAPABILITY_SYNCOBJ) &&
-            wsi_device_supports_explicit_sync(wsi_device),
-#else
-            false,
-#endif
+         .explicit_sync = false,
       };
       if (wsi_device->supports_modifiers) {
          wsi_x11_get_dri3_modifiers(wsi_conn, conn, window, bit_depth, 32,
@@ -2669,8 +2690,10 @@ x11_surface_create_swapchain(VkIcdSurfaceBase *icd_surface,
 #endif
    }
 
+   fprintf(stderr, "sgpu: calling wsi_swapchain_init\n");
    result = wsi_swapchain_init(wsi_device, &chain->base, device, pCreateInfo,
                                image_params, pAllocator);
+   fprintf(stderr, "sgpu: wsi_swapchain_init returned %d\n", result);
 
    for (int i = 0; i < ARRAY_SIZE(modifiers); i++)
       vk_free(pAllocator, modifiers[i]);
