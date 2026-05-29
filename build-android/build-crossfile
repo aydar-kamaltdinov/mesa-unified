@@ -1,0 +1,14 @@
+[binaries]
+ar = '/home/whbex/Android/Sdk/ndk/28.2.13676358//toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar'
+c = ['/home/whbex/Android/Sdk/ndk/28.2.13676358//toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android34-clang', '-O3']
+cpp = ['/home/whbex/Android/Sdk/ndk/28.2.13676358//toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android34-clang++', '-O3', '-fno-exceptions', '-fno-unwind-tables', '-fno-asynchronous-unwind-tables', '--start-no-unused-arguments', '-static-libstdc++', '--end-no-unused-arguments', '-Wno-c++11-narrowing', '-Wno-error']
+c_ld = 'lld'
+cpp_ld = 'lld'
+strip = '/home/whbex/Android/Sdk/ndk/28.2.13676358//toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip'
+pkg-config = ['env', 'PKG_CONFIG_LIBDIR=.:/tmp/drm-static/lib/pkgconfig', '/usr/bin/pkg-config']
+
+[host_machine]
+system = 'linux'
+cpu_family = 'aarch64'
+cpu = 'armv8'
+endian = 'little'
