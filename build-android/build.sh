@@ -35,6 +35,7 @@ meson setup .. "build-android" \
 	    -Dstrip=true \
             -Dplatform-sdk-version=29 \
             -Dandroid-stub=true \
+	    -Dshared-glapi=disabled \
             -Dxlib-lease=disabled \
             -Degl=enabled \
             -Dgbm=disabled \
@@ -42,6 +43,7 @@ meson setup .. "build-android" \
             -Dgles1=disabled \
             -Dgles2=disabled \
             -Dopengl=true \
+	    -Ddefault_library=static \
             -Degl-lib-suffix=_legacy ${EXTRA_ARGS}
 ninja -C "build-android" install
 echo "Installing DRM dependencies"

@@ -82,13 +82,10 @@ libglapi_bridge = static_library(
   include_directories : [inc_mesa, inc_include, inc_src, inc_mapi],
   c_args : [c_msvc_compat_args, bridge_glapi_args],
   dependencies : [dep_thread, dep_selinux, idep_mesautil],
-  build_by_default : false,
+  build_by_default : true,
 )
 
-if with_shared_glapi
-  libglapi_static = libglapi_bridge
-else
-  libglapi_static = static_library(
+  libglapi = static_library(
     'glapi_static',
     static_glapi_files,
     include_directories : [inc_mesa, inc_include, inc_src, inc_mapi],
@@ -96,7 +93,6 @@ else
     dependencies : [dep_thread, dep_selinux, idep_mesautil],
     build_by_default : false,
   )
-endif
 
 # TODO: this test doesn't compile on windows with mingw or msvc due to
 # undefined symbols from libglapi_static, but that should be fixable.

@@ -20,7 +20,7 @@ jobs:
       run: |
         sudo sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/ubuntu.sources
         sudo apt update
-        sudo apt install build-essential flex bison glslang-tools
+        sudo apt install build-essential flex bison glslang-tools patchelf
         sudo apt install meson-1.5 python3-mako python3-markdown
 
     - name: Build for Android ${{matrix.arch}}
@@ -38,6 +38,7 @@ jobs:
         mv libEGL_legacy.so.1.0.0 libEGL_legacy.so
         mv libglapi.so.0.0.0 libglapi.so
         mv dri/zink_dri.so .
+        patchelf --replace-needed libglapi.so.0 libglapi.so libEGL_legacy.so
         zip -j "$OLDPWD/mesa-${{matrix.arch}}.zip" libEGL_legacy.so libdrm.so zink_dri.so libglapi.so || true;
         popd
     - name: Upload artifacts
