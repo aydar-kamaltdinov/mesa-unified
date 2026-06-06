@@ -488,7 +488,7 @@ elif _egl == 'enabled'
   if not with_dri and not with_platform_haiku and not with_platform_windows
     error('EGL requires dri, haiku, or windows')
   elif not with_shared_glapi
-    # error('EGL requires shared-glapi')
+    error('EGL requires shared-glapi')
   elif not ['disabled', 'dri'].contains(with_glx)
     error('EGL requires dri, but a GLX is being built without dri')
   elif host_machine.system() == 'darwin'
