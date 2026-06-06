@@ -66,8 +66,7 @@ jobs:
         path: mesazip
     - name: Pack AAR
       run: |
-        export SKIP_X86=1
-        bash create_aar.sh $GITHUB_WORKSPACE/mesazip
+        bash create_aar.sh $GITHUB_WORKSPACE/mesazip mesalegacy
     - name: Upload packaging result
       uses: actions/upload-artifact@v7
       with:
