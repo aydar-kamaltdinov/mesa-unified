@@ -51,7 +51,7 @@ jobs:
     - name: Get packaging script
       uses: actions/checkout@v6
       with:
-        repository: 'MojoLauncher/mesaunified-packager'
+        repository: 'whitebelyash/mesaunified-packager'
     - name: Install zip
       run: sudo apt -y install zip unzip
     - name: Get mesa-arm64
