@@ -36,8 +36,9 @@ jobs:
         pushd /tmp/zink-${{matrix.arch}}/lib
         rm libEGL_legacy.so libglapi.so
         mv libEGL_legacy.so.1.0.0 libEGL_legacy.so
+        mv libglapi.so.0.0.0 libglapi.so
         mv dri/zink_dri.so .
-        zip -j "$OLDPWD/mesa-${{matrix.arch}}.zip" libEGL_legacy.so libdrm.so zink_dri.so || true;
+        zip -j "$OLDPWD/mesa-${{matrix.arch}}.zip" libEGL_legacy.so libdrm.so zink_dri.so libglapi.so || true;
         popd
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
