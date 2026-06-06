@@ -35,7 +35,6 @@ meson setup .. "build-android" \
 	    -Dstrip=true \
             -Dplatform-sdk-version=29 \
             -Dandroid-stub=true \
-	    -Dshared-glapi=disabled \
             -Dxlib-lease=disabled \
             -Degl=enabled \
             -Dgbm=disabled \
