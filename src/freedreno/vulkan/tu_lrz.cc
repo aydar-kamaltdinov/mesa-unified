@@ -95,6 +95,7 @@ tu_lrz_disable_reason(struct tu_cmd_buffer *cmd, const char *reason) {
 void
 tu_lrz_disable_write_for_rp(struct tu_cmd_buffer *cmd, const char *reason)
 {
+   assert(reason);
    if (cmd->state.lrz.disable_write_for_rp)
       return;
 
@@ -1025,6 +1026,7 @@ tu_lrz_disable_during_renderpass(struct tu_cmd_buffer *cmd,
                                  const char *reason)
 {
    assert(cmd->state.pass);
+   assert(reason);
 
    tu_lrz_disable_reason(cmd, reason);
 
