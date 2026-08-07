@@ -989,12 +989,16 @@ a740_raw_magic_regs = [
         [A6XXRegs.REG_A6XX_UCHE_UNKNOWN_0E12, 0],
     ]
 
+a7xx_gen1_untested = GPUProps(
+    disable_gmem = True,
+)
+
 add_gpus([
         GPUId(chip_id=0x07010000, name="FD710"),
         GPUId(chip_id=0xffff07010000, name="FD710"),
     ], A6xxGPUInfo(
         CHIP.A7XX,
-        [a7xx_base, a7xx_gen1],
+        [a7xx_base, a7xx_gen1, a7xx_gen1_untested],
         num_ccu = 3,
         tile_align_w = 64,
         tile_align_h = 32,
@@ -1014,7 +1018,7 @@ add_gpus([
         GPUId(chip_id=0xffff43020000, name="FD720"),
     ], A6xxGPUInfo(
         CHIP.A7XX,
-        [a7xx_base, a7xx_gen1],
+        [a7xx_base, a7xx_gen1, a7xx_gen1_untested],
         num_ccu = 3,
         tile_align_w = 64,
         tile_align_h = 32,
@@ -1034,7 +1038,7 @@ add_gpus([
         GPUId(chip_id=0xffff43020100, name="FD722"),
     ], A6xxGPUInfo(
         CHIP.A7XX,
-        [a7xx_base, a7xx_gen1],
+        [a7xx_base, a7xx_gen1, a7xx_gen1_untested],
         num_ccu = 3,
         tile_align_w = 64,
         tile_align_h = 32,
