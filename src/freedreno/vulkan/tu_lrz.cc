@@ -399,6 +399,26 @@ tu_lrz_begin_renderpass(struct tu_cmd_buffer *cmd)
       return;
    }
 
+   for (uint32_t subpass_idx = 0; subpass_idx < pass->subpass_count; subpass_idx++) {
+      const struct tu_subpass *subpass = &pass->subpasses[subpass_idx];
+      uint32_t a = subpass->depth_stencil_attachment.attachment;
+
+      if (subpass->custom_resolve && a != VK_ATTACHMENT_UNUSED) {
+         struct tu_image *image = cmd->state.attachments[a]->image;
+         tu_disable_lrz<CHIP>(cmd, &cmd->cs, image);
+      }
+
+      if (subpass->resolve_depth_stencil) {
+         for (unsigned i = 0; i < subpass->resolve_count; i++) {
+            uint32_t a = subpass->resolve_attachments[i].attachment;
+            if (a == VK_ATTACHMENT_UNUSED || cmd->state.attachments[a]->image->lrz_layout.lrz_total_size == 0)
+               continue;
+
+            tu_disable_lrz<CHIP>(cmd, &cmd->cs, cmd->state.attachments[a]->image);
+         }
+      }
+   }
+
     /* Track LRZ valid state */
    tu_lrz_begin_resumed_renderpass<CHIP>(cmd);
 
