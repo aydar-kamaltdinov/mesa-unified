@@ -112,7 +112,7 @@ ir3_calc_liveness_for(void *mem_ctx, struct ir3 *ir, reg_filter_cb filter_src,
    /* Build definition <-> name mapping */
    unsigned block_count = 0;
    foreach_block (block, &ir->block_list) {
-      block->index = block_count++;
+      block_count++;
       foreach_instr (instr, &block->instr_list) {
          foreach_dst_if (dst, instr, filter_dst) {
             dst->name = live->definitions_count;
