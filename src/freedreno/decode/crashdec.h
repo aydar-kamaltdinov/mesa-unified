@@ -54,6 +54,12 @@ is_a7xx(void)
 }
 
 static inline bool
+is_a8xx(void)
+{
+   return options.info->chip == 8;
+}
+
+static inline bool
 is_a6xx(void)
 {
    return options.info->chip == 6;

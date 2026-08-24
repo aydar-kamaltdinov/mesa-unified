@@ -582,6 +582,215 @@ dump_cmdstream(void)
 }
 
 /*
+ * Decode a raw KGSL binary snapshot (/sys/class/kgsl/kgsl-3d0/snapshot/dump).
+ *
+ * This is a *completely different* format from the devcoredump text/ascii85
+ * format the rest of this file parses: it's the binary layout documented in
+ * snapshot.h (which this file otherwise only uses to *write* a snapshot back
+ * out via -S/--snapshot).  Android/KGSL devices don't go through the mainline
+ * msm devcoredump path at all, so on such devices this is the only format
+ * available.  We re-use the existing register/buffer/disassembly machinery
+ * (add_buffer/hostptr/parse_ibs/dump_commands) -- we just need a different
+ * front-end to populate it.
+ */
+
+static void
+dump_cmdstream_from_rb(int id)
+{
+   unsigned ringszdw = ringbuffers[id].size >> 2; /* in dwords */
+
+   if (!ringszdw)
+      return;
+
+#define mod_add(b, v) ((ringszdw + (int)(b) + (int)(v)) % ringszdw)
+
+   unsigned rptr = mod_add(ringbuffers[id].rptr, -lookback);
+
+   for (int idx = 0; idx < lookback; idx++) {
+      if (valid_header(ringbuffers[id].buf[rptr]))
+         break;
+      rptr = mod_add(rptr, 1);
+   }
+
+   unsigned cmdszdw = mod_add(ringbuffers[id].wptr, -rptr);
+
+   printf("=== ring id=%d iova=%" PRIx64 " rptr=%u wptr=%u cmdszdw=%u ===\n",
+          id, ringbuffers[id].iova, ringbuffers[id].rptr,
+          ringbuffers[id].wptr, cmdszdw);
+
+   uint32_t *buf = malloc(cmdszdw * 4);
+
+   for (unsigned idx = 0; idx < cmdszdw; idx++) {
+      int p = mod_add(rptr, idx);
+      buf[idx] = ringbuffers[id].buf[p];
+   }
+
+   /* rptr is where the CP/SQE was reading from at the moment of the
+    * snapshot -- so the "not yet consumed" tail (rptr..wptr) is where the
+    * highlight_addr() ESTIMATED CRASH LOCATION marker should land: */
+   options.rb_host_base = buf;
+   options.ibs[0].rem = mod_add(ringbuffers[id].wptr, -ringbuffers[id].rptr);
+   options.ibs[0].size = cmdszdw;
+
+#undef mod_add
+
+   handle_prefetch(buf, cmdszdw);
+
+   if (snapshot) {
+      parse_ibs(buf, cmdszdw);
+   } else {
+      dump_commands(buf, cmdszdw, 0);
+   }
+
+   free(buf);
+}
+
+static void
+decode_binary_snapshot(uint8_t *data, size_t fsize)
+{
+   struct snapshot_header hdr;
+   memcpy(&hdr, data, sizeof(hdr));
+
+   if (hdr.magic != SNAPSHOT_MAGIC) {
+      fprintf(stderr, "not a KGSL binary snapshot (bad magic 0x%08x)\n", hdr.magic);
+      exit(1);
+   }
+
+   options.dev_id.gpu_id = 0;
+   options.dev_id.chip_id = hdr.chipid;
+   options.info = fd_dev_info_raw(&options.dev_id);
+   if (!options.info) {
+      printf("Unsupported device (chip_id=0x%08x)\n", hdr.chipid);
+      exit(1);
+   }
+
+   printf("Got chip_id=0x%" PRIx64 "\n", options.dev_id.chip_id);
+
+   cffdec_init(&options);
+
+   if (is_a7xx() || is_a8xx()) {
+      rnn_gmu = rnn_new(!options.color);
+      rnn_load_file(rnn_gmu, "adreno/a6xx_gmu.xml", "A6XX");
+      rnn_control = rnn_new(!options.color);
+      if (has_a7xx_gen3_control_regs()) {
+         rnn_load_file(rnn_control, "adreno/adreno_control_regs.xml",
+                       "A7XX_GEN3_CONTROL_REG");
+      } else {
+         rnn_load_file(rnn_control, "adreno/adreno_control_regs.xml",
+                       "A7XX_CONTROL_REG");
+      }
+      rnn_pipe = rnn_new(!options.color);
+      rnn_load_file(rnn_pipe, "adreno/adreno_pipe_regs.xml",
+                    "A7XX_PIPE_REG");
+   } else if (is_a6xx()) {
+      rnn_gmu = rnn_new(!options.color);
+      rnn_load_file(rnn_gmu, "adreno/a6xx_gmu.xml", "A6XX");
+      rnn_control = rnn_new(!options.color);
+      rnn_load_file(rnn_control, "adreno/adreno_control_regs.xml",
+                    "A6XX_CONTROL_REG");
+      rnn_pipe = rnn_new(!options.color);
+      rnn_load_file(rnn_pipe, "adreno/adreno_pipe_regs.xml",
+                    "A7XX_PIPE_REG");
+   } else if (is_a5xx()) {
+      rnn_control = rnn_new(!options.color);
+      rnn_load_file(rnn_control, "adreno/adreno_control_regs.xml",
+                    "A5XX_CONTROL_REG");
+   } else {
+      rnn_control = NULL;
+   }
+
+   size_t off = sizeof(hdr);
+   int nrings = 0;
+
+   while (off + sizeof(struct snapshot_section_header) <= fsize) {
+      struct snapshot_section_header sh;
+      memcpy(&sh, data + off, sizeof(sh));
+
+      if (sh.magic != SNAPSHOT_SECTION_MAGIC) {
+         fprintf(stderr, "bad section magic 0x%04x at offset %zu\n", sh.magic, off);
+         break;
+      }
+
+      uint8_t *payload = data + off + sizeof(sh);
+      size_t payload_sz = sh.size - sizeof(sh);
+
+      switch (sh.id) {
+      case SNAPSHOT_SECTION_OS: {
+         struct snapshot_linux_v4 os;
+         memcpy(&os, payload, sizeof(os));
+         printf("kernel: %s\n", os.release);
+         printf("time: %u\n", os.seconds);
+         ptbase = os.ptbase;
+         break;
+      }
+      case SNAPSHOT_SECTION_RB_V2: {
+         struct snapshot_rb_v2 rb;
+         memcpy(&rb, payload, sizeof(rb));
+         int id = rb.id;
+         if (id >= 0 && id < ARRAY_SIZE(ringbuffers)) {
+            uint32_t bytes = (uint32_t)rb.rbsize * 4;
+            uint32_t *buf = malloc(bytes);
+            memcpy(buf, payload + sizeof(rb), bytes);
+
+            ringbuffers[id].iova = rb.gpuaddr;
+            ringbuffers[id].rptr = rb.rptr;
+            ringbuffers[id].wptr = rb.wptr;
+            ringbuffers[id].size = bytes;
+            ringbuffers[id].buf = buf;
+            ringbuffers[id].last_fence = rb.timestamp_queued;
+            ringbuffers[id].retired_fence = rb.timestamp_retired;
+
+            add_buffer(rb.gpuaddr, bytes, buf);
+            nrings = MAX2(nrings, id + 1);
+         }
+         break;
+      }
+      case SNAPSHOT_SECTION_IB_V2: {
+         struct snapshot_ib_v2 ib;
+         memcpy(&ib, payload, sizeof(ib));
+         uint32_t bytes = (uint32_t)ib.size * 4;
+         uint32_t *buf = malloc(bytes);
+         memcpy(buf, payload + sizeof(ib), bytes);
+         add_buffer(ib.gpuaddr, bytes, buf);
+         break;
+      }
+      case SNAPSHOT_SECTION_GPU_OBJECT_V2: {
+         struct snapshot_gpu_object_v2 go;
+         memcpy(&go, payload, sizeof(go));
+         size_t bytes = payload_sz - sizeof(go);
+         uint32_t *buf = malloc(bytes);
+         memcpy(buf, payload + sizeof(go), bytes);
+         add_buffer(go.gpuaddr, bytes, buf);
+         break;
+      }
+      case SNAPSHOT_SECTION_END:
+         off = fsize;
+         goto done;
+      default:
+         /* registers, debugbus, shader blocks, mvc, etc -- not needed to
+          * locate/disassemble the cmdstream, skip for now. */
+         break;
+      }
+
+      off += sh.size;
+   }
+done:
+
+   printf("\n=== found %d ringbuffer(s), scanning for one with pending cmdstream ===\n", nrings);
+
+   for (int id = 0; id < nrings; id++) {
+      if (!ringbuffers[id].size)
+         continue;
+      if (ringbuffers[id].wptr == ringbuffers[id].rptr)
+         continue; /* nothing pending in this ring, not the crashing one */
+      dump_cmdstream_from_rb(id);
+   }
+
+   if (snapshot)
+      do_snapshot();
+}
+
+/*
  * Decode optional 'fault-info' section.  We only get this section if
  * the devcoredump was triggered by an iova fault:
  */
@@ -1144,7 +1353,7 @@ decode(void)
 
          cffdec_init(&options);
 
-         if (is_a7xx()) {
+         if (is_a7xx() || is_a8xx()) {
             rnn_gmu = rnn_new(!options.color);
             rnn_load_file(rnn_gmu, "adreno/a6xx_gmu.xml", "A6XX");
             rnn_control = rnn_new(!options.color);
@@ -1277,6 +1486,8 @@ main(int argc, char **argv)
 {
    int c;
 
+   setvbuf(stdout, NULL, _IONBF, 0); /* debug: don't lose output on crash */
+
    interactive = isatty(STDOUT_FILENO);
    options.color = interactive;
 
@@ -1330,6 +1541,29 @@ main(int argc, char **argv)
 
    atexit(cleanup);
 
-   decode();
+   /* Detect a raw KGSL binary snapshot (as opposed to the normal
+    * devcoredump text/ascii85 format) by magic number, and dispatch to a
+    * separate binary decoder if found: */
+   uint32_t magic = 0;
+   size_t got = fread(&magic, 1, sizeof(magic), in);
+   if (got == sizeof(magic) && magic == SNAPSHOT_MAGIC) {
+      fseek(in, 0, SEEK_END);
+      long fsize = ftell(in);
+      fseek(in, 0, SEEK_SET);
+
+      uint8_t *data = malloc(fsize);
+      if (fread(data, 1, fsize, in) != (size_t)fsize) {
+         perror("fread");
+         return 1;
+      }
+
+      decode_binary_snapshot(data, fsize);
+      free(data);
+   } else {
+      /* not a binary snapshot, rewind and fall through to the normal
+       * text-based devcoredump decoder: */
+      fseek(in, 0, SEEK_SET);
+      decode();
+   }
    cleanup();
 }
