@@ -5178,6 +5178,8 @@ tu_CmdBindTransformFeedbackBuffersEXT(VkCommandBuffer commandBuffer,
 
       cmd->state.streamout_offset[idx] = offset;
    }
+   cmd->state.streamout_active_count =
+      MAX2(cmd->state.streamout_active_count, firstBinding + bindingCount);
 
    tu_cond_exec_end(cs);
 }
@@ -5200,8 +5202,7 @@ tu_CmdBeginTransformFeedbackEXT(VkCommandBuffer commandBuffer,
 
    tu_cs_emit_regs(cs, VPC_SO_OVERRIDE(CHIP, false));
 
-   /* TODO: only update offset for active buffers */
-   for (uint32_t i = 0; i < IR3_MAX_SO_BUFFERS; i++)
+   for (uint32_t i = 0; i < cmd->state.streamout_active_count; i++)
       tu_cs_emit_regs(cs, VPC_SO_BUFFER_OFFSET(CHIP, i, cmd->state.streamout_offset[i]));
 
    for (uint32_t i = 0; i < (pCounterBuffers ? counterBufferCount : 0); i++) {
@@ -5250,8 +5251,7 @@ tu_CmdEndTransformFeedbackEXT(VkCommandBuffer commandBuffer,
 
    tu_cs_emit_regs(cs, VPC_SO_OVERRIDE(CHIP, true));
 
-   /* TODO: only flush buffers that need to be flushed */
-   for (uint32_t i = 0; i < IR3_MAX_SO_BUFFERS; i++) {
+   for (uint32_t i = 0; i < cmd->state.streamout_active_count; i++) {
       /* note: FLUSH_BASE is always the same, so it could go in init_hw()? */
       tu_cs_emit_regs(cs, VPC_SO_FLUSH_BASE(CHIP, i, .qword = global_iova_arr(cmd, flush_base, i)));
       tu_emit_event_write<CHIP>(cmd, cs, (enum fd_gpu_event) (FD_FLUSH_SO_0 + i));
