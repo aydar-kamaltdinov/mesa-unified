@@ -1497,7 +1497,12 @@ add_gpus([
         GPUId(chip_id=0x44050001, name="Adreno (TM) 830"), # KGSL
     ], A6xxGPUInfo(
         CHIP.A8XX,
-        [a7xx_base, a7xx_gen3, a8xx_base, a8xx_gen1],
+        # GMEM rendering causes GPU write page faults on A830 (unconfirmed
+        # root cause, likely a GMEM address/size computation that doesn't
+        # account for this chip's num_ccu/num_slices). Force sysmem
+        # rendering until it's actually fixed, matching what
+        # TU_DEBUG=sysmem already does manually.
+        [a7xx_base, a7xx_gen3, a8xx_base, a8xx_gen1, GPUProps(disable_gmem = True)],
         num_ccu = 6,
         num_slices = 3,
         tile_align_w = 96,
