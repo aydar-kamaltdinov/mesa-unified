@@ -3010,6 +3010,45 @@ image_is_r8g8(struct tu_image *image)
       vk_format_get_nr_components(image->vk.format) == 2;
 }
 
+/* UBWC's compression scheme is keyed on the physical per-channel bit
+ * layout (channel count, size, bit position, and swizzle order) -- it does
+ * not encode numeric type (UNORM/UINT/SINT) or colorspace (linear/sRGB).
+ * So a "format-incompatible" pair for general reinterpretation purposes
+ * (see util_is_format_compatible(), which does care about those) can still
+ * be UBWC-compatible if the physical layout matches, in which case a
+ * compressed image can be directly reinterpreted as the other format
+ * with no decompression needed at all.
+ *
+ * Empirically verified via a standalone round-trip test (ubwc_test.exe):
+ * R8G8B8A8_UNORM <-> R8G8B8A8_UINT and R8G8B8A8_UNORM <-> R8G8B8A8_SRGB
+ * (same 4x8-bit layout, differing only in type/colorspace) both PASS;
+ * R8G8B8A8_UNORM <-> R16G16_UNORM and R8G8B8A8_UNORM <-> R32_UINT (same
+ * total bytes/texel, but genuinely different channel layout) both FAIL.
+ */
+static bool
+formats_have_same_ubwc_layout(enum pipe_format a, enum pipe_format b)
+{
+   const struct util_format_description *da = util_format_description(a);
+   const struct util_format_description *db = util_format_description(b);
+
+   if (da->layout != UTIL_FORMAT_LAYOUT_PLAIN ||
+       db->layout != UTIL_FORMAT_LAYOUT_PLAIN)
+      return false;
+
+   if (da->nr_channels != db->nr_channels)
+      return false;
+
+   for (unsigned i = 0; i < 4; i++) {
+      if (da->channel[i].size != db->channel[i].size ||
+          da->channel[i].shift != db->channel[i].shift)
+         return false;
+      if (da->swizzle[i] != db->swizzle[i])
+         return false;
+   }
+
+   return true;
+}
+
 template <chip CHIP>
 static void
 tu_copy_image_to_image(struct tu_cmd_buffer *cmd,
@@ -3104,8 +3143,14 @@ tu_copy_image_to_image(struct tu_cmd_buffer *cmd,
       src_format = dst_format;
    } else if (!dst_image->layout[0].ubwc || src_image->layout[0].is_mutable) {
       dst_format = src_format;
+   } else if (formats_have_same_ubwc_layout(src_format, dst_format)) {
+      /* Both UBWC, but the physical channel layout is identical (they only
+       * differ in numeric type/colorspace) -- UBWC doesn't encode that, so
+       * we can reinterpret directly with no decompression at all. */
+      dst_format = src_format;
    } else {
-      /* Both formats use UBWC and so neither can be reinterpreted.
+      /* Both UBWC and the physical layout genuinely differs, so neither
+       * can be reinterpreted without real decompression.
        * TODO: We could do an in-place decompression of the dst instead.
        */
       perf_debug(cmd->device, "TODO: Do in-place UBWC decompression for UBWC->UBWC blits");
