@@ -524,6 +524,13 @@ struct tu_cmd_state
     * unaligned
     */
    uint8_t streamout_offset[IR3_MAX_SO_BUFFERS];
+   /* Highest (bound slot index + 1) ever bound via
+    * vkCmdBindTransformFeedbackBuffersEXT in this command buffer. Lets
+    * Begin/EndTransformFeedbackEXT skip re-emitting state for buffer slots
+    * that were never bound, instead of always touching all
+    * IR3_MAX_SO_BUFFERS slots.
+    */
+   uint32_t streamout_active_count;
 
    /* Renderpasses are tricky, because we may need to flush differently if
     * using sysmem vs. gmem and therefore we have to delay any flushing that
