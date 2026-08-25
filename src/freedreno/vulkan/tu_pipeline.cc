@@ -4563,16 +4563,15 @@ tu_pipeline_builder_build(struct tu_pipeline_builder *builder,
 
    result = tu_pipeline_allocate_cs(builder->device, *pipeline,
                                     &builder->layout, builder, NULL);
-
+   if (result != VK_SUCCESS) {
+      tu_pipeline_finish(*pipeline, builder->device, builder->alloc);
+      vk_object_free(&builder->device->vk, builder->alloc, *pipeline);
+      return result;
+   }
 
    if (set_combined_state(builder, *pipeline,
                           VK_GRAPHICS_PIPELINE_LIBRARY_PRE_RASTERIZATION_SHADERS_BIT_EXT |
                           VK_GRAPHICS_PIPELINE_LIBRARY_FRAGMENT_SHADER_BIT_EXT)) {
-      if (result != VK_SUCCESS) {
-         vk_object_free(&builder->device->vk, builder->alloc, *pipeline);
-         return result;
-      }
-
       tu_emit_program_state<CHIP>(&(*pipeline)->cs, &(*pipeline)->program,
                                   (*pipeline)->shaders);
 
@@ -4612,6 +4611,7 @@ tu_pipeline_builder_build(struct tu_pipeline_builder *builder,
                                                &library->state_data);
       if (result != VK_SUCCESS) {
          tu_pipeline_finish(*pipeline, builder->device, builder->alloc);
+         vk_object_free(&builder->device->vk, builder->alloc, *pipeline);
          return result;
       }
    } else {
