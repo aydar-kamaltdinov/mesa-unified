@@ -311,6 +311,20 @@ lower_load_push_constant(struct tu_device *dev,
        */
       base += dev->compiler->shared_consts_base_offset * 4;
    } else {
+      /* BUG FIX: `base` here is nir_intrinsic_base(instr), a BYTE offset
+       * (load_push_constant addresses are nir_address_format_32bit_offset,
+       * i.e. bytes -- confirmed by the dynamic component of this same
+       * address being converted via `nir_ushr_imm(..., 2)` (a divide-by-4)
+       * just below). But push_consts.lo_dwords is a DWORD count (computed
+       * via `min / 4` in gather_push_constants()), and was being subtracted
+       * from the still-byte-valued `base` directly, mixing units. This was
+       * a no-op whenever a shader's push constants happen to start being
+       * read at byte offset < 16 (lo_dwords == 0, the common case for a
+       * single small push-constant block used from its start), which is
+       * likely why it wasn't caught -- but corrupts the loaded push-constant
+       * value for any shader whose first actually-read push-constant byte
+       * offset is >= 16. */
+      base /= 4;
       assert(base >= shader->const_state.push_consts.lo_dwords);
       base -= shader->const_state.push_consts.lo_dwords;
       base += push_consts_offset_vec4 * 4;
@@ -3633,6 +3647,12 @@ tu_shader_create(struct tu_device *dev,
    shader->variant =
       ir3_shader_create_variant(ir3_shader, ir3_key, executable_info);
 
+   if (!shader->variant) {
+      ir3_shader_destroy(ir3_shader);
+      tu_shader_destroy(dev, shader);
+      return VK_ERROR_OUT_OF_HOST_MEMORY;
+   }
+
    if (ir3_exceeds_safe_constlen(shader->variant)) {
       struct ir3_shader_key safe_constlen_key = *ir3_key;
       safe_constlen_key.safe_constlen = true;
@@ -4058,6 +4078,9 @@ tu_empty_fs_create(struct tu_device *dev, struct tu_shader **shader,
       ir3_shader_from_nir(dev->compiler, fs_b.shader, &options);
    (*shader)->variant = ir3_shader_create_variant(ir3_shader, &key, false);
    ir3_shader_destroy(ir3_shader);
+
+   if (!(*shader)->variant)
+      return VK_ERROR_OUT_OF_HOST_MEMORY;
 
    return tu_upload_shader(dev, *shader);
 }
