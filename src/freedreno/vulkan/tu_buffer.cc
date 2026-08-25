@@ -213,15 +213,15 @@ tu_BindBufferMemory2(VkDevice device,
          tu_perfetto_log_bind_buffer(dev, buffer);
 #endif
          buffer->bo_size = mem->bo->size;
+
+         TU_RMV(buffer_bind, dev, buffer);
+
+         vk_address_binding_report(&instance->vk, &buffer->vk.base,
+                                   buffer->bo->iova, buffer->bo->size,
+                                   VK_DEVICE_ADDRESS_BINDING_TYPE_BIND_EXT);
       } else {
          buffer->bo = NULL;
       }
-
-      TU_RMV(buffer_bind, dev, buffer);
-
-      vk_address_binding_report(&instance->vk, &buffer->vk.base,
-                                buffer->bo->iova, buffer->bo->size,
-                                VK_DEVICE_ADDRESS_BINDING_TYPE_BIND_EXT);
    }
    return VK_SUCCESS;
 }
