@@ -1747,7 +1747,11 @@ tu_pipeline_builder_compile_shaders(struct tu_pipeline_builder *builder,
    const bool is_a810 = chip_id == 0x44010000ull;
    const bool is_a825 = chip_id == 0x44030000ull;
    const bool is_a829 = chip_id == 0x44030A20ull;
-   const bool is_a830 = chip_id == 0xffff44050000 || 0x44050001;
+   /* BUG FIX (2026-08-25): operator-precedence bug -- `== A || B` parses as
+    * `(chip_id == A) || (bool)B`, and B here was a nonzero literal, so this
+    * was unconditionally true for every GPU, not just A830. Turned the
+    * intended workaround (see is_target_gpu below) into a universal one. */
+   const bool is_a830 = chip_id == 0xffff44050000 || chip_id == 0x44050001;
    const bool is_target_gpu = is_a810 || is_a825 || is_a829 || is_a830;
 
    const bool executable_info =
