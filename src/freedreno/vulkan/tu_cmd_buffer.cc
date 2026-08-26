@@ -3777,7 +3777,9 @@ tu6_render_tile(struct tu_cmd_buffer *cmd, struct tu_cs *cs,
    tu_cs_emit_call(cs, &cmd->tile_store_cs);
 
    tu_clone_trace_range<CHIP>(cmd, cs, &cmd->trace, cmd->trace_renderpass_start, u_trace_end_iterator(&cmd->rp_trace));
-   tu_cs_emit_wfi(cs);
+   /* EXPERIMENT: per-tile WFI removed to test whether it's a real per-tile
+    * stall overhead on A830, or load-bearing synchronization. UNVERIFIED --
+    * revert immediately if any hang/corruption/incorrect rendering appears. */
 
    tu_set_render_mode<CHIP>(cs, {RM6_BIN_RENDER_END});
 
