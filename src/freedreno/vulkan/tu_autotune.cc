@@ -1047,9 +1047,11 @@ struct tu_autotune::rp_history {
          sysmem_bandwidth += total_draw_call_bandwidth;
 
          /* Drawcalls access GMEM in GMEM rendering, but we do not want to ignore them completely.  The state changes
-          * between tiles also have an overhead.  The magic numbers of 11 and 10 are randomly chosen.
+          * between tiles also have an overhead. Upstream pads this by 10% (magic numbers "randomly chosen" per
+          * their own comment); dropped for A830 since GMEM has been validated to behave correctly on this chip,
+          * so the conservative anti-GMEM margin isn't warranted here.
           */
-         gmem_bandwidth = (gmem_bandwidth * 11 + total_draw_call_bandwidth) / 10;
+         gmem_bandwidth = gmem_bandwidth + total_draw_call_bandwidth;
 
          bool select_sysmem = sysmem_bandwidth <= gmem_bandwidth;
          render_mode mode = select_sysmem ? render_mode::SYSMEM : render_mode::GMEM;
