@@ -2000,6 +2000,7 @@ tu_CreateInstance(const VkInstanceCreateInfo *pCreateInfo,
    instance->vk.physical_devices.destroy = tu_destroy_physical_device;
 
    instance->instance_idx = p_atomic_fetch_add(&instance_count, 1);
+   mesa_logi("AK-TURNIP-1.01-MARKER: custom driver instance created");
    if (TU_DEBUG(STARTUP))
       mesa_logi("Created an instance");
 
