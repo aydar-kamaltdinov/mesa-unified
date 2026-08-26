@@ -1348,7 +1348,17 @@ add_gpus([
         GPUId(chip_id=0x44050001, name="Adreno (TM) 830"), # KGSL
     ], A6xxGPUInfo(
         CHIP.A8XX,
-        [a7xx_base, a7xx_gen3, a8xx_base, a8xx_gen1],
+        # A830 is otherwise physically identical to A840 (num_ccu/num_slices/
+        # tile_align_w/h/tile_max_w/h all match), which is properly
+        # classified a8xx_gen2 -- A830 was left on a8xx_gen1 since the
+        # original Nov-2025 placeholder commit and never reclassified.
+        # Full gen2 (reg_size_vec4=128) caused a real, localized light-
+        # flicker artifact in Thief (2014) near one object in one location;
+        # reg_size_vec4=112 (this build) tested clean at that same spot.
+        # Root cause not fully isolated -- could be reg_size_vec4 itself,
+        # or gen2's other deltas (has_fs_tex_prefetch=False,
+        # sysmem_ccu_depth_cache_fraction). Revisit if issues resurface.
+        [a7xx_base, a7xx_gen3, a8xx_base, a8xx_gen2, GPUProps(reg_size_vec4 = 112)],
         num_ccu = 6,
         num_slices = 3,
         tile_align_w = 96,
