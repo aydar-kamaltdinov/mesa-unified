@@ -5406,9 +5406,10 @@ tu_EndCommandBuffer(VkCommandBuffer commandBuffer)
       tu_emit_cache_flush_renderpass<CHIP>(cmd_buffer);
    } else {
       tu_clean_all_pending(&cmd_buffer->state.cache);
-      cmd_buffer->state.cache.flush_bits |=
-         TU_CMD_FLAG_CCU_CLEAN_COLOR |
-         TU_CMD_FLAG_CCU_CLEAN_DEPTH;
+      /* EXPERIMENT: unconditional defensive CCU_CLEAN_COLOR|DEPTH force
+       * removed to test real-device impact. UNVERIFIED, likely-corruption
+       * risk per the TODO above (kernel doesn't guarantee this without our
+       * help) -- revert immediately if any visual corruption appears. */
       tu_emit_cache_flush<CHIP>(cmd_buffer);
    }
 
