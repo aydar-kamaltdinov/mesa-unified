@@ -1352,12 +1352,20 @@ add_gpus([
         # tile_align_w/h/tile_max_w/h all match), which is properly
         # classified a8xx_gen2 -- A830 was left on a8xx_gen1 since the
         # original Nov-2025 placeholder commit and never reclassified.
-        # Full gen2 (reg_size_vec4=128) caused a real, localized light-
-        # flicker artifact in Thief (2014) near one object in one location;
-        # reg_size_vec4=112 (this build) tested clean at that same spot.
-        # Root cause not fully isolated -- could be reg_size_vec4 itself,
-        # or gen2's other deltas (has_fs_tex_prefetch=False,
-        # sysmem_ccu_depth_cache_fraction). Revisit if issues resurface.
+        #
+        # !!! KNOWN RISK, DO NOT TREAT AS SAFE: !!! a8xx_gen1's reg_size_vec4
+        # was ORIGINALLY 128 too (same as gen2) -- real upstream MR 40521
+        # ("tu: fix reg size for a8xx_gen1", merged 2026-03-20) dropped it to
+        # 96 specifically because the Mesa developer "testing some games on
+        # Adreno 830 found that the larger reg size would cause them to
+        # hang." 96 is the only value with real multi-game validation. Our
+        # own testing (128 -> localized light-flicker in Thief 2014 near one
+        # object in one spot; 112 -> clean in that same spot, plus Xendroid/
+        # Eden) is far narrower than that upstream testing and does NOT rule
+        # out 112 hanging some other game we haven't tried. Kept at 112
+        # deliberately (user's explicit call, aware of this risk) rather
+        # than reverting to the proven-safe 96 -- revisit immediately if any
+        # hang surfaces in further testing.
         [a7xx_base, a7xx_gen3, a8xx_base, a8xx_gen2, GPUProps(reg_size_vec4 = 112)],
         num_ccu = 6,
         num_slices = 3,
