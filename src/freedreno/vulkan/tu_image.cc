@@ -867,7 +867,8 @@ tu_image_init(struct tu_device *device, struct tu_image *image,
 
    return VK_SUCCESS;
 }
-TU_GENX(tu_image_init);
+TU_GENX(tu_image_update_layout);
+
 
 /* Deferred ANB image support for ANB v8+ aliased images. */
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
