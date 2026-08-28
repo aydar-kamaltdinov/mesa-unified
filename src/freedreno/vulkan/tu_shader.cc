@@ -56,6 +56,15 @@ static const struct spirv_to_nir_options tu_spirv_options = {
    /* Accessed via stg/ldg (not used with Vulkan?) */
    .global_addr_format = nir_address_format_64bit_global,
 
+   /* DIAGNOSTIC: Unity/UE games rely on NaN-preserving fmin/fmax/fclamp
+    * (RADV enables this unconditionally via 00-radv-defaults.conf; turnip
+    * never opted in). Testing whether this explains the Eden/Outer Wilds
+    * starfield corruption reported on the forum.
+    */
+   .workarounds = {
+      .force_nan_preserve_min_max = true,
+   },
+
    .min_ubo_alignment = 64,
    .min_ssbo_alignment = 4,
 };
