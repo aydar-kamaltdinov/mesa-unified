@@ -1058,12 +1058,30 @@ struct tu_autotune::rp_history {
          /* Drawcalls access the memory in SYSMEM rendering (ignoring CCU). */
          sysmem_bandwidth += total_draw_call_bandwidth;
 
-         /* Drawcalls access GMEM in GMEM rendering, but we do not want to ignore them completely.  The state changes
-          * between tiles also have an overhead. Upstream pads this by 10% (magic numbers "randomly chosen" per
-          * their own comment); dropped for A830 since GMEM has been validated to behave correctly on this chip,
-          * so the conservative anti-GMEM margin isn't warranted here.
+         /* BUGFIX (2026-08-28): total_draw_call_bandwidth used to be added to
+          * BOTH sysmem_bandwidth and gmem_bandwidth equally (a leftover of
+          * blindly dropping upstream's asymmetric "* 11 + total_draw_call_bandwidth) / 10"
+          * anti-GMEM margin instead of just removing the margin's bias).
+          * Since select_sysmem only compares the two sums, adding the same
+          * term to both sides is an algebraic no-op -- it cancels out of the
+          * comparison entirely, silently making the whole samples-passed/
+          * draw-call-bandwidth estimate irrelevant to the GMEM/SYSMEM
+          * decision, which then ends up depending ONLY on each render
+          * pass's fixed per-pixel load/store/clear pattern regardless of
+          * how much is actually drawn. Confirmed via
+          * TU_AUTOTUNE_DEBUG_LOG_BANDWIDTH + a custom test bench: toggling
+          * between a tiny cube and one scaled to fill the whole screen
+          * (6x more samples passed, ~2x mean_samples in the log) produced
+          * zero change in the GMEM/SYSMEM decision on either version of the
+          * bench's render pass (color CLEAR or color LOAD_OP_LOAD).
+          *
+          * GMEM rendering keeps draw output in fast on-chip cache during
+          * the pass -- draw-call bandwidth genuinely shouldn't cost GMEM
+          * anything beyond what's already counted in gmem_bandwidth_per_pixel
+          * (the tile load/store cost). SYSMEM draws go straight to memory,
+          * so they legitimately pay the full cost. Don't add it to gmem_bandwidth
+          * at all, instead of re-adding some other arbitrary fraction.
           */
-         gmem_bandwidth = gmem_bandwidth + total_draw_call_bandwidth;
 
          bool select_sysmem = sysmem_bandwidth <= gmem_bandwidth;
          render_mode mode = select_sysmem ? render_mode::SYSMEM : render_mode::GMEM;
