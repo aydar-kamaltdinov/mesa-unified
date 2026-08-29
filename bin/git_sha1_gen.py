@@ -18,10 +18,39 @@ def get_git_sha1():
             '--git-dir=' + git_dir,
             'rev-parse',
             'HEAD',
-        ], stderr=open(os.devnull, 'w')).decode("ascii")
+        ], stderr=open(os.devnull, 'w')).decode("ascii").strip()
     except Exception:
         # don't print anything if it fails
-        git_sha1 = ''
+        return ''
+
+    git_sha1 = git_sha1[:10]
+
+    # AK: HEAD alone is ambiguous while iterating with uncommitted changes
+    # (our normal workflow) -- every build sharing a HEAD reports identical
+    # driverInfo/driverVersion to apps even though the actual compiled code
+    # differs, which lets a Vulkan app/loader that caches anything keyed by
+    # driver identity (seen documented for Eden, and a real risk for our own
+    # iterative on-device testing) serve stale state across genuinely
+    # different driver builds. Fold a hash of the dirty diff (tracked files
+    # only, matching what actually gets compiled) into the identifier so it
+    # changes whenever the real source content does, not just on commit.
+    # Applied here (before the caller's own truncation) so the suffix
+    # survives instead of being cut off by it.
+    try:
+        work_tree = os.path.join(os.path.dirname(sys.argv[0]), '..')
+        diff = subprocess.check_output([
+            'git',
+            '--git-dir=' + git_dir,
+            '--work-tree=' + work_tree,
+            'diff',
+            'HEAD',
+        ], stderr=open(os.devnull, 'w'))
+        if diff:
+            import hashlib
+            git_sha1 = git_sha1 + '-dirty' + hashlib.sha1(diff).hexdigest()[:8]
+    except Exception:
+        pass
+
     return git_sha1
 
 
@@ -43,7 +72,8 @@ parser.add_argument('--output', help='File to write the #define in',
                     required=True)
 args = parser.parse_args()
 
-git_sha1 = os.environ.get('MESA_GIT_SHA1_OVERRIDE', get_git_sha1())[:10]
+env_override = os.environ.get('MESA_GIT_SHA1_OVERRIDE')
+git_sha1 = env_override[:10] if env_override is not None else get_git_sha1()
 if git_sha1:
     write_if_different('#define MESA_GIT_SHA1 " (git-' + git_sha1 + ')"')
 else:
