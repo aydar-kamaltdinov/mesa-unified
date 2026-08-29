@@ -4637,15 +4637,26 @@ tu_emit_clear_gmem_attachment(struct tu_cmd_buffer *cmd,
                               bool per_layer_render_area,
                               VkImageAspectFlags mask,
                               const VkClearValue *value,
-                              const VkRect2D *fdm_rect)
+                              const VkRect2D *fdm_rect,
+                              enum a3xx_msaa_samples *cached_samples = NULL)
 {
    const struct tu_render_pass_attachment *att =
       &cmd->state.pass->attachments[attachment];
 
    trace_start_gmem_clear(&cmd->rp_trace, cs, cmd, att->format, att->samples);
 
-   tu_cs_emit_regs(cs,
-                   A6XX_RB_RESOLVE_GMEM_BUFFER_INFO(tu_msaa_samples(att->samples)));
+   /* RB_RESOLVE_GMEM_BUFFER_INFO only depends on the attachment's sample
+    * count, not on the clear rect. When a caller clears the same set of
+    * attachments for multiple rects (see tu_clear_gmem_attachments()), it
+    * passes a cache slot so we skip re-emitting an identical register
+    * write per rect.
+    */
+   enum a3xx_msaa_samples samples = tu_msaa_samples(att->samples);
+   if (!cached_samples || *cached_samples != samples) {
+      tu_cs_emit_regs(cs, A6XX_RB_RESOLVE_GMEM_BUFFER_INFO(samples));
+      if (cached_samples)
+         *cached_samples = samples;
+   }
 
    enum pipe_format format = vk_format_to_pipe_format(att->format);
    for_each_layer(i, layer_mask, layers) {
@@ -4694,13 +4705,23 @@ tu_clear_gmem_attachments(struct tu_cmd_buffer *cmd,
    const struct tu_subpass *subpass = cmd->state.subpass;
    struct tu_cs *cs = &cmd->draw_cs;
 
-   if (rect_count > 1)
-      perf_debug(cmd->device, "TODO: Swap tu_clear_gmem_attachments() loop for smaller command stream");
-
    struct tu_resolve_group resolve_group = {};
 
    if (cmd->state.fdm_enabled)
       tu_cs_set_writeable(cs, true);
+
+   /* Scissor (RB_RESOLVE_CNTL_1/2) only depends on the rect and is already
+    * emitted once per rect below, shared across all attachments. The other
+    * per-draw register, RB_RESOLVE_GMEM_BUFFER_INFO, only depends on the
+    * attachment. Swapping the loop nesting (attachment outer, rect inner)
+    * would fix one at the cost of re-emitting the other per rect instead,
+    * so instead we cache the last sample count programmed for each
+    * attachment and let tu_emit_clear_gmem_attachment() skip the redundant
+    * write when rect_count > 1 revisits the same attachment.
+    */
+   enum a3xx_msaa_samples cached_samples[MAX_RTS + 1];
+   for (unsigned j = 0; j < attachment_count; j++)
+      cached_samples[j] = (enum a3xx_msaa_samples) ~0u;
 
    for (unsigned i = 0; i < rect_count; i++) {
       unsigned x1 = rects[i].rect.offset.x;
@@ -4743,7 +4764,8 @@ tu_clear_gmem_attachments(struct tu_cmd_buffer *cmd,
                                        subpass->multiview_mask, false,
                                        attachments[j].aspectMask,
                                        &attachments[j].clearValue,
-                                       fdm_rect);
+                                       fdm_rect,
+                                       &cached_samples[j]);
       }
    }
 
