@@ -813,11 +813,6 @@ tu_render_pass_gmem_config(struct tu_render_pass *pass,
          return;
       }
 
-      /* TODO: this algorithm isn't optimal
-       * for example, two attachments with cpp = {1, 4}
-       * result:  nblocks = {12, 52}, pixels = 196608
-       * optimal: nblocks = {13, 51}, pixels = 208896
-       */
       uint32_t gmem_size = phys_dev->usable_gmem_size_gmem;
       if (layout == TU_GMEM_LAYOUT_AVOID_CCU) {
          gmem_size = MIN2(gmem_size, phys_dev->config_gmem.color_ccu_offset);
@@ -827,23 +822,82 @@ tu_render_pass_gmem_config(struct tu_render_pass *pass,
       uint32_t gmem_blocks = gmem_size / gmem_align;
       uint32_t offset = 0, pixels = ~0u, i;
       bool layout_impossible = false;
+
+      /* All attachments in a pass share the same tile geometry, so
+       * "pixels" (the per-tile pixel count) is a single value bottlenecked
+       * by whichever attachment gets the least generous allocation --
+       * this is a max-min allocation problem, not a proportional split.
+       * Splitting the block budget proportionally up front (the previous
+       * approach) floors each attachment's share independently and never
+       * redistributes the rounding-down leftover, which can waste blocks
+       * relative to the true optimum: with cpp = {1, 4} in a 64-block
+       * budget, a proportional floor-split lands on nblocks = {12, 52}
+       * (pixels = 196608), while nblocks = {13, 51} -- the same 64 blocks,
+       * split differently -- reaches pixels = 208896.
+       *
+       * Solve it directly instead: binary search for the largest per-tile
+       * pixel count P such that every attachment's block requirement --
+       * ceil(P * cpp / gmem_align), rounded up to that attachment's
+       * alignment -- fits in the shared gmem_blocks budget. Feasibility is
+       * monotonic in P (a higher P never needs fewer blocks for any
+       * attachment), so this finds the exact optimum, not an
+       * approximation.
+       */
+      uint64_t lo = 0, hi = ~0ull;
       for (i = 0; i < num_gmem_alloc; i++) {
-         struct tu_gmem_alloc *alloc = &gmem_alloc[i];
-
-         uint32_t align = MAX2(1, alloc->cpp >> block_align_shift);
-         uint32_t nblocks = MAX2((gmem_blocks * alloc->cpp / cpp_total) & ~(align - 1), align);
-
-         if (nblocks > gmem_blocks) {
-            /* gmem layout impossible */
+         uint32_t align = MAX2(1, gmem_alloc[i].cpp >> block_align_shift);
+         if (align > gmem_blocks) {
             layout_impossible = true;
             break;
          }
+         /* An attachment can never usefully ask for more pixels than the
+          * entire budget converted through its own cpp -- cap the search
+          * range so the multiplication in the feasibility check below
+          * can't need more than 64 bits either.
+          */
+         uint64_t max_pixels_for_att =
+            (uint64_t) gmem_blocks * gmem_align / gmem_alloc[i].cpp;
+         hi = MIN2(hi, max_pixels_for_att);
+      }
 
-         gmem_blocks -= nblocks;
-         cpp_total -= alloc->cpp;
-         alloc->gmem_offset = offset;
-         offset += nblocks * gmem_align;
-         pixels = MIN2(pixels, nblocks * gmem_align / alloc->cpp);
+      while (!layout_impossible && lo < hi) {
+         uint64_t mid = lo + (hi - lo + 1) / 2;
+         uint64_t blocks_needed = 0;
+         for (i = 0; i < num_gmem_alloc; i++) {
+            struct tu_gmem_alloc *alloc = &gmem_alloc[i];
+            uint32_t align = MAX2(1, alloc->cpp >> block_align_shift);
+            uint64_t need = (mid * alloc->cpp + gmem_align - 1) / gmem_align;
+            need = (need + align - 1) & ~(uint64_t) (align - 1);
+            need = MAX2(need, align);
+            blocks_needed += need;
+         }
+         if (blocks_needed <= gmem_blocks)
+            lo = mid;
+         else
+            hi = mid - 1;
+      }
+
+      if (!layout_impossible) {
+         for (i = 0; i < num_gmem_alloc; i++) {
+            struct tu_gmem_alloc *alloc = &gmem_alloc[i];
+            uint32_t align = MAX2(1, alloc->cpp >> block_align_shift);
+            uint64_t need = (lo * alloc->cpp + gmem_align - 1) / gmem_align;
+            need = (need + align - 1) & ~(uint64_t) (align - 1);
+            uint32_t nblocks = MAX2((uint32_t) need, align);
+
+            if (nblocks > gmem_blocks) {
+               /* Can't happen: lo was proven feasible above. Guard anyway
+                * since this doubles as the memory-safety check for the
+                * offset arithmetic below. */
+               layout_impossible = true;
+               break;
+            }
+
+            gmem_blocks -= nblocks;
+            alloc->gmem_offset = offset;
+            offset += nblocks * gmem_align;
+            pixels = MIN2(pixels, nblocks * gmem_align / alloc->cpp);
+         }
       }
 
       /* Impossible layouts have no valid GMEM offsets. */
