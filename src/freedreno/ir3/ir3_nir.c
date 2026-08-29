@@ -318,9 +318,25 @@ ir3_optimize_loop(struct ir3_compiler *compiler,
       progress |= OPT(s, nir_opt_shrink_stores, true);
       progress |= OPT(s, nir_shrink_vec_array_vars, nir_var_function_temp | nir_var_mem_shared);
 
-      static int gcm = -1;
-      if (gcm == -1)
-         gcm = debug_get_num_option("GCM", 0);
+      /* AK: tried enabling GCM by default for reg_size_vec4>=96 devices
+       * (2026-08-29, sourced from a community patch that itself flagged it
+       * as unvalidated on hardware). Real-device testing on A830 found a
+       * genuine tile-block visual corruption regression in a Xendroid
+       * racing-game build -- confirmed via a 4-way isolation bisect
+       * (compute_flush_bits, RB_RESOLVE_GMEM_BUFFER_INFO caching, and the
+       * GMEM tile allocator rewrite were each ruled out individually;
+       * disabling GCM alone, with everything else from that same build
+       * still active, made the corruption disappear). Left OFF by
+       * default, matching upstream, pending real root-cause investigation
+       * (most likely register-pressure/spill related given GCM lengthens
+       * live ranges by hoisting code out of loops -- but not confirmed).
+       * The env override still lets it be tried explicitly: GCM=1/2 force
+       * it on for any device, GCM=0 forces off.
+       */
+      static int gcm_env = INT32_MIN;
+      if (gcm_env == INT32_MIN)
+         gcm_env = debug_get_num_option("GCM", 0);
+      int gcm = gcm_env;
       if (gcm == 1)
          progress |= OPT(s, nir_opt_gcm, true, true);
       else if (gcm == 2)
