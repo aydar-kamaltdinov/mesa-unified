@@ -9607,10 +9607,38 @@ tu_dispatch(struct tu_cmd_buffer *cmd,
 
    cmd->device->autotune->emit_reset_rp_hash_draw_state(cmd, cs);
 
-   /* TODO: We could probably flush less if we add a compute_flush_bits
-    * bitfield.
+   /* compute_flush_bits: dispatch doesn't read through the CCU (Color/Depth
+    * Cache Unit) -- that's only consumed by the render backend for draws
+    * and blits, while compute reads/writes go through UCHE (already
+    * covered by TU_CMD_FLAG_CACHE_INVALIDATE). CCU_CLEAN must still happen
+    * here since it writes CCU's data back to memory where UCHE can see it,
+    * but CCU_INVALIDATE only matters to a future CCU consumer, so it can
+    * stay pending until an actual draw/blit needs it instead of being
+    * forced before every dispatch.
     */
+   auto deferred_ccu_invalidate =
+      cmd->state.cache.flush_bits &
+      (TU_CMD_FLAG_CCU_INVALIDATE_COLOR | TU_CMD_FLAG_CCU_INVALIDATE_DEPTH);
+   cmd->state.cache.flush_bits &= ~deferred_ccu_invalidate;
+
+   {
+      static uint64_t ak_dispatch_calls = 0;
+      static uint32_t ak_dispatch_bits_seen = 0;
+      static const uint32_t ak_ccu_invalidate_mask =
+         TU_CMD_FLAG_CCU_INVALIDATE_DEPTH | TU_CMD_FLAG_CCU_INVALIDATE_COLOR;
+      ak_dispatch_calls++;
+      ak_dispatch_bits_seen |= (uint32_t) cmd->state.cache.flush_bits;
+      if ((ak_dispatch_calls % 500) == 0) {
+         mesa_logi("AK-DISPATCH: calls=%" PRIu64
+                  " last_flush_bits=0x%x accum_bits=0x%x has_ccu_invalidate_bits=%d",
+                  ak_dispatch_calls, (uint32_t) cmd->state.cache.flush_bits,
+                  ak_dispatch_bits_seen,
+                  (ak_dispatch_bits_seen & ak_ccu_invalidate_mask) != 0);
+         ak_dispatch_bits_seen = 0;
+      }
+   }
    tu_emit_cache_flush<CHIP>(cmd);
+   cmd->state.cache.flush_bits |= deferred_ccu_invalidate;
 
    /* note: no reason to have this in a separate IB */
    tu_cs_emit_state_ib(cs, tu_emit_consts<CHIP>(cmd, true));
