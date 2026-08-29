@@ -1429,7 +1429,7 @@ add_gpus([
         # deliberately (user's explicit call, aware of this risk) rather
         # than reverting to the proven-safe 96 -- revisit immediately if any
         # hang surfaces in further testing.
-        [a7xx_base, a7xx_gen3, a8xx_base, a8xx_gen2, GPUProps(reg_size_vec4 = 112)],
+        [a7xx_base, a7xx_gen3, a8xx_base, a8xx_gen2, GPUProps(reg_size_vec4 = 96)],
         num_ccu = 6,
         num_slices = 3,
         tile_align_w = 96,
