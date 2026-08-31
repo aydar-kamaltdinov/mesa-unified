@@ -724,6 +724,32 @@ struct tu_cmd_buffer
    struct tu_subpass dynamic_subpasses[2];
    struct tu_framebuffer dynamic_framebuffer;
 
+   /* AK: cache for tu_render_pass_gmem_config()'s result, keyed on the
+    * subset of per-attachment fields it actually reads (gmem eligibility,
+    * cpp, format, sample count) plus attachment count -- confirmed by
+    * reading the function that it never touches load/store/clear/resolve
+    * state, so this is safe to reuse across vkCmdBeginRendering calls
+    * whose attachments repeat the same "shape" (measured ~32% of calls in
+    * real Thief gameplay). Unlike gmem_config's other siblings
+    * (cond_config, bandwidth_config, check_ib2_skip), those DO depend on
+    * load/store/clear/resolve and must not be cached this way.
+    */
+   struct {
+      bool valid;
+      uint32_t attachment_count;
+      struct {
+         bool gmem;
+         uint32_t cpp;
+         VkFormat format;
+         uint32_t samples;
+      } sig[3 * (MAX_RTS + 1) + 2];
+      uint32_t tile_align_w;
+      uint32_t min_cpp;
+      uint32_t gmem_pixels[TU_GMEM_LAYOUT_COUNT];
+      int32_t gmem_offset[3 * (MAX_RTS + 1) + 2][TU_GMEM_LAYOUT_COUNT];
+      int32_t gmem_offset_stencil[3 * (MAX_RTS + 1) + 2][TU_GMEM_LAYOUT_COUNT];
+   } dynamic_gmem_config_cache;
+
    struct tu_cs cs;
    struct tu_cs draw_cs;
    struct tu_cs tile_store_cs;

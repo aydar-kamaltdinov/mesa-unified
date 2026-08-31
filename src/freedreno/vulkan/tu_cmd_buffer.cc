@@ -4364,6 +4364,7 @@ tu_reset_cmd_buffer(struct vk_command_buffer *vk_cmd_buffer,
 
    cmd_buffer->state.max_vbs_bound = 0;
    cmd_buffer->state.last_gfx_pipeline = VK_NULL_HANDLE;
+   cmd_buffer->dynamic_gmem_config_cache.valid = false;
 
    cmd_buffer->vsc_initialized = false;
    cmd_buffer->prev_fsr_is_null = false;

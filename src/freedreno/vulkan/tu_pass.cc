@@ -1919,7 +1919,65 @@ tu_setup_dynamic_render_pass(struct tu_cmd_buffer *cmd_buffer,
 
    tu_render_pass_check_ib2_skip(pass);
    tu_render_pass_cond_config(device, pass);
-   tu_render_pass_gmem_config(pass, device->physical_device);
+
+   /* AK: tu_render_pass_gmem_config() only reads gmem-eligibility/cpp/
+    * format/samples per attachment (confirmed by reading it -- unlike its
+    * siblings below, it never touches load/store/clear/resolve state), so
+    * its result can be reused verbatim whenever that "shape" repeats
+    * across vkCmdBeginRendering calls instead of rerunning the tile-budget
+    * binary search from scratch every time. */
+   {
+      auto *gc = &cmd_buffer->dynamic_gmem_config_cache;
+      bool sig_matches = gc->valid && gc->attachment_count == pass->attachment_count;
+      if (sig_matches) {
+         for (uint32_t i = 0; i < pass->attachment_count; i++) {
+            const struct tu_render_pass_attachment *att = &pass->attachments[i];
+            if (gc->sig[i].gmem != att->gmem ||
+                gc->sig[i].cpp != att->cpp ||
+                gc->sig[i].format != att->format ||
+                gc->sig[i].samples != att->samples) {
+               sig_matches = false;
+               break;
+            }
+         }
+      }
+
+      if (sig_matches) {
+         pass->tile_align_w = gc->tile_align_w;
+         pass->min_cpp = gc->min_cpp;
+         memcpy(pass->gmem_pixels, gc->gmem_pixels, sizeof(pass->gmem_pixels));
+         for (uint32_t i = 0; i < pass->attachment_count; i++) {
+            struct tu_render_pass_attachment *att = &pass->attachments[i];
+            if (!att->gmem)
+               continue;
+            memcpy(att->gmem_offset, gc->gmem_offset[i], sizeof(att->gmem_offset));
+            if (att->format == VK_FORMAT_D32_SFLOAT_S8_UINT) {
+               memcpy(att->gmem_offset_stencil, gc->gmem_offset_stencil[i],
+                      sizeof(att->gmem_offset_stencil));
+            }
+         }
+      } else {
+         tu_render_pass_gmem_config(pass, device->physical_device);
+
+         gc->valid = true;
+         gc->attachment_count = pass->attachment_count;
+         gc->tile_align_w = pass->tile_align_w;
+         gc->min_cpp = pass->min_cpp;
+         memcpy(gc->gmem_pixels, pass->gmem_pixels, sizeof(gc->gmem_pixels));
+         for (uint32_t i = 0; i < pass->attachment_count; i++) {
+            const struct tu_render_pass_attachment *att = &pass->attachments[i];
+            gc->sig[i] = { att->gmem, att->cpp, att->format, att->samples };
+            if (att->gmem) {
+               memcpy(gc->gmem_offset[i], att->gmem_offset, sizeof(gc->gmem_offset[i]));
+               if (att->format == VK_FORMAT_D32_SFLOAT_S8_UINT) {
+                  memcpy(gc->gmem_offset_stencil[i], att->gmem_offset_stencil,
+                         sizeof(gc->gmem_offset_stencil[i]));
+               }
+            }
+         }
+      }
+   }
+
    tu_render_pass_bandwidth_config(pass);
    tu_render_pass_calc_views(pass);
 }
