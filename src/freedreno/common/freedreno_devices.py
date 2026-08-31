@@ -918,7 +918,13 @@ a730_raw_magic_regs = [
         [A6XXRegs.REG_A7XX_UCHE_UNKNOWN_0E11, 0x00000040],
         [A6XXRegs.REG_A7XX_SP_HLSQ_DBG_ECO_CNTL, 0x00008000],
         [A6XXRegs.REG_A6XX_SP_DBG_ECO_CNTL, 0x10000000],
-        [A6XXRegs.REG_A6XX_PC_MODE_CNTL,    0x1f1f],
+        # AK: Blob uses 0x1f or 0x1f1f, however these values cause vertices
+        # corruption in some tests. Restored from AK-Turnip 1.04 (pre-26.3.0
+        # rebase) after 0x1f1f was found upstream to match a reported
+        # regression in Eden/yuzu (TOTK/BOTW shrine interiors) on a730 --
+        # not tested by us on real a730 hardware, but this restores the
+        # exact value + warning upstream itself carried before dropping it.
+        [A6XXRegs.REG_A6XX_PC_MODE_CNTL,    0x0000003f],
         [A6XXRegs.REG_A6XX_PC_DBG_ECO_CNTL, 0x20080000],
         [A6XXRegs.REG_A7XX_PC_UNKNOWN_9E24, 0x21fc7f00],
         [A6XXRegs.REG_A7XX_VFD_DBG_ECO_CNTL, 0x00000000],
