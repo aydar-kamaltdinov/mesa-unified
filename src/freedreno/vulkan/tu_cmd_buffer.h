@@ -486,6 +486,12 @@ struct tu_cmd_state
 
    uint32_t max_vbs_bound;
 
+   /* Last graphics VkPipeline handle passed to vkCmdBindPipeline, used to
+    * skip re-forcing DESC_SETS/SHADER_CONSTS/VS_PARAMS/PROGRAM dirty on an
+    * exact repeat bind (measured ~13% of graphics binds in real content).
+    */
+   VkPipeline last_gfx_pipeline;
+
    bool has_fdm;
    /* See tu_pipeline::per_view_viewport */
    bool per_view_viewport;

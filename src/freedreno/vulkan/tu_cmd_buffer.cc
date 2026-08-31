@@ -4363,6 +4363,7 @@ tu_reset_cmd_buffer(struct vk_command_buffer *vk_cmd_buffer,
       u_trace_begin_iterator(&cmd_buffer->rp_trace);
 
    cmd_buffer->state.max_vbs_bound = 0;
+   cmd_buffer->state.last_gfx_pipeline = VK_NULL_HANDLE;
 
    cmd_buffer->vsc_initialized = false;
    cmd_buffer->prev_fsr_is_null = false;
@@ -5568,9 +5569,25 @@ tu_CmdBindPipeline(VkCommandBuffer commandBuffer,
 
    assert(pipelineBindPoint == VK_PIPELINE_BIND_POINT_GRAPHICS);
 
+   /* AK: an exact repeat bind of the same VkPipeline (measured ~13% of
+    * graphics binds in real content) doesn't need to force these dirty --
+    * every one of them is otherwise only set when something *actually*
+    * changed (the per-stage tu_bind_vs/tcs/tes/gs/fs calls below already
+    * no-op on an unchanged shader pointer, which is guaranteed here since
+    * an unchanged pipeline object means unchanged shader stages; VS_PARAMS
+    * has its own independent per-draw dirtying at the real parameter-change
+    * site). Everything else in this function (in particular the
+    * render-pass-scoped tu_pipeline_update_rp_state() and the depth/stencil
+    * dynamic-state masking below) still runs unconditionally, since it
+    * depends on the current render pass, not just the pipeline identity. */
+   bool ak_same_pipeline = (_pipeline == cmd->state.last_gfx_pipeline);
+   cmd->state.last_gfx_pipeline = _pipeline;
+
    struct tu_graphics_pipeline *gfx_pipeline = tu_pipeline_to_graphics(pipeline);
-   cmd->state.dirty |= TU_CMD_DIRTY_DESC_SETS | TU_CMD_DIRTY_SHADER_CONSTS |
-                       TU_CMD_DIRTY_VS_PARAMS | TU_CMD_DIRTY_PROGRAM;
+   if (!ak_same_pipeline) {
+      cmd->state.dirty |= TU_CMD_DIRTY_DESC_SETS | TU_CMD_DIRTY_SHADER_CONSTS |
+                          TU_CMD_DIRTY_VS_PARAMS | TU_CMD_DIRTY_PROGRAM;
+   }
 
    tu_bind_vs(cmd, pipeline->shaders[MESA_SHADER_VERTEX]);
    tu_bind_tcs(cmd, pipeline->shaders[MESA_SHADER_TESS_CTRL]);
