@@ -1403,16 +1403,6 @@ use_sysmem_rendering(struct tu_cmd_buffer *cmd,
       return true;
    }
 
-   /* AK: TU_DEBUG(GMEM) overrides every remaining *preference* reason
-    * below (disable_gmem/XFB/query-incompatibility/too-many-tiles/
-    * autotune) -- only the hard structural gates above (tiling fits in
-    * gmem at all, non-empty render area, no tessellation) still apply.
-    * Only takes effect when the flag is explicitly set. */
-   if (TU_DEBUG(GMEM)) {
-      cmd->state.rp.force_render_mode_reason = "TU_DEBUG(GMEM)";
-      return false;
-   }
-
    if (cmd->state.rp.disable_gmem) {
       /* force_render_mode_reason is set where disable_gmem is set. */
       return true;
@@ -1436,6 +1426,11 @@ use_sysmem_rendering(struct tu_cmd_buffer *cmd,
       cmd->state.rp.force_render_mode_reason =
          "QUERY_TYPE_PRIMITIVES_GENERATED is incompatible with non-hw binning GMEM rendering";
       return true;
+   }
+
+   if (TU_DEBUG(GMEM)) {
+      cmd->state.rp.force_render_mode_reason = "TU_DEBUG(GMEM)";
+      return false;
    }
 
    /* This is a case where it's better to avoid GMEM, too many tiles but no HW binning possible. */
