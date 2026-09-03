@@ -50,6 +50,14 @@ enum global_shader {
    GLOBAL_SH_FS_BLIT,
    GLOBAL_SH_FS_BLIT_ZSCALE,
    GLOBAL_SH_FS_COPY_MS,
+   /* AK: GMEM->GMEM resolve prototype -- averages all samples of a
+    * multisampled GMEM-resident source and writes the single-sample result
+    * to a GMEM-resident destination, entirely without leaving the tile.
+    * One variant per supported MSAA sample count (2/4/8x); indexed via
+    * tu_resolve_ms_shader_idx() below. */
+   GLOBAL_SH_FS_RESOLVE_MS2,
+   GLOBAL_SH_FS_RESOLVE_MS4,
+   GLOBAL_SH_FS_RESOLVE_MS8,
    GLOBAL_SH_FS_CLEAR0,
    GLOBAL_SH_FS_CLEAR_MAX = GLOBAL_SH_FS_CLEAR0 + MAX_RTS,
    GLOBAL_SH_COUNT,

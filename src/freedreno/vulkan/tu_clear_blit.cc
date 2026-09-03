@@ -902,6 +902,83 @@ build_ms_copy_fs_shader(void)
    return b->shader;
 }
 
+/* AK: GMEM->GMEM resolve prototype. Averages all samples of a multisampled
+ * GMEM-resident source into a single value, for a destination that's also
+ * GMEM-resident -- the missing piece that lets tu6_emit_gmem_resolves()
+ * avoid round-tripping through system memory when the resolved attachment
+ * is needed by a later subpass in the same render pass (see the
+ * "TODO: missing GMEM->GMEM resolve path" site in tu_cmd_buffer.cc).
+ *
+ * Scope of this first version: color, UNORM/SFLOAT-style formats only
+ * (plain averaging) -- callers must not use this for INT/UINT/depth
+ * formats, where a real resolve picks one sample rather than averaging.
+ * That gating happens at the call site, not here, so this shader has no
+ * format-dependent branching to get wrong.
+ */
+static nir_shader *
+build_ms_resolve_fs_shader(unsigned samples)
+{
+   nir_builder _b =
+      nir_builder_init_simple_shader(MESA_SHADER_FRAGMENT, NULL,
+                                     "%ux gmem resolve fs", samples);
+   nir_builder *b = &_b;
+
+   nir_variable *out_color =
+      nir_create_variable_with_location(b->shader, nir_var_shader_out,
+                                        FRAG_RESULT_DATA0, glsl_vec4_type());
+   nir_variable *in_coords =
+      nir_create_variable_with_location(b->shader, nir_var_shader_in,
+                                        VARYING_SLOT_VAR0, glsl_vec_type(2));
+
+   b->shader->info.num_textures = 1;
+   BITSET_SET(b->shader->info.textures_used, 0);
+   BITSET_SET(b->shader->info.textures_used_by_txf, 0);
+
+   /* Reconstruct the true per-fragment (x, y) sample coordinate from the
+    * "coords" varying. Resolution-agnostic: queries the bound MS image's
+    * actual size via nir_txs rather than assuming a fixed resolution.
+    */
+   nir_def *img_size = nir_txs(b, .texture_index = 0, .sampler_index = 0,
+                               .dim = GLSL_SAMPLER_DIM_MS,
+                               .dest_type = nir_type_int32);
+   nir_def *img_w = nir_i2f32(b, nir_channel(b, img_size, 0));
+   nir_def *img_h = nir_i2f32(b, nir_channel(b, img_size, 1));
+
+   nir_def *raw_coords = nir_load_var(b, in_coords);
+   nir_def *raw0 = nir_channel(b, raw_coords, 0);
+   nir_def *raw1 = nir_channel(b, raw_coords, 1);
+   nir_def *samp_x = nir_fmul(b, raw1, nir_fdiv(b, img_w, img_h));
+   nir_def *samp_y = nir_fsub(b, img_h, nir_fmul(b, raw0, nir_fdiv(b, img_h, img_w)));
+   nir_def *coord = nir_f2i32(b, nir_vec2(b, samp_x, samp_y));
+
+   nir_def *sum = nir_imm_vec4(b, 0, 0, 0, 0);
+   for (unsigned i = 0; i < samples; i++) {
+      nir_def *tex = nir_txf_ms(b, coord, nir_imm_int(b, i),
+                                .texture_index = 0, .sampler_index = 0,
+                                .dim = GLSL_SAMPLER_DIM_MS,
+                                .dest_type = nir_type_float32);
+      sum = nir_fadd(b, sum, tex);
+   }
+   nir_def *avg = nir_fmul_imm(b, sum, 1.0 / (float) samples);
+
+   nir_store_var(b, out_color, avg, 0xf);
+   return b->shader;
+}
+
+/* Maps a real sample count to its GLOBAL_SH_FS_RESOLVE_MS* slot. Returns
+ * GLOBAL_SH_COUNT (invalid) for unsupported counts -- callers must check.
+ */
+static enum global_shader
+tu_resolve_ms_shader_idx(unsigned samples)
+{
+   switch (samples) {
+   case 2: return GLOBAL_SH_FS_RESOLVE_MS2;
+   case 4: return GLOBAL_SH_FS_RESOLVE_MS4;
+   case 8: return GLOBAL_SH_FS_RESOLVE_MS8;
+   default: return GLOBAL_SH_COUNT;
+   }
+}
+
 static nir_shader *
 build_clear_fs_shader(unsigned mrts)
 {
@@ -976,6 +1053,9 @@ tu_init_clear_blit_shaders(struct tu_device *dev)
    compile_shader(dev, build_blit_fs_shader(false), 0, &offset, GLOBAL_SH_FS_BLIT);
    compile_shader(dev, build_blit_fs_shader(true), 0, &offset, GLOBAL_SH_FS_BLIT_ZSCALE);
    compile_shader(dev, build_ms_copy_fs_shader(), 0, &offset, GLOBAL_SH_FS_COPY_MS);
+   compile_shader(dev, build_ms_resolve_fs_shader(2), 0, &offset, GLOBAL_SH_FS_RESOLVE_MS2);
+   compile_shader(dev, build_ms_resolve_fs_shader(4), 0, &offset, GLOBAL_SH_FS_RESOLVE_MS4);
+   compile_shader(dev, build_ms_resolve_fs_shader(8), 0, &offset, GLOBAL_SH_FS_RESOLVE_MS8);
 
    for (uint32_t num_rts = 0; num_rts <= MAX_RTS; num_rts++) {
       compile_shader(dev, build_clear_fs_shader(num_rts), num_rts, &offset,
@@ -1015,7 +1095,16 @@ r3d_common(struct tu_cmd_buffer *cmd, struct tu_cs *cs, enum r3d_type type,
 
    if (z_scale)
       fs_id = GLOBAL_SH_FS_BLIT_ZSCALE;
-   else if (src_samples != VK_SAMPLE_COUNT_1_BIT)
+   else if (src_samples != VK_SAMPLE_COUNT_1_BIT &&
+            dst_samples == VK_SAMPLE_COUNT_1_BIT) {
+      /* AK: a real resolve (samples -> 1), as opposed to the existing
+       * same-sample-count MSAA "copy" case below -- average instead of
+       * picking a single sample. No existing caller hit this combination
+       * before the GMEM->GMEM resolve prototype, so this doesn't change
+       * behavior for anything else. */
+      fs_id = tu_resolve_ms_shader_idx(src_samples);
+      assert(fs_id != GLOBAL_SH_COUNT && "unsupported MSAA sample count for GMEM resolve");
+   } else if (src_samples != VK_SAMPLE_COUNT_1_BIT)
       fs_id = GLOBAL_SH_FS_COPY_MS;
 
    unsigned num_rts = util_bitcount(rts_mask);
@@ -1612,7 +1701,7 @@ static void
 r3d_dst_gmem(struct tu_cmd_buffer *cmd, struct tu_cs *cs,
              const struct fdl6_view *iview,
              const struct tu_render_pass_attachment *att,
-             bool separate_stencil, unsigned layer)
+             bool separate_stencil, unsigned layer, unsigned cpp)
 {
    unsigned RB_MRT_BUF_INFO = iview->RB_MRT_BUF_INFO;
    unsigned gmem_offset;
@@ -1636,10 +1725,13 @@ r3d_dst_gmem(struct tu_cmd_buffer *cmd, struct tu_cs *cs,
                                       FMT6_Z24_UNORM_S8_UINT_AS_R8G8B8A8);
    }
 
+   (void) cpp;
+   unsigned pitch = 0, array_pitch = 0;
+
    tu_cs_emit_regs(cs,
                    RB_MRT_BUF_INFO(CHIP, 0, .dword = RB_MRT_BUF_INFO),
-                   A6XX_RB_MRT_PITCH(0, 0),
-                   A6XX_RB_MRT_ARRAY_PITCH(0, 0),
+                   A6XX_RB_MRT_PITCH(0, pitch),
+                   A6XX_RB_MRT_ARRAY_PITCH(0, array_pitch),
                    A6XX_RB_MRT_BASE(0, 0),
                    A6XX_RB_MRT_BASE_GMEM(0, gmem_offset));
 
@@ -5516,7 +5608,8 @@ load_3d_blit(struct tu_cmd_buffer *cmd,
                                       fdm_apply_load_coords, state);
       }
 
-      r3d_dst_gmem<CHIP>(cmd, cs, fdl_view, att, separate_stencil, i);
+      r3d_dst_gmem<CHIP>(cmd, cs, fdl_view, att, separate_stencil, i,
+                        util_format_get_blocksize(format));
 
       r3d_src_gmem_load<CHIP>(cmd, cs, fdl_view, i);
 
@@ -5817,6 +5910,337 @@ store_3d_blit(struct tu_cmd_buffer *cmd,
                         CP_SCRATCH_TO_REG_0_CNT(1 - 1));
    }
 }
+
+/* AK: GMEM->GMEM resolve prototype. Mirrors store_3d_blit()/load_3d_blit()'s
+ * structure exactly -- same RB_CNTL/GRAS_SC_BIN_CNTL save-restore dance,
+ * same r3d_setup()/r3d_coords()/r3d_run()/r3d_teardown() sequence -- but
+ * combines store_3d_blit's already-working GMEM *source* read
+ * (r3d_src_gmem) with load_3d_blit's already-working GMEM *destination*
+ * write (r3d_dst_gmem), instead of either side touching a real image.
+ * r3d_setup() is told src_samples > 1, dst_samples == 1, which picks the
+ * new averaging resolve shader (see tu_resolve_ms_shader_idx()) instead of
+ * the existing same-sample-count "copy" shader.
+ *
+ * First-version scope: color, UNORM/SFLOAT-style formats only (plain
+ * sample averaging is correct there; INT/UINT/depth need sample selection
+ * instead, not implemented yet) -- enforced by the caller, not here.
+ */
+template <chip CHIP>
+static void
+resolve_3d_blit(struct tu_cmd_buffer *cmd,
+                struct tu_cs *cs,
+                const struct tu_image_view *src_iview,
+                const struct tu_image_view *dst_iview,
+                VkSampleCountFlagBits src_samples,
+                enum pipe_format src_format,
+                enum pipe_format dst_format,
+                const VkRect2D *render_area,
+                uint32_t layer,
+                uint32_t src_gmem_offset,
+                uint32_t src_cpp,
+                const struct tu_render_pass_attachment *dst_att)
+{
+   const struct fdl6_view *src_fdl_view = tu_image_view_fdl_view(src_iview, false);
+   const struct fdl6_view *dst_fdl_view = tu_image_view_fdl_view(dst_iview, false);
+
+   tu_cs_emit_debug_msg(cs, "AK-GMEM-RESOLVE: resolve_3d_blit ENTRY layer=%u", layer);
+
+   /* Save RB_CNTL/GRAS_SC_BIN_CNTL/RB_BUFFER_CNTL -- same rationale as
+    * store_3d_blit(): they're normally only set once binning mode is
+    * known, and we want this callable before that decision if needed. */
+   tu_cs_emit_pkt7(cs, CP_REG_TO_SCRATCH, 1);
+   tu_cs_emit(cs, CP_REG_TO_SCRATCH_0_REG(RB_CNTL(CHIP).reg) |
+                  CP_REG_TO_SCRATCH_0_SCRATCH(0) |
+                  CP_REG_TO_SCRATCH_0_CNT(1 - 1));
+   if (CHIP >= A7XX) {
+      tu_cs_emit_pkt7(cs, CP_REG_TO_SCRATCH, 1);
+      tu_cs_emit(cs, CP_REG_TO_SCRATCH_0_REG(RB_BUFFER_CNTL(CHIP).reg) |
+                     CP_REG_TO_SCRATCH_0_SCRATCH(1) |
+                     CP_REG_TO_SCRATCH_0_CNT(1 - 1));
+   }
+
+   tu_cs_emit_debug_msg(cs, "AK-GMEM-RESOLVE: after save, before r3d_setup");
+
+   r3d_setup<CHIP>(cmd, cs, src_format, dst_format, VK_IMAGE_ASPECT_COLOR_BIT,
+                   R3D_DST_GMEM, false, dst_fdl_view->ubwc_enabled,
+                   src_samples, VK_SAMPLE_COUNT_1_BIT);
+
+   /* Use render_area, not full framebuffer dims: our source (r3d_src_gmem)
+    * is GMEM-resident, tile-relative storage, same as store_3d_blit's. */
+   r3d_coords(cmd, cs, render_area->offset, render_area->offset,
+              render_area->extent);
+
+   r3d_dst_gmem<CHIP>(cmd, cs, dst_fdl_view, dst_att, false, layer, src_cpp);
+
+   r3d_src_gmem<CHIP>(cmd, cs, src_fdl_view, src_format, dst_format,
+                      src_gmem_offset, src_cpp);
+
+   /* sync GMEM writes with CACHE, same as store_3d_blit's GMEM source read. */
+   tu_emit_event_write<CHIP>(cmd, cs, FD_CACHE_INVALIDATE);
+   tu_cs_emit_wfi(cs);
+
+   /* Wait for the RB to finish retiring subpass 0's writes to the MSAA
+    * source before sampling it -- FD_CACHE_INVALIDATE above only covers
+    * UCHE, not RB completion. Same RB_DONE_TS-via-memory technique as the
+    * post-resolve fence below, distinct scratch dword (_pad4 vs _pad5) so
+    * the two fences can't collide. */
+   {
+      uint64_t src_fence_iova = global_iova(cmd, _pad4);
+      static uint32_t ak_src_rb_done_seqno = 0;
+      uint32_t src_seqno = p_atomic_add_return(&ak_src_rb_done_seqno, 1);
+
+      if (CHIP == A6XX) {
+         tu_cs_emit_pkt7(cs, CP_EVENT_WRITE, 4);
+         tu_cs_emit(cs, CP_EVENT_WRITE_0_EVENT(RB_DONE_TS));
+      } else {
+         tu_cs_emit_pkt7(cs, CP_EVENT_WRITE7, 4);
+         tu_cs_emit(cs, CP_EVENT_WRITE7_0(.event = RB_DONE_TS,
+                                          .write_src = EV_WRITE_USER_32B,
+                                          .write_dst = EV_DST_RAM,
+                                          .write_enabled = true).value);
+      }
+      tu_cs_emit_qw(cs, src_fence_iova);
+      tu_cs_emit(cs, src_seqno);
+
+      tu_cs_emit_pkt7(cs, CP_WAIT_REG_MEM, 6);
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_0_FUNCTION(WRITE_EQ) |
+                     CP_WAIT_REG_MEM_0_POLL(POLL_MEMORY));
+      tu_cs_emit_qw(cs, src_fence_iova);
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_3_REF(src_seqno));
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_4_MASK(~0u));
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_5_DELAY_LOOP_CYCLES(20));
+   }
+
+
+   tu_cs_emit_debug_msg(cs, "AK-GMEM-RESOLVE: after setup/coords/dst/src, before r3d_run "
+                        "(inspect RB_CNTL/GRAS_SC_BIN_CNTL/window-scissor/RB_MRT_BUF_INFO here)");
+
+   r3d_run(cmd, cs);
+
+   tu_cs_emit_debug_msg(cs, "AK-GMEM-RESOLVE: after r3d_run, before teardown");
+
+   r3d_teardown<CHIP>(cmd, cs);
+
+   /* Unlike store_3d_blit/load_3d_blit (always last before end-of-renderpass),
+    * this runs mid-renderpass, right before the next subpass's real draw.
+    * r3d_coords() raw-wrote GRAS_CL_VIEWPORT/scissor for our own fullscreen
+    * quad, bypassing CmdSetViewport/CmdSetScissor dirty-tracking -- force
+    * re-emission so the next real draw doesn't inherit our resolve quad's
+    * leftover viewport/scissor state. */
+   BITSET_SET(cmd->vk.dynamic_graphics_state.dirty, MESA_VK_DYNAMIC_VP_VIEWPORTS);
+   BITSET_SET(cmd->vk.dynamic_graphics_state.dirty, MESA_VK_DYNAMIC_VP_SCISSORS);
+
+   /* Draws write to CCU; the destination is GMEM, which later GMEM
+    * consumers (loads/draws) expect to read as fully flushed, matching
+    * how r3d_dst_gmem-based writes are treated in load_3d_blit's callers.
+    */
+   tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_CLEAN_COLOR);
+
+   /* Restore RB_CNTL/GRAS_SC_BIN_CNTL/RB_BUFFER_CNTL saved above. */
+   tu_cs_emit_pkt7(cs, CP_SCRATCH_TO_REG, 1);
+   tu_cs_emit(cs, CP_SCRATCH_TO_REG_0_REG(RB_CNTL(CHIP).reg) |
+                  CP_SCRATCH_TO_REG_0_SCRATCH(0) |
+                  CP_SCRATCH_TO_REG_0_CNT(1 - 1));
+
+   tu_cs_emit_pkt7(cs, CP_SCRATCH_TO_REG, 1);
+   tu_cs_emit(cs, CP_SCRATCH_TO_REG_0_REG(GRAS_SC_BIN_CNTL(CHIP).reg) |
+                  CP_SCRATCH_TO_REG_0_SCRATCH(0) |
+                  CP_SCRATCH_TO_REG_0_CNT(1 - 1));
+
+   if (CHIP >= A7XX) {
+      tu_cs_emit_pkt7(cs, CP_SCRATCH_TO_REG, 1);
+      tu_cs_emit(cs, CP_SCRATCH_TO_REG_0_REG(RB_BUFFER_CNTL(CHIP).reg) |
+                        CP_SCRATCH_TO_REG_0_SCRATCH(1) |
+                        CP_SCRATCH_TO_REG_0_CNT(1 - 1));
+   }
+
+   tu_cs_emit_debug_msg(cs, "AK-GMEM-RESOLVE: resolve_3d_blit EXIT layer=%u", layer);
+}
+
+template <chip CHIP>
+bool
+tu_resolve_gmem_attachment(struct tu_cmd_buffer *cmd,
+                           struct tu_cs *cs,
+                           uint32_t a,
+                           uint32_t gmem_a,
+                           uint32_t layers,
+                           uint32_t layer_mask,
+                           bool per_layer_render_area)
+{
+   struct tu_render_pass_attachment *dst = &cmd->state.pass->attachments[a];
+   struct tu_render_pass_attachment *src = &cmd->state.pass->attachments[gmem_a];
+   const struct tu_image_view *dst_iview = cmd->state.attachments[a];
+   const struct tu_image_view *src_iview = cmd->state.attachments[gmem_a];
+
+   /* First-version scope, see the comment on resolve_3d_blit(). Bail out
+    * to the existing store-then-load-back path for anything outside it --
+    * correctness over coverage for this prototype. */
+   if (cmd->state.pass->has_fdm)
+      return false;
+   if (dst->format != src->format)
+      return false;
+   if (vk_format_is_depth_or_stencil(src->format))
+      return false;
+   if (vk_format_is_int(src->format))
+      return false;
+   if (tu_resolve_ms_shader_idx(src->samples) == GLOBAL_SH_COUNT)
+      return false;
+   if (!dst->gmem || !src->gmem)
+      return false;
+
+   enum pipe_format format = vk_format_to_pipe_format(src->format);
+   uint32_t cpp = src->cpp;
+
+   trace_start_blit_image(&cmd->trace, cs, cmd, true, src->format, dst->format, layers);
+
+   for_each_layer(i, layer_mask, layers) {
+      const VkRect2D *render_area = per_layer_render_area ?
+         &cmd->state.render_areas[i] : &cmd->state.render_areas[0];
+      resolve_3d_blit<CHIP>(cmd, cs, src_iview, dst_iview,
+                            src->samples, format, format,
+                            render_area, i,
+                            tu_attachment_gmem_offset(cmd, src, i), cpp,
+                            dst);
+   }
+
+   /* AK: root cause found -- our resolve write is classified, from the
+    * app's VkSubpassDependency (COLOR_ATTACHMENT_WRITE_BIT), as
+    * TU_ACCESS_SYSMEM_WRITE in GMEM mode (see vk2tu_access() in
+    * tu_cmd_buffer.cc: gfx_write_access(..., COLOR_ATTACHMENT_WRITE_BIT,
+    * ...) maps to SYSMEM_WRITE when gmem, not BLIT_WRITE_GMEM). The
+    * existing BLIT_CACHE_CLEAN dependency mechanism in
+    * tu_flush_for_access() -- built for exactly "GMEM write via a BLIT-
+    * style op, later read via UCHE as an input attachment" -- only ever
+    * gets armed by TU_ACCESS_BLIT_WRITE_GMEM (set for GMEM loads/clears),
+    * which our access-mask classification never produces. So the
+    * subsequent subpass's UCHE_READ_GMEM (its subpassLoad of this
+    * attachment) never gets its required BLIT_CACHE_CLEAN, and reads
+    * stale/empty data regardless of what we actually wrote -- this is the
+    * root cause of resolved_color reading as solid black all along, not a
+    * dispatch/addressing/shader-math bug. Fix: arm the same pending flag
+    * ourselves, since we know this write needs exactly this treatment. */
+   cmd->state.renderpass_cache.pending_flush_bits |= TU_CMD_FLAG_BLIT_CACHE_CLEAN;
+
+   /* AK: the pending-flag arm above is racy in practice (observed as
+    * flickering/partial content, varying frame to frame) -- it goes
+    * through tu_flush_for_access()'s deferred mechanism, which normally
+    * gets paired with a stage-dependency-driven WAIT_FOR_IDLE when armed
+    * via the usual TU_ACCESS_BLIT_WRITE_GMEM path (GMEM loads/clears).
+    * We bypass that path entirely (see comment above), so nothing
+    * guarantees a wait actually lands between our flush and the next
+    * subpass's UCHE read of this attachment. Don't rely on the deferred
+    * bit alone: emit the real flush event and an explicit WFI right here,
+    * synchronously, so every tile's resolve is fully visible before that
+    * tile's next-subpass read can start. */
+   if (CHIP >= A7XX) {
+      tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_CLEAN_BLIT_CACHE);
+      tu_cs_emit_wfi(cs);
+   }
+
+   /* AK: BLIT_CACHE_CLEAN above didn't fully fix the flicker either --
+    * turns out it's the wrong mechanism for us in the first place. Its own
+    * comment says it's for "CP_EVENT_WRITE::BLIT (from GMEM loads/clears)"
+    * writes specifically -- and tu_load_gmem_attachment() (the real,
+    * non-debug load path) actually writes via tu_emit_blit()/BLIT_EVENT_LOAD
+    * (the 2D blit hardware engine), NOT via a 3D draw. load_3d_blit() (the
+    * r3d_dst_gmem-based 3D-draw path we've been comparing ourselves to) is
+    * only used behind TU_DEBUG(3D_LOAD) -- effectively untested in
+    * production. So "3D-draw write to GMEM via CCU, later read via UCHE"
+    * has no proven-correct flush recipe in this driver at all; we're the
+    * first real exerciser of it. CCU_CLEAN_COLOR (emitted at the end of
+    * resolve_3d_blit, same as store_3d_blit) flushes CCU to memory, but
+    * UCHE has its own cache that may still be serving a stale line from
+    * whatever was last read at this GMEM address (e.g. a previous frame).
+    * Explicitly invalidate UCHE before the next subpass's subpassLoad can
+    * run, so it's forced to re-fetch the freshly-flushed data instead of a
+    * stale cached copy. */
+   tu_emit_event_write<CHIP>(cmd, cs, FD_CACHE_INVALIDATE);
+   tu_cs_emit_wfi(cs);
+
+   /* AK: EXPERIMENT #2 -- the flicker/leak pattern measured out to a
+    * structured diagonal brick grid, not noise, with an always-exact
+    * fixed-size guaranteed-good prefix (top 1/5 of screen) followed by a
+    * partially-complete, frame-varying remainder. That signature points to
+    * the RB not having fully retired every fragment of our draw by the
+    * time our flush events fire -- i.e. a completion-wait gap, not a
+    * cache-target gap. CP_WAIT_MEM_WRITES is documented (tu_cmd_buffer.h,
+    * TU_ACCESS_CP_WRITE comment) as exactly "memory writes ... execute
+    * asynchronously and hence need a CP_WAIT_MEM_WRITES if read" for an
+    * analogous case (CP-issued writes, not RB fragment writes -- but the
+    * same class of async-completion problem). Testing whether it also
+    * covers RB/CCU draw writes here. */
+   tu_cs_emit_pkt7(cs, CP_WAIT_MEM_WRITES, 0);
+   tu_cs_emit_wfi(cs);
+   tu_cs_emit_pkt7(cs, CP_WAIT_FOR_ME, 0);
+
+   /* AK: EXPERIMENT #4 -- stacking WFI/CP_WAIT_MEM_WRITES/CP_WAIT_FOR_ME
+    * measurably helped (leak-frame rate ~40-50% -> ~30% in burst-screenshot
+    * testing) but didn't fully close the gap -- none of those actually
+    * guarantee the RB (render backend) has retired every fragment of our
+    * specific draw, only that CP-side command processing/memory-write
+    * ordering is settled. Found the real primitive for that:
+    * tu_wait_for_rb_done() (this file's neighbor tu_cmd_buffer.cc, static,
+    * used only for u_trace tracepoint barriers) emits a CP_EVENT_WRITE7
+    * with .event=RB_DONE_TS writing a known seqno to a location, then
+    * CP_WAIT_REG_MEM-polls that exact location -- RB_DONE_TS is genuinely
+    * "render backend is done" (its own comment: "the only way to wait for
+    * ... completion on A7XX+"), unlike a bare WFI. That helper writes to
+    * an *onchip* register slot (a scarce, statically-allocated 8-slot bank,
+    * all already spoken for) via tu7_write_onchip_timestamp-style calls --
+    * not reusable here without adding a new onchip slot. But tu_write_event
+    * (vkCmdSetEvent's implementation, ~line 10374) shows the same
+    * RB_DONE_TS event can target regular GPU memory instead
+    * (.write_dst = EV_DST_RAM, vs EV_DST_ONCHIP) -- reimplementing that
+    * memory-target variant here, using the existing _pad5 scratch dword
+    * (same field the abandoned crashdec hang-test used) as the target and
+    * a process-local atomic seqno so concurrent command buffers can't
+    * collide on the same expected value. */
+   {
+      /* AK: tried switching the fence target from the shared _pad5 global
+       * dword to a fresh per-call allocation from cmd->sub_cs, to rule out
+       * a possible cross-call/cross-frame address-reuse race -- that
+       * experiment HUNG the GPU (render loop's frame counter never
+       * advanced, had to force-stop; no kernel-level fault/reset message
+       * seen in dmesg, so likely a CP_WAIT_REG_MEM spin on an address that
+       * either isn't the one CP_EVENT_WRITE7 actually wrote to, or isn't
+       * validly GPU-visible/coherent the way a pre-existing tu6_global
+       * field is -- tu_cs_alloc's sub_cs memory may not be safe to use for
+       * this specific CPU-init-then-GPU-write-then-GPU-poll pattern
+       * without extra care not yet understood). REVERTED back to _pad5 --
+       * do not retry the sub_cs-allocated fence approach without
+       * understanding why it hung first. */
+      uint64_t fence_iova = global_iova(cmd, _pad5);
+
+      static uint32_t ak_rb_done_seqno = 0;
+      uint32_t seqno = p_atomic_add_return(&ak_rb_done_seqno, 1);
+
+      if (CHIP == A6XX) {
+         tu_cs_emit_pkt7(cs, CP_EVENT_WRITE, 4);
+         tu_cs_emit(cs, CP_EVENT_WRITE_0_EVENT(RB_DONE_TS));
+      } else {
+         tu_cs_emit_pkt7(cs, CP_EVENT_WRITE7, 4);
+         tu_cs_emit(cs, CP_EVENT_WRITE7_0(.event = RB_DONE_TS,
+                                          .write_src = EV_WRITE_USER_32B,
+                                          .write_dst = EV_DST_RAM,
+                                          .write_enabled = true).value);
+      }
+      tu_cs_emit_qw(cs, fence_iova);
+      tu_cs_emit(cs, seqno);
+
+      tu_cs_emit_pkt7(cs, CP_WAIT_REG_MEM, 6);
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_0_FUNCTION(WRITE_EQ) |
+                     CP_WAIT_REG_MEM_0_POLL(POLL_MEMORY));
+      tu_cs_emit_qw(cs, fence_iova);
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_3_REF(seqno));
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_4_MASK(~0u));
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_5_DELAY_LOOP_CYCLES(20));
+   }
+
+   trace_end_blit_image(&cmd->trace, cs);
+
+   return true;
+}
+TU_GENX(tu_resolve_gmem_attachment);
 
 static bool
 tu_attachment_store_unaligned(struct tu_cmd_buffer *cmd, uint32_t a)

@@ -431,6 +431,25 @@ tu_render_pass_patch_input_gmem(struct tu_render_pass *pass)
             written[a] = true;
             subpass->feedback_invalidate = true;
          }
+         /* AK: an attachment that was only ever written as a resolve
+          * target (never as a real color/depth attachment anywhere in the
+          * render pass) never gets ->gmem set -- tu_subpass_use_attachment()
+          * is what sets it, and that's never called for a resolve target;
+          * tu_subpass_resolve_attachment() doesn't set it either. If a
+          * later subpass reads it as an input attachment, the resolved
+          * data needs to actually be GMEM-resident for that read to see
+          * anything, so fix up the classification here, at the point
+          * where we discover the read -- resolve-attachment setup itself
+          * doesn't yet know whether a later subpass will consume it as
+          * input. written[a] here can only come from an earlier subpass's
+          * resolve or clear (this loop runs before this subpass's own
+          * resolve-attachments are marked below), so this can't misfire
+          * for a same-subpass resolve+input combination.
+          */
+         if (written[a] && !pass->attachments[a].gmem) {
+            pass->attachments[a].gmem = true;
+            subpass->feedback_invalidate = true;
+         }
          subpass->input_attachments[j].patch_input_gmem =
             written[a] && pass->attachments[a].gmem;
       }

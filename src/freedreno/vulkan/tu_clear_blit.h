@@ -102,6 +102,24 @@ tu_store_gmem_attachment(struct tu_cmd_buffer *cmd,
                          bool per_layer_render_area,
                          bool cond_exec_allowed);
 
+/* AK: GMEM->GMEM resolve prototype. Attempts to resolve gmem_a's
+ * multisampled GMEM content directly into a's GMEM-resident, single-sample
+ * slot, entirely without leaving the tile. Returns false (having emitted
+ * nothing) if this combination of attachment isn't supported yet by the
+ * prototype (non-color, non-averageable formats, unsupported sample
+ * count, FDM, separate stencil) -- callers must fall back to the existing
+ * store-then-load-back path in that case.
+ */
+template <chip CHIP>
+bool
+tu_resolve_gmem_attachment(struct tu_cmd_buffer *cmd,
+                           struct tu_cs *cs,
+                           uint32_t a,
+                           uint32_t gmem_a,
+                           uint32_t layers,
+                           uint32_t layer_mask,
+                           bool per_layer_render_area);
+
 void
 tu_choose_gmem_layout(struct tu_cmd_buffer *cmd);
 
