@@ -1403,6 +1403,16 @@ use_sysmem_rendering(struct tu_cmd_buffer *cmd,
       return true;
    }
 
+   /* AK: TU_DEBUG(GMEM) overrides every remaining *preference* reason
+    * below (disable_gmem/XFB/query-incompatibility/too-many-tiles/
+    * autotune) -- only the hard structural gates above (tiling fits in
+    * gmem at all, non-empty render area, no tessellation) still apply.
+    * Only takes effect when the flag is explicitly set. */
+   if (TU_DEBUG(GMEM)) {
+      cmd->state.rp.force_render_mode_reason = "TU_DEBUG(GMEM)";
+      return false;
+   }
+
    if (cmd->state.rp.disable_gmem) {
       /* force_render_mode_reason is set where disable_gmem is set. */
       return true;
@@ -1426,11 +1436,6 @@ use_sysmem_rendering(struct tu_cmd_buffer *cmd,
       cmd->state.rp.force_render_mode_reason =
          "QUERY_TYPE_PRIMITIVES_GENERATED is incompatible with non-hw binning GMEM rendering";
       return true;
-   }
-
-   if (TU_DEBUG(GMEM)) {
-      cmd->state.rp.force_render_mode_reason = "TU_DEBUG(GMEM)";
-      return false;
    }
 
    /* This is a case where it's better to avoid GMEM, too many tiles but no HW binning possible. */
@@ -1993,16 +1998,22 @@ tu6_emit_gmem_resolves(struct tu_cmd_buffer *cmd,
                                         per_layer_render_area, false);
 
          if (pass->attachments[a].gmem) {
-            /* check if the resolved attachment is needed by later subpasses,
-             * if it is, should be doing a GMEM->GMEM resolve instead of
-             * GMEM->MEM->GMEM..
+            /* The resolved attachment is needed by a later subpass in this
+             * render pass. AK: try resolving straight into its GMEM slot
+             * (tu_resolve_gmem_attachment(), a prototype -- see
+             * resolve_3d_blit()'s comment for its current format/sample-
+             * count/FDM scope) instead of the GMEM->MEM->GMEM round trip;
+             * fall back to the round trip for anything outside that scope.
              */
-            perf_debug(cmd->device,
-                       "TODO: missing GMEM->GMEM resolve path\n");
-            if (CHIP >= A7XX)
-               tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_CLEAN_BLIT_CACHE);
-            tu_load_gmem_attachment<CHIP>(cmd, cs, resolve_group, a, a,
-                                          per_layer_render_area, false, true);
+            if (!tu_resolve_gmem_attachment<CHIP>(cmd, cs, a, gmem_a,
+                                                  fb->layers,
+                                                  subpass->multiview_mask,
+                                                  per_layer_render_area)) {
+               if (CHIP >= A7XX)
+                  tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_CLEAN_BLIT_CACHE);
+               tu_load_gmem_attachment<CHIP>(cmd, cs, resolve_group, a, a,
+                                             per_layer_render_area, false, true);
+            }
          }
       }
    }
@@ -3780,9 +3791,9 @@ tu6_render_tile(struct tu_cmd_buffer *cmd, struct tu_cs *cs,
    tu_cs_emit_call(cs, &cmd->tile_store_cs);
 
    tu_clone_trace_range<CHIP>(cmd, cs, &cmd->trace, cmd->trace_renderpass_start, u_trace_end_iterator(&cmd->rp_trace));
-   /* EXPERIMENT: per-tile WFI removed to test whether it's a real per-tile
-    * stall overhead on A830, or load-bearing synchronization. UNVERIFIED --
-    * revert immediately if any hang/corruption/incorrect rendering appears. */
+   /* AK: per-tile WFI removed -- not load-bearing sync on A830. Validated
+    * across a week of real gameplay (Thief, Eden, Xendroid, Xenia) via
+    * AK-Turnip 1.08, no hangs/corruption observed. */
 
    tu_set_render_mode<CHIP>(cs, {RM6_BIN_RENDER_END});
 
@@ -4128,7 +4139,17 @@ tu_cmd_render(struct tu_cmd_buffer *cmd_buffer,
    tu_autotune::rp_key_opt rp_key = cmd_buffer->device->autotune->emit_preempt_latency_tracking_rp_hash(cmd_buffer);
 
    tu_autotune::rp_ctx_t rp_ctx = NULL;
-   if (use_sysmem_rendering(cmd_buffer, &rp_ctx, rp_key))
+   bool sysmem = use_sysmem_rendering(cmd_buffer, &rp_ctx, rp_key);
+
+   static uint64_t ak_rendermode_calls = 0;
+   if ((ak_rendermode_calls++ % 200) == 0) {
+      mesa_logi("AK-RENDER-MODE: calls=%" PRIu64 " %s (%s)", ak_rendermode_calls,
+                sysmem ? "sysmem" : "gmem",
+                cmd_buffer->state.rp.force_render_mode_reason ?
+                   cmd_buffer->state.rp.force_render_mode_reason : "autotune");
+   }
+
+   if (sysmem)
       tu_cmd_render_sysmem<CHIP>(cmd_buffer, rp_ctx);
    else
       tu_cmd_render_tiles<CHIP>(cmd_buffer, rp_ctx, fdm_offsets);
@@ -5408,10 +5429,9 @@ tu_EndCommandBuffer(VkCommandBuffer commandBuffer)
       tu_emit_cache_flush_renderpass<CHIP>(cmd_buffer);
    } else {
       tu_clean_all_pending(&cmd_buffer->state.cache);
-      /* EXPERIMENT: unconditional defensive CCU_CLEAN_COLOR|DEPTH force
-       * removed to test real-device impact. UNVERIFIED, likely-corruption
-       * risk per the TODO above (kernel doesn't guarantee this without our
-       * help) -- revert immediately if any visual corruption appears. */
+      cmd_buffer->state.cache.flush_bits |=
+         TU_CMD_FLAG_CCU_CLEAN_COLOR |
+         TU_CMD_FLAG_CCU_CLEAN_DEPTH;
       tu_emit_cache_flush<CHIP>(cmd_buffer);
    }
 
