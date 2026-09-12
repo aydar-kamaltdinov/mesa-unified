@@ -4136,14 +4136,6 @@ tu_cmd_render(struct tu_cmd_buffer *cmd_buffer,
    tu_autotune::rp_ctx_t rp_ctx = NULL;
    bool sysmem = use_sysmem_rendering(cmd_buffer, &rp_ctx, rp_key);
 
-   static uint64_t ak_rendermode_calls = 0;
-   if ((ak_rendermode_calls++ % 200) == 0) {
-      mesa_logi("AK-RENDER-MODE: calls=%" PRIu64 " %s (%s)", ak_rendermode_calls,
-                sysmem ? "sysmem" : "gmem",
-                cmd_buffer->state.rp.force_render_mode_reason ?
-                   cmd_buffer->state.rp.force_render_mode_reason : "autotune");
-   }
-
    if (sysmem)
       tu_cmd_render_sysmem<CHIP>(cmd_buffer, rp_ctx);
    else
@@ -9654,22 +9646,6 @@ tu_dispatch(struct tu_cmd_buffer *cmd,
       (TU_CMD_FLAG_CCU_INVALIDATE_COLOR | TU_CMD_FLAG_CCU_INVALIDATE_DEPTH);
    cmd->state.cache.flush_bits &= ~deferred_ccu_invalidate;
 
-   {
-      static uint64_t ak_dispatch_calls = 0;
-      static uint32_t ak_dispatch_bits_seen = 0;
-      static const uint32_t ak_ccu_invalidate_mask =
-         TU_CMD_FLAG_CCU_INVALIDATE_DEPTH | TU_CMD_FLAG_CCU_INVALIDATE_COLOR;
-      ak_dispatch_calls++;
-      ak_dispatch_bits_seen |= (uint32_t) cmd->state.cache.flush_bits;
-      if ((ak_dispatch_calls % 500) == 0) {
-         mesa_logi("AK-DISPATCH: calls=%" PRIu64
-                  " last_flush_bits=0x%x accum_bits=0x%x has_ccu_invalidate_bits=%d",
-                  ak_dispatch_calls, (uint32_t) cmd->state.cache.flush_bits,
-                  ak_dispatch_bits_seen,
-                  (ak_dispatch_bits_seen & ak_ccu_invalidate_mask) != 0);
-         ak_dispatch_bits_seen = 0;
-      }
-   }
    tu_emit_cache_flush<CHIP>(cmd);
    cmd->state.cache.flush_bits |= deferred_ccu_invalidate;
 
