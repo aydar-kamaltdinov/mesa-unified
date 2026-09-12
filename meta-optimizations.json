@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "name": "AK Turnip 1.10 candidate - optimizations",
-  "description": "AK Turnip 1.10 candidate with descriptor rebind deduplication and transform-feedback command stream optimizations. Candidate for testing only.",
+  "name": "AK Turnip 1.10",
+  "description": "AK Turnip 1.10 with descriptor rebind deduplication and transform-feedback command stream optimizations.",
   "author": "aydar",
   "packageVersion": "1",
   "vendor": "Mesa",
-  "driverVersion": "Vulkan 1.4.359",
+  "driverVersion": "AK-1.10",
   "minApi": 30,
   "libraryName": "libvulkan_freedreno.so"
 }
