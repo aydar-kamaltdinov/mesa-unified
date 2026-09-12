@@ -5947,8 +5947,6 @@ resolve_3d_blit(struct tu_cmd_buffer *cmd,
    const struct fdl6_view *src_fdl_view = tu_image_view_fdl_view(src_iview, false);
    const struct fdl6_view *dst_fdl_view = tu_image_view_fdl_view(dst_iview, false);
 
-   tu_cs_emit_debug_msg(cs, "AK-GMEM-RESOLVE: resolve_3d_blit ENTRY layer=%u", layer);
-
    /* Save RB_CNTL/GRAS_SC_BIN_CNTL/RB_BUFFER_CNTL -- same rationale as
     * store_3d_blit(): they're normally only set once binning mode is
     * known, and we want this callable before that decision if needed. */
@@ -5962,8 +5960,6 @@ resolve_3d_blit(struct tu_cmd_buffer *cmd,
                      CP_REG_TO_SCRATCH_0_SCRATCH(1) |
                      CP_REG_TO_SCRATCH_0_CNT(1 - 1));
    }
-
-   tu_cs_emit_debug_msg(cs, "AK-GMEM-RESOLVE: after save, before r3d_setup");
 
    r3d_setup<CHIP>(cmd, cs, src_format, dst_format, VK_IMAGE_ASPECT_COLOR_BIT,
                    R3D_DST_GMEM, false, dst_fdl_view->ubwc_enabled,
@@ -6016,12 +6012,7 @@ resolve_3d_blit(struct tu_cmd_buffer *cmd,
    }
 
 
-   tu_cs_emit_debug_msg(cs, "AK-GMEM-RESOLVE: after setup/coords/dst/src, before r3d_run "
-                        "(inspect RB_CNTL/GRAS_SC_BIN_CNTL/window-scissor/RB_MRT_BUF_INFO here)");
-
    r3d_run(cmd, cs);
-
-   tu_cs_emit_debug_msg(cs, "AK-GMEM-RESOLVE: after r3d_run, before teardown");
 
    r3d_teardown<CHIP>(cmd, cs);
 
@@ -6058,7 +6049,6 @@ resolve_3d_blit(struct tu_cmd_buffer *cmd,
                         CP_SCRATCH_TO_REG_0_CNT(1 - 1));
    }
 
-   tu_cs_emit_debug_msg(cs, "AK-GMEM-RESOLVE: resolve_3d_blit EXIT layer=%u", layer);
 }
 
 template <chip CHIP>
