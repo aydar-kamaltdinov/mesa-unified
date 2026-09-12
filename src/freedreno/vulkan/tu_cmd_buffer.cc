@@ -2462,6 +2462,13 @@ tu_init_hw(struct tu_cmd_buffer *cmd, struct tu_cs *cs)
    tu6_init_static_regs<CHIP>(cmd->device, cs);
    tu_init_hw_rp<CHIP>(cs);
 
+   /* These addresses are device-global and remain valid for the lifetime of
+    * the command buffer.  Program them once instead of repeating the same
+    * register writes at every CmdEndTransformFeedback. */
+   for (uint32_t i = 0; i < IR3_MAX_SO_BUFFERS; i++)
+      tu_cs_emit_regs(cs, VPC_SO_FLUSH_BASE(CHIP, i,
+                                             .qword = global_iova_arr(cmd, flush_base, i)));
+
    emit_rb_ccu_cntl<CHIP>(cs, cmd->device, false);
    emit_vpc_attr_buf<CHIP>(cs, cmd->device, false);
    cmd->state.ccu_state = TU_CMD_CCU_SYSMEM;
@@ -4816,6 +4823,7 @@ tu_bind_descriptor_sets(struct tu_cmd_buffer *cmd,
 
    struct tu_descriptor_state *descriptors_state =
       tu_get_descriptors_state(cmd, bind_point);
+   bool descriptor_state_changed = false;
 
    descriptors_state->max_sets_bound =
       MAX2(descriptors_state->max_sets_bound,
@@ -4832,8 +4840,9 @@ tu_bind_descriptor_sets(struct tu_cmd_buffer *cmd,
       VK_FROM_HANDLE(tu_descriptor_set, set, info->pDescriptorSets[i]);
 
       descriptors_state->sets[idx] = set;
-      descriptors_state->set_iova[idx] = set ?
-         (set->va | BINDLESS_DESCRIPTOR_64B) : 0;
+      uint64_t set_iova = set ? (set->va | BINDLESS_DESCRIPTOR_64B) : 0;
+      descriptor_state_changed |= descriptors_state->set_iova[idx] != set_iova;
+      descriptors_state->set_iova[idx] = set_iova;
 
       if (cmd->device->physical_device->compiler_options.enable_ssbo_emulation)
          cmd->state.dirty |= TU_CMD_DIRTY_SHADER_CONSTS;
@@ -4950,10 +4959,13 @@ tu_bind_descriptor_sets(struct tu_cmd_buffer *cmd,
       memcpy(dynamic_desc_set.map, descriptors_state->dynamic_descriptors,
              descriptors_state->max_dynamic_offset_size);
       assert(reserved_set_idx >= 0); /* reserved set must be bound */
-      descriptors_state->set_iova[reserved_set_idx] = dynamic_desc_set.iova | BINDLESS_DESCRIPTOR_64B;
+      uint64_t set_iova = dynamic_desc_set.iova | BINDLESS_DESCRIPTOR_64B;
+      descriptor_state_changed |= descriptors_state->set_iova[reserved_set_idx] != set_iova;
+      descriptors_state->set_iova[reserved_set_idx] = set_iova;
    }
 
-   tu_dirty_desc_sets(cmd, bind_point);
+   if (descriptor_state_changed)
+      tu_dirty_desc_sets(cmd, bind_point);
 }
 
 template <chip CHIP>
@@ -4998,6 +5010,7 @@ tu_set_descriptor_buffer_offsets(
 
    struct tu_descriptor_state *descriptors_state =
       tu_get_descriptors_state(cmd, bind_point);
+   bool descriptor_state_changed = false;
 
    descriptors_state->max_sets_bound = MAX2(descriptors_state->max_sets_bound,
                                             info->firstSet + info->setCount);
@@ -5006,17 +5019,19 @@ tu_set_descriptor_buffer_offsets(
       unsigned idx = i + info->firstSet;
       struct tu_descriptor_set_layout *set_layout = layout->set[idx].layout;
 
-      descriptors_state->set_iova[idx] =
+      uint64_t set_iova =
          (cmd->state.descriptor_buffer_iova[info->pBufferIndices[i]] +
-          info->pOffsets[i]) |
-         BINDLESS_DESCRIPTOR_64B;
+          info->pOffsets[i]) | BINDLESS_DESCRIPTOR_64B;
+      descriptor_state_changed |= descriptors_state->set_iova[idx] != set_iova;
+      descriptors_state->set_iova[idx] = set_iova;
 
       if (cmd->device->physical_device->compiler_options.enable_ssbo_emulation ||
           set_layout->has_inline_uniforms)
          cmd->state.dirty |= TU_CMD_DIRTY_SHADER_CONSTS;
    }
 
-   tu_dirty_desc_sets(cmd, bind_point);
+   if (descriptor_state_changed)
+      tu_dirty_desc_sets(cmd, bind_point);
 }
 
 VKAPI_ATTR void VKAPI_CALL
@@ -5052,14 +5067,17 @@ tu_bind_descriptor_buffer_embedded_samplers(
 
    struct tu_descriptor_state *descriptors_state =
       tu_get_descriptors_state(cmd, bind_point);
+   bool descriptor_state_changed = false;
 
    descriptors_state->max_sets_bound =
       MAX2(descriptors_state->max_sets_bound, info->set + 1);
 
-   descriptors_state->set_iova[info->set] =
-      set_layout->embedded_samplers->iova | BINDLESS_DESCRIPTOR_64B;
+   uint64_t set_iova = set_layout->embedded_samplers->iova | BINDLESS_DESCRIPTOR_64B;
+   descriptor_state_changed |= descriptors_state->set_iova[info->set] != set_iova;
+   descriptors_state->set_iova[info->set] = set_iova;
 
-   tu_dirty_desc_sets(cmd, bind_point);
+   if (descriptor_state_changed)
+      tu_dirty_desc_sets(cmd, bind_point);
 }
 
 VKAPI_ATTR void VKAPI_CALL
@@ -5254,6 +5272,7 @@ tu_CmdBindTransformFeedbackBuffersEXT(VkCommandBuffer commandBuffer,
                       VPC_SO_BUFFER_SIZE(CHIP, idx, size + offset));
 
       cmd->state.streamout_offset[idx] = offset;
+      cmd->state.streamout_active_mask |= 1u << idx;
    }
 
    tu_cond_exec_end(cs);
@@ -5277,9 +5296,11 @@ tu_CmdBeginTransformFeedbackEXT(VkCommandBuffer commandBuffer,
 
    tu_cs_emit_regs(cs, VPC_SO_OVERRIDE(CHIP, false));
 
-   /* TODO: only update offset for active buffers */
-   for (uint32_t i = 0; i < IR3_MAX_SO_BUFFERS; i++)
-      tu_cs_emit_regs(cs, VPC_SO_BUFFER_OFFSET(CHIP, i, cmd->state.streamout_offset[i]));
+   for (uint32_t i = 0; i < IR3_MAX_SO_BUFFERS; i++) {
+      if (cmd->state.streamout_active_mask & (1u << i))
+         tu_cs_emit_regs(cs, VPC_SO_BUFFER_OFFSET(CHIP, i,
+                                                   cmd->state.streamout_offset[i]));
+   }
 
    for (uint32_t i = 0; i < (pCounterBuffers ? counterBufferCount : 0); i++) {
       uint32_t idx = firstCounterBuffer + i;
@@ -5327,11 +5348,9 @@ tu_CmdEndTransformFeedbackEXT(VkCommandBuffer commandBuffer,
 
    tu_cs_emit_regs(cs, VPC_SO_OVERRIDE(CHIP, true));
 
-   /* TODO: only flush buffers that need to be flushed */
    for (uint32_t i = 0; i < IR3_MAX_SO_BUFFERS; i++) {
-      /* note: FLUSH_BASE is always the same, so it could go in init_hw()? */
-      tu_cs_emit_regs(cs, VPC_SO_FLUSH_BASE(CHIP, i, .qword = global_iova_arr(cmd, flush_base, i)));
-      tu_emit_event_write<CHIP>(cmd, cs, (enum fd_gpu_event) (FD_FLUSH_SO_0 + i));
+      if (cmd->state.streamout_active_mask & (1u << i))
+         tu_emit_event_write<CHIP>(cmd, cs, (enum fd_gpu_event) (FD_FLUSH_SO_0 + i));
    }
 
    for (uint32_t i = 0; i < (pCounterBuffers ? counterBufferCount : 0); i++) {
