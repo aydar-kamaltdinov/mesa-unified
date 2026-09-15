@@ -906,6 +906,16 @@ tu_flush_for_access(struct tu_cache_state *cache,
                     enum tu_cmd_access_mask src_mask,
                     enum tu_cmd_access_mask dst_mask);
 
+/* Immediately emits whatever cache->flush_bits currently holds into cs,
+ * for callers (like resolve_3d_blit) that aren't in draw_cs/renderpass_cache's
+ * normal deferred-emission path and need a synchronous flush at a specific
+ * point in an arbitrary cs. */
+template <chip CHIP>
+void
+tu6_emit_flushes(struct tu_cmd_buffer *cmd_buffer,
+                 struct tu_cs *cs,
+                 struct tu_cache_state *cache);
+
 static inline struct tu_descriptor_state *
 tu_get_descriptors_state(struct tu_cmd_buffer *cmd_buffer,
                          VkPipelineBindPoint bind_point)

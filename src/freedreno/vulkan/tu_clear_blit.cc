@@ -926,30 +926,23 @@ build_ms_resolve_fs_shader(unsigned samples)
    nir_variable *out_color =
       nir_create_variable_with_location(b->shader, nir_var_shader_out,
                                         FRAG_RESULT_DATA0, glsl_vec4_type());
-   nir_variable *in_coords =
-      nir_create_variable_with_location(b->shader, nir_var_shader_in,
-                                        VARYING_SLOT_VAR0, glsl_vec_type(2));
 
    b->shader->info.num_textures = 1;
    BITSET_SET(b->shader->info.textures_used, 0);
    BITSET_SET(b->shader->info.textures_used_by_txf, 0);
 
-   /* Reconstruct the true per-fragment (x, y) sample coordinate from the
-    * "coords" varying. Resolution-agnostic: queries the bound MS image's
-    * actual size via nir_txs rather than assuming a fixed resolution.
-    */
-   nir_def *img_size = nir_txs(b, .texture_index = 0, .sampler_index = 0,
-                               .dim = GLSL_SAMPLER_DIM_MS,
-                               .dest_type = nir_type_int32);
-   nir_def *img_w = nir_i2f32(b, nir_channel(b, img_size, 0));
-   nir_def *img_h = nir_i2f32(b, nir_channel(b, img_size, 1));
-
-   nir_def *raw_coords = nir_load_var(b, in_coords);
-   nir_def *raw0 = nir_channel(b, raw_coords, 0);
-   nir_def *raw1 = nir_channel(b, raw_coords, 1);
-   nir_def *samp_x = nir_fmul(b, raw1, nir_fdiv(b, img_w, img_h));
-   nir_def *samp_y = nir_fsub(b, img_h, nir_fmul(b, raw0, nir_fdiv(b, img_h, img_w)));
-   nir_def *coord = nir_f2i32(b, nir_vec2(b, samp_x, samp_y));
+   /* AK 2026-09-15: isolating the coordinate-reconstruction variable from
+    * the synchronization variable (see resolve_3d_blit's tu_flush_for_access
+    * change) -- this replaces the old varying-based reconstruction (which
+    * derived per-fragment (x,y) from a "coords" varying whose REPL_MODE
+    * interpolator resets per tile-replay, requiring a cross-axis-scaled
+    * formula tuned against a specific old tile layout) with the low-level
+    * ir3 GMEM fragcoord intrinsic directly as integer pixel coords. No
+    * settle-loop here -- testing whether the coordinate math alone (not
+    * added shader delay) was what mattered in the previously-tested
+    * settle-loop build. */
+   nir_def *frag_coord_gmem = nir_load_frag_coord_unscaled_ir3(b);
+   nir_def *coord = nir_f2i32(b, nir_trim_vector(b, frag_coord_gmem, 2));
 
    nir_def *sum = nir_imm_vec4(b, 0, 0, 0, 0);
    for (unsigned i = 0; i < samples; i++) {
@@ -5980,42 +5973,25 @@ resolve_3d_blit(struct tu_cmd_buffer *cmd,
    r3d_src_gmem<CHIP>(cmd, cs, src_fdl_view, src_format, dst_format,
                       src_gmem_offset, src_cpp);
 
-   /* sync GMEM writes with CACHE, same as store_3d_blit's GMEM source read. */
-   tu_emit_event_write<CHIP>(cmd, cs, FD_CACHE_INVALIDATE);
-   tu_cs_emit_wfi(cs);
-
-   /* Wait for the RB to finish retiring subpass 0's writes to the MSAA
-    * source before sampling it -- FD_CACHE_INVALIDATE above only covers
-    * UCHE, not RB completion. Same RB_DONE_TS-via-memory technique as the
-    * post-resolve fence below, distinct scratch dword (_pad4 vs _pad5) so
-    * the two fences can't collide. */
-   {
-      uint64_t src_fence_iova = global_iova(cmd, _pad4);
-      static uint32_t ak_src_rb_done_seqno = 0;
-      uint32_t src_seqno = p_atomic_add_return(&ak_src_rb_done_seqno, 1);
-
-      if (CHIP == A6XX) {
-         tu_cs_emit_pkt7(cs, CP_EVENT_WRITE, 4);
-         tu_cs_emit(cs, CP_EVENT_WRITE_0_EVENT(RB_DONE_TS));
-      } else {
-         tu_cs_emit_pkt7(cs, CP_EVENT_WRITE7, 4);
-         tu_cs_emit(cs, CP_EVENT_WRITE7_0(.event = RB_DONE_TS,
-                                          .write_src = EV_WRITE_USER_32B,
-                                          .write_dst = EV_DST_RAM,
-                                          .write_enabled = true).value);
-      }
-      tu_cs_emit_qw(cs, src_fence_iova);
-      tu_cs_emit(cs, src_seqno);
-
-      tu_cs_emit_pkt7(cs, CP_WAIT_REG_MEM, 6);
-      tu_cs_emit(cs, CP_WAIT_REG_MEM_0_FUNCTION(WRITE_EQ) |
-                     CP_WAIT_REG_MEM_0_POLL(POLL_MEMORY));
-      tu_cs_emit_qw(cs, src_fence_iova);
-      tu_cs_emit(cs, CP_WAIT_REG_MEM_3_REF(src_seqno));
-      tu_cs_emit(cs, CP_WAIT_REG_MEM_4_MASK(~0u));
-      tu_cs_emit(cs, CP_WAIT_REG_MEM_5_DELAY_LOOP_CYCLES(20));
-   }
-
+   /* AK 2026-09-15: replaced the hand-rolled FD_CACHE_INVALIDATE+WFI+manual
+    * RB_DONE_TS/CP_WAIT_REG_MEM fence with the same mechanism the rest of
+    * the driver uses for exactly this kind of transition (a renderpass
+    * color write that must become visible to a subsequent UCHE-based GMEM
+    * read -- see tu_subpass_barrier()'s handling of
+    * VK_ACCESS_2_INPUT_ATTACHMENT_READ_BIT for the model this follows).
+    * Going through the real tu_flush_for_access<CHIP>() + an immediate
+    * tu6_emit_flushes<CHIP>() (rather than hand-emitting raw CP packets
+    * that bypass the cache-state accounting entirely) means this gets
+    * whatever combination of CACHE_INVALIDATE_GMEM/SUBPASS_SLICE_FENCE/
+    * WAIT_FOR_IDLE the framework considers correct for this chip, instead
+    * of us guessing. Uses cmd->state.renderpass_cache (in-renderpass) and
+    * emits synchronously into the same `cs` resolve_3d_blit was already
+    * given (the tile-store CS, NOT draw_cs -- tu_emit_cache_flush_renderpass
+    * can't be used here since it hardcodes draw_cs). */
+   tu_flush_for_access<CHIP>(&cmd->state.renderpass_cache,
+                             TU_ACCESS_CCU_COLOR_INCOHERENT_WRITE,
+                             TU_ACCESS_UCHE_READ_GMEM);
+   tu6_emit_flushes<CHIP>(cmd, cs, &cmd->state.renderpass_cache);
 
    r3d_run(cmd, cs);
 
@@ -6030,11 +6006,15 @@ resolve_3d_blit(struct tu_cmd_buffer *cmd,
    BITSET_SET(cmd->vk.dynamic_graphics_state.dirty, MESA_VK_DYNAMIC_VP_VIEWPORTS);
    BITSET_SET(cmd->vk.dynamic_graphics_state.dirty, MESA_VK_DYNAMIC_VP_SCISSORS);
 
-   /* Draws write to CCU; the destination is GMEM, which later GMEM
-    * consumers (loads/draws) expect to read as fully flushed, matching
-    * how r3d_dst_gmem-based writes are treated in load_3d_blit's callers.
-    */
-   tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_CLEAN_COLOR);
+   /* AK 2026-09-15: same reasoning as the pre-read flush above -- our own
+    * r3d_run() draw just wrote the destination via CCU, and the next
+    * subpass's UCHE-based GMEM read (subpassLoad/input attachment) needs
+    * that write flushed and visible. Replaces the old bare
+    * FD_CCU_CLEAN_COLOR event with the real access-mask-driven flush. */
+   tu_flush_for_access<CHIP>(&cmd->state.renderpass_cache,
+                             TU_ACCESS_CCU_COLOR_INCOHERENT_WRITE,
+                             TU_ACCESS_UCHE_READ_GMEM);
+   tu6_emit_flushes<CHIP>(cmd, cs, &cmd->state.renderpass_cache);
 
    /* Restore RB_CNTL/GRAS_SC_BIN_CNTL/RB_BUFFER_CNTL saved above. */
    tu_cs_emit_pkt7(cs, CP_SCRATCH_TO_REG, 1);

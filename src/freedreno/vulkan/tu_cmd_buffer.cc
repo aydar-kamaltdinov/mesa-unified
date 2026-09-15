@@ -354,7 +354,7 @@ tu_emit_rt_workaround(struct tu_cmd_buffer *cmd, struct tu_cs *cs)
 }
 
 template <chip CHIP>
-static void
+void
 tu6_emit_flushes(struct tu_cmd_buffer *cmd_buffer,
                  struct tu_cs *cs,
                  struct tu_cache_state *cache)
@@ -460,6 +460,7 @@ tu6_emit_flushes(struct tu_cmd_buffer *cmd_buffer,
    if (flushes & TU_CMD_FLAG_WAIT_FOR_ME)
       tu_cs_emit_pkt7(cs, CP_WAIT_FOR_ME, 0);
 }
+TU_GENX(tu6_emit_flushes);
 
 static void
 tu7_write_onchip_val(struct tu_cs *cs, enum tu_onchip_addr addr,
