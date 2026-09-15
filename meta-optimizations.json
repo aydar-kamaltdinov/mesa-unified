@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "name": "AK Turnip 1.10",
-  "description": "AK Turnip 1.10 with descriptor rebind deduplication and transform-feedback command stream optimizations.",
+  "name": "AK Turnip 1.11",
+  "description": "AK Turnip 1.11: query pool resets batched into large CP_MEM_WRITE packets instead of one per field per query; ir3 prefetch sam.s2en quirk (fixes real GPU faults in Devil May Cry 5); VALVE_buffer_device_address_allocation_alignment; VK_EXT_depth_bias_control/depth_range_unrestricted; fixed sparse bind column merging and a lazy-memory GetDeviceMemoryOpaqueCaptureAddress crash; DEVICE_LOCAL-only memory type drirc option for RDR2.",
   "author": "aydar",
   "packageVersion": "1",
   "vendor": "Mesa",
-  "driverVersion": "AK-1.10",
+  "driverVersion": "AK-1.11",
   "minApi": 30,
   "libraryName": "libvulkan_freedreno.so"
 }
