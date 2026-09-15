@@ -5980,22 +5980,42 @@ resolve_3d_blit(struct tu_cmd_buffer *cmd,
    r3d_src_gmem<CHIP>(cmd, cs, src_fdl_view, src_format, dst_format,
                       src_gmem_offset, src_cpp);
 
-   /* AK 2026-09-15: replaced the old FD_CACHE_INVALIDATE+WFI plus a manual
-    * RB_DONE_TS-via-memory/CP_WAIT_REG_MEM fence with the real hardware
-    * primitive this needed all along. Per upstream MR 44348 ("tu: Implement
-    * SUBPASS_SLICE_FENCE flush"), FD_SUBPASS_SLICE_FENCE does exactly the
-    * two things we were hand-rolling above: invalidates the UCHE GMEM
-    * aperture, and waits for RB to finish (plus any earlier events) before
-    * subsequent FS waves start -- on A8XX specifically it's scoped
-    * per-slice, which is the granularity we actually need here. This is a
-    * genuinely different kind of barrier than the WFI/CP_WAIT_FOR_ME/
-    * generic-RB_DONE_TS attempts previously tried and documented as not
-    * fixing the tile-duplication bug -- but this specific replacement has
-    * NOT yet been re-validated on real device with the burst-capture
-    * methodology. Do not trust this without retesting. */
-   tu_emit_event_write<CHIP>(cmd, cs, FD_LABEL);
-   tu_emit_event_write<CHIP>(cmd, cs, FD_SUBPASS_SLICE_FENCE);
-   tu_emit_event_write<CHIP>(cmd, cs, FD_LABEL);
+   /* sync GMEM writes with CACHE, same as store_3d_blit's GMEM source read. */
+   tu_emit_event_write<CHIP>(cmd, cs, FD_CACHE_INVALIDATE);
+   tu_cs_emit_wfi(cs);
+
+   /* Wait for the RB to finish retiring subpass 0's writes to the MSAA
+    * source before sampling it -- FD_CACHE_INVALIDATE above only covers
+    * UCHE, not RB completion. Same RB_DONE_TS-via-memory technique as the
+    * post-resolve fence below, distinct scratch dword (_pad4 vs _pad5) so
+    * the two fences can't collide. */
+   {
+      uint64_t src_fence_iova = global_iova(cmd, _pad4);
+      static uint32_t ak_src_rb_done_seqno = 0;
+      uint32_t src_seqno = p_atomic_add_return(&ak_src_rb_done_seqno, 1);
+
+      if (CHIP == A6XX) {
+         tu_cs_emit_pkt7(cs, CP_EVENT_WRITE, 4);
+         tu_cs_emit(cs, CP_EVENT_WRITE_0_EVENT(RB_DONE_TS));
+      } else {
+         tu_cs_emit_pkt7(cs, CP_EVENT_WRITE7, 4);
+         tu_cs_emit(cs, CP_EVENT_WRITE7_0(.event = RB_DONE_TS,
+                                          .write_src = EV_WRITE_USER_32B,
+                                          .write_dst = EV_DST_RAM,
+                                          .write_enabled = true).value);
+      }
+      tu_cs_emit_qw(cs, src_fence_iova);
+      tu_cs_emit(cs, src_seqno);
+
+      tu_cs_emit_pkt7(cs, CP_WAIT_REG_MEM, 6);
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_0_FUNCTION(WRITE_EQ) |
+                     CP_WAIT_REG_MEM_0_POLL(POLL_MEMORY));
+      tu_cs_emit_qw(cs, src_fence_iova);
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_3_REF(src_seqno));
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_4_MASK(~0u));
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_5_DELAY_LOOP_CYCLES(20));
+   }
+
 
    r3d_run(cmd, cs);
 
@@ -6133,23 +6153,104 @@ tu_resolve_gmem_attachment(struct tu_cmd_buffer *cmd,
       tu_cs_emit_wfi(cs);
    }
 
-   /* AK 2026-09-15: this used to be a stack of increasingly targeted
-    * hand-rolled workarounds (FD_CACHE_INVALIDATE+WFI, then
-    * CP_WAIT_MEM_WRITES+WFI+CP_WAIT_FOR_ME, then a manual RB_DONE_TS-via-
-    * memory+CP_WAIT_REG_MEM fence) built up over several rounds of real
-    * on-device burst-capture testing -- each got measurably closer
-    * (leak-frame rate ~40-50% -> ~30%) but none fully closed the gap,
-    * because none of them are actually "wait for RB to finish before the
-    * next subpass's FS waves start". FD_SUBPASS_SLICE_FENCE (upstream MR
-    * 44348) is exactly that primitive: it invalidates the UCHE GMEM
-    * aperture AND waits for RB completion before subsequent FS waves,
-    * scoped per-slice on A8XX -- replacing the entire stack in one real
-    * hardware event instead of approximating it. NOT yet re-validated with
-    * the burst-capture methodology on real device -- do not trust this
-    * without retesting. */
-   tu_emit_event_write<CHIP>(cmd, cs, FD_LABEL);
-   tu_emit_event_write<CHIP>(cmd, cs, FD_SUBPASS_SLICE_FENCE);
-   tu_emit_event_write<CHIP>(cmd, cs, FD_LABEL);
+   /* AK: BLIT_CACHE_CLEAN above didn't fully fix the flicker either --
+    * turns out it's the wrong mechanism for us in the first place. Its own
+    * comment says it's for "CP_EVENT_WRITE::BLIT (from GMEM loads/clears)"
+    * writes specifically -- and tu_load_gmem_attachment() (the real,
+    * non-debug load path) actually writes via tu_emit_blit()/BLIT_EVENT_LOAD
+    * (the 2D blit hardware engine), NOT via a 3D draw. load_3d_blit() (the
+    * r3d_dst_gmem-based 3D-draw path we've been comparing ourselves to) is
+    * only used behind TU_DEBUG(3D_LOAD) -- effectively untested in
+    * production. So "3D-draw write to GMEM via CCU, later read via UCHE"
+    * has no proven-correct flush recipe in this driver at all; we're the
+    * first real exerciser of it. CCU_CLEAN_COLOR (emitted at the end of
+    * resolve_3d_blit, same as store_3d_blit) flushes CCU to memory, but
+    * UCHE has its own cache that may still be serving a stale line from
+    * whatever was last read at this GMEM address (e.g. a previous frame).
+    * Explicitly invalidate UCHE before the next subpass's subpassLoad can
+    * run, so it's forced to re-fetch the freshly-flushed data instead of a
+    * stale cached copy. */
+   tu_emit_event_write<CHIP>(cmd, cs, FD_CACHE_INVALIDATE);
+   tu_cs_emit_wfi(cs);
+
+   /* AK: EXPERIMENT #2 -- the flicker/leak pattern measured out to a
+    * structured diagonal brick grid, not noise, with an always-exact
+    * fixed-size guaranteed-good prefix (top 1/5 of screen) followed by a
+    * partially-complete, frame-varying remainder. That signature points to
+    * the RB not having fully retired every fragment of our draw by the
+    * time our flush events fire -- i.e. a completion-wait gap, not a
+    * cache-target gap. CP_WAIT_MEM_WRITES is documented (tu_cmd_buffer.h,
+    * TU_ACCESS_CP_WRITE comment) as exactly "memory writes ... execute
+    * asynchronously and hence need a CP_WAIT_MEM_WRITES if read" for an
+    * analogous case (CP-issued writes, not RB fragment writes -- but the
+    * same class of async-completion problem). Testing whether it also
+    * covers RB/CCU draw writes here. */
+   tu_cs_emit_pkt7(cs, CP_WAIT_MEM_WRITES, 0);
+   tu_cs_emit_wfi(cs);
+   tu_cs_emit_pkt7(cs, CP_WAIT_FOR_ME, 0);
+
+   /* AK: EXPERIMENT #4 -- stacking WFI/CP_WAIT_MEM_WRITES/CP_WAIT_FOR_ME
+    * measurably helped (leak-frame rate ~40-50% -> ~30% in burst-screenshot
+    * testing) but didn't fully close the gap -- none of those actually
+    * guarantee the RB (render backend) has retired every fragment of our
+    * specific draw, only that CP-side command processing/memory-write
+    * ordering is settled. Found the real primitive for that:
+    * tu_wait_for_rb_done() (this file's neighbor tu_cmd_buffer.cc, static,
+    * used only for u_trace tracepoint barriers) emits a CP_EVENT_WRITE7
+    * with .event=RB_DONE_TS writing a known seqno to a location, then
+    * CP_WAIT_REG_MEM-polls that exact location -- RB_DONE_TS is genuinely
+    * "render backend is done" (its own comment: "the only way to wait for
+    * ... completion on A7XX+"), unlike a bare WFI. That helper writes to
+    * an *onchip* register slot (a scarce, statically-allocated 8-slot bank,
+    * all already spoken for) via tu7_write_onchip_timestamp-style calls --
+    * not reusable here without adding a new onchip slot. But tu_write_event
+    * (vkCmdSetEvent's implementation, ~line 10374) shows the same
+    * RB_DONE_TS event can target regular GPU memory instead
+    * (.write_dst = EV_DST_RAM, vs EV_DST_ONCHIP) -- reimplementing that
+    * memory-target variant here, using the existing _pad5 scratch dword
+    * (same field the abandoned crashdec hang-test used) as the target and
+    * a process-local atomic seqno so concurrent command buffers can't
+    * collide on the same expected value. */
+   {
+      /* AK: tried switching the fence target from the shared _pad5 global
+       * dword to a fresh per-call allocation from cmd->sub_cs, to rule out
+       * a possible cross-call/cross-frame address-reuse race -- that
+       * experiment HUNG the GPU (render loop's frame counter never
+       * advanced, had to force-stop; no kernel-level fault/reset message
+       * seen in dmesg, so likely a CP_WAIT_REG_MEM spin on an address that
+       * either isn't the one CP_EVENT_WRITE7 actually wrote to, or isn't
+       * validly GPU-visible/coherent the way a pre-existing tu6_global
+       * field is -- tu_cs_alloc's sub_cs memory may not be safe to use for
+       * this specific CPU-init-then-GPU-write-then-GPU-poll pattern
+       * without extra care not yet understood). REVERTED back to _pad5 --
+       * do not retry the sub_cs-allocated fence approach without
+       * understanding why it hung first. */
+      uint64_t fence_iova = global_iova(cmd, _pad5);
+
+      static uint32_t ak_rb_done_seqno = 0;
+      uint32_t seqno = p_atomic_add_return(&ak_rb_done_seqno, 1);
+
+      if (CHIP == A6XX) {
+         tu_cs_emit_pkt7(cs, CP_EVENT_WRITE, 4);
+         tu_cs_emit(cs, CP_EVENT_WRITE_0_EVENT(RB_DONE_TS));
+      } else {
+         tu_cs_emit_pkt7(cs, CP_EVENT_WRITE7, 4);
+         tu_cs_emit(cs, CP_EVENT_WRITE7_0(.event = RB_DONE_TS,
+                                          .write_src = EV_WRITE_USER_32B,
+                                          .write_dst = EV_DST_RAM,
+                                          .write_enabled = true).value);
+      }
+      tu_cs_emit_qw(cs, fence_iova);
+      tu_cs_emit(cs, seqno);
+
+      tu_cs_emit_pkt7(cs, CP_WAIT_REG_MEM, 6);
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_0_FUNCTION(WRITE_EQ) |
+                     CP_WAIT_REG_MEM_0_POLL(POLL_MEMORY));
+      tu_cs_emit_qw(cs, fence_iova);
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_3_REF(seqno));
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_4_MASK(~0u));
+      tu_cs_emit(cs, CP_WAIT_REG_MEM_5_DELAY_LOOP_CYCLES(20));
+   }
 
    trace_end_blit_image(&cmd->trace, cs);
 
