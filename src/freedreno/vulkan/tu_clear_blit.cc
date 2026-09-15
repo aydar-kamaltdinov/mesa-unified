@@ -5954,10 +5954,14 @@ resolve_3d_blit(struct tu_cmd_buffer *cmd,
    tu_cs_emit(cs, CP_REG_TO_SCRATCH_0_REG(RB_CNTL(CHIP).reg) |
                   CP_REG_TO_SCRATCH_0_SCRATCH(0) |
                   CP_REG_TO_SCRATCH_0_CNT(1 - 1));
+   tu_cs_emit_pkt7(cs, CP_REG_TO_SCRATCH, 1);
+   tu_cs_emit(cs, CP_REG_TO_SCRATCH_0_REG(GRAS_SC_BIN_CNTL(CHIP).reg) |
+                  CP_REG_TO_SCRATCH_0_SCRATCH(1) |
+                  CP_REG_TO_SCRATCH_0_CNT(1 - 1));
    if (CHIP >= A7XX) {
       tu_cs_emit_pkt7(cs, CP_REG_TO_SCRATCH, 1);
       tu_cs_emit(cs, CP_REG_TO_SCRATCH_0_REG(RB_BUFFER_CNTL(CHIP).reg) |
-                     CP_REG_TO_SCRATCH_0_SCRATCH(1) |
+                     CP_REG_TO_SCRATCH_0_SCRATCH(2) |
                      CP_REG_TO_SCRATCH_0_CNT(1 - 1));
    }
 
@@ -6039,13 +6043,13 @@ resolve_3d_blit(struct tu_cmd_buffer *cmd,
 
    tu_cs_emit_pkt7(cs, CP_SCRATCH_TO_REG, 1);
    tu_cs_emit(cs, CP_SCRATCH_TO_REG_0_REG(GRAS_SC_BIN_CNTL(CHIP).reg) |
-                  CP_SCRATCH_TO_REG_0_SCRATCH(0) |
+                  CP_SCRATCH_TO_REG_0_SCRATCH(1) |
                   CP_SCRATCH_TO_REG_0_CNT(1 - 1));
 
    if (CHIP >= A7XX) {
       tu_cs_emit_pkt7(cs, CP_SCRATCH_TO_REG, 1);
       tu_cs_emit(cs, CP_SCRATCH_TO_REG_0_REG(RB_BUFFER_CNTL(CHIP).reg) |
-                        CP_SCRATCH_TO_REG_0_SCRATCH(1) |
+                        CP_SCRATCH_TO_REG_0_SCRATCH(2) |
                         CP_SCRATCH_TO_REG_0_CNT(1 - 1));
    }
 
@@ -6065,6 +6069,23 @@ tu_resolve_gmem_attachment(struct tu_cmd_buffer *cmd,
    struct tu_render_pass_attachment *src = &cmd->state.pass->attachments[gmem_a];
    const struct tu_image_view *dst_iview = cmd->state.attachments[a];
    const struct tu_image_view *src_iview = cmd->state.attachments[gmem_a];
+
+   /* AK: closed pending a real fix (2026-09-04) -- this prototype has an
+    * unresolved, timing-dependent duplication bug (resolve_3d_blit's
+    * ~12-instruction fragment shader can outrun some per-tile hardware
+    * state, causing tile-row duplication; a settle-loop workaround was
+    * found empirically but isn't a real fix, and would need re-tuning per
+    * scene/content instead of giving one clear answer -- see the long
+    * comment in resolve_3d_blit() above r3d_run() in the pre-1.10 tree).
+    * Falls back to the proven GMEM->system-memory->GMEM round trip
+    * unconditionally unless explicitly opted into for further
+    * investigation. Re-added 2026-09-15: this bail-out was missing from
+    * ak-turnip-1.10 as tagged, which meant the prototype ran unconditionally
+    * for real content hitting this subpass-resolve-needed-by-later-subpass
+    * path -- see tu6_emit_gmem_resolves() in tu_cmd_buffer.cc. */
+   if (!TU_DEBUG(GMEM_RESOLVE_PROTOTYPE)) {
+      return false;
+   }
 
    /* First-version scope, see the comment on resolve_3d_blit(). Bail out
     * to the existing store-then-load-back path for anything outside it --

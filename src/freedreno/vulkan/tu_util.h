@@ -76,6 +76,15 @@ enum tu_debug_flags : uint64_t
    TU_DEBUG_FORCE_CONCURRENT_BINNING = BITFIELD64_BIT(36),
    TU_DEBUG_COMPUTE_ROUND_ROBIN      = BITFIELD64_BIT(37),
    TU_DEBUG_GMEM_WARMUP              = BITFIELD64_BIT(38),
+   /* AK: opt-in for the GMEM->GMEM resolve prototype (resolve_3d_blit /
+    * tu_resolve_gmem_attachment) -- off by default. It has an unresolved,
+    * timing-dependent duplication bug for unusually short resolve shaders
+    * (see the long comment in resolve_3d_blit(), tu_clear_blit.cc) that
+    * only a heuristic settle-loop workaround was found for, tuned against
+    * one synthetic test scene -- not something to trust for arbitrary real
+    * content without re-tuning per case. Falls back to the proven GMEM->
+    * system-memory->GMEM round trip unless this is explicitly set. */
+   TU_DEBUG_GMEM_RESOLVE_PROTOTYPE    = BITFIELD64_BIT(39),
 };
 
 struct tu_env {
