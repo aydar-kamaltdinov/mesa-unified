@@ -336,10 +336,12 @@ get_device_extensions(const struct tu_physical_device *device,
       .EXT_custom_border_color = true,
       .EXT_custom_resolve = true,
       .EXT_debug_marker = true,
+      .EXT_depth_bias_control = true,
       .EXT_depth_clamp_control = true,
       .EXT_depth_clamp_zero_one = true,
       .EXT_depth_clip_control = true,
       .EXT_depth_clip_enable = true,
+      .EXT_depth_range_unrestricted = device->info->chip >= 7,
       .EXT_descriptor_buffer = true,
       .EXT_descriptor_indexing = true,
       .EXT_device_address_binding_report = true,
@@ -716,6 +718,26 @@ tu_get_features(struct tu_physical_device *pdevice,
 
    /* VK_KHR_depth_clamp_zero_one */
    features->depthClampZeroOne = true;
+
+   /* VK_EXT_depth_bias_control.  No generation gate: the common Vulkan
+    * runtime already parses VkDepthBiasRepresentationInfoEXT and provides
+    * vkCmdSetDepthBias2EXT, and tu6_emit_depth_bias() writes
+    * GRAS_SU_POLY_OFFSET_* with no per-chip branch, so the values reach the
+    * registers unchanged on every Adreno generation.
+    *
+    * Support is partial, and declared as such.  Adreno derives the least
+    * representable value from the depth format and exposes no control bit to
+    * force an UNORM interpretation of a D32_SFLOAT buffer -- there is no
+    * equivalent of RDNA's POLY_OFFSET_DB_FMT_CNTL or NVIDIA's
+    * SET_DEPTH_BIAS_CONTROL.  With the last two features false the only
+    * requestable representation is LEAST_REPRESENTABLE_VALUE_FORMAT, which is
+    * exactly what the hardware does natively.  The extension splits these into
+    * four separate feature bits precisely so partial support can be declared
+    * honestly. */
+   features->depthBiasControl = true;
+   features->depthBiasExact = true;
+   features->leastRepresentableValueForceUnormRepresentation = false;
+   features->floatRepresentation = false;
 
    /* VK_EXT_depth_clip_control */
    features->depthClipControl = true;
