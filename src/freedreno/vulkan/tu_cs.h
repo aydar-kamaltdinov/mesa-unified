@@ -324,6 +324,19 @@ tu_cs_emit_array(struct tu_cs *cs, const uint32_t *values, uint32_t length)
 }
 
 /**
+ * Emit `length` zero dwords into a command stream, without boundary
+ * checking. Cheaper than an equivalent tu_cs_emit_array() from a scratch
+ * zero-filled buffer, and than `length` individual tu_cs_emit(cs, 0) calls.
+ */
+static inline void
+tu_cs_emit_zeros(struct tu_cs *cs, uint32_t length)
+{
+   assert(cs->cur + length <= cs->reserved_end);
+   memset(cs->cur, 0, sizeof(uint32_t) * length);
+   cs->cur += length;
+}
+
+/**
  * Get the size of the remaining space in the current BO.
  */
 static inline uint32_t

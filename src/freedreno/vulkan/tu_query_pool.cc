@@ -1034,6 +1034,49 @@ emit_reset_query_pool(struct tu_cmd_buffer *cmdbuf, struct tu_query_pool *pool, 
 {
    struct tu_cs *cs = &cmdbuf->cs;
 
+   /* Fast path for every query type except KHR_performance_query: each
+    * query's full pool->query_stride-sized slot (available + result, plus
+    * any begin/end/padding fields the per-field reset below skips) is safe
+    * to zero wholesale, because begin/end are always unconditionally
+    * overwritten by CmdBeginQuery/CmdEndQuery before ever being read --
+    * never read-before-write. query_stride == sizeof(that type's slot
+    * struct) exactly, with no gaps between consecutive queries (see
+    * tu_CreateQueryPool), so [firstQuery, firstQuery+queryCount) is one
+    * contiguous region we can zero with a handful of large CP_MEM_WRITE
+    * packets instead of one tiny packet per field per query -- the same
+    * bulk-write idiom tu_write_buffer_cp() already uses elsewhere. This
+    * turns e.g. a 256-query occlusion pool reset from 512 packets into 1.
+    *
+    * Performance-counter queries keep the old per-field path: their slot
+    * layout includes a variable-length, app-configured counter array
+    * that's less straightforward to reason about wholesale, and they
+    * aren't a per-frame gameplay hot path the way occlusion/timestamp
+    * query pools commonly are.
+    */
+   if (pool->vk.query_type != VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR &&
+       queryCount > 0) {
+      uint64_t base_iova =
+         pool->bo->iova + (uint64_t) pool->query_stride * firstQuery;
+      uint64_t total_dwords =
+         (uint64_t) pool->query_stride * queryCount / sizeof(uint32_t);
+
+      /* CP_MEM_WRITE's count field is the same 14-bit pkt7 count field as
+       * any other packet (16383 max, see TU_CS_FAIL_SINK_SIZE's comment);
+       * leave headroom and chunk if a single reset would exceed it.
+       */
+      const uint64_t max_data_dwords = 16000;
+      uint64_t off = 0;
+      while (off < total_dwords) {
+         uint32_t chunk =
+            (uint32_t) MIN2(total_dwords - off, max_data_dwords);
+         tu_cs_emit_pkt7(cs, CP_MEM_WRITE, 2 + chunk);
+         tu_cs_emit_qw(cs, base_iova + off * sizeof(uint32_t));
+         tu_cs_emit_zeros(cs, chunk);
+         off += chunk;
+      }
+      return;
+   }
+
    reset_query_pool<CHIP>(pool, firstQuery, queryCount, [cs](uint64_t result_iova) {
       tu_cs_emit_pkt7(cs, CP_MEM_WRITE, 4);
       tu_cs_emit_qw(cs, result_iova);
