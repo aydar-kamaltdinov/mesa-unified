@@ -52,69 +52,9 @@
 
 #if DETECT_OS_ANDROID
 #include <vndk/hardware_buffer.h>
-#include <dlfcn.h>
-#include <sys/stat.h>
-#include <unistd.h>
 #endif
 
 uint64_t os_page_size = 4096;
-
-#if DETECT_OS_ANDROID
-/* Mesa's disk cache is disabled by default on Android and has no resolvable
- * cache directory in an app process (no XDG_CACHE_HOME/HOME), so a
- * side-loaded Turnip recompiled every pipeline on every launch. Enable it
- * by default, with the cache under the app's own private cache directory,
- * derived from where this driver .so was loaded from
- * (/data/user/N/<pkg>/... or /data/data/<pkg>/...).
- *
- * Anything the user set explicitly (env var or Android property, e.g.
- * MESA_SHADER_CACHE_DISABLE=true to turn it back off) is left alone.
- */
-static void
-tu_android_enable_disk_cache(void)
-{
-   if (os_get_option("MESA_SHADER_CACHE_DISABLE"))
-      return;
-
-   if (!os_get_option("MESA_SHADER_CACHE_DIR") &&
-       !os_get_option("MESA_GLSL_CACHE_DIR")) {
-      Dl_info info;
-      if (!dladdr((void *) tu_android_enable_disk_cache, &info) ||
-          !info.dli_fname)
-         return;
-
-      const char *rest = info.dli_fname;
-      if (strncmp(rest, "/data/data/", 11) == 0) {
-         rest += 11;
-      } else if (strncmp(rest, "/data/user/", 11) == 0) {
-         rest = strchr(rest + 11, '/');
-         if (!rest)
-            return;
-         rest++;
-      } else {
-         return;
-      }
-
-      const char *pkg_end = strchr(rest, '/');
-      if (!pkg_end || pkg_end == rest)
-         return;
-
-      char dir[512];
-      int len = snprintf(dir, sizeof(dir), "%.*s/cache",
-                         (int) (pkg_end - info.dli_fname), info.dli_fname);
-      if (len <= 0 || len >= (int) sizeof(dir))
-         return;
-
-      mkdir(dir, 0700);
-      if (access(dir, W_OK) != 0)
-         return;
-
-      setenv("MESA_SHADER_CACHE_DIR", dir, 0);
-   }
-
-   setenv("MESA_SHADER_CACHE_DISABLE", "false", 0);
-}
-#endif
 
 static bool
 tu_device_get_build_id(blake3_hasher *ctx)
@@ -2000,9 +1940,6 @@ tu_physical_device_init(struct tu_physical_device *device,
     */
    char buf[VK_UUID_SIZE * 2 + 1];
    mesa_bytes_to_hex(buf, device->cache_uuid, VK_UUID_SIZE);
-#if DETECT_OS_ANDROID
-   tu_android_enable_disk_cache();
-#endif
    device->vk.disk_cache = disk_cache_create(device->name, buf, 0);
 
    device->vk.pipeline_cache_import_ops = cache_import_ops;
