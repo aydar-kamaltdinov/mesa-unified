@@ -1255,84 +1255,81 @@ kgsl_syncobj_import(struct kgsl_syncobj *s, int fd)
    return VK_SUCCESS;
 }
 
-static int
-sync_merge_close(const char *name, int fd1, int fd2, bool close_fd2)
-{
-   int fd = sync_merge(name, fd1, fd2);
-   if (fd < 0)
-      return -1;
-
-   close(fd1);
-   if (close_fd2)
-      close(fd2);
-
-   return fd;
-}
-
 /* Merges multiple kgsl_syncobjs into a single one which is only signalled
  * after all submitted syncobjs are signalled
  */
-static struct kgsl_syncobj
-kgsl_syncobj_merge(const struct kgsl_syncobj **syncobjs, uint32_t count)
+static VkResult
+kgsl_syncobj_merge(struct tu_device *device,
+                   const struct kgsl_syncobj **syncobjs,
+                   uint32_t count,
+                   struct kgsl_syncobj *out)
 {
    struct kgsl_syncobj ret;
    kgsl_syncobj_init(&ret, true);
-
-   if (count == 0)
-      return ret;
+   VkResult result = VK_SUCCESS;
 
    for (uint32_t i = 0; i < count; ++i) {
       const struct kgsl_syncobj *sync = syncobjs[i];
-
-      switch (sync->state) {
-      case KGSL_SYNCOBJ_STATE_SIGNALED:
-         break;
-
-      case KGSL_SYNCOBJ_STATE_UNSIGNALED:
+      if (sync->state == KGSL_SYNCOBJ_STATE_SIGNALED)
+         continue;
+      if (sync->state == KGSL_SYNCOBJ_STATE_UNSIGNALED) {
          kgsl_syncobj_reset(&ret);
-         return ret;
-
-      case KGSL_SYNCOBJ_STATE_TS:
-         if (ret.state == KGSL_SYNCOBJ_STATE_TS) {
-            if (ret.queue == sync->queue) {
-               ret.timestamp = max_ts(ret.timestamp, sync->timestamp);
-            } else {
-               ret.state = KGSL_SYNCOBJ_STATE_FD;
-               int sync_fd = kgsl_syncobj_ts_to_fd(sync);
-               ret.fd = sync_merge_close("tu_sync", ret.fd, sync_fd, true);
-               assert(ret.fd >= 0);
-            }
-         } else if (ret.state == KGSL_SYNCOBJ_STATE_FD) {
-            int sync_fd = kgsl_syncobj_ts_to_fd(sync);
-            ret.fd = sync_merge_close("tu_sync", ret.fd, sync_fd, true);
-            assert(ret.fd >= 0);
-         } else {
-            ret = *sync;
-         }
-         break;
-
-      case KGSL_SYNCOBJ_STATE_FD:
-         if (ret.state == KGSL_SYNCOBJ_STATE_FD) {
-            ret.fd = sync_merge_close("tu_sync", ret.fd, sync->fd, false);
-            assert(ret.fd >= 0);
-         } else if (ret.state == KGSL_SYNCOBJ_STATE_TS) {
-            ret.state = KGSL_SYNCOBJ_STATE_FD;
-            int sync_fd = kgsl_syncobj_ts_to_fd(sync);
-            ret.fd = sync_merge_close("tu_sync", ret.fd, sync_fd, true);
-            assert(ret.fd >= 0);
-         } else {
-            ret = *sync;
-            ret.fd = os_dupfd_cloexec(ret.fd);
-            assert(ret.fd >= 0);
-         }
-         break;
-
-      default:
-         UNREACHABLE("invalid syncobj state");
+         *out = ret;
+         return VK_SUCCESS;
       }
+
+      if (ret.state == KGSL_SYNCOBJ_STATE_SIGNALED) {
+         /* If `ret` wasn't assigned before - just dup the `sync` into it. */
+         result = kgsl_syncobj_dup(device, sync, &ret);
+         if (result != VK_SUCCESS)
+            goto fail;
+         continue;
+      }
+
+      if (ret.state == KGSL_SYNCOBJ_STATE_TS && sync->state == KGSL_SYNCOBJ_STATE_TS && ret.queue == sync->queue) {
+         /* On the same queue we can pick the highest TS, since we wait for all. */
+         ret.timestamp = max_ts(ret.timestamp, sync->timestamp);
+         continue;
+      }
+
+      if (ret.state == KGSL_SYNCOBJ_STATE_TS) {
+         /* Queues don't match or sync is an FD - convert aggregate `ret` to FD. */
+         int fd = kgsl_syncobj_ts_to_fd(&ret);
+         if (fd < 0) {
+            result = kgsl_sync_error(device, "timestamp fence creation", errno);
+            goto fail;
+         }
+         ret.fd = fd;
+         ret.state = KGSL_SYNCOBJ_STATE_FD;
+      }
+
+      int sync_fd = sync->fd;
+      if (sync->state == KGSL_SYNCOBJ_STATE_TS) {
+         sync_fd = kgsl_syncobj_ts_to_fd(sync);
+         if (sync_fd < 0) {
+            result = kgsl_sync_error(device, "timestamp fence creation", errno);
+            goto fail;
+         }
+      }
+
+      int fd = sync_merge("tu_sync", ret.fd, sync_fd);
+      const int error = errno;
+      if (sync->state == KGSL_SYNCOBJ_STATE_TS)
+         close(sync_fd);
+      if (fd < 0) {
+         result = kgsl_sync_error(device, "sync FD merge", error);
+         goto fail;
+      }
+      close(ret.fd);
+      ret.fd = fd;
    }
 
-   return ret;
+   *out = ret;
+   return VK_SUCCESS;
+
+fail:
+   kgsl_syncobj_destroy(&ret);
+   return result;
 }
 
 struct vk_kgsl_syncobj
@@ -2239,8 +2236,10 @@ kgsl_queue_submit_syncobj(struct tu_queue *queue, void *_submit,
 
       wait_semaphores[wait_count] = &last_submit_sync;
 
-      struct kgsl_syncobj wait_sync = kgsl_syncobj_merge(wait_semaphores, wait_count + 1);
-      VkResult result = VK_SUCCESS;
+      struct kgsl_syncobj wait_sync;
+      VkResult result = kgsl_syncobj_merge(queue->device, wait_semaphores, wait_count + 1, &wait_sync);
+      if (result != VK_SUCCESS)
+         return result;
       assert(wait_sync.state !=
              KGSL_SYNCOBJ_STATE_UNSIGNALED); // Would wait forever
 
@@ -2285,6 +2284,16 @@ kgsl_queue_submit_syncobj(struct tu_queue *queue, void *_submit,
    if (submit->bind_cmds.size != 0)
       kgsl_bind_finalize(submit);
 
+   const struct kgsl_syncobj *wait_semaphores[wait_count];
+   for (uint32_t i = 0; i < wait_count; i++) {
+      wait_semaphores[i] = &container_of(waits[i].sync, struct vk_kgsl_syncobj, vk)->syncobj;
+   }
+
+   struct kgsl_syncobj wait_sync;
+   result = kgsl_syncobj_merge(queue->device, wait_semaphores, wait_count, &wait_sync);
+   if (result != VK_SUCCESS)
+      return result;
+   assert(wait_sync.state != KGSL_SYNCOBJ_STATE_UNSIGNALED); // Would wait forever
 
    struct kgsl_profiling profiling = { 0 };
    if (u_trace_submission_data) {
@@ -2293,18 +2302,6 @@ kgsl_queue_submit_syncobj(struct tu_queue *queue, void *_submit,
 #endif
       kgsl_profiling_alloc(&profiling, queue, u_trace_submission_data);
    }
-
-   const struct kgsl_syncobj *wait_semaphores[wait_count];
-   for (uint32_t i = 0; i < wait_count; i++) {
-      wait_semaphores[i] =
-         &container_of(waits[i].sync, struct vk_kgsl_syncobj, vk)
-             ->syncobj;
-   }
-
-   struct kgsl_syncobj wait_sync =
-      kgsl_syncobj_merge(wait_semaphores, wait_count);
-   assert(wait_sync.state !=
-          KGSL_SYNCOBJ_STATE_UNSIGNALED); // Would wait forever
 
    struct kgsl_cmd_syncpoint_timestamp ts;
    struct kgsl_cmd_syncpoint_fence fn;
