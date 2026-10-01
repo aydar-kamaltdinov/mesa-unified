@@ -2128,16 +2128,19 @@ struct kgsl_profiling {
 #endif
 };
 
-static void
+static VkResult
 kgsl_profiling_alloc(struct kgsl_profiling *profiling,
                      struct tu_queue *queue,
                      struct tu_u_trace_submission_data *u_trace_submission_data)
 {
    mtx_lock(&queue->device->kgsl_profiling_mutex);
-   tu_suballoc_bo_alloc(&u_trace_submission_data->kgsl_timestamp_bo,
-                        &queue->device->kgsl_profiling_suballoc,
-                        sizeof(struct kgsl_cmdbatch_profiling_buffer), 4);
+   VkResult result =
+      tu_suballoc_bo_alloc(&u_trace_submission_data->kgsl_timestamp_bo,
+                           &queue->device->kgsl_profiling_suballoc,
+                           sizeof(struct kgsl_cmdbatch_profiling_buffer), 4);
    mtx_unlock(&queue->device->kgsl_profiling_mutex);
+   if (result != VK_SUCCESS)
+      return result;
 
    profiling->cmd_obj = &profiling->cmd_obj_storage;
 
@@ -2154,6 +2157,8 @@ kgsl_profiling_alloc(struct kgsl_profiling *profiling,
    profiling->buffer =
       (struct kgsl_cmdbatch_profiling_buffer *) tu_suballoc_bo_map(bo);
    memset(profiling->buffer, 0, sizeof(*profiling->buffer));
+
+   return VK_SUCCESS;
 }
 
 static void
@@ -2312,7 +2317,11 @@ kgsl_queue_submit_syncobj(struct tu_queue *queue, void *_submit,
 #if HAVE_PERFETTO
       profiling.start_ts = tu_perfetto_begin_submit();
 #endif
-      kgsl_profiling_alloc(&profiling, queue, u_trace_submission_data);
+      result = kgsl_profiling_alloc(&profiling, queue, u_trace_submission_data);
+      if (result != VK_SUCCESS) {
+         kgsl_syncobj_destroy(&wait_sync);
+         return result;
+      }
    }
 
    struct kgsl_cmd_syncpoint_timestamp ts;
@@ -2695,7 +2704,14 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
 #if HAVE_PERFETTO
       profiling.start_ts = tu_perfetto_begin_submit();
 #endif
-      kgsl_profiling_alloc(&profiling, queue, u_trace_submission_data);
+      VkResult result = kgsl_profiling_alloc(&profiling, queue, u_trace_submission_data);
+      if (result != VK_SUCCESS) {
+         STACK_ARRAY_FINISH(cmd_syncpoint_fence);
+         STACK_ARRAY_FINISH(cmd_syncpoints);
+         STACK_ARRAY_FINISH(signal_timeline_vals);
+         STACK_ARRAY_FINISH(wait_timeline_vals);
+         return result;
+      }
    }
 
    if (submit->commands.size != 0) {
