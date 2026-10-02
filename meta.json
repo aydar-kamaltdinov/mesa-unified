@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "name": "AK Turnip 1.12",
+  "description": "AK Turnip 1.12: LRZ writes stay enabled through the classic stencil-shadow-tagging pattern instead of unconditionally disabling for the rest of the render pass; fixed a real use-after-free in VkDescriptorUpdateTemplate; CmdClearAttachments now records its GMEM write access for hazard tracking; KGSL/suballoc error-handling hardening across several BO-allocation paths; ir3 const-reuse-across-source-modifiers and native bfm/bitnz/bitz/find_msb_rev instruction support (previously NIR-lowered); fp_math_ctrl bitfield fix plus the NIR optimization passes that consume it; ir3 scheduling fix for kill vs bary.f across block boundaries; ldg/stg unsigned-offset fix.",
+  "author": "aydar",
+  "packageVersion": "1",
+  "vendor": "Mesa",
+  "driverVersion": "AK-1.12",
+  "minApi": 29,
+  "libraryName": "libvulkan_freedreno.so"
+}
