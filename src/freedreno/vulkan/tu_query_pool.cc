@@ -301,7 +301,7 @@ tu_query_pool_destroy(struct tu_device *device, struct tu_query_pool *pool,
          if (perf_query->data[i].pass == 0)
             fd_perfcntr_release(device->perfcntrs, perf_query->data[i].counter);
       }
-   } else if (is_perf_query_raw(pool)) {
+   } else if (is_perf_query_derived(pool)) {
       struct tu_perf_query_derived *perf_query = &pool->perf_query.derived;
       struct fd_derived_counter_collection *collection = perf_query->collection;
 
