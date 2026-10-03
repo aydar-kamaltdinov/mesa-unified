@@ -936,7 +936,7 @@ kgsl_syncobj_wait(struct tu_device *device,
 }
 
 #define kgsl_syncobj_foreach_state(syncobjs, filter) \
-   for (uint32_t i = 0; sync = syncobjs[i], i < count; i++) \
+   for (uint32_t i = 0; i < count && (sync = syncobjs[i], true); i++) \
       if (sync->state == filter)
 
 static VkResult
@@ -998,7 +998,10 @@ kgsl_syncobj_wait_any(struct tu_device* device, struct kgsl_syncobj **syncobjs, 
          }
       }
 
-      if (num_fds) {
+      /* Only add the merged timestamp if there actually were TS syncobjs,
+       * otherwise queue is NULL (all syncobjs are FDs).
+       */
+      if (num_fds && queue) {
          struct pollfd *poll_fd = (struct pollfd *) u_vector_add(&poll_fds);
          poll_fd->fd = timestamp_to_fd(queue, lowest_timestamp);
          poll_fd->events = POLLIN;
