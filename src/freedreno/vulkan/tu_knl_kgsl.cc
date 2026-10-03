@@ -1521,14 +1521,10 @@ kgsl_queue_submit(struct tu_queue *queue, void *_submit,
       mtx_unlock(&queue->device->kgsl_profiling_mutex);
    }
 
-   uint32_t obj_count = 0;
-   if (u_trace_submission_data)
-      obj_count++;
-
-   struct kgsl_command_object *objs = (struct kgsl_command_object *)
-      vk_alloc(&queue->device->vk.alloc, sizeof(*objs) * obj_count,
-               alignof(struct kgsl_command_object),
-               VK_SYSTEM_ALLOCATION_SCOPE_COMMAND);
+   /* At most one object (the profiling buffer) is ever attached, so keep the
+    * list on the stack instead of heap-allocating it on every submit.
+    */
+   struct kgsl_command_object objs[1];
 
    struct kgsl_cmdbatch_profiling_buffer *profiling_buffer = NULL;
    uint32_t obj_idx = 0;
