@@ -1653,7 +1653,13 @@ vk_kgsl_binary_signal(struct vk_device *_device,
    struct tu_device *device = container_of(_device, struct tu_device, vk);
    struct vk_kgsl_binary *binary = container_of(sync, struct vk_kgsl_binary, vk);
 
-   assert(binary->type == VK_KGSL_SYNC_TYPE_BINARY);
+   /* A CPU signal replaces any imported sync file payload. */
+   if (binary->type == VK_KGSL_SYNC_TYPE_FENCE) {
+      if (binary->sync_file.fd != -1)
+         close(binary->sync_file.fd);
+      binary->sync_file.fd = -1;
+      binary->type = VK_KGSL_SYNC_TYPE_BINARY;
+   }
 
    assert(value == 0);
    struct kgsl_timeline_val timeline_val = {
@@ -1670,6 +1676,102 @@ vk_kgsl_binary_signal(struct vk_device *_device,
    return VK_SUCCESS;
 }
 
+/* Slow path for CPU waits when at least one binary sync currently holds an
+ * imported sync file (e.g. an Android acquire fence): turn every wait into a
+ * sync file fd (timeline points via IOCTL_KGSL_TIMELINE_FENCE_GET) and poll.
+ */
+static VkResult
+vk_kgsl_binary_wait_many_fds(struct tu_device *device,
+                             uint32_t wait_count,
+                             const struct vk_sync_wait *waits,
+                             enum vk_sync_wait_flags wait_flags,
+                             uint64_t abs_timeout_ns)
+{
+   VkResult result = VK_SUCCESS;
+   bool any_signaled = false;
+   uint32_t poll_count = 0;
+
+   STACK_ARRAY(struct pollfd, fds, wait_count);
+   STACK_ARRAY(bool, owned, wait_count);
+
+   for (uint32_t i = 0; i < wait_count; ++i) {
+      struct vk_kgsl_binary *binary = container_of(waits[i].sync, struct vk_kgsl_binary, vk);
+      int fd = -1;
+      bool own = false;
+
+      if (binary->type == VK_KGSL_SYNC_TYPE_FENCE) {
+         fd = binary->sync_file.fd;
+      } else {
+         struct kgsl_timeline_fence_get req = {
+            .seqno = binary->binary_timeline.next_point,
+            .timeline = binary->binary_timeline.id,
+            .handle = -1,
+         };
+         if (safe_ioctl(device->physical_device->local_fd,
+                        IOCTL_KGSL_TIMELINE_FENCE_GET, &req)) {
+            result = vk_errorf(&device->vk, VK_ERROR_UNKNOWN,
+                               "kgsl_timeline_fence_get failed: %m");
+            goto out;
+         }
+         fd = req.handle;
+         own = true;
+      }
+
+      /* fd == -1: already signaled */
+      if (fd < 0) {
+         any_signaled = true;
+         continue;
+      }
+
+      fds[poll_count] = (struct pollfd) { .fd = fd, .events = POLLIN };
+      owned[poll_count] = own;
+      poll_count++;
+   }
+
+   if ((wait_flags & VK_SYNC_WAIT_ANY) && any_signaled)
+      goto out;
+
+   while (poll_count > 0) {
+      int ret = poll(fds, poll_count, get_relative_ms(abs_timeout_ns));
+      if (ret < 0) {
+         if (errno == EINTR || errno == EAGAIN)
+            continue;
+         result = vk_errorf(&device->vk, VK_ERROR_UNKNOWN, "poll failed: %m");
+         goto out;
+      }
+      if (ret == 0) {
+         result = VK_TIMEOUT;
+         goto out;
+      }
+
+      if (wait_flags & VK_SYNC_WAIT_ANY)
+         goto out;
+
+      /* WAIT_ALL: drop the signaled fds and keep waiting on the rest. */
+      uint32_t j = 0;
+      for (uint32_t i = 0; i < poll_count; ++i) {
+         if (fds[i].revents & (POLLIN | POLLERR | POLLHUP | POLLNVAL)) {
+            if (owned[i])
+               close(fds[i].fd);
+            continue;
+         }
+         fds[j] = fds[i];
+         owned[j] = owned[i];
+         j++;
+      }
+      poll_count = j;
+   }
+
+out:
+   for (uint32_t i = 0; i < poll_count; ++i) {
+      if (owned[i])
+         close(fds[i].fd);
+   }
+   STACK_ARRAY_FINISH(owned);
+   STACK_ARRAY_FINISH(fds);
+   return result;
+}
+
 static VkResult
 vk_kgsl_binary_wait_many(struct vk_device *_device,
                          uint32_t wait_count,
@@ -1681,6 +1783,13 @@ vk_kgsl_binary_wait_many(struct vk_device *_device,
 
    if (wait_count == 0)
       return VK_SUCCESS;
+
+   for (uint32_t i = 0; i < wait_count; ++i) {
+      struct vk_kgsl_binary *binary = container_of(waits[i].sync, struct vk_kgsl_binary, vk);
+      if (binary->type == VK_KGSL_SYNC_TYPE_FENCE)
+         return vk_kgsl_binary_wait_many_fds(device, wait_count, waits,
+                                             wait_flags, abs_timeout_ns);
+   }
 
    STACK_ARRAY(struct kgsl_timeline_val, timeline_vals, wait_count);
    for (uint32_t i = 0; i < wait_count; ++i) {
@@ -1719,8 +1828,21 @@ vk_kgsl_binary_import_sync_file(struct vk_device *_device,
 {
    struct vk_kgsl_binary *binary = container_of(sync, struct vk_kgsl_binary, vk);
 
+   int new_fd = -1;
+   if (fd >= 0) {
+      new_fd = os_dupfd_cloexec(fd);
+      if (new_fd < 0) {
+         return vk_errorf(_device, VK_ERROR_INVALID_EXTERNAL_HANDLE,
+                          "vk_kgsl_binary_import_sync_file: dup failed: %m");
+      }
+   }
+
+   if (binary->sync_file.fd != -1)
+      close(binary->sync_file.fd);
+
+   /* fd == -1 is a valid import meaning "already signaled". */
    binary->type = VK_KGSL_SYNC_TYPE_FENCE;
-   binary->sync_file.fd = os_dupfd_cloexec(fd);
+   binary->sync_file.fd = new_fd;
    return VK_SUCCESS;
 }
 
@@ -1933,7 +2055,11 @@ kgsl_bind_finalize(struct tu_kgsl_queue_submit *submit)
 }
 
 struct kgsl_profiling {
+   /* Points at cmd_obj_storage when profiling is active; kept on the stack
+    * with the rest of this struct so nothing is heap-allocated per submit.
+    */
    struct kgsl_command_object *cmd_obj;
+   struct kgsl_command_object cmd_obj_storage;
    struct kgsl_cmdbatch_profiling_buffer *buffer;
 
    uint64_t gpu_offset;
@@ -1953,10 +2079,7 @@ kgsl_profiling_alloc(struct kgsl_profiling *profiling,
                         sizeof(struct kgsl_cmdbatch_profiling_buffer), 4);
    mtx_unlock(&queue->device->kgsl_profiling_mutex);
 
-   profiling->cmd_obj = (struct kgsl_command_object *)
-      vk_alloc(&queue->device->vk.alloc, sizeof(*profiling->cmd_obj),
-               alignof(struct kgsl_command_object),
-               VK_SYSTEM_ALLOCATION_SCOPE_COMMAND);
+   profiling->cmd_obj = &profiling->cmd_obj_storage;
 
    struct tu_suballoc_bo *bo = &u_trace_submission_data->kgsl_timestamp_bo;
 
