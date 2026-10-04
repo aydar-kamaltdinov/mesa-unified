@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "name": "AK Turnip 1.12",
-  "description": "AK Turnip 1.12: LRZ writes stay enabled through the classic stencil-shadow-tagging pattern instead of unconditionally disabling for the rest of the render pass; fixed a real use-after-free in VkDescriptorUpdateTemplate; CmdClearAttachments now records its GMEM write access for hazard tracking; KGSL/suballoc error-handling hardening across several BO-allocation paths; ir3 const-reuse-across-source-modifiers and native bfm/bitnz/bitz/find_msb_rev instruction support (previously NIR-lowered); fp_math_ctrl bitfield fix plus the NIR optimization passes that consume it; ir3 scheduling fix for kill vs bary.f across block boundaries; ldg/stg unsigned-offset fix.",
+  "name": "AK Turnip 1.13",
+  "description": "AK Turnip 1.13: ir3 absolute subgroupShuffle no longer always becomes a waterfall loop (uniform index -> single movs broadcast, id+k / id-k / id^k -> single shfl; hit heavily by Switch emulators translating SHFL); WAIT_ANY on several timeline semaphores no longer busy-spins a CPU core on KGSL; fixed a per-submit KGSL command-object leak, a NULL deref/OOB read in kgsl_syncobj_wait_any, submit_mutex deadlocks on submit error paths, a pipeline-cache use-after-free and reference leak on graphics pipeline compile failure (FAIL_ON_PIPELINE_COMPILE_REQUIRED), an autotune RP-history use-after-free race, BO leaks on AHB/perf-query error paths, A8XX LRZ fast-clear metadata offsets with concurrent binning; ir3 UBO range merging and rematerializable spill fixes; upstream query, texel-buffer, descriptor-pool, heapUsage and KGSL fd fixes. Built with platform-sdk-version=33.",
   "author": "aydar",
   "packageVersion": "1",
   "vendor": "Mesa",
-  "driverVersion": "AK-1.12",
+  "driverVersion": "AK-1.13",
   "minApi": 29,
   "libraryName": "libvulkan_freedreno.so"
 }
