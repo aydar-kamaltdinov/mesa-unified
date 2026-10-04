@@ -3827,6 +3827,10 @@ tu_compile_shaders(struct tu_device *device,
 {
    struct ir3_shader_key ir3_key = {};
    struct tu_shader_info info[MESA_SHADER_STAGES] = {};
+   /* Stages already in shaders[] on entry are cache hits owned by the
+    * caller; only the ones compiled here may be destroyed on failure.
+    */
+   bool created[MESA_SHADER_STAGES] = {};
    VkResult result = VK_SUCCESS;
    void *mem_ctx = ralloc_context(NULL);
 
@@ -3957,6 +3961,7 @@ tu_compile_shaders(struct tu_device *device,
       if (result != VK_SUCCESS) {
          goto fail;
       }
+      created[stage] = true;
 
       stage_feedbacks[stage].duration += os_time_get_nano() - stage_start;
    }
@@ -3970,11 +3975,13 @@ fail:
 
    for (mesa_shader_stage stage = MESA_SHADER_VERTEX; stage < MESA_SHADER_STAGES;
         stage = (mesa_shader_stage) (stage + 1)) {
-      if (shaders[stage]) {
+      if (created[stage]) {
          tu_shader_destroy(device, shaders[stage]);
+         shaders[stage] = NULL;
       }
       if (nir_out && nir_out[stage]) {
          ralloc_free(nir_out[stage]);
+         nir_out[stage] = NULL;
       }
    }
 

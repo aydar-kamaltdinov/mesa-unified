@@ -2006,7 +2006,8 @@ tu_pipeline_builder_compile_shaders(struct tu_pipeline_builder *builder,
    if (!cache_hit) {
       if (builder->create_flags &
           VK_PIPELINE_CREATE_2_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT_KHR) {
-         return VK_PIPELINE_COMPILE_REQUIRED;
+         result = VK_PIPELINE_COMPILE_REQUIRED;
+         goto fail;
       }
 
       result = tu_compile_shaders(builder->device,
@@ -2169,6 +2170,14 @@ done:
    return VK_SUCCESS;
 
 fail:
+   /* Drop the references taken by a partial cache hit. */
+   for (mesa_shader_stage stage = MESA_SHADER_VERTEX;
+        stage < ARRAY_SIZE(shaders); stage = (mesa_shader_stage) (stage + 1)) {
+      if (shaders[stage])
+         vk_pipeline_cache_object_unref(&builder->device->vk,
+                                        &shaders[stage]->base);
+   }
+
    if (nir_shaders)
       vk_pipeline_cache_object_unref(&builder->device->vk,
                                      &nir_shaders->base);
