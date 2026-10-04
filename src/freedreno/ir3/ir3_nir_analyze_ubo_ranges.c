@@ -115,9 +115,13 @@ merge_neighbors(struct ir3_ubo_analysis_state *state, int index)
       /* Merge B into A. */
       a->start = MIN2(a->start, b->start);
       a->end = MAX2(a->end, b->end);
+      a->can_speculate &= b->can_speculate;
 
-      /* Swap the last enabled range into B's now unused slot */
+      /* Swap the last enabled range into B's now unused slot, and look at
+       * that slot again since it now holds a range we haven't checked.
+       */
       *b = state->range[--state->num_enabled];
+      i--;
    }
 }
 
