@@ -843,7 +843,10 @@ tu_lrz_before_sysmem_br(struct tu_cmd_buffer *cmd, struct tu_cs *cs)
           */
          if (lrz->fast_clear)
             tu_cs_emit_regs(cs, GRAS_LRZ_DEPTH_CLEAR(CHIP, lrz->depth_clear_value.depthStencil.depth));
-      } else {
+      } else if constexpr (fd_lrzfc_layout<CHIP>::HAS_CB) {
+         /* The metadata layout differs between A7XX and A8XX. */
+         using LRZFC = fd_lrzfc_layout<CHIP>;
+
          /* To workaround the same HW errata as above, but where we don't know
           * the clear value, copy the clear value from memory to the register.
           * This is tricky because there are two and we have to select the
@@ -853,7 +856,7 @@ tu_lrz_before_sysmem_br(struct tu_cmd_buffer *cmd, struct tu_cs *cs)
          uint64_t lrz_fc_iova =
             lrz->image_view->image->iova + lrz->image_view->image->lrz_layout.lrz_fc_offset;
          uint64_t br_cur_buffer_iova =
-            lrz_fc_iova + offsetof(fd_lrzfc_layout<A7XX>, br_cur_buffer);
+            lrz_fc_iova + offsetof(LRZFC, br_cur_buffer);
 
          /* Make sure the value is written to memory. */
          tu_emit_event_write<CHIP>(cmd, cs, FD_CACHE_CLEAN);
@@ -870,15 +873,13 @@ tu_lrz_before_sysmem_br(struct tu_cmd_buffer *cmd, struct tu_cs *cs)
          /*    GRAS_LRZ_DEPTH_CLEAR = lrz_fc->buffer[1].depth_clear_val */
          tu_cs_emit_pkt7(cs, CP_MEM_TO_REG, 3);
          tu_cs_emit(cs, CP_MEM_TO_REG_0_REG(GRAS_LRZ_DEPTH_CLEAR(CHIP).reg));
-         tu_cs_emit_qw(cs, lrz_fc_iova + offsetof(fd_lrzfc_layout<A7XX>,
-                                                  buffer[1].depth_clear_val));
+         tu_cs_emit_qw(cs, lrz_fc_iova + offsetof(LRZFC, buffer[1].depth_clear_val));
          /* } else { */
          tu_cs_emit_pkt7(cs, CP_NOP, else_dwords);
          /*    GRAS_LRZ_DEPTH_CLEAR = lrz_fc->buffer[0].depth_clear_val */
          tu_cs_emit_pkt7(cs, CP_MEM_TO_REG, 3);
          tu_cs_emit(cs, CP_MEM_TO_REG_0_REG(GRAS_LRZ_DEPTH_CLEAR(CHIP).reg));
-         tu_cs_emit_qw(cs, lrz_fc_iova + offsetof(fd_lrzfc_layout<A7XX>,
-                                                  buffer[0].depth_clear_val));
+         tu_cs_emit_qw(cs, lrz_fc_iova + offsetof(LRZFC, buffer[0].depth_clear_val));
          /* } */
       }
    }
