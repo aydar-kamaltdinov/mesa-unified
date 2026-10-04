@@ -411,17 +411,28 @@ __vk_sync_wait_many(struct vk_device *device,
                                             wait_flags, abs_timeout_ns);
    } else if (wait_flags & VK_SYNC_WAIT_ANY) {
       /* If we have multiple syncs and they don't support wait_any or they're
-       * not all the same type, there's nothing better we can do than spin.
+       * not all the same type, there's nothing better we can do than poll
+       * them in turn. Block on each one for a short slice instead of
+       * busy-looping with a zero timeout, which pins a CPU core (e.g.
+       * emulated timelines on KGSL) for the whole wait. Some kernel waits
+       * (KGSL) only have millisecond granularity, so a shorter slice would
+       * round down to a non-blocking poll.
        */
+      const uint64_t slice_ns = 1000000; /* 1ms */
+      bool first_pass = true;
       do {
          for (uint32_t i = 0; i < wait_count; i++) {
+            uint64_t now = os_time_get_nano();
+            uint64_t slice_end = first_pass ? 0 :
+               MIN2(abs_timeout_ns, now + slice_ns);
             VkResult result = __vk_sync_wait(device, waits[i].sync,
                                              waits[i].wait_value,
                                              wait_flags & ~VK_SYNC_WAIT_ANY,
-                                             0 /* abs_timeout_ns */);
+                                             slice_end);
             if (result != VK_TIMEOUT)
                return result;
          }
+         first_pass = false;
       } while (os_time_get_nano() < abs_timeout_ns);
 
       return VK_TIMEOUT;
