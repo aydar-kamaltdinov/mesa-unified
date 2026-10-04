@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "name": "AK Turnip 1.13",
-  "description": "AK Turnip 1.13: ir3 absolute subgroupShuffle no longer always becomes a waterfall loop (uniform index -> single movs broadcast, id+k / id-k / id^k -> single shfl; hit heavily by Switch emulators translating SHFL); WAIT_ANY on several timeline semaphores no longer busy-spins a CPU core on KGSL; fixed a per-submit KGSL command-object leak, a NULL deref/OOB read in kgsl_syncobj_wait_any, submit_mutex deadlocks on submit error paths, a pipeline-cache use-after-free and reference leak on graphics pipeline compile failure (FAIL_ON_PIPELINE_COMPILE_REQUIRED), an autotune RP-history use-after-free race, BO leaks on AHB/perf-query error paths, A8XX LRZ fast-clear metadata offsets with concurrent binning; ir3 UBO range merging and rematerializable spill fixes; upstream query, texel-buffer, descriptor-pool, heapUsage and KGSL fd fixes. Built with platform-sdk-version=33.",
+  "name": "AK Turnip 1.13 Rutabaga",
+  "description": "AK Turnip 1.13 Rutabaga: AK Turnip 1.13 plus native KGSL timeline synchronization. Timeline semaphores, binary semaphores, fences and queue submits use KGSL kernel timelines (IOCTL_KGSL_TIMELINE_*) instead of the emulated vk_sync_timeline + deferred-submit path, so vkQueueSubmit goes straight to the kernel and the driver no longer tracks/polls emulated timeline points on the CPU. Based on draft Mesa MR !39751, with fixes for a per-submit profiling leak, sync_file import (fd leak, dup failure) and CPU waits/signals on imported Android/WSI fences. Falls back to the 1.13 sync path on kernels without KGSL timelines. Built with platform-sdk-version=33.",
   "author": "aydar",
   "packageVersion": "1",
   "vendor": "Mesa",
-  "driverVersion": "AK-1.13",
+  "driverVersion": "AK-1.13-rutabaga",
   "minApi": 29,
   "libraryName": "libvulkan_freedreno.so"
 }
