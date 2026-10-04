@@ -3866,6 +3866,7 @@ tu_AllocateMemory(VkDevice _device,
       result = vk_android_get_ahb_layout(mem->vk.ahardware_buffer, &eci,
                                          a_plane_layouts, TU_MAX_PLANE_COUNT);
       if (result != VK_SUCCESS) {
+         _tu_destroy_memory(device, mem);
          vk_device_memory_destroy(&device->vk, pAllocator, &mem->vk);
          return result;
       }
@@ -3885,6 +3886,7 @@ tu_AllocateMemory(VkDevice _device,
          device, mem->image, mem->image->vk.android_deferred_create_info,
          eci.drmFormatModifier, a_plane_layouts, TU_IMAGE_ID_ASSIGN);
       if (result != VK_SUCCESS) {
+         _tu_destroy_memory(device, mem);
          vk_device_memory_destroy(&device->vk, pAllocator, &mem->vk);
          return result;
       }
