@@ -1917,7 +1917,12 @@ tu_autotune::get_optimal_mode(struct tu_cmd_buffer *cmd_buffer, rp_ctx_t *rp_ctx
    else
       key = cb_ctx.generate_rp_key(pass, framebuffer, cmd_buffer);
 
-   rp_history &history = *find_or_create_rp_history(key);
+   /* Keep the handle alive until the entry takes ownership of it, otherwise the
+    * refcount drops to zero and reap_old_rp_histories() on the submit thread
+    * may free the history while we still use it.
+    */
+   rp_history_handle history_handle = find_or_create_rp_history(key);
+   rp_history &history = *history_handle;
    if (config.test(mod_flag::PREEMPT_OPTIMIZE)) {
       if (!latency_info && !key_opt)
          latency_info = get_rp_latency_info(key.hash, true);
@@ -1937,7 +1942,7 @@ tu_autotune::get_optimal_mode(struct tu_cmd_buffer *cmd_buffer, rp_ctx_t *rp_ctx
          history.preempt_optimize.mark_as_latency_sensitive();
       }
    }
-   *rp_ctx = cb_ctx.attach_rp_entry(device, history, config, rp_state->drawcall_count);
+   *rp_ctx = cb_ctx.attach_rp_entry(device, std::move(history_handle), config, rp_state->drawcall_count);
 
    if (config.test(mod_flag::PREEMPT_OPTIMIZE) && history.preempt_optimize.is_latency_sensitive()) {
       /* Try to mitigate the risk of high preemption latency by always using GMEM, which should break up any larger
