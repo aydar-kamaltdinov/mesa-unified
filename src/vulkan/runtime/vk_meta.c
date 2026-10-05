@@ -452,7 +452,7 @@ vk_meta_create_graphics_pipeline(struct vk_device *device,
          };
       }
       cb_info = (VkPipelineColorBlendStateCreateInfo) {
-         .sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
+         .sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
          .attachmentCount = render->color_attachment_count,
          .pAttachments = cb_att,
       };

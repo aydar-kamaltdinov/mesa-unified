@@ -284,7 +284,7 @@ vk_common_CmdPushDescriptorSetKHR(
     const VkWriteDescriptorSet*                 pDescriptorWrites)
 {
    const VkPushDescriptorSetInfoKHR two = {
-      .sType = VK_STRUCTURE_TYPE_PUSH_CONSTANTS_INFO_KHR,
+      .sType = VK_STRUCTURE_TYPE_PUSH_DESCRIPTOR_SET_INFO_KHR,
       .stageFlags = vk_shader_stages_from_bind_point(pipelineBindPoint),
       .layout = layout,
       .set = set,
