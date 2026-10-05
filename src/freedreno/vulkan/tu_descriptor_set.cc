@@ -683,8 +683,14 @@ tu_descriptor_set_create(struct tu_device *device,
          set->offset = pool_vma_offset - TU_POOL_HEAP_OFFSET;
          current_offset = set->offset;
       } else {
-         if (current_offset + set->size > pool->size)
+         if (current_offset + set->size > pool->size) {
+            /* The set was the last linear allocation from host_memory, give
+             * it back so a failed allocation doesn't leak pool host memory.
+             */
+            vk_object_base_finish(&set->base);
+            pool->host_memory_ptr -= mem_size;
             return VK_ERROR_OUT_OF_POOL_MEMORY;
+         }
 
          pool->current_offset += set->size;
       }
