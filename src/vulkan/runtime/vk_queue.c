@@ -521,7 +521,8 @@ vk_queue_submits_merge(struct vk_queue *queue,
           first->_image_bind_entry_count + second->_image_bind_entry_count);
 
    merged->_has_binary_permanent_semaphore_wait =
-      first->_has_binary_permanent_semaphore_wait;
+      first->_has_binary_permanent_semaphore_wait ||
+      second->_has_binary_permanent_semaphore_wait;
 
    typed_memcpy(merged->_wait_temps, first->_wait_temps, first->wait_count);
    typed_memcpy(&merged->_wait_temps[first->wait_count], second->_wait_temps, second->wait_count);
