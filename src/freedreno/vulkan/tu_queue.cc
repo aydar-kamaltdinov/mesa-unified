@@ -524,8 +524,8 @@ queue_submit(struct vk_queue *_queue, struct vk_queue_submit *vk_submit)
       if (FD_RD_DUMP(FULL)) {
          VkResult result = tu_queue_wait_fence(queue, queue->fence, ~0);
          if (result != VK_SUCCESS) {
-            mesa_loge("FD_RD_DUMP_FULL: wait on previous submission for device %u and queue %d failed: %u",
-                      device->device_idx, queue->msm_queue_id, 0);
+            mesa_loge("FD_RD_DUMP_FULL: wait on previous submission for device %u and queue %d failed: %d",
+                      device->device_idx, queue->msm_queue_id, result);
          }
       }
 
