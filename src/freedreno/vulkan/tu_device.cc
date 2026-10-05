@@ -4719,8 +4719,17 @@ tu_CmdEndDebugUtilsLabelEXT(VkCommandBuffer _commandBuffer)
 {
    VK_FROM_HANDLE(tu_cmd_buffer, cmd_buffer, _commandBuffer);
 
-   if (cmd_buffer->vk.labels.size > 0) {
-      const VkDebugUtilsLabelEXT *label = util_dynarray_top_ptr(&cmd_buffer->vk.labels, VkDebugUtilsLabelEXT);
+   /* If the top of the stack is a label from CmdInsertDebugUtilsLabelEXT,
+    * the region being closed is the one below it.
+    */
+   unsigned label_count =
+      util_dynarray_num_elements(&cmd_buffer->vk.labels, VkDebugUtilsLabelEXT);
+   unsigned skip = cmd_buffer->vk.region_begin ? 0 : 1;
+
+   if (label_count > skip) {
+      const VkDebugUtilsLabelEXT *label =
+         util_dynarray_element(&cmd_buffer->vk.labels, VkDebugUtilsLabelEXT,
+                               label_count - 1 - skip);
 
       if (cmd_buffer->state.pass) {
          trace_end_cmd_buffer_annotation_rp(&cmd_buffer->trace, &cmd_buffer->draw_cs, strlen(label->pLabelName),
