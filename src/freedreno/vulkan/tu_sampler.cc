@@ -57,8 +57,16 @@ tu_CreateSampler(VkDevice _device,
             return vk_error(device, VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS);
          }
       } else {
-         border_color_index = BITSET_FFS(device->custom_border_color) - 1;
-         assert(border_color_index < TU_BORDER_COLOR_COUNT);
+         unsigned free_index = BITSET_FFS(device->custom_border_color);
+         if (free_index == 0) {
+            /* All custom border color slots are in use. Going on would
+             * write past the end of the bitset and of global_bo->bcolor[].
+             */
+            mtx_unlock(&device->mutex);
+            vk_sampler_destroy(&device->vk, pAllocator, &sampler->vk);
+            return vk_error(device, VK_ERROR_OUT_OF_DEVICE_MEMORY);
+         }
+         border_color_index = free_index - 1;
       }
       BITSET_CLEAR(device->custom_border_color, border_color_index);
       mtx_unlock(&device->mutex);
