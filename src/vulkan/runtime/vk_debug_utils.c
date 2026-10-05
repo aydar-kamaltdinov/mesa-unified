@@ -465,9 +465,8 @@ vk_common_CmdInsertDebugUtilsLabelEXT(
     * should remove it first.
     */
    if (!command_buffer->region_begin) {
-      vk_common_append_debug_label(command_buffer->base.device,
-                                   &command_buffer->labels,
-                                   pLabelInfo);
+      vk_common_pop_debug_label(command_buffer->base.device,
+                                &command_buffer->labels);
    }
 
    vk_common_append_debug_label(command_buffer->base.device,
