@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "name": "AK Turnip 1.13 Rutabaga",
-  "description": "AK Turnip 1.13 Rutabaga: AK Turnip 1.13 plus native KGSL timeline synchronization. Timeline semaphores, binary semaphores, fences and queue submits use KGSL kernel timelines (IOCTL_KGSL_TIMELINE_*) instead of the emulated vk_sync_timeline + deferred-submit path, so vkQueueSubmit goes straight to the kernel and the driver no longer tracks/polls emulated timeline points on the CPU. Based on draft Mesa MR !39751, with fixes for a per-submit profiling leak, sync_file import (fd leak, dup failure) and CPU waits/signals on imported Android/WSI fences. Falls back to the 1.13 sync path on kernels without KGSL timelines. Built with platform-sdk-version=33.",
+  "name": "AK Turnip 1.14 Rutabaga",
+  "description": "AK Turnip 1.14 Rutabaga: AK Turnip 1.14 plus native KGSL timeline synchronization (as in 1.13 Rutabaga). Timeline semaphores, binary semaphores, fences and queue submits use KGSL kernel timelines (IOCTL_KGSL_TIMELINE_*) instead of the emulated vk_sync_timeline + deferred-submit path, based on draft Mesa MR !39751 with AK fixes; falls back to the 1.14 sync path on kernels without KGSL timelines. Includes all 1.14 correctness fixes: descriptor-load speculation check for variable-count bindings, custom border color exhaustion, descriptor pool host-memory leak, debug-label stack growth, merged-submit binary wait flag, unsupported format features no longer advertised, device-creation failure paths, a630 CP_DRAW_AUTO workaround. No compiler or rendering changes. Built with platform-sdk-version=33.",
   "author": "aydar",
   "packageVersion": "1",
   "vendor": "Mesa",
-  "driverVersion": "AK-1.13-rutabaga",
+  "driverVersion": "AK-1.14-rutabaga",
   "minApi": 29,
   "libraryName": "libvulkan_freedreno.so"
 }
