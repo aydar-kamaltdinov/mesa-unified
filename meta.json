@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "name": "AK Turnip 1.13",
-  "description": "AK Turnip 1.13: ir3 absolute subgroupShuffle no longer always becomes a waterfall loop (uniform index -> single movs broadcast, id+k / id-k / id^k -> single shfl; hit heavily by Switch emulators translating SHFL); WAIT_ANY on several timeline semaphores no longer busy-spins a CPU core on KGSL; fixed a per-submit KGSL command-object leak, a NULL deref/OOB read in kgsl_syncobj_wait_any, submit_mutex deadlocks on submit error paths, a pipeline-cache use-after-free and reference leak on graphics pipeline compile failure (FAIL_ON_PIPELINE_COMPILE_REQUIRED), an autotune RP-history use-after-free race, BO leaks on AHB/perf-query error paths, A8XX LRZ fast-clear metadata offsets with concurrent binning; ir3 UBO range merging and rematerializable spill fixes; upstream query, texel-buffer, descriptor-pool, heapUsage and KGSL fd fixes. Built with platform-sdk-version=33.",
+  "name": "AK Turnip 1.14",
+  "description": "AK Turnip 1.14: correctness release on top of 1.13, no compiler or rendering changes. Descriptor-load speculation check for variable-count bindings fixed (the variable binding could be read past the end of the set, while all other bindings in such layouts lost preamble hoisting; hits vkd3d-proton bindless layouts); sampler creation fails cleanly instead of writing out of bounds when all 4096 custom border colors are used; descriptor pools no longer leak host memory on OUT_OF_POOL_MEMORY; back-to-back vkCmdInsertDebugUtilsLabelEXT no longer grows the label stack (Vulkan runtime bug); merged queue submits keep the binary-semaphore wait flag of both submits; no longer advertises format features the driver cannot honour (MSAA for FDM/FSR usage, buffer support for compressed formats, sparse residency without device support, TRANSFER bits in bufferFeatures); device-creation failure paths fixed (mutex leaks, teardown order); lazy MSRTSS allocation only when supported; a630 CP_DRAW_AUTO stale vertex stride workaround; invalid FD_RD_DUMP_PATH no longer hangs. Built with platform-sdk-version=33.",
   "author": "aydar",
   "packageVersion": "1",
   "vendor": "Mesa",
-  "driverVersion": "AK-1.13",
+  "driverVersion": "AK-1.14",
   "minApi": 29,
   "libraryName": "libvulkan_freedreno.so"
 }
