@@ -1982,14 +1982,32 @@ tu_setup_dynamic_render_pass(struct tu_cmd_buffer *cmd_buffer,
     * binary search from scratch every time. */
    {
       auto *gc = &cmd_buffer->dynamic_gmem_config_cache;
-      bool sig_matches = gc->valid && gc->attachment_count == pass->attachment_count;
+
+      /* Same condition as in tu_render_pass_gmem_config(). */
+      bool custom_resolve_depth_stencil = false;
+      for (uint32_t i = 0; i < pass->subpass_count; i++) {
+         const struct tu_subpass *subpass = &pass->subpasses[i];
+         if (subpass->custom_resolve &&
+             subpass->depth_stencil_attachment.attachment != VK_ATTACHMENT_UNUSED &&
+             (subpass->depth_used || subpass->stencil_used)) {
+            custom_resolve_depth_stencil = true;
+            break;
+         }
+      }
+
+      bool sig_matches = gc->valid &&
+                         gc->attachment_count == pass->attachment_count &&
+                         gc->subpass_count == pass->subpass_count &&
+                         gc->custom_resolve_depth_stencil == custom_resolve_depth_stencil;
       if (sig_matches) {
          for (uint32_t i = 0; i < pass->attachment_count; i++) {
             const struct tu_render_pass_attachment *att = &pass->attachments[i];
             if (gc->sig[i].gmem != att->gmem ||
                 gc->sig[i].cpp != att->cpp ||
                 gc->sig[i].format != att->format ||
-                gc->sig[i].samples != att->samples) {
+                gc->sig[i].samples != att->samples ||
+                gc->sig[i].first_subpass_idx != att->first_subpass_idx ||
+                gc->sig[i].last_subpass_idx != att->last_subpass_idx) {
                sig_matches = false;
                break;
             }
@@ -2015,12 +2033,15 @@ tu_setup_dynamic_render_pass(struct tu_cmd_buffer *cmd_buffer,
 
          gc->valid = true;
          gc->attachment_count = pass->attachment_count;
+         gc->subpass_count = pass->subpass_count;
+         gc->custom_resolve_depth_stencil = custom_resolve_depth_stencil;
          gc->tile_align_w = pass->tile_align_w;
          gc->min_cpp = pass->min_cpp;
          memcpy(gc->gmem_pixels, pass->gmem_pixels, sizeof(gc->gmem_pixels));
          for (uint32_t i = 0; i < pass->attachment_count; i++) {
             const struct tu_render_pass_attachment *att = &pass->attachments[i];
-            gc->sig[i] = { att->gmem, att->cpp, att->format, att->samples };
+            gc->sig[i] = { att->gmem, att->cpp, att->format, att->samples,
+                           att->first_subpass_idx, att->last_subpass_idx };
             if (att->gmem) {
                memcpy(gc->gmem_offset[i], att->gmem_offset, sizeof(gc->gmem_offset[i]));
                if (att->format == VK_FORMAT_D32_SFLOAT_S8_UINT) {

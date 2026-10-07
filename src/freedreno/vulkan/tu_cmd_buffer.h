@@ -763,11 +763,20 @@ struct tu_cmd_buffer
    struct {
       bool valid;
       uint32_t attachment_count;
+      /* Also read by tu_render_pass_gmem_config(): the subpass layout
+       * (attachments with disjoint subpass ranges share GMEM allocations)
+       * and whether a custom resolve touches depth/stencil (shrinks the
+       * AVOID_CCU budget).
+       */
+      uint32_t subpass_count;
+      bool custom_resolve_depth_stencil;
       struct {
          bool gmem;
          uint32_t cpp;
          VkFormat format;
          uint32_t samples;
+         uint32_t first_subpass_idx;
+         uint32_t last_subpass_idx;
       } sig[3 * (MAX_RTS + 1) + 2];
       uint32_t tile_align_w;
       uint32_t min_cpp;
