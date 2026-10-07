@@ -4878,7 +4878,6 @@ tu_bind_descriptor_sets(struct tu_cmd_buffer *cmd,
 
    struct tu_descriptor_state *descriptors_state =
       tu_get_descriptors_state(cmd, bind_point);
-   bool descriptor_state_changed = false;
 
    descriptors_state->max_sets_bound =
       MAX2(descriptors_state->max_sets_bound,
@@ -4896,7 +4895,6 @@ tu_bind_descriptor_sets(struct tu_cmd_buffer *cmd,
 
       descriptors_state->sets[idx] = set;
       uint64_t set_iova = set ? (set->va | BINDLESS_DESCRIPTOR_64B) : 0;
-      descriptor_state_changed |= descriptors_state->set_iova[idx] != set_iova;
       descriptors_state->set_iova[idx] = set_iova;
 
       if (cmd->device->physical_device->compiler_options.enable_ssbo_emulation)
@@ -5015,12 +5013,10 @@ tu_bind_descriptor_sets(struct tu_cmd_buffer *cmd,
              descriptors_state->max_dynamic_offset_size);
       assert(reserved_set_idx >= 0); /* reserved set must be bound */
       uint64_t set_iova = dynamic_desc_set.iova | BINDLESS_DESCRIPTOR_64B;
-      descriptor_state_changed |= descriptors_state->set_iova[reserved_set_idx] != set_iova;
       descriptors_state->set_iova[reserved_set_idx] = set_iova;
    }
 
-   if (descriptor_state_changed)
-      tu_dirty_desc_sets(cmd, bind_point);
+   tu_dirty_desc_sets(cmd, bind_point);
 }
 
 template <chip CHIP>
@@ -5065,7 +5061,6 @@ tu_set_descriptor_buffer_offsets(
 
    struct tu_descriptor_state *descriptors_state =
       tu_get_descriptors_state(cmd, bind_point);
-   bool descriptor_state_changed = false;
 
    descriptors_state->max_sets_bound = MAX2(descriptors_state->max_sets_bound,
                                             info->firstSet + info->setCount);
@@ -5077,7 +5072,6 @@ tu_set_descriptor_buffer_offsets(
       uint64_t set_iova =
          (cmd->state.descriptor_buffer_iova[info->pBufferIndices[i]] +
           info->pOffsets[i]) | BINDLESS_DESCRIPTOR_64B;
-      descriptor_state_changed |= descriptors_state->set_iova[idx] != set_iova;
       descriptors_state->set_iova[idx] = set_iova;
 
       if (cmd->device->physical_device->compiler_options.enable_ssbo_emulation ||
@@ -5085,8 +5079,7 @@ tu_set_descriptor_buffer_offsets(
          cmd->state.dirty |= TU_CMD_DIRTY_SHADER_CONSTS;
    }
 
-   if (descriptor_state_changed)
-      tu_dirty_desc_sets(cmd, bind_point);
+   tu_dirty_desc_sets(cmd, bind_point);
 }
 
 VKAPI_ATTR void VKAPI_CALL
@@ -5122,17 +5115,14 @@ tu_bind_descriptor_buffer_embedded_samplers(
 
    struct tu_descriptor_state *descriptors_state =
       tu_get_descriptors_state(cmd, bind_point);
-   bool descriptor_state_changed = false;
 
    descriptors_state->max_sets_bound =
       MAX2(descriptors_state->max_sets_bound, info->set + 1);
 
    uint64_t set_iova = set_layout->embedded_samplers->iova | BINDLESS_DESCRIPTOR_64B;
-   descriptor_state_changed |= descriptors_state->set_iova[info->set] != set_iova;
    descriptors_state->set_iova[info->set] = set_iova;
 
-   if (descriptor_state_changed)
-      tu_dirty_desc_sets(cmd, bind_point);
+   tu_dirty_desc_sets(cmd, bind_point);
 }
 
 VKAPI_ATTR void VKAPI_CALL
