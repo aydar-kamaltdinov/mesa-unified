@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "name": "AK Turnip 1.14 Rutabaga",
-  "description": "AK Turnip 1.14 Rutabaga: AK Turnip 1.14 plus native KGSL timeline synchronization (as in 1.13 Rutabaga). Timeline semaphores, binary semaphores, fences and queue submits use KGSL kernel timelines (IOCTL_KGSL_TIMELINE_*) instead of the emulated vk_sync_timeline + deferred-submit path, based on draft Mesa MR !39751 with AK fixes; falls back to the 1.14 sync path on kernels without KGSL timelines. Includes all 1.14 correctness fixes: descriptor-load speculation check for variable-count bindings, custom border color exhaustion, descriptor pool host-memory leak, debug-label stack growth, merged-submit binary wait flag, unsupported format features no longer advertised, device-creation failure paths, a630 CP_DRAW_AUTO workaround. No compiler or rendering changes. Built with platform-sdk-version=33.",
+  "name": "AK Turnip 1.15 Rutabaga",
+  "description": "AK Turnip 1.15 Rutabaga: AK Turnip 1.14 Rutabaga (native KGSL timeline synchronization) plus cached IO-coherent host memory by default (tu_override_uncached_as_cache_coherent, only where KGSL supports it), a fix for GPU-culled/indirect content disappearing since 1.10 (descriptor sets were not re-emitted after re-recording a command buffer), fixes for two other AK-only caches (dynamic-rendering GMEM layout cache key, GMEM clear register cache), upstream NIR CSE fix for texture instructions with different result types, and Adreno 753/735 IDs. Built with platform-sdk-version=33.",
   "author": "aydar",
   "packageVersion": "1",
   "vendor": "Mesa",
-  "driverVersion": "AK-1.14-rutabaga",
+  "driverVersion": "AK-1.15-rutabaga",
   "minApi": 29,
   "libraryName": "libvulkan_freedreno.so"
 }
