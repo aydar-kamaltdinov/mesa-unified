@@ -93,6 +93,13 @@ kgsl_timeline_wait_ioctl(int fd,
                          uint32_t count,
                          uint32_t flags)
 {
+   /* KGSL truncates the timeout to whole milliseconds and treats 0 as a
+    * poll, so a non-zero wait shorter than 1ms would return -EBUSY right
+    * away and callers would spin. Round up to the next millisecond.
+    */
+   if (timeout > 0 && timeout < INT64_MAX - 1000000)
+      timeout = DIV_ROUND_UP(timeout, 1000000) * 1000000;
+
    struct kgsl_timeline_wait req = {
       .tv_sec = timeout / NSEC_PER_SEC,
       .tv_nsec = timeout % NSEC_PER_SEC,
