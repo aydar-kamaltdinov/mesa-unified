@@ -2562,20 +2562,6 @@ static const enum mesa_vk_dynamic_graphics_state tu_viewport_state[] = {
    MESA_VK_DYNAMIC_RS_DEPTH_CLAMP_ENABLE,
 };
 
-/* VK_EXT_depth_range_unrestricted
- *
- * A7xx+ does not clamp to [0,1] in hardware when depth clamp is disabled;
- * Turnip forces that clamp for Vulkan core and depth_clamp_zero_one.  On the
- * validated FD740 KGSL entries, let the hardware remain unrestricted only
- * when the application explicitly enables depth_range_unrestricted. */
-static inline bool
-tu_force_zero_one_depth_clamp(const struct tu_device *dev)
-{
-   return !dev->vk.enabled_extensions.EXT_depth_range_unrestricted ||
-          dev->vk.enabled_extensions.EXT_depth_clamp_zero_one ||
-          dev->vk.enabled_extensions.KHR_depth_clamp_zero_one;
-}
-
 template <chip CHIP>
 static unsigned
 tu6_viewport_nregs(const struct vk_viewport_state *vp)
@@ -2674,8 +2660,7 @@ tu6_emit_viewport(struct tu_cs *cs,
     * VK_EXT_depth_clamp_zero_one we have to always enable clamp and manually
     * set range to [0,1] when rs->depth_clamp_enable is false.
     */
-   bool zero_one_depth_clamp = CHIP >= A7XX && !rs->depth_clamp_enable &&
-                               tu_force_zero_one_depth_clamp(cs->device);
+   bool zero_one_depth_clamp = CHIP >= A7XX && !rs->depth_clamp_enable;
 
    for (uint32_t i = 0; i < vp->viewport_count; i++) {
       const VkViewport *viewport = &vp->viewports[i];
@@ -3540,10 +3525,8 @@ tu6_emit_rast(struct tu_cs *cs,
                    GRAS_CL_CNTL(CHIP,
                      .znear_clip_disable = !depth_clip_enable,
                      .zfar_clip_disable = !depth_clip_enable,
-                     /* Preserve [0,1] unless unrestricted depth was
-                      * explicitly enabled on the validated FD740 path. */
-                     .z_clamp_enable = rs->depth_clamp_enable ||
-                        (CHIP >= A7XX && tu_force_zero_one_depth_clamp(cs->device)),
+                     /* To support VK_EXT_depth_clamp_zero_one on a7xx+ */
+                     .z_clamp_enable = rs->depth_clamp_enable || CHIP >= A7XX,
                      .zero_gb_scale_z = vp->depth_clip_negative_one_to_one ? 0 : 1,
                      .vp_clip_code_ignore = 1));
 
@@ -3746,10 +3729,8 @@ tu6_emit_rb_depth_cntl(struct tu_cs *cs,
          .z_test_enable = depth_test,
          .z_write_enable = ds->depth.test_enable && ds->depth.write_enable,
          .zfunc = zfunc,
-         /* Preserve [0,1] unless unrestricted depth was explicitly enabled
-          * on the validated FD740 path. */
-         .z_clamp_enable = rs->depth_clamp_enable ||
-            (CHIP >= A7XX && tu_force_zero_one_depth_clamp(cs->device)),
+         /* To support VK_EXT_depth_clamp_zero_one on a7xx+ */
+         .z_clamp_enable = rs->depth_clamp_enable || CHIP >= A7XX,
          .z_read_enable =
             (ds->depth.test_enable && (zfunc != FUNC_NEVER && zfunc != FUNC_ALWAYS)) ||
             ds->depth.bounds_test.enable,
