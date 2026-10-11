@@ -1721,7 +1721,7 @@ tu_CreateDescriptorUpdateTemplate(
       case VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK: {
          uint32_t remaining = entry->descriptorCount;
          uint32_t dst_start = entry->dstArrayElement;
-         uint32_t src_offset = entry->offset;
+         size_t src_offset = entry->offset;
          /* See comment in update_descriptor_sets() */
          do {
             dst_offset =

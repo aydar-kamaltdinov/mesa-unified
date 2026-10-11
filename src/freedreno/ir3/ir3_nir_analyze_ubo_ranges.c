@@ -96,10 +96,11 @@ get_existing_range(nir_intrinsic_instr *instr,
  * Merges together neighboring/overlapping ranges in the range plan with a
  * newly updated range.
  */
-static void
+static uint32_t
 merge_neighbors(struct ir3_ubo_analysis_state *state, int index)
 {
    struct ir3_ubo_range *a = &state->range[index];
+   uint32_t reclaimed = 0;
 
    /* index is always the first slot that would have neighbored/overlapped with
     * the new range.
@@ -112,6 +113,8 @@ merge_neighbors(struct ir3_ubo_analysis_state *state, int index)
       if (a->start > b->end || a->end < b->start)
          continue;
 
+      reclaimed += MIN2(a->end, b->end) - MAX2(a->start, b->start);
+
       /* Merge B into A. */
       a->start = MIN2(a->start, b->start);
       a->end = MAX2(a->end, b->end);
@@ -123,6 +126,8 @@ merge_neighbors(struct ir3_ubo_analysis_state *state, int index)
       *b = state->range[--state->num_enabled];
       i--;
    }
+
+   return reclaimed;
 }
 
 /**
@@ -161,7 +166,7 @@ gather_ubo_ranges(nir_shader *nir, nir_intrinsic_instr *instr,
       r.end = MAX2(r.end, plan_r->end);
 
       uint32_t added = (plan_r->start - r.start) + (r.end - plan_r->end);
-      if (added >= *upload_remaining)
+      if (added > *upload_remaining)
          return;
 
       plan_r->start = r.start;
@@ -170,7 +175,7 @@ gather_ubo_ranges(nir_shader *nir, nir_intrinsic_instr *instr,
          !!(nir_intrinsic_access(instr) & ACCESS_CAN_SPECULATE);
       *upload_remaining -= added;
 
-      merge_neighbors(state, i);
+      *upload_remaining += merge_neighbors(state, i);
       return;
    }
 
@@ -178,7 +183,7 @@ gather_ubo_ranges(nir_shader *nir, nir_intrinsic_instr *instr,
       return;
 
    uint32_t added = r.end - r.start;
-   if (added >= *upload_remaining)
+   if (added > *upload_remaining)
       return;
 
    struct ir3_ubo_range *plan_r = &state->range[state->num_enabled++];

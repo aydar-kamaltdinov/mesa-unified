@@ -3411,6 +3411,8 @@ tu_shader_deserialize(struct vk_pipeline_cache *cache,
 
    VkResult result = tu_upload_shader(dev, shader);
    if (result != VK_SUCCESS) {
+      ralloc_free((void *) shader->variant);
+      ralloc_free((void *) shader->safe_const_variant);
       vk_free(&dev->vk.alloc, shader);
       return NULL;
    }
@@ -3745,6 +3747,8 @@ tu_shader_create(struct tu_device *dev,
 
    VkResult result = tu_upload_shader(dev, shader);
    if (result != VK_SUCCESS) {
+      ralloc_free((void *) shader->variant);
+      ralloc_free((void *) shader->safe_const_variant);
       vk_free(&dev->vk.alloc, shader);
       return result;
    }

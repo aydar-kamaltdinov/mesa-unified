@@ -4992,7 +4992,7 @@ tu_bind_descriptor_sets(struct tu_cmd_buffer *cmd,
    }
    assert(dyn_idx == info->dynamicOffsetCount);
 
-   if (dynamic_offset_offset) {
+   if (info->dynamicOffsetCount) {
       descriptors_state->max_dynamic_offset_size =
          MAX2(descriptors_state->max_dynamic_offset_size, dynamic_offset_offset);
 

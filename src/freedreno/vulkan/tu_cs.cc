@@ -263,13 +263,23 @@ tu_cs_add_entries(struct tu_cs *cs, struct tu_cs *target)
    assert(cs->mode == TU_CS_MODE_GROW);
    assert(target->mode == TU_CS_MODE_GROW);
 
+   if (unlikely(cs->status != VK_SUCCESS))
+      return cs->status;
+
+   if (unlikely(target->status != VK_SUCCESS)) {
+      tu_cs_fail(cs, target->status);
+      return cs->status;
+   }
+
    if (!tu_cs_is_empty(cs))
       tu_cs_add_entry(cs);
 
    for (unsigned i = 0; i < target->entry_count; i++) {
       result = tu_cs_reserve_entry(cs);
-      if (result != VK_SUCCESS)
+      if (result != VK_SUCCESS) {
+         tu_cs_fail(cs, result);
          return result;
+      }
       cs->entries[cs->entry_count++] = target->entries[i];
    }
 
@@ -398,9 +408,9 @@ tu_cs_alloc(struct tu_cs *cs,
       return VK_SUCCESS;
    }
 
-   /* TODO: smarter way to deal with alignment? */
-
-   VkResult result = tu_cs_reserve_space(cs, count * size + (size-1));
+   uint32_t current_offset = tu_cs_get_offset(cs);
+   uint32_t padding = align(current_offset, size) - current_offset;
+   VkResult result = tu_cs_reserve_space(cs, count * size + padding);
    if (result != VK_SUCCESS)
       return result;
 
@@ -564,6 +574,8 @@ tu_cs_reset(struct tu_cs *cs)
       cs->start = cs->cur = cs->reserved_end = (uint32_t *) cs->read_only.bos[0]->map;
       cs->end = cs->start + tu_sanitize_ib_size(cs->read_only.bos[0]->size /
                                                 sizeof(uint32_t));
+   } else if (!cs->refcount_bo) {
+      cs->start = cs->cur = cs->reserved_end = cs->end = NULL;
    }
 
    if (cs->read_write.bo_count) {
@@ -628,13 +640,21 @@ tu_cs_emit_debug_magic_strv(struct tu_cs *cs,
                             const char *fmt,
                             va_list args)
 {
-   int fmt_len = vsnprintf(NULL, 0, fmt, args);
-   int len = 4 + fmt_len + 1;
+   va_list copy;
+   va_copy(copy, args);
+   int fmt_len = vsnprintf(NULL, 0, fmt, copy);
+   va_end(copy);
+   if (fmt_len < 0)
+      return;
+
+   int len = 4 + MIN2(fmt_len, 0x3fff * 4 - 5) + 1;
    char *string = (char *) malloc(len);
+   if (!string)
+      return;
 
    /* format: <magic><formatted string>\0 */
    *(uint32_t *) string = magic;
-   vsnprintf(string + 4, fmt_len + 1, fmt, args);
+   vsnprintf(string + 4, len - 4, fmt, args);
 
    tu_cs_emit_debug_string(cs, string, len);
    free(string);

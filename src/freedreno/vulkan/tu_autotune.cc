@@ -1179,7 +1179,7 @@ struct tu_autotune::rp_history {
                   sysmem_ema.count >= MIN_LOCK_DURATION_COUNT && gmem_ema.count >= MIN_LOCK_DURATION_COUNT;
                uint64_t min_avg = MIN2(avg_sysmem, avg_gmem);
                uint64_t max_avg = MAX2(avg_sysmem, avg_gmem);
-               uint64_t percent_diff = (100 * (max_avg - min_avg)) / min_avg;
+               uint64_t percent_diff = min_avg ? (100 * (max_avg - min_avg)) / min_avg : 0;
 
                if (has_resolved && enough_samples && max_avg >= MIN_LOCK_THRESHOLD &&
                    percent_diff >= LOCK_PERCENT_DIFF && (now - winning_since_ts) >= LOCK_TIME_WINDOW_NS) {

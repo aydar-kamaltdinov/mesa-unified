@@ -459,6 +459,8 @@ kgsl_bo_init(struct tu_device *dev,
 
    if (lazy_vma) {
       result = kgsl_sparse_vma_map(dev, lazy_vma, bo, 0);
+      if (result != VK_SUCCESS)
+         kgsl_bo_finish(dev, bo);
    } else if (flags & TU_BO_ALLOC_REPLAYABLE) {
       result = kgsl_bo_user_map(dev, bo, client_iova);
    }
@@ -675,8 +677,13 @@ kgsl_sparse_vma_init(struct tu_device *dev,
       ret = safe_ioctl(dev->physical_device->local_fd,
                        IOCTL_KGSL_GPUMEM_GET_INFO, &info);
       if (ret) {
-         return vk_errorf(dev, VK_ERROR_OUT_OF_DEVICE_MEMORY,
-                          "GPUMEM_GET_INFO failed (%s)", strerror(errno));
+         VkResult result = vk_errorf(dev, VK_ERROR_OUT_OF_DEVICE_MEMORY,
+                                     "GPUMEM_GET_INFO failed (%s)", strerror(errno));
+         struct kgsl_gpuobj_free free_req = { .id = req.id };
+         memset(bo, 0, sizeof(*bo));
+         safe_ioctl(dev->physical_device->local_fd, IOCTL_KGSL_GPUOBJ_FREE,
+                    &free_req);
+         return result;
       }
 
       bo->iova = info.gpuaddr;
