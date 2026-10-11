@@ -865,6 +865,8 @@ tu_CreateDescriptorPool(VkDevice _device,
 fail_map:
    tu_bo_finish(device, pool->bo);
 fail_alloc:
+   if (bo_size && !pool->host_memory_base)
+      util_vma_heap_finish(&pool->bo_heap);
    vk_object_free(&device->vk, pAllocator, pool);
    return ret;
 }

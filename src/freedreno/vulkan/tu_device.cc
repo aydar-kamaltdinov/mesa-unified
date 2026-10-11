@@ -3471,7 +3471,8 @@ tu_get_scratch_bo(struct tu_device *dev, uint64_t size, struct tu_bo **bo)
 {
    unsigned size_log2 = MAX2(util_logbase2_ceil64(size), MIN_SCRATCH_BO_SIZE_LOG2);
    unsigned index = size_log2 - MIN_SCRATCH_BO_SIZE_LOG2;
-   assert(index < ARRAY_SIZE(dev->scratch_bos));
+   if (index >= ARRAY_SIZE(dev->scratch_bos))
+      return VK_ERROR_OUT_OF_DEVICE_MEMORY;
 
    for (unsigned i = index; i < ARRAY_SIZE(dev->scratch_bos); i++) {
       if (p_atomic_read(&dev->scratch_bos[i].initialized)) {
@@ -3496,7 +3497,7 @@ tu_get_scratch_bo(struct tu_device *dev, uint64_t size, struct tu_bo **bo)
       return VK_SUCCESS;
    }
 
-   unsigned bo_size = 1ull << size_log2;
+   uint64_t bo_size = 1ull << size_log2;
    VkResult result = tu_bo_init_new(dev, NULL, &dev->scratch_bos[index].bo, bo_size,
                                     TU_BO_ALLOC_INTERNAL_RESOURCE, "scratch");
    if (result != VK_SUCCESS) {
@@ -3626,12 +3627,12 @@ tu_create_memory(struct tu_device *device,
 
    if (!mem->lazy) {
       result = tu_add_to_heap(device, mem->bo);
-      mem->iova = mem->bo->iova;
-
       if (result != VK_SUCCESS) {
          vk_object_free(&device->vk, NULL, mem);
          return result;
       }
+
+      mem->iova = mem->bo->iova;
    }
 
    *mem_out = mem;
@@ -3822,7 +3823,8 @@ tu_AllocateMemory(VkDevice _device,
 
    if (result == VK_SUCCESS && !mem->lazy) {
       result = tu_add_to_heap(device, mem->bo);
-      mem->iova = mem->bo->iova;
+      if (result == VK_SUCCESS)
+         mem->iova = mem->bo->iova;
    }
 
    if (result != VK_SUCCESS) {
@@ -3913,10 +3915,8 @@ tu_allocate_lazy_memory(struct tu_device *dev,
       if (result == VK_SUCCESS) {
          result = tu_add_to_heap(dev, mem->bo);
 
-         if (result != VK_SUCCESS) {
-            tu_bo_finish(dev, mem->bo);
+         if (result != VK_SUCCESS)
             mem->bo = NULL;
-         }
       }
    }
    mtx_unlock(&mem->lazy_mutex);
@@ -4055,9 +4055,6 @@ tu_get_msrtss_temporary(struct tu_device *dev,
       return VK_SUCCESS;
    }
 
-   if (*msrtss_temporary)
-      tu_destroy_memory(dev, *msrtss_temporary);
-
    struct tu_device_memory *mem;
    VkResult result =
       tu_create_memory(dev, &mem,
@@ -4070,6 +4067,9 @@ tu_get_msrtss_temporary(struct tu_device *dev,
       mtx_unlock(&dev->mutex);
       return result;
    }
+
+   if (*msrtss_temporary)
+      tu_destroy_memory(dev, *msrtss_temporary);
 
    *msrtss_temporary = tu_memory_get_ref(mem);
    mtx_unlock(&dev->mutex);

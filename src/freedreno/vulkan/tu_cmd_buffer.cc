@@ -54,8 +54,10 @@ tu_cmd_buffer_setup_status_tracking(struct tu_device *device)
       return NULL;
 
    result = tu_bo_map(device, status_bo, NULL);
-   if (result != VK_SUCCESS)
+   if (result != VK_SUCCESS) {
+      tu_bo_finish(device, status_bo);
       return NULL;
+   }
 
    return status_bo;
 }
@@ -5442,6 +5444,12 @@ tu_CmdPushConstants2KHR(VkCommandBuffer commandBuffer,
                         const VkPushConstantsInfoKHR *pPushConstantsInfo)
 {
    VK_FROM_HANDLE(tu_cmd_buffer, cmd, commandBuffer);
+   if (!(cmd->state.dirty & TU_CMD_DIRTY_SHADER_CONSTS) &&
+       cmd->state.shader_const.size &&
+       !memcmp((char *) cmd->push_constants + pPushConstantsInfo->offset,
+               pPushConstantsInfo->pValues, pPushConstantsInfo->size))
+      return;
+
    memcpy((char *) cmd->push_constants + pPushConstantsInfo->offset,
           pPushConstantsInfo->pValues, pPushConstantsInfo->size);
    cmd->state.dirty |= TU_CMD_DIRTY_SHADER_CONSTS;

@@ -3084,24 +3084,27 @@ tu_setup_pvtmem(struct tu_device *dev,
    mtx_lock(&pvtmem_bo->mtx);
 
    if (pvtmem_bo->per_fiber_size < pvtmem_bytes) {
-      if (pvtmem_bo->bo)
-         tu_bo_finish(dev, pvtmem_bo->bo);
-
-      pvtmem_bo->per_fiber_size =
+      uint32_t per_fiber_size =
          util_next_power_of_two(align(pvtmem_bytes, 512));
-      pvtmem_bo->per_sp_size =
-         align(pvtmem_bo->per_fiber_size *
-                  dev->physical_device->info->fibers_per_sp,
+      uint32_t per_sp_size =
+         align(per_fiber_size * dev->physical_device->info->fibers_per_sp,
                1 << 12);
       uint32_t total_size =
-         dev->physical_device->info->num_sp_cores * pvtmem_bo->per_sp_size;
+         dev->physical_device->info->num_sp_cores * per_sp_size;
+      struct tu_bo *new_bo;
 
-      VkResult result = tu_bo_init_new(dev, NULL, &pvtmem_bo->bo, total_size,
+      VkResult result = tu_bo_init_new(dev, NULL, &new_bo, total_size,
                                        TU_BO_ALLOC_INTERNAL_RESOURCE, "pvtmem");
       if (result != VK_SUCCESS) {
          mtx_unlock(&pvtmem_bo->mtx);
          return result;
       }
+
+      if (pvtmem_bo->bo)
+         tu_bo_finish(dev, pvtmem_bo->bo);
+      pvtmem_bo->bo = new_bo;
+      pvtmem_bo->per_fiber_size = per_fiber_size;
+      pvtmem_bo->per_sp_size = per_sp_size;
    }
 
    config->per_wave = per_wave;
@@ -3676,6 +3679,11 @@ tu_shader_create(struct tu_device *dev,
       shader->safe_const_variant =
          ir3_shader_create_variant(ir3_shader, &safe_constlen_key,
                                    executable_info);
+      if (!shader->safe_const_variant) {
+         ir3_shader_destroy(ir3_shader);
+         tu_shader_destroy(dev, shader);
+         return VK_ERROR_OUT_OF_HOST_MEMORY;
+      }
    }
 
    ir3_shader_destroy(ir3_shader);
@@ -4086,12 +4094,12 @@ tu_empty_fs_create(struct tu_device *dev, struct tu_shader **shader,
       ir3_get_compiler_options(dev->compiler);
    nir_builder fs_b;
 
-   fs_b = nir_builder_init_simple_shader(MESA_SHADER_FRAGMENT, nir_options,
-                                         "noop_fs");
-
    *shader = tu_shader_init(dev, NULL, 0);
    if (!*shader)
       return VK_ERROR_OUT_OF_HOST_MEMORY;
+
+   fs_b = nir_builder_init_simple_shader(MESA_SHADER_FRAGMENT, nir_options,
+                                         "noop_fs");
 
    (*shader)->fs.has_fdm = fragment_density_map;
    if (fragment_density_map && dev->physical_device->info->chip < 7)
