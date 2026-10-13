@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "name": "AK Turnip 1.15 Rutabaga",
-  "description": "AK Turnip 1.15 Rutabaga: AK Turnip 1.14 Rutabaga (native KGSL timeline synchronization) plus cached IO-coherent host memory by default (tu_override_uncached_as_cache_coherent, only where KGSL supports it), a fix for GPU-culled/indirect content disappearing since 1.10 (descriptor sets were not re-emitted after re-recording a command buffer), fixes for two other AK-only caches (dynamic-rendering GMEM layout cache key, GMEM clear register cache), upstream NIR CSE fix for texture instructions with different result types, and Adreno 753/735 IDs. Built with platform-sdk-version=33.",
+  "name": "AK Turnip 1.17 Rutabaga",
+  "description": "AK Turnip 1.17 Rutabaga: the tested Stage34 + Stage41 + Stage42 base with upstream fixes for vertex-input-only pipeline creation and non-uniform ray queries. Reduces dynamic-state processing, descriptor-binding scans, SSBO initialization, descriptor-pool cleanup and empty inline-UBO reservations. Retains the fixes from 1.16 Rutabaga. Built with platform-sdk-version=33.",
   "author": "aydar",
   "packageVersion": "1",
   "vendor": "Mesa",
-  "driverVersion": "AK-1.15-rutabaga",
+  "driverVersion": "AK-1.17-rutabaga",
   "minApi": 29,
   "libraryName": "libvulkan_freedreno.so"
 }
