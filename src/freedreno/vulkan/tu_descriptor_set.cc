@@ -276,6 +276,8 @@ tu_CreateDescriptorSetLayout(
          ALIGN_POT(set_layout->binding[b].array_size * set_layout->binding[b].size, 4 * FDL6_TEX_CONST_DWORDS);
       if (vk_descriptor_type_is_dynamic(binding->descriptorType)) {
          dynamic_offset_size += size;
+         if (size)
+            set_layout->dynamic_binding_end = b + 1;
       } else {
          set_layout->size += size;
       }

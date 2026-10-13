@@ -4916,7 +4916,7 @@ tu_bind_descriptor_sets(struct tu_cmd_buffer *cmd,
       uint32_t *src = set->dynamic_descriptors;
       uint32_t *dst = descriptors_state->dynamic_descriptors +
          dynamic_offset_offset / 4;
-      for (unsigned j = 0; j < set->layout->binding_count; j++) {
+      for (unsigned j = 0; j < set->layout->dynamic_binding_end; j++) {
          struct tu_descriptor_set_binding_layout *binding =
             &set->layout->binding[j];
          if (vk_descriptor_type_is_dynamic(binding->type)) {
