@@ -1152,13 +1152,13 @@ write_buffer_descriptor_addr(const struct tu_device *device,
    assert(!info->props.storage_8bit || (info->props.storage_16bit &&
                                        info->props.has_isam_v));
 
-   unsigned num_descriptors = 1 +
-      COND(info->props.storage_16bit && !info->props.has_isam_v, 1) +
-      COND(info->props.storage_8bit, 1);
-   memset(dst, 0, num_descriptors * FDL6_TEX_CONST_DWORDS * sizeof(uint32_t));
-
-   if (!buffer_info || buffer_info->address == 0)
+   if (!buffer_info || buffer_info->address == 0) {
+      unsigned num_descriptors = 1 +
+         COND(info->props.storage_16bit && !info->props.has_isam_v, 1) +
+         COND(info->props.storage_8bit, 1);
+      memset(dst, 0, num_descriptors * FDL6_TEX_CONST_DWORDS * sizeof(uint32_t));
       return;
+   }
 
    enum fdl_ssbo_emulation_mode ssbo_emulation_mode =
       device->physical_device->compiler_options.enable_ssbo_emulation ?
