@@ -4886,9 +4886,11 @@ tu_bind_descriptor_sets(struct tu_cmd_buffer *cmd,
            info->firstSet + info->descriptorSetCount);
 
    unsigned dynamic_offset_offset = 0;
-   for (unsigned i = 0; i < info->firstSet; i++) {
-      if (layout->set[i].layout)
-         dynamic_offset_offset += layout->set[i].layout->dynamic_offset_size;
+   if (info->dynamicOffsetCount) {
+      for (unsigned i = 0; i < info->firstSet; i++) {
+         if (layout->set[i].layout)
+            dynamic_offset_offset += layout->set[i].layout->dynamic_offset_size;
+      }
    }
 
    for (unsigned i = 0; i < info->descriptorSetCount; ++i) {
