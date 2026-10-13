@@ -879,7 +879,7 @@ tu_destroy_descriptor_pool_entries(struct tu_device *device,
                              pool_link) {
       vk_descriptor_set_layout_unref(&device->vk, &set->layout->vk);
       if (!pool->host_memory_base)
-         tu_descriptor_set_destroy(device, pool, set);
+         vk_object_free(&device->vk, NULL, set);
    }
 
    list_inithead(&pool->desc_sets);
