@@ -7788,7 +7788,7 @@ tu6_user_consts_size(const struct tu_const_state *const_state,
       assert(num_units > 0);
    }
 
-   if (ldgk) {
+   if (ldgk && const_state->num_inline_ubos) {
       dwords += 6 + (2 * const_state->num_inline_ubos + 4);
    } else {
       dwords += 8 * const_state->num_inline_ubos;
