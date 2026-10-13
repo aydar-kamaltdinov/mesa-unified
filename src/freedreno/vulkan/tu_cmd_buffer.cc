@@ -8676,9 +8676,14 @@ tu6_draw_common(struct tu_cmd_buffer *cmd,
       cmd->state.program.stage_blake3[MESA_SHADER_FRAGMENT]);
 
    /* Emit state first, because it's needed for bandwidth calculations */
+   const uint32_t dynamic_state_dependencies =
+      TU_CMD_DIRTY_VS | TU_CMD_DIRTY_FDM | TU_CMD_DIRTY_PER_VIEW_VIEWPORT |
+      TU_CMD_DIRTY_SUBPASS | TU_CMD_DIRTY_FS | TU_CMD_DIRTY_DISABLE_FS |
+      TU_CMD_DIRTY_SHADING_RATE | TU_CMD_DIRTY_RAST | TU_CMD_DIRTY_PROGRAM |
+      TU_CMD_DIRTY_RAST_ORDER | TU_CMD_DIRTY_FEEDBACK_LOOPS;
    uint32_t dynamic_draw_state_dirty = 0;
    if (!BITSET_IS_EMPTY(cmd->vk.dynamic_graphics_state.dirty) ||
-       (cmd->state.dirty & ~TU_CMD_DIRTY_COMPUTE_DESC_SETS)) {
+       (cmd->state.dirty & dynamic_state_dependencies)) {
       dynamic_draw_state_dirty = tu_emit_draw_state<CHIP>(cmd);
    }
 
