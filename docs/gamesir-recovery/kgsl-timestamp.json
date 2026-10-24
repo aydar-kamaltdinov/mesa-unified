@@ -1,0 +1,32 @@
+{
+  "area": "KGSL device GPU timestamp reader",
+  "binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "native_function": "kgsl_device_get_gpu_timestamp ELF0xa1effc size172",
+  "native_abi": {
+    "ioctl": "0xc0200960 = IOCTL_KGSL_READ_CALIBRATED_TIMESTAMPS",
+    "source": "uint32 DEVICE0 at local stack; sources pointer at request+0",
+    "ts": "caller uint64 output pointer at request+8",
+    "deviation": "zero at request+16",
+    "count_padding": "uint64 value1 at request+24; constant ELF0xafc90",
+    "retry": "EINTR4/EAGAIN11; return raw ioctl result otherwise"
+  },
+  "source_transfer": "Replace UNREACHABLE stub with existing named KGSL request and safe_ioctl retry helper; existing msm_kgsl.h already contains its complete 32-byte ABI",
+  "callers": [
+    "tu_device_get_gpu_timestamp forwards through selected backend",
+    "tu_device_get_timestamp returns VK_ERROR_UNKNOWN on nonzero kernel result",
+    "Existing vk_device.get_timestamp hook and calibrated timestamp extension predicates unchanged"
+  ],
+  "source_files": [
+    "src/freedreno/vulkan/tu_knl_kgsl.cc"
+  ],
+  "policy": "0x47533819 unchanged: no compiled shader/cache representation change",
+  "final_cases": [
+    "Supported/unsupported KGSL ioctl and EINTR/EAGAIN/error propagation",
+    "Counter units/wrap/monotonicity and CPU-domain calibration using common Vulkan wrapper",
+    "Kernel/API/GPU validation before claiming calibrated timestamp support or profiling accuracy"
+  ],
+  "build": false,
+  "tests": false,
+  "full_validation_deferred": true,
+  "evidence_sha256": "e86cb3d1508eed8b3a781190aab2bf5327a52927d8f73429a9a59c3caa0e5f1f"
+}

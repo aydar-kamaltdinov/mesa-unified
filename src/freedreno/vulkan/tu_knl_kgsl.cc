@@ -2977,8 +2977,14 @@ kgsl_device_finish(struct tu_device *dev)
 static int
 kgsl_device_get_gpu_timestamp(struct tu_device *dev, uint64_t *ts)
 {
-   UNREACHABLE("");
-   return 0;
+   uint32_t source = KGSL_CALIBRATED_TIME_DOMAIN_DEVICE;
+   struct kgsl_read_calibrated_timestamps req = {
+      .sources = (uint64_t)(uintptr_t)&source,
+      .ts = (uint64_t)(uintptr_t)ts,
+      .count = 1,
+   };
+
+   return safe_ioctl(dev->fd, IOCTL_KGSL_READ_CALIBRATED_TIMESTAMPS, &req);
 }
 
 static int

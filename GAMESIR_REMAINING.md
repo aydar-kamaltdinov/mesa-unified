@@ -285,3 +285,8 @@ Native ir3_required_sync_flags ELF0xad604c forces SS|SY for A8 BAR in addition t
 ## 2026-10-24 — Preserve MESH output lowering and A8 store selection
 
 Native ir3_nir_lower_io_vars_to_temporaries ELF0xa7c2d8 excludes MESH in addition to TCS from ordinary output-temporary lowering. Restore the missing MESH exclusion so its arrays/per-primitive data reach their dedicated lowering intact. Native emit_intrinsic_store_global ELF0xac8ce8 uses STG_A for every A8 MESH global write and chooses S16 for bit16, S32 otherwise. For a previously immediate-only address the original transfers the entire immediate into the register offset, and uses zero shift and zero STG_A immediate; preserve that instead of truncating a 13-bit STG immediate into the 8-bit STG_A field. TASK/ordinary stages and older gens keep their original local policy. Four cache markers18→19. No builds/tests/GPU or capability activation. Evidence/final cases: docs/gamesir-recovery/mesh-output-store.json.
+
+
+## 2026-10-24 — KGSL GPU timestamp reader
+
+Original kgsl_device_get_gpu_timestamp ELF0xa1effc issues IOCTL_KGSL_READ_CALIBRATED_TIMESTAMPS0xc0200960 with one DEVICE-domain source, caller output, zero deviation and padding, and safe EINTR/EAGAIN retries. The named 32-byte ABI already exists in msm_kgsl.h, but the recovered backend callback was still UNREACHABLE. Restore the actual request through safe_ioctl. Existing common timestamp hook, extension predicates and unsupported-kernel error propagation remain unchanged. Compiler/cache policy19 unchanged. No build/kernel/API execution. Evidence and final cases: docs/gamesir-recovery/kgsl-timestamp.json.
