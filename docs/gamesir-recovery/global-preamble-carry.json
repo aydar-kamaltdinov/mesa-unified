@@ -1,0 +1,58 @@
+{
+  "area": "Correct carry when rebasing 64-bit preamble global addresses",
+  "kind": "local correctness fix, NOT a recovered GameSir difference",
+  "native_function": "ir3_nir_lower_const_global_loads ELF0xa87e08",
+  "native_and_old_source": "carry=b2i32(ult(old_lo,start)); new_lo=iadd(old_lo,start); new_hi=iadd(old_hi,carry)",
+  "original_op_names": {
+    "0x191": "ult",
+    "0xd": "b2i32",
+    "0x100": "iadd",
+    "0x1bd": "vec2"
+  },
+  "fixed_source": "new_lo=iadd(old_lo,start); carry=b2i32(ult(new_lo,start)); new_hi=iadd(old_hi,carry)",
+  "reason": "For unsigned 32-bit addition the wrapped sum is less than either addend exactly when a carry occurs. Comparing the old low half with start does not detect overflow.",
+  "illustrative_cases": [
+    {
+      "old_lo": "0x00000100",
+      "start": "0x00000800",
+      "expected_lo": "0x00000900",
+      "expected_carry": 0,
+      "old_carry": 1
+    },
+    {
+      "old_lo": "0xfffffff0",
+      "start": "0x00000800",
+      "expected_lo": "0x000007f0",
+      "expected_carry": 1,
+      "old_carry": 0
+    },
+    {
+      "old_lo": "0x10000000",
+      "start": "0x00000800",
+      "expected_lo": "0x10000800",
+      "expected_carry": 0,
+      "old_carry": 0
+    }
+  ],
+  "case_status": "Manually derived arithmetic cases, not executed shader tests",
+  "source_files": [
+    "src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c"
+  ],
+  "cache_policy_before": "0x4753381a",
+  "cache_policy_after": "0x4753381b",
+  "limits": [
+    "Only start>1024 preamble rebasing branch changes; range selection/copy layout untouched",
+    "Original binary contains the same arithmetic mistake; its presence is not a reason to preserve it",
+    "No measured rendering/FPS/thermal result or GPU validation"
+  ],
+  "final_cases": [
+    "NIR/IR3 compilation and generated carry sequence near low32 wrap and with old_lo<start",
+    "Actual 64-bit pointers, cross-4GiB allocations and start1024/1040 boundaries",
+    "Read-only rematerializable global data, copy chunks, const space/cache/GPL compatibility"
+  ],
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "evidence_sha256": "15d59542095b16800113676ab309c21ab27379fe10a64612ad55747ea35f66fd"
+}
