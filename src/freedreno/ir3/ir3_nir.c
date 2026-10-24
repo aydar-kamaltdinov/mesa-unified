@@ -483,7 +483,9 @@ ir3_nir_lower_io_vars_to_temporaries(nir_shader *s)
        s->info.stage == MESA_SHADER_FRAGMENT)
       lower_modes |= nir_var_shader_in;
 
-   if (s->info.stage != MESA_SHADER_TESS_CTRL)
+   /* MESH outputs have their own array/primitive-aware lowering, too. */
+   if (s->info.stage != MESA_SHADER_TESS_CTRL &&
+       s->info.stage != MESA_SHADER_MESH)
       lower_modes |= nir_var_shader_out;
 
    if (lower_modes) {

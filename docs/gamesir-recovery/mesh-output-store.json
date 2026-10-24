@@ -1,0 +1,51 @@
+{
+  "area": "MESH output variable lifetime and A8 global store selection",
+  "binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "original_anchors": {
+    "io_temporaries": "ir3_nir_lower_io_vars_to_temporaries ELF0xa7c2d8 size224: TCS1 and MESH7 skip ordinary output-temp lowering; VS0/FS4 include inputs",
+    "store_predicate": "emit_intrinsic_store_global ELF0xac8ce8 size1148; 0xac8d84..0xac8db0: variant.stage==7 && gen>7",
+    "store_constant_address": "0xac8e24..0xac8eac: move former full immediate into STG_A offset register, synthesize shift0 and immediate0",
+    "store_type": "0xac9040..0xac9058: MESH+A8 uses TYPE_S16(4) for bit16, TYPE_S32(5) otherwise; other stages keep type_uint_size"
+  },
+  "source_transfer": [
+    "Preserve MESH output variables for array/per-primitive-aware lowering",
+    "Force STG_A for all global stores of MESH on gen>=8, preserving full constant offsets in SRC2",
+    "Restore the original MESH+A8 S16/S32 type selection"
+  ],
+  "scope": {
+    "TASK": "No special output-temp exception or signed global store rule in original; unchanged",
+    "other_stages": "Regular output-temp lowering and STG/STG_A/type_uint_size remain unchanged",
+    "capabilities": "No held API/compiler gate activation"
+  },
+  "cache_policy_before": "0x47533818",
+  "cache_policy_after": "0x47533819",
+  "cache_sites": [
+    "TU device UUID",
+    "TU graphics key",
+    "TU compute key",
+    "IR3 variant key"
+  ],
+  "source_files": [
+    "src/freedreno/ir3/ir3_nir.c",
+    "src/freedreno/ir3/ir3_a6xx.c"
+  ],
+  "analysis_only": [
+    "NativeSymbolExport now honors ir3_assert_handler/_vtn_fail NORETURN to prevent unrelated tail-function ingestion; original bytes unchanged",
+    "Eight bounded C reexports saved outside source tree; static analysis only"
+  ],
+  "final_cases": [
+    "MESH outputs with indirect indices, compact clip/cull, per-primitive and per-vertex variables across TU preprocessing",
+    "A8 MESH global/global_offset writes, constant0/255/256/4095 and dynamic offsets; 16/32-bit types and vector widths",
+    "TASK/COMPUTE/FS and A6/A7 controls; large offsets must not truncate to STG_A immediate8",
+    "Real AQE/output memory ordering and 16/32-bit routing before exposing MESH",
+    "NIR/compiler/ISA generation/cache/GPL validation"
+  ],
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "evidence_hashes": {
+    "mesh-output-temporaries-native.arm64.txt": "4577917da684c51052a442c0ee1d7958960fe7c1283a97e4952911c67b7135fb",
+    "a8-mesh-global-store-native.arm64.txt": "02b99721b3813f7707f3fe69af8ea28c5fcd09be1c101c4303e67a7065858652"
+  }
+}

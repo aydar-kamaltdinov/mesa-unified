@@ -615,6 +615,18 @@ emit_intrinsic_store_global(struct ir3_context *ctx, nir_intrinsic_instr *intr)
    struct ldg_stg_offset offset = ldg_stg_offset(ctx, intr);
    struct ir3_instruction *stg;
 
+   const bool a8_mesh = ctx->compiler->gen >= 8 &&
+                        ctx->so->type == MESA_SHADER_MESH;
+   if (a8_mesh && !offset.src) {
+      /* GameSir ELF0xac8ce8 uses STG_A for every A8 MESH global store.
+       * Move the full constant offset into SRC2: the STG_A immediate is
+       * narrower than STG's, so retaining it there would truncate it.
+       */
+      offset.src = offset.imm;
+      offset.src_shift = create_immed(b, 0);
+      offset.imm = create_immed(b, 0);
+   }
+
    if (!offset.src) {
       stg = ir3_STG(b, addr, 0, offset.imm, 0, value, 0, create_immed(b, ncomp),
                     0);
@@ -623,7 +635,9 @@ emit_intrinsic_store_global(struct ir3_context *ctx, nir_intrinsic_instr *intr)
                       offset.imm, 0, value, 0, create_immed(b, ncomp), 0);
    }
 
-   stg->cat6.type = type_uint_size(intr->src[0].ssa->bit_size);
+   unsigned bit_size = intr->src[0].ssa->bit_size;
+   stg->cat6.type = a8_mesh ? (bit_size == 16 ? TYPE_S16 : TYPE_S32)
+                            : type_uint_size(bit_size);
    stg->cat6.iim_val = 1;
 
    array_insert(ctx->block, ctx->block->keeps, stg);
