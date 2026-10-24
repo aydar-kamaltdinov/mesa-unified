@@ -328,3 +328,10 @@ Native shared get_reg ELF0xae4d44 first tries a META_INPUT requested register wh
 Native CmdNextSubpass2<A8> ELF0x949b9c/768 байт после feedback scheduling выдаёт pending renderpass flushes, затем SUBPASS_FENCE(0x35) → WFI → CACHE_INVALIDATE7(0x33), до next renderpass state/subpass begin. Оригинальные пары данных: ELF0xb0688=(0x70460001,0x35),0xaf8e0=(0x70460001,0x33); WFI header0x70268000. Восстановлено в draw_cs только для A8; SUBPASS_SLICE_FENCE(0x36) не подставляем. Existing feedback helper только ставит условные cache/stage flags и не заменяет эту последовательность.
 
 Это перенос native совместимости, не доказанное исправление игры или ускорение: full WFI/invalidate может снижать throughput. Остальные entry points не менялись. Cache policy1d сохранена: shader/code/serialization не меняются. Доказательство docs/gamesir-recovery/next-subpass-sync.json + compact ARM excerpt. Финальная проверка позже: GMEM/sysmem, input/no-input/feedback, pending/debug flushes, secondary replay, A6/A7 и latency/нагрев.
+
+
+## 25 октября — A8 MRT layers / raw GRAS_CL_ARRAY_SIZE
+
+Native tu6_emit_mrt<A8> ELF0x97ac9c/1016: max(framebuffer.layers,bit_length(multiview_mask|1),non-null non-unused color/depth-stencil view.layer_count), затем raw register0x8204=count без -1. A6/A7 native0x8004=count-1 остаётся отдельным контролем. Поля независимо привязаны к производителям: tu_CreateFramebuffer сохраняет API layers в+0x48; vk_image_view_init пишет resolved layerCount в+0x7c (включая REMAINING_ARRAY_LAYERS и 2D-view-of3D), это не заранее уменьшенные значения.
+
+Восстановлены оба A8 отличия вместе; raw .dword сохраняет original unmasked write. Особенно спорная граница2048: XML11bit, но native не обрезает count2048; аппаратная причина и корректность не доказаны, это не общий off-by-one fix. Выделенный коммит позволит сравнить/откатить отдельно после полной проверки. Shader cache1d не меняется; без сборки/GPU/feature activation. Доказательства docs/gamesir-recovery/mrt-layers.json + bounded A6/A7/A8 ARM. Финальные кейсы: framebuffer/view mismatch, multiview holes, unused remap/null views, combined DS и max layers.

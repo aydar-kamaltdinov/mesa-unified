@@ -1,0 +1,31 @@
+{
+  "area": "A8 MRT array-layer reservation and raw register count",
+  "native_function": "tu6_emit_mrt<A8XX> ELF0x97ac9c size1016",
+  "anchors": {
+    "seed": "0x97af78..0x97af94: max(framebuffer+0x48,bit_length(multiview_mask|1))",
+    "color": "0x97af98..0x97afd0: non-unused non-null color view -> max(view+0x7c); ignores color remap for this scan",
+    "depth_stencil": "0x97afd4..0x97aff4: same max for depth/stencil view",
+    "raw_write": "0x97b004..0x97b010 writes register0x8204 with count, no subtraction or11-bit mask",
+    "older_control": "A6/A7 original tu6_emit_mrt still writes0x8004 with count-1"
+  },
+  "producer_provenance": {
+    "framebuffer": "tu_CreateFramebuffer ELF0x98f1ec stores VkFramebufferCreateInfo.layers(param+0x38) directly at framebuffer+0x48",
+    "view": "vk_image_view_init ELF0xa55330 writes resolved subresource layerCount at view+0x7c; REMAINING_ARRAY_LAYERS subtracts base, not1"
+  },
+  "source_transfer": "A8 max includes color and depth/stencil vk.layer_count, then raw dword count; A6/A7 retain old count-1",
+  "why_raw": "Register XML describes11 bits, but original unmasked raw write also covers count2048. Do not silently invent a clamp or normalize tocount-1 during reconstruction.",
+  "risk": "Hardware interpretation/2048 edge and why native differs are unproved. Native experiment restoration only, not an established generic correctness fix or performance gain.",
+  "cache_policy": "0x4753381d unchanged; command register emission only",
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "final_cases": [
+    "A8 1/2/many layer framebuffers, sparse multiview masks and views larger than framebuffer layers",
+    "Color remap UNUSED, null dynamic-rendering views, depth-only/stencil-only/combined views",
+    "Nonzero baseArrayLayer, remaining layers and 2D array views of3D images",
+    "2047/2048 layer boundary: exact raw register value, XML field/hardware semantics and layer bounds",
+    "A6/A7 controls and full raster/cache/GPU correctness before baseline promotion"
+  ],
+  "evidence_sha256": "80ddbe32c0ea0f2b2013c248c359082495715db86e22178b708292dea30e5995"
+}

@@ -993,7 +993,24 @@ tu6_emit_mrt(struct tu_cmd_buffer *cmd,
    crb.add(A6XX_RB_SRGB_CNTL(.dword = subpass->srgb_cntl));
    crb.add(A6XX_SP_SRGB_CNTL(.dword = subpass->srgb_cntl));
    unsigned layers = MAX2(fb->layers, util_logbase2(subpass->multiview_mask) + 1);
-   crb.add(GRAS_CL_ARRAY_SIZE(CHIP, layers - 1));
+   if (CHIP >= A8XX) {
+      /* GameSir A8 ELF0x97af78..0x97b010 includes attachment view layers
+       * and writes the resulting count directly. A6/A7 retain count-1.
+       * Keep the raw value: narrowing it to the XML field would change
+       * the observed native write at the maximum array-layer boundary.
+       */
+      for (unsigned i = 0; i < subpass->color_count; i++) {
+         const unsigned a = subpass->color_attachments[i].attachment;
+         if (a != VK_ATTACHMENT_UNUSED && cmd->state.attachments[a])
+            layers = MAX2(layers, cmd->state.attachments[a]->vk.layer_count);
+      }
+      const unsigned zs = subpass->depth_stencil_attachment.attachment;
+      if (zs != VK_ATTACHMENT_UNUSED && cmd->state.attachments[zs])
+         layers = MAX2(layers, cmd->state.attachments[zs]->vk.layer_count);
+      crb.add(GRAS_CL_ARRAY_SIZE(CHIP, .dword = layers));
+   } else {
+      crb.add(GRAS_CL_ARRAY_SIZE(CHIP, layers - 1));
+   }
 }
 
 struct tu_bin_size_params {
