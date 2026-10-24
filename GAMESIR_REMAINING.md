@@ -310,3 +310,12 @@ Both native ir3_nir_lower_const_global_loads ELF0xa87e08 and the recovered copy_
 ## 2026-10-24 — Complete shared-allocator precolor preservation
 
 Native shared get_reg ELF0xae4d44 first tries a META_INPUT requested register when it is not INVALID_REG, fits the register file and get_reg_specified accepts it. That branch was absent locally. Ordinary ir3_ra has its own precolored-input handling, but ir3_ra_shared can run first for shared vectors or pressure and replace num; the ordinary path alone was not sufficient evidence for WorkgroupID0xcf. Restore the native preference and its unchanged generic fallback. Correct the previous overly broad RA statement. Four cache markers1b→1c, source-only; gates unchanged and final RA/compiler/GPU checks deferred. See docs/gamesir-recovery/shared-input-precolor.json.
+
+
+## Late FS input hoisting: native transfer, policy0x4753381d (unbuilt)
+
+Восстановлен `ir3_nir_move_varying_inputs` (ELF0xa93918), его рекурсивная проверка зависимостей0xa93b98 и перенос0xa93e3c. Объявление уже было в ir3_nir.h, но реализации, Meson-источника и позднего вызова не было. Вызов теперь после lowering barycentric-at-offset, до framebuffer/layer lowering; ранний generic move-to-top это не заменяет. Оригинальная таблица intrinsic_infos независимо дала три цели:0x1c2 load_input,0x1cb load_interpolated_input,0x1f3 load_per_primitive_input.
+
+Сначала проверяется весь shader: зависимости вне entry могут быть ALU/deref/constant/undef либо reorderable intrinsic; phi/texture/непереставляемая операция отменяет весь проход до изменений. Затем зависимости и входы добавляются в entry в порядке зависимостей. Сохраняется control_flow metadata0x83. Локальная адаптация явно отделена от оригинала: возвращается фактический progress, тогда как native функция возвращаетfalse даже после nir_progress. Четыре cache/compiler markers1c→1d.
+
+Доказательства: docs/gamesir-recovery/fs-input-hoist.json и native-complete/rutabaga-execution-hour-20261024/fs-input-hoist-native.arm64.txt. Только статическое восстановление и diff --check; без сборки, исполнения NIR/шейдеров и GPU. Полная проверка на конец: условные/циклические и sparse/per-primitive FS входы, phi/texture abort без частичного переноса, ordering/metadata, давление регистров, prefetch/VPC и игры. Ускорение пока не измерено.

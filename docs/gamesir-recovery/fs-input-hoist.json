@@ -1,0 +1,39 @@
+{
+  "area": "Late FS varying-input dependency hoisting",
+  "kind": "native transfer with local pass-progress reporting adaptation",
+  "binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "native_functions": [
+    "ir3_nir_move_varying_inputs ELF0xa93918",
+    "check_precondition_instr ELF0xa93b98",
+    "move_instruction_to_start_block ELF0xa93e3c"
+  ],
+  "original_intrinsic_ordinals": {
+    "0x1c2": "load_input",
+    "0x1cb": "load_interpolated_input",
+    "0x1f3": "load_per_primitive_input"
+  },
+  "predicate": "FS post-finalize, after barycentric-at-offset lowering and before framebuffer/layer lowering",
+  "precondition": "Every dependency outside its function entry must be ALU/deref/constant/undef or a reorderable intrinsic; any disallowed dependency cancels the entire shader pass before mutations",
+  "action": "Recursively append dependencies in topological order, then input load, to function entry; inputs already in entry unchanged",
+  "not_redundant": "Earlier generic nir_opt_move_to_top runs before later barycentric lowering; declaration existed but implementation and late call were absent",
+  "adaptation": "Return accumulated actual progress rather than native always-false return; native already calls nir_progress per impl with metadata0x83, matching control_flow. No additional native instruction targets added.",
+  "source_files": [
+    "src/freedreno/ir3/ir3_nir_move_varying_inputs.c",
+    "src/freedreno/ir3/meson.build",
+    "src/freedreno/ir3/ir3_nir.c"
+  ],
+  "cache_policy_before": "0x4753381c",
+  "cache_policy_after": "0x4753381d",
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "final_cases": [
+    "Conditional and loop FS inputs with barycentrics and sparse/per-primitive offsets",
+    "Entry-block dependencies and dependency ordering with shared subexpressions",
+    "Phi/texture/non-reorderable dependencies reject the entire pass without partial movement",
+    "Multiple implementations, changed/unchanged metadata and actual pass progress",
+    "Register pressure, prefetch/packing, output equivalence and GPU before performance claims"
+  ],
+  "evidence_sha256": "ca2bce7c38b7418f861b8b7087dd350e79a1d7e8f149e4840a39f7680925b300"
+}
