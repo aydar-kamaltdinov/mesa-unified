@@ -1,0 +1,32 @@
+{
+  "area": "Shared RA precolored input preference",
+  "kind": "native transfer completing the WorkgroupID/precolor bundle",
+  "binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "native_function": "ir3_shared_ra.c:get_reg ELF0xae4d44 size1360",
+  "native_branch": "0xae4d70..0xae4e14: META_INPUT0x400 && num!=0xfc -> ra_reg_get_physreg; size fits full64/half32 units and get_reg_specified succeeds -> return specified physreg",
+  "source_transfer": "Try the original requested META_INPUT physical location before subreg/preferred-merge-set/generic-gap choices in the separate shared allocator",
+  "coupling": {
+    "producer": "ir3_compile_shader_nir precolors TASK/MESH WorkgroupID input at register0xcf; previous policy15 transfer",
+    "shared_allocator_trigger": "ir3_ra calls ir3_ra_shared when has_shared_vectors or pressure requires it; WorkgroupID xyz is a vector",
+    "ordinary_allocator": "handle_precolored_input exists later in ordinary RA, but cannot prevent an earlier shared allocation from changing the input num",
+    "fallback": "Unavailable/out-of-range request keeps the same original generic allocation fallback; no stronger failure rule invented"
+  },
+  "note_correction": "Previous generic statement that existing RA already handles all precolor was too broad; it only established the ordinary allocator route",
+  "source_files": [
+    "src/freedreno/ir3/ir3_shared_ra.c"
+  ],
+  "cache_policy_before": "0x4753381b",
+  "cache_policy_after": "0x4753381c",
+  "final_cases": [
+    "Shared xyz WorkgroupID META_INPUT0xcf -> physical half-unit start30, size6; exact location retained",
+    "Other fixed/unfixed META_INPUT, full/half/array forms and file-end bounds",
+    "No-pressure/shared-vector route versus pressure/spills/loops and reload get_reg calls",
+    "TASK/MESH frontend copies, CP preservation, precolor, shared RA then ordinary RA and final sysval metadata",
+    "GPU AQE dispatch, register input delivery and cache/GPL before opening held gates"
+  ],
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "evidence_sha256": "097df0f93e29dd04e5b565197bb4a4e080487ba93b05f1a7c41641b6e3341d22"
+}

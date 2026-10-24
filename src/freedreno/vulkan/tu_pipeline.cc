@@ -1909,7 +1909,7 @@ tu_hash_shaders(unsigned char *hash,
     * AQE logical-group coordinates now use the recovered division policy.
     * A8 flat-bypass encoding now uses the recovered destination/SY policy.
     * Separate this schema even when a build-ID override is in use. */
-   const uint32_t stage_schema = 0x4753381b;
+   const uint32_t stage_schema = 0x4753381c;
    _mesa_blake3_update(&ctx, &stage_schema, sizeof(stage_schema));
    const bool sample_center = ir3_gamesir_sample_center_enabled();
    _mesa_blake3_update(&ctx, &sample_center, sizeof(sample_center));
@@ -1942,7 +1942,7 @@ tu_hash_compute(unsigned char *hash,
 
    /* Keep the coordinated compiler policy/schema key in sync with graphics
     * and the IR3 cache, including AQE coordinate lowering and A8 flat bypass. */
-   const uint32_t stage_schema = 0x4753381b;
+   const uint32_t stage_schema = 0x4753381c;
    _mesa_blake3_update(&ctx, &stage_schema, sizeof(stage_schema));
 
    if (layout)

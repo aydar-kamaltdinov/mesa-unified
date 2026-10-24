@@ -63,5 +63,6 @@
     "workgroup-copy-native.arm64.txt": "f3da82fa0099459f3869224cec1e5bae06f8e830f033a174cdafc73c2839a0d3",
     "workgroup-frontend-native.arm64.txt": "0ff31079573cc8f38088ce4d1df49058be0f6236cb6554160773194a602f00de",
     "workgroup-precolor-native.arm64.txt": "e25e1ade96a3b4c6a26a682989cc3118e6517fc801f5583d0ff12d0f73f30d5c"
-  }
+  },
+  "followup_shared_allocator": "Policy1c restores the missing separate shared-RA META_INPUT preference; see shared-input-precolor.json. Ordinary RA precolor alone did not cover it."
 }
