@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "name": "AK Turnip 1.17 Rutabaga",
+  "description": "AK Turnip 1.17 Rutabaga: the tested Stage34 + Stage41 + Stage42 base with upstream fixes for vertex-input-only pipeline creation and non-uniform ray queries. Reduces dynamic-state processing, descriptor-binding scans, SSBO initialization, descriptor-pool cleanup and empty inline-UBO reservations. Retains the fixes from 1.16 Rutabaga. Built with platform-sdk-version=33.",
+  "author": "aydar",
+  "packageVersion": "1",
+  "vendor": "Mesa",
+  "driverVersion": "AK-1.17-rutabaga",
+  "minApi": 29,
+  "libraryName": "libvulkan_freedreno.so"
+}
