@@ -335,3 +335,10 @@ Native CmdNextSubpass2<A8> ELF0x949b9c/768 байт после feedback scheduli
 Native tu6_emit_mrt<A8> ELF0x97ac9c/1016: max(framebuffer.layers,bit_length(multiview_mask|1),non-null non-unused color/depth-stencil view.layer_count), затем raw register0x8204=count без -1. A6/A7 native0x8004=count-1 остаётся отдельным контролем. Поля независимо привязаны к производителям: tu_CreateFramebuffer сохраняет API layers в+0x48; vk_image_view_init пишет resolved layerCount в+0x7c (включая REMAINING_ARRAY_LAYERS и 2D-view-of3D), это не заранее уменьшенные значения.
 
 Восстановлены оба A8 отличия вместе; raw .dword сохраняет original unmasked write. Особенно спорная граница2048: XML11bit, но native не обрезает count2048; аппаратная причина и корректность не доказаны, это не общий off-by-one fix. Выделенный коммит позволит сравнить/откатить отдельно после полной проверки. Shader cache1d не меняется; без сборки/GPU/feature activation. Доказательства docs/gamesir-recovery/mrt-layers.json + bounded A6/A7/A8 ARM. Финальные кейсы: framebuffer/view mismatch, multiview holes, unused remap/null views, combined DS и max layers.
+
+
+## 25 октября — RGB32 float format query exception
+
+Native format query ELF0x998b7c/1568 отдельно пропускает VkFormat106=R32G32B32_SFLOAT при texture support, несмотря на общую NPOT ветку. ELF0x998ce0..0x998d10 добавляет sampled|transfer_src|transfer_dst (0xc001) и для float linear filter (0xd001). Восстановлена только эта ветка; не добавляются blit/minmax/storage/HIC и не расширяется поддержка всех RGB/NPOT форматов. Native tiling_possible не исключает RGB32, поэтому local linear/optimal publication сохранена. Depth/HIC проверка совпадает с util_format_has_depth, отдельного пропущенного stencil fix нет.
+
+Это перенос feature advertisement, не доказанная работоспособность всех RGB32 путей. На финал остаются layout/stride/mips/arrays/3D, sampling/filtering/copies, A702 и UINT/SINT controls, CTS/игры. Shader/cache1d неизменен; сборки и GPU нет. Доказательства docs/gamesir-recovery/rgb32-format.json + bounded ARM excerpt.

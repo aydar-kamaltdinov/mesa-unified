@@ -1,0 +1,27 @@
+{
+  "area": "GameSir RGB32 float format query exception",
+  "native_function": "tu_physical_device_get_format_properties ELF0x998b7c size1568",
+  "native_anchors": {
+    "format_gate": "0x998ce0..0x998cf0 compares VkFormat106 and original texture support; reached from NPOT branch0x998c98->0x998cdc",
+    "features": "0x998cf4..0x998d10 resolves pure-integer and selects0xc001/0xd001: sampled|transfer_src|transfer_dst plus linear-filter for float",
+    "publication": "linear=optimal at native tail; tiling_possible excludes only three YCbCr formats, so the RGB32 exception also reaches optimal features"
+  },
+  "source_transfer": "Separate supported_tex && VK_FORMAT_R32G32B32_SFLOAT branch. Do not widen all NPOT formats, add blit/minmax/storage/HIC flags, or apply the a702 filter helper to the original exception.",
+  "already_present": {
+    "host_copy_depth_exclusion": "Native colorspace==3 and swizzle[0]!=6 is exactly util_format_has_depth; no missing stencil exception.",
+    "indirect_copy_formats": "A8 transfer-destination allowlist already represented in tu_indirect_copy_format.h; local extension gate deliberately retained."
+  },
+  "risk": "Feature advertisement is recovered, not established support correctness. Native shader/layout/copy paths still require full end-to-end validation; no measured performance gain.",
+  "cache_policy": "0x4753381d unchanged: format feature query only",
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "final_cases": [
+    "VkFormatProperties3/legacy/modifier consistency for RGB32 float; UINT/SINT and other NPOT controls",
+    "a702/A6/A7/A8 feature values and native exception behavior",
+    "Linear and optimal images: sampled reads, filtering, buffer/image copies, row pitch, mip/array/3D and edge texels",
+    "Confirm no advertised blit/storage/HIC/minmax beyond original and CTS before promoting baseline"
+  ],
+  "evidence_sha256": "399a8efa041fe8837e13385c313c477fe24f385d874745cd9a1e2bbdc9962624"
+}

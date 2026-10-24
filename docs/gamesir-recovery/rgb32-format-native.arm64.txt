@@ -1,0 +1,392 @@
+  998b7c: d101c3ff     	sub	sp, sp, #0x70
+  998b80: a90557f6     	stp	x22, x21, [sp, #0x50]
+  998b84: aa0003f5     	mov	x21, x0
+  998b88: 2a0103e0     	mov	w0, w1
+  998b8c: a9017bfd     	stp	x29, x30, [sp, #0x10]
+  998b90: 910043fd     	add	x29, sp, #0x10
+  998b94: a9026ffc     	stp	x28, x27, [sp, #0x20]
+  998b98: a90367fa     	stp	x26, x25, [sp, #0x30]
+  998b9c: aa0303fa     	mov	x26, x3
+  998ba0: a9045ff8     	stp	x24, x23, [sp, #0x40]
+  998ba4: a9064ff4     	stp	x20, x19, [sp, #0x60]
+  998ba8: aa0203f3     	mov	x19, x2
+  998bac: 2a0103f4     	mov	w20, w1
+  998bb0: 940ba7f2     	bl	0xc82b78 <vk_format_to_pipe_format>
+  998bb4: 2a0003f8     	mov	w24, w0
+  998bb8: 94063102     	bl	0xb24fc0 <util_format_description>
+  998bbc: f90003e0     	str	x0, [sp]
+  998bc0: 2a1403e0     	mov	w0, w20
+  998bc4: 940ba8ec     	bl	0xc82f74 <vk_format_get_ycbcr_info>
+  998bc8: aa0003f7     	mov	x23, x0
+  998bcc: 2a1803e0     	mov	w0, w24
+  998bd0: 940b4812     	bl	0xc6ac18 <fd6_vertex_format>
+  998bd4: f9505ea8     	ldr	x8, [x21, #0x20b8]
+  998bd8: 2a0003fb     	mov	w27, w0
+  998bdc: 2a1803e1     	mov	w1, w24
+  998be0: 2a1f03e2     	mov	w2, wzr
+  998be4: aa0803e0     	mov	x0, x8
+  998be8: 940b4884     	bl	0xc6adf8 <fd6_color_format_supported>
+  998bec: f9505ea8     	ldr	x8, [x21, #0x20b8]
+  998bf0: 2a0003f9     	mov	w25, w0
+  998bf4: 2a1803e1     	mov	w1, w24
+  998bf8: 2a1f03e2     	mov	w2, wzr
+  998bfc: 2a1f03e3     	mov	w3, wzr
+  998c00: aa0803e0     	mov	x0, x8
+  998c04: 940b4832     	bl	0xc6accc <fd6_texture_format_supported>
+  998c08: 121d7b08     	and	w8, w24, #0xfffffffb
+  998c0c: 7100051f     	cmp	w8, #0x1
+  998c10: 54000101     	b.ne	0x998c30 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0xb4>
+  998c14: f9505ea8     	ldr	x8, [x21, #0x20b8]
+  998c18: 394ba508     	ldrb	w8, [x8, #0x2e9]
+  998c1c: 360000a8     	tbz	w8, #0x0, 0x998c30 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0xb4>
+  998c20: 52800608     	mov	w8, #0x30               // =48
+  998c24: 529800dc     	mov	w28, #0xc006            // =49158
+  998c28: 529800d6     	mov	w22, #0xc006            // =49158
+  998c2c: 14000134     	b	0x9990fc <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x580>
+  998c30: 7103ff7f     	cmp	w27, #0xff
+  998c34: aa1f03fc     	mov	x28, xzr
+  998c38: 1a9f07e8     	cset	w8, ne
+  998c3c: 340004b8     	cbz	w24, 0x998cd0 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x154>
+  998c40: 2a000329     	orr	w9, w25, w0
+  998c44: aa1c03f6     	mov	x22, x28
+  998c48: 2a090109     	orr	w9, w8, w9
+  998c4c: aa1c03e8     	mov	x8, x28
+  998c50: 36002569     	tbz	w9, #0x0, 0x9990fc <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x580>
+  998c54: f94003f6     	ldr	x22, [sp]
+  998c58: b94026c8     	ldr	w8, [x22, #0x24]
+  998c5c: 9e670100     	fmov	d0, x8
+  998c60: 0e205800     	cnt	v0.8b, v0.8b
+  998c64: 0e31b800     	addv	b0, v0.8b
+  998c68: 1e260008     	fmov	w8, s0
+  998c6c: b400007a     	cbz	x26, 0x998c78 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0xfc>
+  998c70: 52800029     	mov	w9, #0x1                // =1
+  998c74: b9001349     	str	w9, [x26, #0x10]
+  998c78: 7103ff7f     	cmp	w27, #0xff
+  998c7c: 5280010a     	mov	w10, #0x8               // =8
+  998c80: 1a9f07e9     	cset	w9, ne
+  998c84: 7200001f     	tst	w0, #0x1
+  998c88: d37a7d2b     	ubfiz	x11, x9, #6, #32
+  998c8c: b37a012a     	bfi	x10, x9, #6, #1
+  998c90: 9a8b115a     	csel	x26, x10, x11, ne
+  998c94: 7100051f     	cmp	w8, #0x1
+  998c98: 54000228     	b.hi	0x998cdc <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x160>
+  998c9c: 2a0003fc     	mov	w28, w0
+  998ca0: 2a1803e0     	mov	w0, w24
+  998ca4: 940630c7     	bl	0xb24fc0 <util_format_description>
+  998ca8: b9404408     	ldr	w8, [x0, #0x44]
+  998cac: 71000d1f     	cmp	w8, #0x3
+  998cb0: 54000341     	b.ne	0x998d18 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x19c>
+  998cb4: 39410008     	ldrb	w8, [x0, #0x40]
+  998cb8: 12001d08     	and	w8, w8, #0xff
+  998cbc: 7100191f     	cmp	w8, #0x6
+  998cc0: 1a9f17e8     	cset	w8, eq
+  998cc4: d352451b     	lsl	x27, x8, #46
+  998cc8: 3600051c     	tbz	w28, #0x0, 0x998d68 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x1ec>
+  998ccc: 14000015     	b	0x998d20 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x1a4>
+  998cd0: aa1c03f6     	mov	x22, x28
+  998cd4: aa1c03e8     	mov	x8, x28
+  998cd8: 14000109     	b	0x9990fc <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x580>
+  998cdc: aa1f03fb     	mov	x27, xzr
+  998ce0: 7101aa9f     	cmp	w20, #0x6a
+  998ce4: 1a9f17e8     	cset	w8, eq
+  998ce8: 0a000108     	and	w8, w8, w0
+  998cec: 7100051f     	cmp	w8, #0x1
+  998cf0: 540003c1     	b.ne	0x998d68 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x1ec>
+  998cf4: 52800d40     	mov	w0, #0x6a               // =106
+  998cf8: 940ba7a0     	bl	0xc82b78 <vk_format_to_pipe_format>
+  998cfc: 940680e9     	bl	0xb390a0 <util_format_is_pure_integer>
+  998d00: 529a0028     	mov	w8, #0xd001             // =53249
+  998d04: 7200001f     	tst	w0, #0x1
+  998d08: 52980029     	mov	w9, #0xc001             // =49153
+  998d0c: 9a881128     	csel	x8, x9, x8, ne
+  998d10: aa1b011b     	orr	x27, x8, x27
+  998d14: 14000015     	b	0x998d68 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x1ec>
+  998d18: d2c8001b     	mov	x27, #0x400000000000    // =70368744177664
+  998d1c: 3600027c     	tbz	w28, #0x0, 0x998d68 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x1ec>
+  998d20: b4000997     	cbz	x23, 0x998e50 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x2d4>
+  998d24: 394002e9     	ldrb	w9, [x23]
+  998d28: f9505ea8     	ldr	x8, [x21, #0x20b8]
+  998d2c: 7100093f     	cmp	w9, #0x2
+  998d30: 52980029     	mov	w9, #0xc001             // =49153
+  998d34: 72a00069     	movk	w9, #0x3, lsl #16
+  998d38: 54000923     	b.lo	0x998e5c <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x2e0>
+  998d3c: 3949b10a     	ldrb	w10, [x8, #0x26c]
+  998d40: 52a0118b     	mov	w11, #0x8c0000          // =9175040
+  998d44: aa1b0129     	orr	x9, x9, x27
+  998d48: 7100015f     	cmp	w10, #0x0
+  998d4c: 52a0108a     	mov	w10, #0x840000          // =8650752
+  998d50: 9a8a116a     	csel	x10, x11, x10, ne
+  998d54: aa0a013b     	orr	x27, x9, x10
+  998d58: 394b3508     	ldrb	w8, [x8, #0x2cd]
+  998d5c: 7100051f     	cmp	w8, #0x1
+  998d60: 54000860     	b.eq	0x998e6c <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x2f0>
+  998d64: 1400004d     	b	0x998e98 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x31c>
+  998d68: 36000359     	tbz	w25, #0x0, 0x998dd0 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x254>
+  998d6c: 2a1403e0     	mov	w0, w20
+  998d70: 940ba827     	bl	0xc82e0c <vk_format_aspects>
+  998d74: b26107e8     	mov	x8, #0x180000000        // =6442450944
+  998d78: 52811009     	mov	w9, #0x880              // =2176
+  998d7c: 721f041f     	tst	w0, #0x6
+  998d80: f2800208     	movk	x8, #0x10
+  998d84: 52800c4b     	mov	w11, #0x62              // =98
+  998d88: 2a1403e0     	mov	w0, w20
+  998d8c: 9121c90a     	add	x10, x8, #0x872
+  998d90: 9a890149     	csel	x9, x10, x9, eq
+  998d94: 121f7a8a     	and	w10, w20, #0xfffffffe
+  998d98: 7101929f     	cmp	w20, #0x64
+  998d9c: aa1b0129     	orr	x9, x9, x27
+  998da0: 7a4b1144     	ccmp	w10, w11, #0x4, ne
+  998da4: b27b010a     	orr	x10, x8, #0x20
+  998da8: b27e012b     	orr	x11, x9, #0x4
+  998dac: 9a880148     	csel	x8, x10, x8, eq
+  998db0: aa08035a     	orr	x26, x26, x8
+  998db4: 9a890176     	csel	x22, x11, x9, eq
+  998db8: 940ba770     	bl	0xc82b78 <vk_format_to_pipe_format>
+  998dbc: 940680b9     	bl	0xb390a0 <util_format_is_pure_integer>
+  998dc0: b27802c8     	orr	x8, x22, #0x100
+  998dc4: 7200001f     	tst	w0, #0x1
+  998dc8: 9a8812db     	csel	x27, x22, x8, ne
+  998dcc: f94003f6     	ldr	x22, [sp]
+  998dd0: 2a1403e0     	mov	w0, w20
+  998dd4: 940ba80e     	bl	0xc82e0c <vk_format_aspects>
+  998dd8: 3940b2c8     	ldrb	w8, [x22, #0x2c]
+  998ddc: 121f0009     	and	w9, w0, #0x2
+  998de0: f240037f     	tst	x27, #0x1
+  998de4: 7a401924     	ccmp	w9, #0x0, #0x4, ne
+  998de8: b25f0369     	orr	x9, x27, #0x200000000
+  998dec: 12000908     	and	w8, w8, #0x7
+  998df0: 9a890379     	csel	x25, x27, x9, eq
+  998df4: 71000d1f     	cmp	w8, #0x3
+  998df8: 540000c3     	b.lo	0x998e10 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x294>
+  998dfc: b94026c8     	ldr	w8, [x22, #0x24]
+  998e00: 7100411f     	cmp	w8, #0x10
+  998e04: 54000061     	b.ne	0x998e10 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x294>
+  998e08: 927d035a     	and	x26, x26, #0x8
+  998e0c: 927df739     	and	x25, x25, #0xfffffffffffffff9
+  998e10: 36001139     	tbz	w25, #0x0, 0x999034 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x4b8>
+  998e14: b4000097     	cbz	x23, 0x998e24 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x2a8>
+  998e18: 394002e8     	ldrb	w8, [x23]
+  998e1c: 7100051f     	cmp	w8, #0x1
+  998e20: 540010a1     	b.ne	0x999034 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x4b8>
+  998e24: 2a1403e0     	mov	w0, w20
+  998e28: 940ba7f9     	bl	0xc82e0c <vk_format_aspects>
+  998e2c: 721f041f     	tst	w0, #0x6
+  998e30: 54001021     	b.ne	0x999034 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x4b8>
+  998e34: b94002c0     	ldr	w0, [x22]
+  998e38: 94063062     	bl	0xb24fc0 <util_format_description>
+  998e3c: 3940c008     	ldrb	w8, [x0, #0x30]
+  998e40: 7200111f     	tst	w8, #0x1f
+  998e44: 54000620     	b.eq	0x998f08 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x38c>
+  998e48: aa1f03e8     	mov	x8, xzr
+  998e4c: 1400003d     	b	0x998f40 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x3c4>
+  998e50: 52988029     	mov	w9, #0xc401             // =50177
+  998e54: f9505ea8     	ldr	x8, [x21, #0x20b8]
+  998e58: 72a00029     	movk	w9, #0x1, lsl #16
+  998e5c: aa09037b     	orr	x27, x27, x9
+  998e60: 394b3508     	ldrb	w8, [x8, #0x2cd]
+  998e64: 7100051f     	cmp	w8, #0x1
+  998e68: 54000181     	b.ne	0x998e98 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x31c>
+  998e6c: 51011a88     	sub	w8, w20, #0x46
+  998e70: 7100f11f     	cmp	w8, #0x3c
+  998e74: 54000128     	b.hi	0x998e98 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x31c>
+  998e78: 52800029     	mov	w9, #0x1                // =1
+  998e7c: 9ac82128     	lsl	x8, x9, x8
+  998e80: d2803069     	mov	x9, #0x183              // =387
+  998e84: f2a80c09     	movk	x9, #0x4060, lsl #16
+  998e88: f2c01049     	movk	x9, #0x82, lsl #32
+  998e8c: f2e33809     	movk	x9, #0x19c0, lsl #48
+  998e90: ea09011f     	tst	x8, x9
+  998e94: 54000161     	b.ne	0x998ec0 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x344>
+  998e98: 2a1403e0     	mov	w0, w20
+  998e9c: 940ba737     	bl	0xc82b78 <vk_format_to_pipe_format>
+  998ea0: 94068080     	bl	0xb390a0 <util_format_is_pure_integer>
+  998ea4: 370000e0     	tbnz	w0, #0x0, 0x998ec0 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x344>
+  998ea8: 39440aa8     	ldrb	w8, [x21, #0x102]
+  998eac: 52860009     	mov	w9, #0x3000             // =12288
+  998eb0: 7100011f     	cmp	w8, #0x0
+  998eb4: 52820008     	mov	w8, #0x1000             // =4096
+  998eb8: 9a881128     	csel	x8, x9, x8, ne
+  998ebc: aa1b011b     	orr	x27, x8, x27
+  998ec0: 2a1403e0     	mov	w0, w20
+  998ec4: 940ba72d     	bl	0xc82b78 <vk_format_to_pipe_format>
+  998ec8: 94068015     	bl	0xb38f1c <util_format_is_float>
+  998ecc: 360001a0     	tbz	w0, #0x0, 0x998f00 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x384>
+  998ed0: 3940b2c8     	ldrb	w8, [x22, #0x2c]
+  998ed4: 2a1c03e0     	mov	w0, w28
+  998ed8: 12000908     	and	w8, w8, #0x7
+  998edc: 7100091f     	cmp	w8, #0x2
+  998ee0: 54fff001     	b.ne	0x998ce0 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x164>
+  998ee4: 394102c8     	ldrb	w8, [x22, #0x40]
+  998ee8: 35ffefc8     	cbnz	w8, 0x998ce0 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x164>
+  998eec: 394106c8     	ldrb	w8, [x22, #0x41]
+  998ef0: b2680369     	orr	x9, x27, #0x1000000
+  998ef4: 7100051f     	cmp	w8, #0x1
+  998ef8: 9a9b013b     	csel	x27, x9, x27, eq
+  998efc: 17ffff79     	b	0x998ce0 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x164>
+  998f00: 2a1c03e0     	mov	w0, w28
+  998f04: 17ffff77     	b	0x998ce0 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x164>
+  998f08: 3940d008     	ldrb	w8, [x0, #0x34]
+  998f0c: 7200111f     	tst	w8, #0x1f
+  998f10: 54000060     	b.eq	0x998f1c <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x3a0>
+  998f14: 52800028     	mov	w8, #0x1                // =1
+  998f18: 1400000a     	b	0x998f40 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x3c4>
+  998f1c: 3940e008     	ldrb	w8, [x0, #0x38]
+  998f20: 7200111f     	tst	w8, #0x1f
+  998f24: 54000060     	b.eq	0x998f30 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x3b4>
+  998f28: 52800048     	mov	w8, #0x2                // =2
+  998f2c: 14000005     	b	0x998f40 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x3c4>
+  998f30: 3940f008     	ldrb	w8, [x0, #0x3c]
+  998f34: 7200111f     	tst	w8, #0x1f
+  998f38: 54000080     	b.eq	0x998f48 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x3cc>
+  998f3c: 52800068     	mov	w8, #0x3                // =3
+  998f40: 3940b2c9     	ldrb	w9, [x22, #0x2c]
+  998f44: 37180069     	tbnz	w9, #0x3, 0x998f50 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x3d4>
+  998f48: 2a1f03e8     	mov	w8, wzr
+  998f4c: 14000006     	b	0x998f64 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x3e8>
+  998f50: 8b080ac8     	add	x8, x22, x8, lsl #2
+  998f54: b9403108     	ldr	w8, [x8, #0x30]
+  998f58: 12192108     	and	w8, w8, #0xff80
+  998f5c: 7110011f     	cmp	w8, #0x400
+  998f60: 1a9f17e8     	cset	w8, eq
+  998f64: 5100ba89     	sub	w9, w20, #0x2e
+  998f68: 3100093f     	cmn	w9, #0x2
+  998f6c: 1a8823e8     	csel	w8, wzr, w8, hs
+  998f70: 7100ca9f     	cmp	w20, #0x32
+  998f74: 1a8803e8     	csel	w8, wzr, w8, eq
+  998f78: 7101029f     	cmp	w20, #0x40
+  998f7c: 54000040     	b.eq	0x998f84 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x408>
+  998f80: 340003c8     	cbz	w8, 0x998ff8 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x47c>
+  998f84: 3940b2c8     	ldrb	w8, [x22, #0x2c]
+  998f88: 373000c8     	tbnz	w8, #0x6, 0x998fa0 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x424>
+  998f8c: 7100469f     	cmp	w20, #0x11
+  998f90: 54000340     	b.eq	0x998ff8 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x47c>
+  998f94: 13001d08     	sxtb	w8, w8
+  998f98: 37f80108     	tbnz	w8, #0x1f, 0x998fb8 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x43c>
+  998f9c: 14000017     	b	0x998ff8 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x47c>
+  998fa0: b94046c8     	ldr	w8, [x22, #0x44]
+  998fa4: b25c0329     	orr	x9, x25, #0x1000000000
+  998fa8: 7100051f     	cmp	w8, #0x1
+  998fac: 9a890339     	csel	x25, x25, x9, eq
+  998fb0: 7100469f     	cmp	w20, #0x11
+  998fb4: 540002c0     	b.eq	0x99900c <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x490>
+  998fb8: f9505ea8     	ldr	x8, [x21, #0x20b8]
+  998fbc: d10013a2     	sub	x2, x29, #0x4
+  998fc0: 2a1803e0     	mov	w0, w24
+  998fc4: 39499501     	ldrb	w1, [x8, #0x265]
+  998fc8: 940b6256     	bl	0xc71920 <fdl6_format_swiz>
+  998fcc: bc5fc3a0     	ldur	s0, [x29, #-0x4]
+  998fd0: 52802009     	mov	w9, #0x100              // =256
+  998fd4: 72a06049     	movk	w9, #0x302, lsl #16
+  998fd8: 2f08a400     	ushll	v0.8h, v0.8b, #0x0
+  998fdc: 0e001800     	uzp1	v0.8b, v0.8b, v0.8b
+  998fe0: 1e260008     	fmov	w8, s0
+  998fe4: 6b09011f     	cmp	w8, w9
+  998fe8: d2c00408     	mov	x8, #0x2000000000       // =137438953472
+  998fec: d2c00509     	mov	x9, #0x2800000000       // =171798691840
+  998ff0: 9a880128     	csel	x8, x9, x8, eq
+  998ff4: aa190119     	orr	x25, x8, x25
+  998ff8: 5101ea88     	sub	w8, w20, #0x7a
+  998ffc: 7100091f     	cmp	w8, #0x2
+  999000: 540000c3     	b.lo	0x999018 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x49c>
+  999004: 7100169f     	cmp	w20, #0x5
+  999008: 54000080     	b.eq	0x999018 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x49c>
+  99900c: 2a1803e0     	mov	w0, w24
+  999010: 940680e7     	bl	0xb393ac <util_format_is_float16>
+  999014: 36000980     	tbz	w0, #0x0, 0x999144 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x5c8>
+  999018: d2c00508     	mov	x8, #0x2800000000       // =171798691840
+  99901c: aa080339     	orr	x25, x25, x8
+  999020: 7101329f     	cmp	w20, #0x4c
+  999024: 54000060     	b.eq	0x999030 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x4b4>
+  999028: 7100269f     	cmp	w20, #0x9
+  99902c: 54000041     	b.ne	0x999034 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x4b8>
+  999030: b25e0339     	orr	x25, x25, #0x400000000
+  999034: 5101f288     	sub	w8, w20, #0x7c
+  999038: aa1903f6     	mov	x22, x25
+  99903c: 7100191f     	cmp	w8, #0x6
+  999040: 540000a8     	b.hi	0x999054 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x4d8>
+  999044: 7100111f     	cmp	w8, #0x4
+  999048: aa1903f6     	mov	x22, x25
+  99904c: 54000040     	b.eq	0x999054 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x4d8>
+  999050: b2770336     	orr	x22, x25, #0x200
+  999054: 2a1403e0     	mov	w0, w20
+  999058: 94000428     	bl	0x99a0f8 <_Z15tiling_possible8VkFormat>
+  99905c: 52856c48     	mov	w8, #0x2b62             // =11106
+  999060: 72a773a8     	movk	w8, #0x3b9d, lsl #16
+  999064: 6b08029f     	cmp	w20, w8
+  999068: 1a9f17e8     	cset	w8, eq
+  99906c: 2a000108     	orr	w8, w8, w0
+  999070: 7200011f     	tst	w8, #0x1
+  999074: 9a9f12d6     	csel	x22, x22, xzr, ne
+  999078: b50000b7     	cbnz	x23, 0x99908c <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x510>
+  99907c: 2a1403e0     	mov	w0, w20
+  999080: 940ba763     	bl	0xc82e0c <vk_format_aspects>
+  999084: 721f041f     	tst	w0, #0x6
+  999088: 540004e0     	b.eq	0x999124 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x5a8>
+  99908c: aa1f03fa     	mov	x26, xzr
+  999090: 71020a9f     	cmp	w20, #0x82
+  999094: b26202ca     	orr	x10, x22, #0x40000000
+  999098: 2a1403e0     	mov	w0, w20
+  99909c: 9a9903e8     	csel	x8, xzr, x25, eq
+  9990a0: 7100369f     	cmp	w20, #0xd
+  9990a4: b2620109     	orr	x9, x8, #0x40000000
+  9990a8: 9a960156     	csel	x22, x10, x22, eq
+  9990ac: 9a88013c     	csel	x28, x9, x8, eq
+  9990b0: 94037812     	bl	0xa770f8 <vk_acceleration_struct_vtx_format_supported>
+  9990b4: f9505ea8     	ldr	x8, [x21, #0x20b8]
+  9990b8: 7200001f     	tst	w0, #0x1
+  9990bc: 39400109     	ldrb	w9, [x8]
+  9990c0: b2630348     	orr	x8, x26, #0x20000000
+  9990c4: 9a9a1108     	csel	x8, x8, x26, ne
+  9990c8: 7100213f     	cmp	w9, #0x8
+  9990cc: 54000183     	b.lo	0x9990fc <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x580>
+  9990d0: 36780176     	tbz	w22, #0xf, 0x9990fc <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x580>
+  9990d4: 51002689     	sub	w9, w20, #0x9
+  9990d8: 7101e53f     	cmp	w9, #0x79
+  9990dc: 54000108     	b.hi	0x9990fc <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x580>
+  9990e0: f0ffb92a     	adrp	x10, 0xc0000 <_Z9DRAW_REGSIL4chip8EE>
+  9990e4: 912d554a     	add	x10, x10, #0xb55
+  9990e8: 1000008b     	adr	x11, 0x9990f8 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x57c>
+  9990ec: 3869694c     	ldrb	w12, [x10, x9]
+  9990f0: 8b0c096b     	add	x11, x11, x12, lsl #2
+  9990f4: d61f0160     	br	x11
+  9990f8: b24502d6     	orr	x22, x22, #0x800000000000000
+  9990fc: a9015a7c     	stp	x28, x22, [x19, #0x10]
+  999100: a94557f6     	ldp	x22, x21, [sp, #0x50]
+  999104: f9001268     	str	x8, [x19, #0x20]
+  999108: a9464ff4     	ldp	x20, x19, [sp, #0x60]
+  99910c: a9445ff8     	ldp	x24, x23, [sp, #0x40]
+  999110: a94367fa     	ldp	x26, x25, [sp, #0x30]
+  999114: a9426ffc     	ldp	x28, x27, [sp, #0x20]
+  999118: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+  99911c: 9101c3ff     	add	sp, sp, #0x70
+  999120: d65f03c0     	ret
+  999124: 2a1403e0     	mov	w0, w20
+  999128: 940ba694     	bl	0xc82b78 <vk_format_to_pipe_format>
+  99912c: 94062fa5     	bl	0xb24fc0 <util_format_description>
+  999130: b4fffb00     	cbz	x0, 0x999090 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x514>
+  999134: b9401808     	ldr	w8, [x0, #0x18]
+  999138: 7100091f     	cmp	w8, #0x2
+  99913c: 54fffa82     	b.hs	0x99908c <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x510>
+  999140: 17ffffd4     	b	0x999090 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x514>
+  999144: 2a1803e0     	mov	w0, w24
+  999148: 94062f9e     	bl	0xb24fc0 <util_format_description>
+  99914c: b4fff6a0     	cbz	x0, 0x999020 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x4a4>
+  999150: b9402808     	ldr	w8, [x0, #0x28]
+  999154: 51000909     	sub	w9, w8, #0x2
+  999158: 7100193f     	cmp	w9, #0x6
+  99915c: 540001a2     	b.hs	0x999190 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x614>
+  999160: b9402ac8     	ldr	w8, [x22, #0x28]
+  999164: 71000d1f     	cmp	w8, #0x3
+  999168: 54fff5c0     	b.eq	0x999020 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x4a4>
+  99916c: 51025e88     	sub	w8, w20, #0x97
+  999170: 7100151f     	cmp	w8, #0x5
+  999174: 54fff528     	b.hi	0x999018 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x49c>
+  999178: 52800029     	mov	w9, #0x1                // =1
+  99917c: 1ac82128     	lsl	w8, w9, w8
+  999180: 52800669     	mov	w9, #0x33               // =51
+  999184: 6a09011f     	tst	w8, w9
+  999188: 54fff4c1     	b.ne	0x999020 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x4a4>
+  99918c: 17ffffa3     	b	0x999018 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x49c>
+  999190: 7100291f     	cmp	w8, #0xa
+  999194: 54fff461     	b.ne	0x999020 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x4a4>
+  999198: 17fffff2     	b	0x999160 <_ZL40tu_physical_device_get_format_propertiesP18tu_physical_device8VkFormatP19VkFormatProperties3P35VkSubpassResolvePerformanceQueryEXT+0x5e4>

@@ -225,6 +225,18 @@ tu_physical_device_get_format_properties(
       }
    }
 
+   /* GameSir also exposes sampling and copies for this 96-bit format.  Keep
+    * this separate from the general power-of-two path: it does not advertise
+    * blits, min/max filtering, host copies or storage-image access here.
+    */
+   if (supported_tex && vk_format == VK_FORMAT_R32G32B32_SFLOAT) {
+      optimal |= VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_BIT |
+                 VK_FORMAT_FEATURE_2_TRANSFER_SRC_BIT |
+                 VK_FORMAT_FEATURE_2_TRANSFER_DST_BIT;
+      if (!vk_format_is_int(vk_format))
+         optimal |= VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
+   }
+
    if (supported_color) {
       assert(supported_tex);
       optimal |= VK_FORMAT_FEATURE_2_COLOR_ATTACHMENT_BIT | VK_FORMAT_FEATURE_2_BLIT_DST_BIT;
