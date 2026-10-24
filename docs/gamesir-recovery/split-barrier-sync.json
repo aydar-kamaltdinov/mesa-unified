@@ -1,0 +1,50 @@
+{
+  "area": "BAR and split-barrier legalize state",
+  "binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "original_anchors": {
+    "ir3_required_sync_flags": "ELF0xad604c: A8 BAR0x380 and SHPE0x18 return3; BAR_SET0x38b/BAR_SYNC0x38c return0",
+    "sync_update": "ELF0xad7bfc: split barriers clear SS and SY masks independently of input flags; subsequent category7 predicate excludes ALIAS0x389 and split0x38b/c",
+    "ir3_update_legalize_state": "ELF0xad7b0c: split barrier zeroes state+0x540 length0xc18; full/half ALU+non-ALU ready arrays, pred4 and addr2; cycle+0x1158 retained"
+  },
+  "native_numeric_mapping": {
+    "BAR_SET/BAR_SYNC": "Existing recovered ISA fixed literal encoder/decoder and original parser routes already establish opcodes; no new instruction insertion",
+    "SS/SY": "IR3_INSTR_SS=2, IR3_INSTR_SY=1; source names used instead of binary offsets"
+  },
+  "source_transfer": [
+    "Force SS|SY for BAR on gen>=8 alongside existing SHPE rule",
+    "Exclude BAR_SET/BAR_SYNC from ordinary next-instruction barrier forcing and required flags",
+    "Retire both SS/SY masks for each split barrier",
+    "Retire named fixed-delay readiness arrays without resetting cycle"
+  ],
+  "cache_policy_before": "0x47533817",
+  "cache_policy_after": "0x47533818",
+  "cache_sites": [
+    "TU device UUID",
+    "TU graphics key",
+    "TU compute key",
+    "IR3 variant key"
+  ],
+  "source_files": [
+    "src/freedreno/ir3/ir3.h",
+    "src/freedreno/ir3/ir3_legalize.c"
+  ],
+  "limits": [
+    "No split barrier is newly inserted into ordinary shader compilation; existing parser/override paths can represent them",
+    "This restores native state accounting; not proof of firmware barrier semantics or safe activation of held features",
+    "Ordinary workgroup barrier/fence generation remains intact"
+  ],
+  "final_cases": [
+    "A8 BAR with empty/pending scalar/vector/texture dependencies; A6/A7 control",
+    "Each split barrier with pending SS/SY/read-after-write/write-after-read and ALU/predicate/address delays",
+    "Loop/backedge legalize convergence and postsched replay",
+    "Fixed split-barrier encodings and flags; no unexpected extra sync NOP after split barrier",
+    "Memory scopes and cooperative-matrix/TASK/MESH execution on GPU"
+  ],
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "evidence_hashes": {
+    "split-barrier-sync-native.arm64.txt": "b1dead4485b7e0bc69289cd942b02171522e800ee312c2ea20279307528c6228"
+  }
+}

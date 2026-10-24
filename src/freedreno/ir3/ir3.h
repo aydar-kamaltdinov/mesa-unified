@@ -1453,9 +1453,16 @@ is_mem(struct ir3_instruction *instr)
 }
 
 static inline bool
+is_split_barrier(struct ir3_instruction *instr)
+{
+   return instr->opc == OPC_BAR_SET || instr->opc == OPC_BAR_SYNC;
+}
+
+static inline bool
 is_barrier(struct ir3_instruction *instr)
 {
-   return (opc_cat(instr->opc) == 7) && instr->opc != OPC_ALIAS;
+   return (opc_cat(instr->opc) == 7) && instr->opc != OPC_ALIAS &&
+          !is_split_barrier(instr);
 }
 
 static inline bool

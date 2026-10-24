@@ -77,9 +77,13 @@ ir3_required_sync_flags(struct ir3_legalize_state *state,
                         struct ir3_compiler *compiler,
                         struct ir3_instruction *n)
 {
-   if (n->opc == OPC_SHPE) {
+   if (n->opc == OPC_SHPE || (compiler->gen >= 8 && n->opc == OPC_BAR)) {
       return IR3_INSTR_SS | IR3_INSTR_SY;
    }
+
+   /* These fixed encodings synchronize without carrying SS/SY flags. */
+   if (is_split_barrier(n))
+      return 0;
 
    enum ir3_instruction_flags flags = 0;
    bool n_is_scalar_alu = is_scalar_alu(n, compiler);
@@ -217,9 +221,9 @@ static void
 sync_update(struct ir3_legalize_state *state, struct ir3_compiler *compiler,
             struct ir3_instruction *n)
 {
-   if (n->flags & IR3_INSTR_SS)
+   if ((n->flags & IR3_INSTR_SS) || is_split_barrier(n))
       apply_ss(state, compiler->mergedregs);
-   if (n->flags & IR3_INSTR_SY)
+   if ((n->flags & IR3_INSTR_SY) || is_split_barrier(n))
       apply_sy(state, compiler->mergedregs);
 
    if (is_barrier(n)) {
@@ -651,6 +655,16 @@ ir3_update_legalize_state(struct ir3_legalize_state *state,
                           struct ir3_instruction *n)
 {
    sync_update(state, compiler, n);
+
+   /* GameSir ELF0xad7b0c also clears fixed-latency readiness at both split
+    * barriers. Keep the block cycle: only outstanding dependencies retire.
+    */
+   if (is_split_barrier(n)) {
+      memset(&state->alu_nop, 0, sizeof(state->alu_nop));
+      memset(&state->non_alu_nop, 0, sizeof(state->non_alu_nop));
+      memset(state->pred_ready, 0, sizeof(state->pred_ready));
+      memset(state->addr_ready, 0, sizeof(state->addr_ready));
+   }
 
    bool count = count_instruction(n, compiler);
    if (count)

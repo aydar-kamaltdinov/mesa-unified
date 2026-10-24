@@ -275,3 +275,8 @@ The local frontend previously ignored SubgroupUniformControlFlowKHR. Add a named
 ## 2026-10-24 — Reconcile the compute/fragment execution-class helper
 
 Native ir3_shader_get_subgroup_size includes FS4/CS5/TASK6/MESH7/KERNEL14 for SINGLE_OR_DOUBLE. The local is_compute_or_frag helper still excluded TASK/MESH even though ir3_should_double_threadsize already included them. The same native set also guards nir_opt_phi_precision, the doubled soft-SY scheduling estimates and exclusion from the legacy SAMGQ workaround. Restore the shared helper using mesa_shader_stage_uses_workgroup(type) || FRAGMENT. This preserves the ordinary stage controls while reconnecting all affected TASK/MESH consumers. Four cache ABI/key markers advance16→17 because compilation/scheduling decisions change. No gates enabled, build or GPU execution. Original anchors and final cases: docs/gamesir-recovery/compute-frag-stages.json.
+
+
+## 2026-10-24 — BAR and split-barrier legalize accounting
+
+Native ir3_required_sync_flags ELF0xad604c forces SS|SY for A8 BAR in addition to SHPE, and returns zero for BAR_SET/BAR_SYNC. Native sync_update ELF0xad7bfc retires both SS/SY dependency masks for the split barriers without requiring flags, and excludes them from ordinary next-instruction barrier forcing. Native ir3_update_legalize_state ELF0xad7b0c clears fixed ALU/non-ALU/predicate/address readiness while retaining the current block cycle. Restore this coupled policy using named fields. Existing fixed ISA encodings stay unchanged; no new split barrier insertion or feature activation. Four cache policy sites advance17→18. Source-only; final compiler/API/cache/GPU validation deferred. See docs/gamesir-recovery/split-barrier-sync.json.
