@@ -1,0 +1,22 @@
+{
+  "area": "KGSL native timeline backend create/destroy probe",
+  "native_function": "kgsl_native_timeline_supported ELF0xa1d8bc size284",
+  "source_transfer": "Accept native timeline backend only when both probe create and destroy ioctls return0. Existing safe_ioctl retains EINTR/EAGAIN retries.",
+  "native_ioctls": {
+    "create": "0xc0100958",
+    "destroy": "0x4004095d"
+  },
+  "old_behavior": "Selected timeline backend after successful create even if destroy failed.",
+  "not_claimed": "Not a full timeline functional/signal/wait capability probe; no separate backend or private queue ordering change. A failed kernel destroy may retain its probe resource until fd close, matching original failure handling.",
+  "cache_policy": "0x4753381d unchanged",
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "final_cases": [
+    "create success/destroy success -> native; either failure -> legacy backend",
+    "EINTR/EAGAIN retries and unsupported/error ioctls",
+    "Device resource cleanup and existing timeline/private queue behavior on actual KGSL"
+  ],
+  "evidence_sha256": "324a075970160231774f2a456e1f8e5171d9d8a790b80eb08107a6edd967eb44"
+}

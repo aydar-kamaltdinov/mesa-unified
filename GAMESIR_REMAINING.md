@@ -342,3 +342,10 @@ Native tu6_emit_mrt<A8> ELF0x97ac9c/1016: max(framebuffer.layers,bit_length(mult
 Native format query ELF0x998b7c/1568 отдельно пропускает VkFormat106=R32G32B32_SFLOAT при texture support, несмотря на общую NPOT ветку. ELF0x998ce0..0x998d10 добавляет sampled|transfer_src|transfer_dst (0xc001) и для float linear filter (0xd001). Восстановлена только эта ветка; не добавляются blit/minmax/storage/HIC и не расширяется поддержка всех RGB/NPOT форматов. Native tiling_possible не исключает RGB32, поэтому local linear/optimal publication сохранена. Depth/HIC проверка совпадает с util_format_has_depth, отдельного пропущенного stencil fix нет.
 
 Это перенос feature advertisement, не доказанная работоспособность всех RGB32 путей. На финал остаются layout/stride/mips/arrays/3D, sampling/filtering/copies, A702 и UINT/SINT controls, CTS/игры. Shader/cache1d неизменен; сборки и GPU нет. Доказательства docs/gamesir-recovery/rgb32-format.json + bounded ARM excerpt.
+
+
+## 25 октября — KGSL timeline backend probe
+
+Native kgsl_native_timeline_supported ELF0xa1d8bc/284 требует успешных CREATE(0xc0100958) и DESTROY(0x4004095d), оба с EINTR/EAGAIN retry. Локально результат DESTROY игнорировался и backend выбирался только по CREATE. Восстановлен named helper и оба условия; existing legacy fallback/private queue timeline ordering остаются. Это не полноценная signal/wait проверка возможностей, не новый backend и не ускорение. При ошибке kernel destroy утечка probe до fd close возможна и в original — дополнительную семантику очистки не выдумываем.
+
+Policy1d неизменна; без сборки/тестов/устройства. На финал: комбинации ioctl success/failure/retry, cleanup и реальные KGSL waits/signals. Доказательство docs/gamesir-recovery/kgsl-timeline-probe.json и bounded ARM.

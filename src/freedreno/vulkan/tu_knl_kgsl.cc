@@ -72,6 +72,17 @@ kgsl_timeline_destroy_ioctl(int fd,
    return safe_ioctl(fd, IOCTL_KGSL_TIMELINE_DESTROY, &id);
 }
 
+/* GameSir's native-timeline probe requires a working destroy ioctl too. */
+static bool
+kgsl_native_timeline_supported(int fd)
+{
+   uint32_t id = 0;
+   if (kgsl_timeline_create_ioctl(fd, 0, &id) != 0)
+      return false;
+
+   return kgsl_timeline_destroy_ioctl(fd, id) == 0;
+}
+
 static int
 kgsl_timeline_signal_ioctl(int fd,
                            struct kgsl_timeline_val *timeline_vals,
@@ -3080,7 +3091,6 @@ tu_knl_kgsl_load(struct tu_instance *instance, int fd)
    static const char dma_heap_path[] = "/dev/dma_heap/system";
    static const char ion_path[] = "/dev/ion";
    int dma_fd;
-   uint32_t dummy_timeline_id = 0;
 
    dma_fd = open(dma_heap_path, O_RDONLY);
    if (dma_fd >= 0) {
@@ -3148,8 +3158,7 @@ tu_knl_kgsl_load(struct tu_instance *instance, int fd)
    device->submitqueue_priority_count = 1;
 
    /* Prefer timeline-based sync implementation if supported by the kernel. */
-   if (kgsl_timeline_create_ioctl(fd, 0, &dummy_timeline_id) == 0) {
-      kgsl_timeline_destroy_ioctl(fd, dummy_timeline_id);
+   if (kgsl_native_timeline_supported(fd)) {
       device->kgsl_sync_impl_type = TU_KGSL_SYNC_IMPL_TYPE_TIMELINE;
    } else {
       device->kgsl_sync_impl_type = TU_KGSL_SYNC_IMPL_TYPE_SYNCOBJ;
