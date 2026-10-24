@@ -1,3 +1,5 @@
+Current unbuilt rutabaga checkpoint: policy0x47533817. The native compute/fragment helper now includes TASK/MESH across subgroup size, phi precision, soft-SY scheduling and the SAMGQ exclusion. See GAMESIR_REMAINING.md and docs/gamesir-recovery/ for current status; earlier front matter below is historical.
+
 Current unbuilt rutabaga source: policy0x47533816. Restored SubgroupUniformControlFlowKHR metadata and native compute-class linear-dispatch policy for maximal reconvergence / dual-wave uniform control flow. TASK/MESH gates remain held. Older policy15/14 statements below are historical.
 
 Current unbuilt source on rutabaga: compiler/cache policy0x47533815. Restored native TASK/MESH WorkgroupID vector copies, MESH copy-propagation guard and fixed shared-input precolor0xcf; A8 single-subpass MSAA GMEM policy also restored. Feature gates remain held; no build/runtime validation. Earlier policy14 and historical statuses below predate these transfers.
@@ -1214,3 +1216,6 @@ Original sysval47 and intrinsic0x2f0 are independently named by ELF tables as SY
 Original spirv_to_nir writes shader-info byte0x196 bit5 for SubgroupUniformControlFlowKHR(mode4421) and bit4 for MaximallyReconvergesKHR(mode6023). In original ir3_nir_post_finalize, COMPUTE/TASK/MESH/KERNEL select linear dispatch when maximally_reconverges OR (subgroup_uniform_control_flow AND has_dual_wave_dispatch). The existing derivative_group==LINEAR rule is separate. Native property info+0x2bd is independently named has_dual_wave_dispatch by the debug-parser string/field route. Earlier notes labeling this QUADS behavior were incorrect.
 
 The local frontend previously ignored SubgroupUniformControlFlowKHR. Add a named shader_info boolean, retain the execution mode and restore the native IR3 dispatch predicate. Whole-struct NIR clone/serialization already carry this metadata; no duplicate serializer path is added. Four TU/IR3 UUID/key sites advance together from15 to16 because both generated code and serialized shader_info bit layout can change. No feature-gate activation, driver/shader build, GPU test or measured performance claim. Final cases and original anchors: docs/gamesir-recovery/subgroup-dispatch.json.
+
+
+2026-10-24: compute/fragment helper reconciliation is recorded in docs/gamesir-recovery/compute-frag-stages.json and the current GAMESIR_REMAINING.md section. Source-only transfer, policy17, feature gates held.

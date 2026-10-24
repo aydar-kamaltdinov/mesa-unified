@@ -1,0 +1,58 @@
+{
+  "area": "Compute/fragment execution-class helper",
+  "binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "native_stage_set": [
+    "VERTEX excluded",
+    "TCS excluded",
+    "TES excluded",
+    "GS excluded",
+    "FS4 included",
+    "CS5 included",
+    "TASK6 included",
+    "MESH7 included",
+    "KERNEL14 included"
+  ],
+  "source_before": "mesa_shader_stage_is_compute(type) || type==FRAGMENT: excludes TASK/MESH",
+  "source_after": "mesa_shader_stage_uses_workgroup(type) || type==FRAGMENT",
+  "source_file": "src/freedreno/ir3/ir3.h:is_compute_or_frag",
+  "caller_routes": [
+    {
+      "area": "api subgroup size",
+      "original": "ir3_shader_get_subgroup_size ELF0xaa9434: stage-4U<4 || stage==14",
+      "local": "ir3_shader.c: API SINGLE_OR_DOUBLE uses dynamic subgroup size/max2*base only for this class"
+    },
+    {
+      "area": "NIR phi precision",
+      "original": "ir3_optimize_loop ELF0xa7be5c: stage bitmask0x40e0 OR stage4 before nir_opt_phi_precision",
+      "local": "ir3_nir.c:is_compute_or_frag guard"
+    },
+    {
+      "area": "Soft SY latency",
+      "original": "schedule ir3_sched ELF0xad292c, schedule ir3_postsched ELF0xad5218, postsched sched_dag_max_delay_cb ELF0xad55c8; compute mask0x40e0 plus FS4",
+      "local": "soft_sy_delay via ir3_sched/ir3_postsched/ir3_collect_info in ir3.c"
+    },
+    {
+      "area": "SAMGQ workaround exclusion",
+      "original": "ir3_legalize ELF0xad89d0: !(stage4..7 || stage14) before opcode0x286 workaround",
+      "local": "ir3_legalize.c:!is_compute_or_frag(ctx->type)"
+    }
+  ],
+  "related_already_present": "ir3_should_double_threadsize already includes TASK/MESH explicitly, so the old helper disagreed with native and the existing doubling decision",
+  "policy_before": "0x47533816",
+  "policy_after": "0x47533817",
+  "all_four_keys_updated": true,
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "held_gates_unchanged": true,
+  "full_validation_deferred": true,
+  "final_cases": [
+    "TASK/MESH subgroup-size dynamic vs single/double API control",
+    "CS/KERNEL/FS and vertex/TCS/TES/GS controls",
+    "LDC/texture/memory scheduling latency and final info size on each stage",
+    "NIR phi precision and eligible shared/half values",
+    "SAMGQ affected generations and absence of new workaround on compute-like stages",
+    "All four cache keys/UUID under cold/warm/GPL/fixed build ID"
+  ],
+  "evidence_sha256": "9de356457666864362041e60a4036c8534fe228c9e205c29abfd6455cf5cd4d1"
+}

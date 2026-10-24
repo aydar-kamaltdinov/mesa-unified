@@ -2209,7 +2209,11 @@ is_sy_producer(struct ir3_instruction *instr)
 static inline bool
 is_compute_or_frag(mesa_shader_stage type)
 {
-   return mesa_shader_stage_is_compute(type) || (type == MESA_SHADER_FRAGMENT);
+   /* TASK/MESH use the compute execution resources in the original AQE
+    * backend, including subgroup-size and scheduling decisions.
+    */
+   return mesa_shader_stage_uses_workgroup(type) ||
+          type == MESA_SHADER_FRAGMENT;
 }
 
 static inline unsigned
