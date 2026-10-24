@@ -349,3 +349,10 @@ Native format query ELF0x998b7c/1568 отдельно пропускает VkFor
 Native kgsl_native_timeline_supported ELF0xa1d8bc/284 требует успешных CREATE(0xc0100958) и DESTROY(0x4004095d), оба с EINTR/EAGAIN retry. Локально результат DESTROY игнорировался и backend выбирался только по CREATE. Восстановлен named helper и оба условия; existing legacy fallback/private queue timeline ordering остаются. Это не полноценная signal/wait проверка возможностей, не новый backend и не ускорение. При ошибке kernel destroy утечка probe до fd close возможна и в original — дополнительную семантику очистки не выдумываем.
 
 Policy1d неизменна; без сборки/тестов/устройства. На финал: комбинации ioctl success/failure/retry, cleanup и реальные KGSL waits/signals. Доказательство docs/gamesir-recovery/kgsl-timeline-probe.json и bounded ARM.
+
+
+## 25 октября — dual-source FS output register fallback
+
+Native tu6_emit_fs_outputs A6/A7/A8 имеет одинаковую дополнительную ветку: dual_src && reg0==0xfc && reg1!=0xfc -> reg0=reg1 перед emission. Точки ELF0xa14330/0xa15da4/0xa1796c. Byte variant+0x302 независимо привязан к dual-source через SP_PS_OUTPUT_CNTL0xa98c bit0 и RB_PS_OUTPUT_CNTL0x880b bit3. Локальный ir3_alias guard без DATA0 уже есть, но не заменяет эту настройку аппаратных выходов. Перенесено только копирование packed regid с half-bit; alias nibbles/output count не меняются, render-component masks вычисляются после fallback как в original.
+
+Соседний original stencil lookup проверяет raw slot13 после1; meaning/producer13 не установлен (native names table покрывает0..12). Не подставляем локальный enum по догадке; это отдельный оставшийся вопрос. Policy1d сохранена: shader/serialized metadata не меняются. Без сборки/исполнения/GPU. Финал: dual-source only-source1/both, half/full registers, blending/color masks/GPL, A6/A7/A8. Доказательства docs/gamesir-recovery/dual-source-output.json и ARM excerpts.

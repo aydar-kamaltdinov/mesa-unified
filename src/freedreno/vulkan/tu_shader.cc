@@ -2794,6 +2794,14 @@ tu6_emit_fs_outputs(struct tu_cs *cs,
       }
    }
 
+   /* GameSir mirrors the second source when a dual-source FS omits DATA0.
+    * Keep both hardware slots valid without changing the shader outputs or
+    * the alias-component masks.
+    */
+   if (fs->dual_src_blend && fragdata_regid[0] == INVALID_REG &&
+       fragdata_regid[1] != INVALID_REG)
+      fragdata_regid[0] = fragdata_regid[1];
+
    tu_cs_emit_pkt4(cs, REG_A6XX_SP_PS_OUTPUT_CNTL, 1);
    tu_cs_emit(cs, A6XX_SP_PS_OUTPUT_CNTL_DEPTH_REGID(posz_regid) |
                   A6XX_SP_PS_OUTPUT_CNTL_SAMPMASK_REGID(smask_regid) |

@@ -1,0 +1,1886 @@
+  a13dbc: d101c3ff     	sub	sp, sp, #0x70
+  a13dc0: b9430c28     	ldr	w8, [x1, #0x30c]
+  a13dc4: a9064ff4     	stp	x20, x19, [sp, #0x60]
+  a13dc8: aa0103f4     	mov	x20, x1
+  a13dcc: aa0003f3     	mov	x19, x0
+  a13dd0: a9027bfd     	stp	x29, x30, [sp, #0x20]
+  a13dd4: 910083fd     	add	x29, sp, #0x20
+  a13dd8: f9001bf9     	str	x25, [sp, #0x30]
+  a13ddc: a9045ff8     	stp	x24, x23, [sp, #0x40]
+  a13de0: a90557f6     	stp	x22, x21, [sp, #0x50]
+  a13de4: 34000148     	cbz	w8, 0xa13e0c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x50>
+  a13de8: 910c4289     	add	x9, x20, #0x310
+  a13dec: aa1f03ea     	mov	x10, xzr
+  a13df0: aa0903eb     	mov	x11, x9
+  a13df4: 3840556c     	ldrb	w12, [x11], #0x5
+  a13df8: 3400022c     	cbz	w12, 0xa13e3c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x80>
+  a13dfc: 9100054a     	add	x10, x10, #0x1
+  a13e00: eb0a011f     	cmp	x8, x10
+  a13e04: 54ffff81     	b.ne	0xa13df4 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x38>
+  a13e08: 14000018     	b	0xa13e68 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0xac>
+  a13e0c: aa1f03eb     	mov	x11, xzr
+  a13e10: 910c4289     	add	x9, x20, #0x310
+  a13e14: 52801f96     	mov	w22, #0xfc              // =252
+  a13e18: 52bf8018     	mov	w24, #-0x4000000        // =-67108864
+  a13e1c: 52801f97     	mov	w23, #0xfc              // =252
+  a13e20: 52801f8a     	mov	w10, #0xfc              // =252
+  a13e24: 2a1f03f5     	mov	w21, wzr
+  a13e28: 2a1f03f9     	mov	w25, wzr
+  a13e2c: b90003ea     	str	w10, [sp]
+  a13e30: 5280002a     	mov	w10, #0x1               // =1
+  a13e34: 35000c28     	cbnz	w8, 0xa13fb8 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x1fc>
+  a13e38: 14000081     	b	0xa1403c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a13e3c: 37f8016a     	tbnz	w10, #0x1f, 0xa13e68 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0xac>
+  a13e40: 9240794a     	and	x10, x10, #0x7fffffff
+  a13e44: 8b0a094a     	add	x10, x10, x10, lsl #2
+  a13e48: 8b0a012a     	add	x10, x9, x10
+  a13e4c: 3940114b     	ldrb	w11, [x10, #0x4]
+  a13e50: 3940054a     	ldrb	w10, [x10, #0x1]
+  a13e54: 7100017f     	cmp	w11, #0x0
+  a13e58: 5280200b     	mov	w11, #0x100             // =256
+  a13e5c: 1a9f116b     	csel	w11, w11, wzr, ne
+  a13e60: 2a0a0176     	orr	w22, w11, w10
+  a13e64: 14000002     	b	0xa13e6c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0xb0>
+  a13e68: 52801f96     	mov	w22, #0xfc              // =252
+  a13e6c: aa1f03ea     	mov	x10, xzr
+  a13e70: aa0903eb     	mov	x11, x9
+  a13e74: 3840556c     	ldrb	w12, [x11], #0x5
+  a13e78: 71000d9f     	cmp	w12, #0x3
+  a13e7c: 540000a0     	b.eq	0xa13e90 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0xd4>
+  a13e80: 9100054a     	add	x10, x10, #0x1
+  a13e84: eb0a011f     	cmp	x8, x10
+  a13e88: 54ffff61     	b.ne	0xa13e74 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0xb8>
+  a13e8c: 1400000c     	b	0xa13ebc <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x100>
+  a13e90: 37f8016a     	tbnz	w10, #0x1f, 0xa13ebc <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x100>
+  a13e94: 9240794a     	and	x10, x10, #0x7fffffff
+  a13e98: 8b0a094a     	add	x10, x10, x10, lsl #2
+  a13e9c: 8b0a012a     	add	x10, x9, x10
+  a13ea0: 3940114b     	ldrb	w11, [x10, #0x4]
+  a13ea4: 3940054a     	ldrb	w10, [x10, #0x1]
+  a13ea8: 7100017f     	cmp	w11, #0x0
+  a13eac: 5280200b     	mov	w11, #0x100             // =256
+  a13eb0: 1a9f116b     	csel	w11, w11, wzr, ne
+  a13eb4: 2a0a0177     	orr	w23, w11, w10
+  a13eb8: 14000002     	b	0xa13ec0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x104>
+  a13ebc: 52801f97     	mov	w23, #0xfc              // =252
+  a13ec0: aa1f03ea     	mov	x10, xzr
+  a13ec4: aa0903eb     	mov	x11, x9
+  a13ec8: 3840556c     	ldrb	w12, [x11], #0x5
+  a13ecc: 7100059f     	cmp	w12, #0x1
+  a13ed0: 54000180     	b.eq	0xa13f00 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x144>
+  a13ed4: 9100054a     	add	x10, x10, #0x1
+  a13ed8: eb0a011f     	cmp	x8, x10
+  a13edc: 54ffff61     	b.ne	0xa13ec8 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x10c>
+  a13ee0: aa1f03ea     	mov	x10, xzr
+  a13ee4: 3840552b     	ldrb	w11, [x9], #0x5
+  a13ee8: 7100357f     	cmp	w11, #0xd
+  a13eec: 540000a0     	b.eq	0xa13f00 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x144>
+  a13ef0: 9100054a     	add	x10, x10, #0x1
+  a13ef4: eb0a011f     	cmp	x8, x10
+  a13ef8: 54ffff61     	b.ne	0xa13ee4 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x128>
+  a13efc: 14000008     	b	0xa13f1c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x160>
+  a13f00: 37f800ea     	tbnz	w10, #0x1f, 0xa13f1c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x160>
+  a13f04: 92407949     	and	x9, x10, #0x7fffffff
+  a13f08: 8b090929     	add	x9, x9, x9, lsl #2
+  a13f0c: 8b090289     	add	x9, x20, x9
+  a13f10: 394c4529     	ldrb	w9, [x9, #0x311]
+  a13f14: 53081d38     	lsl	w24, w9, #24
+  a13f18: 14000002     	b	0xa13f20 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x164>
+  a13f1c: 52bf8018     	mov	w24, #-0x4000000        // =-67108864
+  a13f20: 910c4289     	add	x9, x20, #0x310
+  a13f24: aa1f03ea     	mov	x10, xzr
+  a13f28: aa0903eb     	mov	x11, x9
+  a13f2c: 3840556c     	ldrb	w12, [x11], #0x5
+  a13f30: 7100119f     	cmp	w12, #0x4
+  a13f34: 540000a0     	b.eq	0xa13f48 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x18c>
+  a13f38: 9100054a     	add	x10, x10, #0x1
+  a13f3c: eb0a011f     	cmp	x8, x10
+  a13f40: 54ffff61     	b.ne	0xa13f2c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x170>
+  a13f44: 14000016     	b	0xa13f9c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x1e0>
+  a13f48: 37f802aa     	tbnz	w10, #0x1f, 0xa13f9c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x1e0>
+  a13f4c: 9240794a     	and	x10, x10, #0x7fffffff
+  a13f50: 8b0a094a     	add	x10, x10, x10, lsl #2
+  a13f54: 8b0a012b     	add	x11, x9, x10
+  a13f58: 3940116a     	ldrb	w10, [x11, #0x4]
+  a13f5c: 3940056c     	ldrb	w12, [x11, #0x1]
+  a13f60: 39400d75     	ldrb	w21, [x11, #0x3]
+  a13f64: 7100015f     	cmp	w10, #0x0
+  a13f68: 5280200a     	mov	w10, #0x100             // =256
+  a13f6c: 1a9f114a     	csel	w10, w10, wzr, ne
+  a13f70: 2a0c014a     	orr	w10, w10, w12
+  a13f74: 7103f15f     	cmp	w10, #0xfc
+  a13f78: b90003ea     	str	w10, [sp]
+  a13f7c: 7a400aa0     	ccmp	w21, #0x0, #0x0, eq
+  a13f80: 54000540     	b.eq	0xa14028 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x26c>
+  a13f84: 7103f15f     	cmp	w10, #0xfc
+  a13f88: 52800039     	mov	w25, #0x1               // =1
+  a13f8c: 1a9f17ea     	cset	w10, eq
+  a13f90: aa0803eb     	mov	x11, x8
+  a13f94: 35000128     	cbnz	w8, 0xa13fb8 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x1fc>
+  a13f98: 14000029     	b	0xa1403c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a13f9c: aa0803eb     	mov	x11, x8
+  a13fa0: 52801f8a     	mov	w10, #0xfc              // =252
+  a13fa4: 2a1f03f5     	mov	w21, wzr
+  a13fa8: 2a1f03f9     	mov	w25, wzr
+  a13fac: b90003ea     	str	w10, [sp]
+  a13fb0: 5280002a     	mov	w10, #0x1               // =1
+  a13fb4: 34000448     	cbz	w8, 0xa1403c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a13fb8: aa1f03ec     	mov	x12, xzr
+  a13fbc: aa0903ed     	mov	x13, x9
+  a13fc0: 384055ae     	ldrb	w14, [x13], #0x5
+  a13fc4: 710015df     	cmp	w14, #0x5
+  a13fc8: 540000a0     	b.eq	0xa13fdc <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x220>
+  a13fcc: 9100058c     	add	x12, x12, #0x1
+  a13fd0: eb0c017f     	cmp	x11, x12
+  a13fd4: 54ffff61     	b.ne	0xa13fc0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x204>
+  a13fd8: 14000019     	b	0xa1403c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a13fdc: 37f8030c     	tbnz	w12, #0x1f, 0xa1403c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a13fe0: 9240798c     	and	x12, x12, #0x7fffffff
+  a13fe4: 8b0c098c     	add	x12, x12, x12, lsl #2
+  a13fe8: 8b0c012d     	add	x13, x9, x12
+  a13fec: 394011ac     	ldrb	w12, [x13, #0x4]
+  a13ff0: 394005ae     	ldrb	w14, [x13, #0x1]
+  a13ff4: 39400dad     	ldrb	w13, [x13, #0x3]
+  a13ff8: 7100019f     	cmp	w12, #0x0
+  a13ffc: 5280200c     	mov	w12, #0x100             // =256
+  a14000: 1a9f118c     	csel	w12, w12, wzr, ne
+  a14004: 2a0e018c     	orr	w12, w12, w14
+  a14008: 7103f19f     	cmp	w12, #0xfc
+  a1400c: b90007ec     	str	w12, [sp, #0x4]
+  a14010: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a14014: 54000520     	b.eq	0xa140b8 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x2fc>
+  a14018: 2a0d12b5     	orr	w21, w21, w13, lsl #4
+  a1401c: 52800059     	mov	w25, #0x2               // =2
+  a14020: 35000148     	cbnz	w8, 0xa14048 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x28c>
+  a14024: 14000027     	b	0xa140c0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x304>
+  a14028: 2a1f03f5     	mov	w21, wzr
+  a1402c: 2a1f03f9     	mov	w25, wzr
+  a14030: 5280002a     	mov	w10, #0x1               // =1
+  a14034: aa0803eb     	mov	x11, x8
+  a14038: 35fffc08     	cbnz	w8, 0xa13fb8 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x1fc>
+  a1403c: 52801f8c     	mov	w12, #0xfc              // =252
+  a14040: b90007ec     	str	w12, [sp, #0x4]
+  a14044: 340003e8     	cbz	w8, 0xa140c0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x304>
+  a14048: aa1f03ed     	mov	x13, xzr
+  a1404c: aa0903ee     	mov	x14, x9
+  a14050: 384055cf     	ldrb	w15, [x14], #0x5
+  a14054: 710019ff     	cmp	w15, #0x6
+  a14058: 540000a0     	b.eq	0xa1406c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x2b0>
+  a1405c: 910005ad     	add	x13, x13, #0x1
+  a14060: eb0d017f     	cmp	x11, x13
+  a14064: 54ffff61     	b.ne	0xa14050 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x294>
+  a14068: 14000016     	b	0xa140c0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x304>
+  a1406c: 37f802ad     	tbnz	w13, #0x1f, 0xa140c0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x304>
+  a14070: 924079ad     	and	x13, x13, #0x7fffffff
+  a14074: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a14078: 8b0d012d     	add	x13, x9, x13
+  a1407c: 394011ae     	ldrb	w14, [x13, #0x4]
+  a14080: 394005af     	ldrb	w15, [x13, #0x1]
+  a14084: 39400dad     	ldrb	w13, [x13, #0x3]
+  a14088: 710001df     	cmp	w14, #0x0
+  a1408c: 5280200e     	mov	w14, #0x100             // =256
+  a14090: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a14094: 2a0f01ce     	orr	w14, w14, w15
+  a14098: 7103f1df     	cmp	w14, #0xfc
+  a1409c: b9000bee     	str	w14, [sp, #0x8]
+  a140a0: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a140a4: 54000060     	b.eq	0xa140b0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x2f4>
+  a140a8: 2a0d22b5     	orr	w21, w21, w13, lsl #8
+  a140ac: 52800079     	mov	w25, #0x3               // =3
+  a140b0: 350000e8     	cbnz	w8, 0xa140cc <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x310>
+  a140b4: 14000022     	b	0xa1413c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x380>
+  a140b8: 52801f8c     	mov	w12, #0xfc              // =252
+  a140bc: 35fffc68     	cbnz	w8, 0xa14048 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x28c>
+  a140c0: 52801f8d     	mov	w13, #0xfc              // =252
+  a140c4: b9000bed     	str	w13, [sp, #0x8]
+  a140c8: 340003a8     	cbz	w8, 0xa1413c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x380>
+  a140cc: aa1f03ed     	mov	x13, xzr
+  a140d0: aa0903ee     	mov	x14, x9
+  a140d4: 384055cf     	ldrb	w15, [x14], #0x5
+  a140d8: 71001dff     	cmp	w15, #0x7
+  a140dc: 540000a0     	b.eq	0xa140f0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x334>
+  a140e0: 910005ad     	add	x13, x13, #0x1
+  a140e4: eb0d017f     	cmp	x11, x13
+  a140e8: 54ffff61     	b.ne	0xa140d4 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x318>
+  a140ec: 14000014     	b	0xa1413c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x380>
+  a140f0: 37f8026d     	tbnz	w13, #0x1f, 0xa1413c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x380>
+  a140f4: 924079ad     	and	x13, x13, #0x7fffffff
+  a140f8: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a140fc: 8b0d012d     	add	x13, x9, x13
+  a14100: 394011ae     	ldrb	w14, [x13, #0x4]
+  a14104: 394005af     	ldrb	w15, [x13, #0x1]
+  a14108: 39400dad     	ldrb	w13, [x13, #0x3]
+  a1410c: 710001df     	cmp	w14, #0x0
+  a14110: 5280200e     	mov	w14, #0x100             // =256
+  a14114: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a14118: 2a0f01ce     	orr	w14, w14, w15
+  a1411c: 7103f1df     	cmp	w14, #0xfc
+  a14120: b9000fee     	str	w14, [sp, #0xc]
+  a14124: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a14128: 54000060     	b.eq	0xa14134 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x378>
+  a1412c: 2a0d32b5     	orr	w21, w21, w13, lsl #12
+  a14130: 52800099     	mov	w25, #0x4               // =4
+  a14134: 350000a8     	cbnz	w8, 0xa14148 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x38c>
+  a14138: 14000020     	b	0xa141b8 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x3fc>
+  a1413c: 52801f8d     	mov	w13, #0xfc              // =252
+  a14140: b9000fed     	str	w13, [sp, #0xc]
+  a14144: 340003a8     	cbz	w8, 0xa141b8 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x3fc>
+  a14148: aa1f03ed     	mov	x13, xzr
+  a1414c: aa0903ee     	mov	x14, x9
+  a14150: 384055cf     	ldrb	w15, [x14], #0x5
+  a14154: 710021ff     	cmp	w15, #0x8
+  a14158: 540000a0     	b.eq	0xa1416c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x3b0>
+  a1415c: 910005ad     	add	x13, x13, #0x1
+  a14160: eb0d017f     	cmp	x11, x13
+  a14164: 54ffff61     	b.ne	0xa14150 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x394>
+  a14168: 14000014     	b	0xa141b8 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x3fc>
+  a1416c: 37f8026d     	tbnz	w13, #0x1f, 0xa141b8 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x3fc>
+  a14170: 924079ad     	and	x13, x13, #0x7fffffff
+  a14174: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a14178: 8b0d012d     	add	x13, x9, x13
+  a1417c: 394011ae     	ldrb	w14, [x13, #0x4]
+  a14180: 394005af     	ldrb	w15, [x13, #0x1]
+  a14184: 39400dad     	ldrb	w13, [x13, #0x3]
+  a14188: 710001df     	cmp	w14, #0x0
+  a1418c: 5280200e     	mov	w14, #0x100             // =256
+  a14190: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a14194: 2a0f01ce     	orr	w14, w14, w15
+  a14198: 7103f1df     	cmp	w14, #0xfc
+  a1419c: b90013ee     	str	w14, [sp, #0x10]
+  a141a0: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a141a4: 54000060     	b.eq	0xa141b0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x3f4>
+  a141a8: 2a0d42b5     	orr	w21, w21, w13, lsl #16
+  a141ac: 528000b9     	mov	w25, #0x5               // =5
+  a141b0: 350000a8     	cbnz	w8, 0xa141c4 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x408>
+  a141b4: 14000020     	b	0xa14234 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x478>
+  a141b8: 52801f8d     	mov	w13, #0xfc              // =252
+  a141bc: b90013ed     	str	w13, [sp, #0x10]
+  a141c0: 340003a8     	cbz	w8, 0xa14234 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x478>
+  a141c4: aa1f03ed     	mov	x13, xzr
+  a141c8: aa0903ee     	mov	x14, x9
+  a141cc: 384055cf     	ldrb	w15, [x14], #0x5
+  a141d0: 710025ff     	cmp	w15, #0x9
+  a141d4: 540000a0     	b.eq	0xa141e8 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x42c>
+  a141d8: 910005ad     	add	x13, x13, #0x1
+  a141dc: eb0d017f     	cmp	x11, x13
+  a141e0: 54ffff61     	b.ne	0xa141cc <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x410>
+  a141e4: 14000014     	b	0xa14234 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x478>
+  a141e8: 37f8026d     	tbnz	w13, #0x1f, 0xa14234 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x478>
+  a141ec: 924079ad     	and	x13, x13, #0x7fffffff
+  a141f0: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a141f4: 8b0d012d     	add	x13, x9, x13
+  a141f8: 394011ae     	ldrb	w14, [x13, #0x4]
+  a141fc: 394005af     	ldrb	w15, [x13, #0x1]
+  a14200: 39400dad     	ldrb	w13, [x13, #0x3]
+  a14204: 710001df     	cmp	w14, #0x0
+  a14208: 5280200e     	mov	w14, #0x100             // =256
+  a1420c: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a14210: 2a0f01ce     	orr	w14, w14, w15
+  a14214: 7103f1df     	cmp	w14, #0xfc
+  a14218: b90017ee     	str	w14, [sp, #0x14]
+  a1421c: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a14220: 54000060     	b.eq	0xa1422c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x470>
+  a14224: 2a0d52b5     	orr	w21, w21, w13, lsl #20
+  a14228: 528000d9     	mov	w25, #0x6               // =6
+  a1422c: 350000a8     	cbnz	w8, 0xa14240 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x484>
+  a14230: 14000020     	b	0xa142b0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x4f4>
+  a14234: 52801f8d     	mov	w13, #0xfc              // =252
+  a14238: b90017ed     	str	w13, [sp, #0x14]
+  a1423c: 340003a8     	cbz	w8, 0xa142b0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x4f4>
+  a14240: aa1f03ed     	mov	x13, xzr
+  a14244: aa0903ee     	mov	x14, x9
+  a14248: 384055cf     	ldrb	w15, [x14], #0x5
+  a1424c: 710029ff     	cmp	w15, #0xa
+  a14250: 540000a0     	b.eq	0xa14264 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x4a8>
+  a14254: 910005ad     	add	x13, x13, #0x1
+  a14258: eb0d017f     	cmp	x11, x13
+  a1425c: 54ffff61     	b.ne	0xa14248 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x48c>
+  a14260: 14000014     	b	0xa142b0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x4f4>
+  a14264: 37f8026d     	tbnz	w13, #0x1f, 0xa142b0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x4f4>
+  a14268: 924079ad     	and	x13, x13, #0x7fffffff
+  a1426c: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a14270: 8b0d012d     	add	x13, x9, x13
+  a14274: 394011ae     	ldrb	w14, [x13, #0x4]
+  a14278: 394005af     	ldrb	w15, [x13, #0x1]
+  a1427c: 39400dad     	ldrb	w13, [x13, #0x3]
+  a14280: 710001df     	cmp	w14, #0x0
+  a14284: 5280200e     	mov	w14, #0x100             // =256
+  a14288: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a1428c: 2a0f01ce     	orr	w14, w14, w15
+  a14290: 7103f1df     	cmp	w14, #0xfc
+  a14294: b9001bee     	str	w14, [sp, #0x18]
+  a14298: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a1429c: 54000060     	b.eq	0xa142a8 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x4ec>
+  a142a0: 2a0d62b5     	orr	w21, w21, w13, lsl #24
+  a142a4: 528000f9     	mov	w25, #0x7               // =7
+  a142a8: 350000a8     	cbnz	w8, 0xa142bc <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x500>
+  a142ac: 1400001f     	b	0xa14328 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x56c>
+  a142b0: 52801f8d     	mov	w13, #0xfc              // =252
+  a142b4: b9001bed     	str	w13, [sp, #0x18]
+  a142b8: 34000388     	cbz	w8, 0xa14328 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x56c>
+  a142bc: aa1f03e8     	mov	x8, xzr
+  a142c0: aa0903ed     	mov	x13, x9
+  a142c4: 384055ae     	ldrb	w14, [x13], #0x5
+  a142c8: 71002ddf     	cmp	w14, #0xb
+  a142cc: 540000a0     	b.eq	0xa142e0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x524>
+  a142d0: 91000508     	add	x8, x8, #0x1
+  a142d4: eb08017f     	cmp	x11, x8
+  a142d8: 54ffff61     	b.ne	0xa142c4 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x508>
+  a142dc: 14000013     	b	0xa14328 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x56c>
+  a142e0: 37f80248     	tbnz	w8, #0x1f, 0xa14328 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x56c>
+  a142e4: 92407908     	and	x8, x8, #0x7fffffff
+  a142e8: 8b080908     	add	x8, x8, x8, lsl #2
+  a142ec: 8b080128     	add	x8, x9, x8
+  a142f0: 39401109     	ldrb	w9, [x8, #0x4]
+  a142f4: 3940050b     	ldrb	w11, [x8, #0x1]
+  a142f8: 39400d08     	ldrb	w8, [x8, #0x3]
+  a142fc: 7100013f     	cmp	w9, #0x0
+  a14300: 52802009     	mov	w9, #0x100              // =256
+  a14304: 1a9f1129     	csel	w9, w9, wzr, ne
+  a14308: 2a0b0129     	orr	w9, w9, w11
+  a1430c: 7103f13f     	cmp	w9, #0xfc
+  a14310: b9001fe9     	str	w9, [sp, #0x1c]
+  a14314: 7a400900     	ccmp	w8, #0x0, #0x0, eq
+  a14318: 540000c0     	b.eq	0xa14330 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x574>
+  a1431c: 2a0872b5     	orr	w21, w21, w8, lsl #28
+  a14320: 52800119     	mov	w25, #0x8               // =8
+  a14324: 14000003     	b	0xa14330 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x574>
+  a14328: 52801f88     	mov	w8, #0xfc               // =252
+  a1432c: b9001fe8     	str	w8, [sp, #0x1c]
+  a14330: 394c0a88     	ldrb	w8, [x20, #0x302]
+  a14334: 7103f19f     	cmp	w12, #0xfc
+  a14338: 54000080     	b.eq	0xa14348 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x58c>
+  a1433c: 0a080149     	and	w9, w10, w8
+  a14340: 34000049     	cbz	w9, 0xa14348 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x58c>
+  a14344: b90003ec     	str	w12, [sp]
+  a14348: b9403e69     	ldr	w9, [x19, #0x3c]
+  a1434c: 35001ca9     	cbnz	w9, 0xa146e0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x924>
+  a14350: b9403269     	ldr	w9, [x19, #0x30]
+  a14354: 35000209     	cbnz	w9, 0xa14394 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x5d8>
+  a14358: f9400669     	ldr	x9, [x19, #0x8]
+  a1435c: f9400e6a     	ldr	x10, [x19, #0x18]
+  a14360: cb09014a     	sub	x10, x10, x9
+  a14364: f27d795f     	tst	x10, #0x3fffffff8
+  a14368: 540000e0     	b.eq	0xa14384 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x5c8>
+  a1436c: 29492e6a     	ldp	w10, w11, [x19, #0x48]
+  a14370: 6b0b015f     	cmp	w10, w11
+  a14374: 54000082     	b.hs	0xa14384 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x5c8>
+  a14378: 91002129     	add	x9, x9, #0x8
+  a1437c: f9000a69     	str	x9, [x19, #0x10]
+  a14380: 14000005     	b	0xa14394 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x5d8>
+  a14384: aa1303e0     	mov	x0, x19
+  a14388: 52800041     	mov	w1, #0x2                // =2
+  a1438c: 97fdcae9     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a14390: 394c0a88     	ldrb	w8, [x20, #0x302]
+  a14394: 53181ec9     	ubfiz	w9, w22, #8, #8
+  a14398: 53101eea     	ubfiz	w10, w23, #16, #8
+  a1439c: f940066b     	ldr	x11, [x19, #0x8]
+  a143a0: 5291802c     	mov	w12, #0x8c01            // =35841
+  a143a4: 52916037     	mov	w23, #0x8b01            // =35585
+  a143a8: 7100073f     	cmp	w25, #0x1
+  a143ac: 2a0a030a     	orr	w10, w24, w10
+  a143b0: 2a080128     	orr	w8, w9, w8
+  a143b4: 72a8152c     	movk	w12, #0x40a9, lsl #16
+  a143b8: 2a080149     	orr	w9, w10, w8
+  a143bc: 91002168     	add	x8, x11, #0x8
+  a143c0: 72a91537     	movk	w23, #0x48a9, lsl #16
+  a143c4: 2900256c     	stp	w12, w9, [x11]
+  a143c8: f9000668     	str	x8, [x19, #0x8]
+  a143cc: 5400022b     	b.lt	0xa14410 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x654>
+  a143d0: b9403e69     	ldr	w9, [x19, #0x3c]
+  a143d4: 350019a9     	cbnz	w9, 0xa14708 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x94c>
+  a143d8: b9403269     	ldr	w9, [x19, #0x30]
+  a143dc: 35000309     	cbnz	w9, 0xa1443c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x680>
+  a143e0: f9400e69     	ldr	x9, [x19, #0x18]
+  a143e4: 11000721     	add	w1, w25, #0x1
+  a143e8: cb080129     	sub	x9, x9, x8
+  a143ec: d342fd29     	lsr	x9, x9, #2
+  a143f0: 6b09033f     	cmp	w25, w9
+  a143f4: 540001e2     	b.hs	0xa14430 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x674>
+  a143f8: 29492a69     	ldp	w9, w10, [x19, #0x48]
+  a143fc: 6b0a013f     	cmp	w9, w10
+  a14400: 54000182     	b.hs	0xa14430 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x674>
+  a14404: 8b214909     	add	x9, x8, w1, uxtw #2
+  a14408: f9000a69     	str	x9, [x19, #0x10]
+  a1440c: 1400000c     	b	0xa1443c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x680>
+  a14410: 34001519     	cbz	w25, 0xa146b0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x8f4>
+  a14414: 7100233f     	cmp	w25, #0x8
+  a14418: 2a1903e9     	mov	w9, w25
+  a1441c: 54000242     	b.hs	0xa14464 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x6a8>
+  a14420: aa1f03eb     	mov	x11, xzr
+  a14424: 2a1f03f6     	mov	w22, wzr
+  a14428: aa0803ea     	mov	x10, x8
+  a1442c: 1400002d     	b	0xa144e0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x724>
+  a14430: aa1303e0     	mov	x0, x19
+  a14434: 97fdcabf     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a14438: f9400668     	ldr	x8, [x19, #0x8]
+  a1443c: 128d32c9     	mov	w9, #-0x6997            // =-27031
+  a14440: 2a1903ea     	mov	w10, w25
+  a14444: 1ad92529     	lsr	w9, w9, w25
+  a14448: 3319012a     	bfi	w10, w9, #7, #1
+  a1444c: 110bfee9     	add	w9, w23, #0x2ff
+  a14450: 2a090149     	orr	w9, w10, w9
+  a14454: b8004509     	str	w9, [x8], #0x4
+  a14458: 7100233f     	cmp	w25, #0x8
+  a1445c: 2a1903e9     	mov	w9, w25
+  a14460: 54fffe03     	b.lo	0xa14420 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x664>
+  a14464: 4e040ea0     	dup	v0.4s, w21
+  a14468: d0ffb4ca     	adrp	x10, 0xae000 <mesa_bytes_to_hex.hex_digits+0xf710>
+  a1446c: d0ffb4cb     	adrp	x11, 0xae000 <mesa_bytes_to_hex.hex_digits+0xf710>
+  a14470: 3dc16542     	ldr	q2, [x10, #0x590]
+  a14474: 3dc36d63     	ldr	q3, [x11, #0xdb0]
+  a14478: 4f070781     	movi	v1.4s, #0xfc
+  a1447c: ad4013e6     	ldp	q6, q4, [sp]
+  a14480: 927d012b     	and	x11, x9, #0x8
+  a14484: 4e221c05     	and	v5.16b, v0.16b, v2.16b
+  a14488: 4e231c00     	and	v0.16b, v0.16b, v3.16b
+  a1448c: 8b0b090a     	add	x10, x8, x11, lsl #2
+  a14490: eb09017f     	cmp	x11, x9
+  a14494: 6ea18c87     	cmeq	v7.4s, v4.4s, v1.4s
+  a14498: 6ea18cc1     	cmeq	v1.4s, v6.4s, v1.4s
+  a1449c: 4ea098a5     	cmeq	v5.4s, v5.4s, #0
+  a144a0: 4ea09800     	cmeq	v0.4s, v0.4s, #0
+  a144a4: 4e251ce5     	and	v5.16b, v7.16b, v5.16b
+  a144a8: 4e201c20     	and	v0.16b, v1.16b, v0.16b
+  a144ac: 4e651c41     	bic	v1.16b, v2.16b, v5.16b
+  a144b0: 4e601c60     	bic	v0.16b, v3.16b, v0.16b
+  a144b4: 4f00c422     	movi	v2.4s, #0x1, msl #8
+  a144b8: 4ea01c20     	orr	v0.16b, v1.16b, v0.16b
+  a144bc: 6e004001     	ext	v1.16b, v0.16b, v0.16b, #0x8
+  a144c0: 0ea11c00     	orr	v0.8b, v0.8b, v1.8b
+  a144c4: 4e221cc1     	and	v1.16b, v6.16b, v2.16b
+  a144c8: 4e221c82     	and	v2.16b, v4.16b, v2.16b
+  a144cc: 9e66000c     	fmov	x12, d0
+  a144d0: ad000901     	stp	q1, q2, [x8]
+  a144d4: d360fd8d     	lsr	x13, x12, #32
+  a144d8: 2a0d0196     	orr	w22, w12, w13
+  a144dc: 54000220     	b.eq	0xa14520 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x764>
+  a144e0: d37ef568     	lsl	x8, x11, #2
+  a144e4: cb0b0129     	sub	x9, x9, x11
+  a144e8: 910003eb     	mov	x11, sp
+  a144ec: 528001ec     	mov	w12, #0xf               // =15
+  a144f0: 52801f8d     	mov	w13, #0xfc              // =252
+  a144f4: 1ac8218f     	lsl	w15, w12, w8
+  a144f8: b868696e     	ldr	w14, [x11, x8]
+  a144fc: 91001108     	add	x8, x8, #0x4
+  a14500: 6a1501ff     	tst	w15, w21
+  a14504: 120021d0     	and	w16, w14, #0x1ff
+  a14508: 7a4d01c0     	ccmp	w14, w13, #0x0, eq
+  a1450c: b8004550     	str	w16, [x10], #0x4
+  a14510: 1a8f03ee     	csel	w14, wzr, w15, eq
+  a14514: f1000529     	subs	x9, x9, #0x1
+  a14518: 2a0e02d6     	orr	w22, w22, w14
+  a1451c: 54fffec1     	b.ne	0xa144f4 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x738>
+  a14520: aa0a03e8     	mov	x8, x10
+  a14524: f900066a     	str	x10, [x19, #0x8]
+  a14528: b9403e69     	ldr	w9, [x19, #0x3c]
+  a1452c: 35000c89     	cbnz	w9, 0xa146bc <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x900>
+  a14530: b9403269     	ldr	w9, [x19, #0x30]
+  a14534: 340000a9     	cbz	w9, 0xa14548 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x78c>
+  a14538: 91002109     	add	x9, x8, #0x8
+  a1453c: 29005917     	stp	w23, w22, [x8]
+  a14540: f9000669     	str	x9, [x19, #0x8]
+  a14544: 14000014     	b	0xa14594 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x7d8>
+  a14548: f9400e69     	ldr	x9, [x19, #0x18]
+  a1454c: cb080129     	sub	x9, x9, x8
+  a14550: f27d793f     	tst	x9, #0x3fffffff8
+  a14554: 540000e0     	b.eq	0xa14570 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x7b4>
+  a14558: 29492a69     	ldp	w9, w10, [x19, #0x48]
+  a1455c: 6b0a013f     	cmp	w9, w10
+  a14560: 54000082     	b.hs	0xa14570 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x7b4>
+  a14564: 91002109     	add	x9, x8, #0x8
+  a14568: f9000a69     	str	x9, [x19, #0x10]
+  a1456c: 17fffff3     	b	0xa14538 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x77c>
+  a14570: aa1303e0     	mov	x0, x19
+  a14574: 52800041     	mov	w1, #0x2                // =2
+  a14578: 97fdca6e     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a1457c: f9400668     	ldr	x8, [x19, #0x8]
+  a14580: b9403e6a     	ldr	w10, [x19, #0x3c]
+  a14584: 91002109     	add	x9, x8, #0x8
+  a14588: 29005917     	stp	w23, w22, [x8]
+  a1458c: f9000669     	str	x9, [x19, #0x8]
+  a14590: 350009ca     	cbnz	w10, 0xa146c8 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x90c>
+  a14594: b940326a     	ldr	w10, [x19, #0x30]
+  a14598: 3400006a     	cbz	w10, 0xa145a4 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x7e8>
+  a1459c: 52800028     	mov	w8, #0x1                // =1
+  a145a0: 14000013     	b	0xa145ec <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x830>
+  a145a4: f9400e6a     	ldr	x10, [x19, #0x18]
+  a145a8: cb09014a     	sub	x10, x10, x9
+  a145ac: f27d795f     	tst	x10, #0x3fffffff8
+  a145b0: 54000100     	b.eq	0xa145d0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x814>
+  a145b4: 29492e6a     	ldp	w10, w11, [x19, #0x48]
+  a145b8: 6b0b015f     	cmp	w10, w11
+  a145bc: 540000a2     	b.hs	0xa145d0 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x814>
+  a145c0: 91004108     	add	x8, x8, #0x10
+  a145c4: f9000a68     	str	x8, [x19, #0x10]
+  a145c8: 52800028     	mov	w8, #0x1                // =1
+  a145cc: 14000008     	b	0xa145ec <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x830>
+  a145d0: aa1303e0     	mov	x0, x19
+  a145d4: 52800041     	mov	w1, #0x2                // =2
+  a145d8: 97fdca56     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a145dc: b9403e68     	ldr	w8, [x19, #0x3c]
+  a145e0: f9400669     	ldr	x9, [x19, #0x8]
+  a145e4: 7100011f     	cmp	w8, #0x0
+  a145e8: 1a9f17e8     	cset	w8, eq
+  a145ec: 394eea8a     	ldrb	w10, [x20, #0x3ba]
+  a145f0: 394eee8b     	ldrb	w11, [x20, #0x3bb]
+  a145f4: 5280004c     	mov	w12, #0x2               // =2
+  a145f8: 394c0a8d     	ldrb	w13, [x20, #0x302]
+  a145fc: 7100015f     	cmp	w10, #0x0
+  a14600: 5280008a     	mov	w10, #0x4               // =4
+  a14604: 1a9f118c     	csel	w12, w12, wzr, ne
+  a14608: 7100017f     	cmp	w11, #0x0
+  a1460c: 394efa8b     	ldrb	w11, [x20, #0x3be]
+  a14610: 1a9f114a     	csel	w10, w10, wzr, ne
+  a14614: 52816034     	mov	w20, #0xb01             // =2817
+  a14618: 7100017f     	cmp	w11, #0x0
+  a1461c: 5280010b     	mov	w11, #0x8               // =8
+  a14620: 2a0c014a     	orr	w10, w10, w12
+  a14624: 1a9f116b     	csel	w11, w11, wzr, ne
+  a14628: 72a81114     	movk	w20, #0x4088, lsl #16
+  a1462c: 2a0d016b     	orr	w11, w11, w13
+  a14630: 2a0b014b     	orr	w11, w10, w11
+  a14634: 9100212a     	add	x10, x9, #0x8
+  a14638: 29002d34     	stp	w20, w11, [x9]
+  a1463c: f900066a     	str	x10, [x19, #0x8]
+  a14640: 360005a8     	tbz	w8, #0x0, 0xa146f4 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x938>
+  a14644: b9403268     	ldr	w8, [x19, #0x30]
+  a14648: 350001e8     	cbnz	w8, 0xa14684 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x8c8>
+  a1464c: f9400e68     	ldr	x8, [x19, #0x18]
+  a14650: cb0a0108     	sub	x8, x8, x10
+  a14654: f27d791f     	tst	x8, #0x3fffffff8
+  a14658: 540000e0     	b.eq	0xa14674 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x8b8>
+  a1465c: 29492e68     	ldp	w8, w11, [x19, #0x48]
+  a14660: 6b0b011f     	cmp	w8, w11
+  a14664: 54000082     	b.hs	0xa14674 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x8b8>
+  a14668: 91004128     	add	x8, x9, #0x10
+  a1466c: f9000a68     	str	x8, [x19, #0x10]
+  a14670: 14000005     	b	0xa14684 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x8c8>
+  a14674: aa1303e0     	mov	x0, x19
+  a14678: 52800041     	mov	w1, #0x2                // =2
+  a1467c: 97fdca2d     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a14680: f940066a     	ldr	x10, [x19, #0x8]
+  a14684: 11080288     	add	w8, w20, #0x200
+  a14688: a9445ff8     	ldp	x24, x23, [sp, #0x40]
+  a1468c: 29005948     	stp	w8, w22, [x10]
+  a14690: 91002148     	add	x8, x10, #0x8
+  a14694: f9401bf9     	ldr	x25, [sp, #0x30]
+  a14698: f9000668     	str	x8, [x19, #0x8]
+  a1469c: a9464ff4     	ldp	x20, x19, [sp, #0x60]
+  a146a0: a94557f6     	ldp	x22, x21, [sp, #0x50]
+  a146a4: a9427bfd     	ldp	x29, x30, [sp, #0x20]
+  a146a8: 9101c3ff     	add	sp, sp, #0x70
+  a146ac: d65f03c0     	ret
+  a146b0: 2a1f03f6     	mov	w22, wzr
+  a146b4: b9403e69     	ldr	w9, [x19, #0x3c]
+  a146b8: 34fff3c9     	cbz	w9, 0xa14530 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x774>
+  a146bc: b0001b88     	adrp	x8, 0xd85000 <__instruction+0x7a0>
+  a146c0: 9127c108     	add	x8, x8, #0x9f0
+  a146c4: 29005917     	stp	w23, w22, [x8]
+  a146c8: d0001b49     	adrp	x9, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  a146cc: 2a1f03e8     	mov	w8, wzr
+  a146d0: f9400d29     	ldr	x9, [x9, #0x18]
+  a146d4: 9140412a     	add	x10, x9, #0x10, lsl #12 // =0x10000
+  a146d8: f9000a6a     	str	x10, [x19, #0x10]
+  a146dc: 17ffffc4     	b	0xa145ec <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x830>
+  a146e0: b0001b89     	adrp	x9, 0xd85000 <__instruction+0x7a0>
+  a146e4: 9127c129     	add	x9, x9, #0x9f0
+  a146e8: 9140412a     	add	x10, x9, #0x10, lsl #12 // =0x10000
+  a146ec: a900aa69     	stp	x9, x10, [x19, #0x8]
+  a146f0: 17ffff29     	b	0xa14394 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x5d8>
+  a146f4: b0001b8a     	adrp	x10, 0xd85000 <__instruction+0x7a0>
+  a146f8: 9127c14a     	add	x10, x10, #0x9f0
+  a146fc: 91404148     	add	x8, x10, #0x10, lsl #12 // =0x10000
+  a14700: f9000a68     	str	x8, [x19, #0x10]
+  a14704: 17ffffe0     	b	0xa14684 <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x8c8>
+  a14708: b0001b88     	adrp	x8, 0xd85000 <__instruction+0x7a0>
+  a1470c: 9127c108     	add	x8, x8, #0x9f0
+  a14710: 91404109     	add	x9, x8, #0x10, lsl #12  // =0x10000
+  a14714: f9000a69     	str	x9, [x19, #0x10]
+  a14718: 17ffff49     	b	0xa1443c <_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant+0x680>
+  a15830: d101c3ff     	sub	sp, sp, #0x70
+  a15834: b9430c28     	ldr	w8, [x1, #0x30c]
+  a15838: a9064ff4     	stp	x20, x19, [sp, #0x60]
+  a1583c: aa0103f4     	mov	x20, x1
+  a15840: aa0003f3     	mov	x19, x0
+  a15844: a9027bfd     	stp	x29, x30, [sp, #0x20]
+  a15848: 910083fd     	add	x29, sp, #0x20
+  a1584c: f9001bf9     	str	x25, [sp, #0x30]
+  a15850: a9045ff8     	stp	x24, x23, [sp, #0x40]
+  a15854: a90557f6     	stp	x22, x21, [sp, #0x50]
+  a15858: 34000148     	cbz	w8, 0xa15880 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x50>
+  a1585c: 910c4289     	add	x9, x20, #0x310
+  a15860: aa1f03ea     	mov	x10, xzr
+  a15864: aa0903eb     	mov	x11, x9
+  a15868: 3840556c     	ldrb	w12, [x11], #0x5
+  a1586c: 3400022c     	cbz	w12, 0xa158b0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x80>
+  a15870: 9100054a     	add	x10, x10, #0x1
+  a15874: eb0a011f     	cmp	x8, x10
+  a15878: 54ffff81     	b.ne	0xa15868 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x38>
+  a1587c: 14000018     	b	0xa158dc <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0xac>
+  a15880: aa1f03eb     	mov	x11, xzr
+  a15884: 910c4289     	add	x9, x20, #0x310
+  a15888: 52801f96     	mov	w22, #0xfc              // =252
+  a1588c: 52bf8018     	mov	w24, #-0x4000000        // =-67108864
+  a15890: 52801f97     	mov	w23, #0xfc              // =252
+  a15894: 52801f8a     	mov	w10, #0xfc              // =252
+  a15898: 2a1f03f5     	mov	w21, wzr
+  a1589c: 2a1f03f9     	mov	w25, wzr
+  a158a0: b90003ea     	str	w10, [sp]
+  a158a4: 5280002a     	mov	w10, #0x1               // =1
+  a158a8: 35000c28     	cbnz	w8, 0xa15a2c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x1fc>
+  a158ac: 14000081     	b	0xa15ab0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a158b0: 37f8016a     	tbnz	w10, #0x1f, 0xa158dc <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0xac>
+  a158b4: 9240794a     	and	x10, x10, #0x7fffffff
+  a158b8: 8b0a094a     	add	x10, x10, x10, lsl #2
+  a158bc: 8b0a012a     	add	x10, x9, x10
+  a158c0: 3940114b     	ldrb	w11, [x10, #0x4]
+  a158c4: 3940054a     	ldrb	w10, [x10, #0x1]
+  a158c8: 7100017f     	cmp	w11, #0x0
+  a158cc: 5280200b     	mov	w11, #0x100             // =256
+  a158d0: 1a9f116b     	csel	w11, w11, wzr, ne
+  a158d4: 2a0a0176     	orr	w22, w11, w10
+  a158d8: 14000002     	b	0xa158e0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0xb0>
+  a158dc: 52801f96     	mov	w22, #0xfc              // =252
+  a158e0: aa1f03ea     	mov	x10, xzr
+  a158e4: aa0903eb     	mov	x11, x9
+  a158e8: 3840556c     	ldrb	w12, [x11], #0x5
+  a158ec: 71000d9f     	cmp	w12, #0x3
+  a158f0: 540000a0     	b.eq	0xa15904 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0xd4>
+  a158f4: 9100054a     	add	x10, x10, #0x1
+  a158f8: eb0a011f     	cmp	x8, x10
+  a158fc: 54ffff61     	b.ne	0xa158e8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0xb8>
+  a15900: 1400000c     	b	0xa15930 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x100>
+  a15904: 37f8016a     	tbnz	w10, #0x1f, 0xa15930 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x100>
+  a15908: 9240794a     	and	x10, x10, #0x7fffffff
+  a1590c: 8b0a094a     	add	x10, x10, x10, lsl #2
+  a15910: 8b0a012a     	add	x10, x9, x10
+  a15914: 3940114b     	ldrb	w11, [x10, #0x4]
+  a15918: 3940054a     	ldrb	w10, [x10, #0x1]
+  a1591c: 7100017f     	cmp	w11, #0x0
+  a15920: 5280200b     	mov	w11, #0x100             // =256
+  a15924: 1a9f116b     	csel	w11, w11, wzr, ne
+  a15928: 2a0a0177     	orr	w23, w11, w10
+  a1592c: 14000002     	b	0xa15934 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x104>
+  a15930: 52801f97     	mov	w23, #0xfc              // =252
+  a15934: aa1f03ea     	mov	x10, xzr
+  a15938: aa0903eb     	mov	x11, x9
+  a1593c: 3840556c     	ldrb	w12, [x11], #0x5
+  a15940: 7100059f     	cmp	w12, #0x1
+  a15944: 54000180     	b.eq	0xa15974 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x144>
+  a15948: 9100054a     	add	x10, x10, #0x1
+  a1594c: eb0a011f     	cmp	x8, x10
+  a15950: 54ffff61     	b.ne	0xa1593c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x10c>
+  a15954: aa1f03ea     	mov	x10, xzr
+  a15958: 3840552b     	ldrb	w11, [x9], #0x5
+  a1595c: 7100357f     	cmp	w11, #0xd
+  a15960: 540000a0     	b.eq	0xa15974 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x144>
+  a15964: 9100054a     	add	x10, x10, #0x1
+  a15968: eb0a011f     	cmp	x8, x10
+  a1596c: 54ffff61     	b.ne	0xa15958 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x128>
+  a15970: 14000008     	b	0xa15990 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x160>
+  a15974: 37f800ea     	tbnz	w10, #0x1f, 0xa15990 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x160>
+  a15978: 92407949     	and	x9, x10, #0x7fffffff
+  a1597c: 8b090929     	add	x9, x9, x9, lsl #2
+  a15980: 8b090289     	add	x9, x20, x9
+  a15984: 394c4529     	ldrb	w9, [x9, #0x311]
+  a15988: 53081d38     	lsl	w24, w9, #24
+  a1598c: 14000002     	b	0xa15994 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x164>
+  a15990: 52bf8018     	mov	w24, #-0x4000000        // =-67108864
+  a15994: 910c4289     	add	x9, x20, #0x310
+  a15998: aa1f03ea     	mov	x10, xzr
+  a1599c: aa0903eb     	mov	x11, x9
+  a159a0: 3840556c     	ldrb	w12, [x11], #0x5
+  a159a4: 7100119f     	cmp	w12, #0x4
+  a159a8: 540000a0     	b.eq	0xa159bc <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x18c>
+  a159ac: 9100054a     	add	x10, x10, #0x1
+  a159b0: eb0a011f     	cmp	x8, x10
+  a159b4: 54ffff61     	b.ne	0xa159a0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x170>
+  a159b8: 14000016     	b	0xa15a10 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x1e0>
+  a159bc: 37f802aa     	tbnz	w10, #0x1f, 0xa15a10 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x1e0>
+  a159c0: 9240794a     	and	x10, x10, #0x7fffffff
+  a159c4: 8b0a094a     	add	x10, x10, x10, lsl #2
+  a159c8: 8b0a012b     	add	x11, x9, x10
+  a159cc: 3940116a     	ldrb	w10, [x11, #0x4]
+  a159d0: 3940056c     	ldrb	w12, [x11, #0x1]
+  a159d4: 39400d75     	ldrb	w21, [x11, #0x3]
+  a159d8: 7100015f     	cmp	w10, #0x0
+  a159dc: 5280200a     	mov	w10, #0x100             // =256
+  a159e0: 1a9f114a     	csel	w10, w10, wzr, ne
+  a159e4: 2a0c014a     	orr	w10, w10, w12
+  a159e8: 7103f15f     	cmp	w10, #0xfc
+  a159ec: b90003ea     	str	w10, [sp]
+  a159f0: 7a400aa0     	ccmp	w21, #0x0, #0x0, eq
+  a159f4: 54000540     	b.eq	0xa15a9c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x26c>
+  a159f8: 7103f15f     	cmp	w10, #0xfc
+  a159fc: 52800039     	mov	w25, #0x1               // =1
+  a15a00: 1a9f17ea     	cset	w10, eq
+  a15a04: aa0803eb     	mov	x11, x8
+  a15a08: 35000128     	cbnz	w8, 0xa15a2c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x1fc>
+  a15a0c: 14000029     	b	0xa15ab0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a15a10: aa0803eb     	mov	x11, x8
+  a15a14: 52801f8a     	mov	w10, #0xfc              // =252
+  a15a18: 2a1f03f5     	mov	w21, wzr
+  a15a1c: 2a1f03f9     	mov	w25, wzr
+  a15a20: b90003ea     	str	w10, [sp]
+  a15a24: 5280002a     	mov	w10, #0x1               // =1
+  a15a28: 34000448     	cbz	w8, 0xa15ab0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a15a2c: aa1f03ec     	mov	x12, xzr
+  a15a30: aa0903ed     	mov	x13, x9
+  a15a34: 384055ae     	ldrb	w14, [x13], #0x5
+  a15a38: 710015df     	cmp	w14, #0x5
+  a15a3c: 540000a0     	b.eq	0xa15a50 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x220>
+  a15a40: 9100058c     	add	x12, x12, #0x1
+  a15a44: eb0c017f     	cmp	x11, x12
+  a15a48: 54ffff61     	b.ne	0xa15a34 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x204>
+  a15a4c: 14000019     	b	0xa15ab0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a15a50: 37f8030c     	tbnz	w12, #0x1f, 0xa15ab0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a15a54: 9240798c     	and	x12, x12, #0x7fffffff
+  a15a58: 8b0c098c     	add	x12, x12, x12, lsl #2
+  a15a5c: 8b0c012d     	add	x13, x9, x12
+  a15a60: 394011ac     	ldrb	w12, [x13, #0x4]
+  a15a64: 394005ae     	ldrb	w14, [x13, #0x1]
+  a15a68: 39400dad     	ldrb	w13, [x13, #0x3]
+  a15a6c: 7100019f     	cmp	w12, #0x0
+  a15a70: 5280200c     	mov	w12, #0x100             // =256
+  a15a74: 1a9f118c     	csel	w12, w12, wzr, ne
+  a15a78: 2a0e018c     	orr	w12, w12, w14
+  a15a7c: 7103f19f     	cmp	w12, #0xfc
+  a15a80: b90007ec     	str	w12, [sp, #0x4]
+  a15a84: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a15a88: 54000520     	b.eq	0xa15b2c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x2fc>
+  a15a8c: 2a0d12b5     	orr	w21, w21, w13, lsl #4
+  a15a90: 52800059     	mov	w25, #0x2               // =2
+  a15a94: 35000148     	cbnz	w8, 0xa15abc <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x28c>
+  a15a98: 14000027     	b	0xa15b34 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x304>
+  a15a9c: 2a1f03f5     	mov	w21, wzr
+  a15aa0: 2a1f03f9     	mov	w25, wzr
+  a15aa4: 5280002a     	mov	w10, #0x1               // =1
+  a15aa8: aa0803eb     	mov	x11, x8
+  a15aac: 35fffc08     	cbnz	w8, 0xa15a2c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x1fc>
+  a15ab0: 52801f8c     	mov	w12, #0xfc              // =252
+  a15ab4: b90007ec     	str	w12, [sp, #0x4]
+  a15ab8: 340003e8     	cbz	w8, 0xa15b34 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x304>
+  a15abc: aa1f03ed     	mov	x13, xzr
+  a15ac0: aa0903ee     	mov	x14, x9
+  a15ac4: 384055cf     	ldrb	w15, [x14], #0x5
+  a15ac8: 710019ff     	cmp	w15, #0x6
+  a15acc: 540000a0     	b.eq	0xa15ae0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x2b0>
+  a15ad0: 910005ad     	add	x13, x13, #0x1
+  a15ad4: eb0d017f     	cmp	x11, x13
+  a15ad8: 54ffff61     	b.ne	0xa15ac4 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x294>
+  a15adc: 14000016     	b	0xa15b34 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x304>
+  a15ae0: 37f802ad     	tbnz	w13, #0x1f, 0xa15b34 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x304>
+  a15ae4: 924079ad     	and	x13, x13, #0x7fffffff
+  a15ae8: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a15aec: 8b0d012d     	add	x13, x9, x13
+  a15af0: 394011ae     	ldrb	w14, [x13, #0x4]
+  a15af4: 394005af     	ldrb	w15, [x13, #0x1]
+  a15af8: 39400dad     	ldrb	w13, [x13, #0x3]
+  a15afc: 710001df     	cmp	w14, #0x0
+  a15b00: 5280200e     	mov	w14, #0x100             // =256
+  a15b04: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a15b08: 2a0f01ce     	orr	w14, w14, w15
+  a15b0c: 7103f1df     	cmp	w14, #0xfc
+  a15b10: b9000bee     	str	w14, [sp, #0x8]
+  a15b14: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a15b18: 54000060     	b.eq	0xa15b24 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x2f4>
+  a15b1c: 2a0d22b5     	orr	w21, w21, w13, lsl #8
+  a15b20: 52800079     	mov	w25, #0x3               // =3
+  a15b24: 350000e8     	cbnz	w8, 0xa15b40 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x310>
+  a15b28: 14000022     	b	0xa15bb0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x380>
+  a15b2c: 52801f8c     	mov	w12, #0xfc              // =252
+  a15b30: 35fffc68     	cbnz	w8, 0xa15abc <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x28c>
+  a15b34: 52801f8d     	mov	w13, #0xfc              // =252
+  a15b38: b9000bed     	str	w13, [sp, #0x8]
+  a15b3c: 340003a8     	cbz	w8, 0xa15bb0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x380>
+  a15b40: aa1f03ed     	mov	x13, xzr
+  a15b44: aa0903ee     	mov	x14, x9
+  a15b48: 384055cf     	ldrb	w15, [x14], #0x5
+  a15b4c: 71001dff     	cmp	w15, #0x7
+  a15b50: 540000a0     	b.eq	0xa15b64 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x334>
+  a15b54: 910005ad     	add	x13, x13, #0x1
+  a15b58: eb0d017f     	cmp	x11, x13
+  a15b5c: 54ffff61     	b.ne	0xa15b48 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x318>
+  a15b60: 14000014     	b	0xa15bb0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x380>
+  a15b64: 37f8026d     	tbnz	w13, #0x1f, 0xa15bb0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x380>
+  a15b68: 924079ad     	and	x13, x13, #0x7fffffff
+  a15b6c: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a15b70: 8b0d012d     	add	x13, x9, x13
+  a15b74: 394011ae     	ldrb	w14, [x13, #0x4]
+  a15b78: 394005af     	ldrb	w15, [x13, #0x1]
+  a15b7c: 39400dad     	ldrb	w13, [x13, #0x3]
+  a15b80: 710001df     	cmp	w14, #0x0
+  a15b84: 5280200e     	mov	w14, #0x100             // =256
+  a15b88: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a15b8c: 2a0f01ce     	orr	w14, w14, w15
+  a15b90: 7103f1df     	cmp	w14, #0xfc
+  a15b94: b9000fee     	str	w14, [sp, #0xc]
+  a15b98: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a15b9c: 54000060     	b.eq	0xa15ba8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x378>
+  a15ba0: 2a0d32b5     	orr	w21, w21, w13, lsl #12
+  a15ba4: 52800099     	mov	w25, #0x4               // =4
+  a15ba8: 350000a8     	cbnz	w8, 0xa15bbc <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x38c>
+  a15bac: 14000020     	b	0xa15c2c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x3fc>
+  a15bb0: 52801f8d     	mov	w13, #0xfc              // =252
+  a15bb4: b9000fed     	str	w13, [sp, #0xc]
+  a15bb8: 340003a8     	cbz	w8, 0xa15c2c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x3fc>
+  a15bbc: aa1f03ed     	mov	x13, xzr
+  a15bc0: aa0903ee     	mov	x14, x9
+  a15bc4: 384055cf     	ldrb	w15, [x14], #0x5
+  a15bc8: 710021ff     	cmp	w15, #0x8
+  a15bcc: 540000a0     	b.eq	0xa15be0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x3b0>
+  a15bd0: 910005ad     	add	x13, x13, #0x1
+  a15bd4: eb0d017f     	cmp	x11, x13
+  a15bd8: 54ffff61     	b.ne	0xa15bc4 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x394>
+  a15bdc: 14000014     	b	0xa15c2c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x3fc>
+  a15be0: 37f8026d     	tbnz	w13, #0x1f, 0xa15c2c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x3fc>
+  a15be4: 924079ad     	and	x13, x13, #0x7fffffff
+  a15be8: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a15bec: 8b0d012d     	add	x13, x9, x13
+  a15bf0: 394011ae     	ldrb	w14, [x13, #0x4]
+  a15bf4: 394005af     	ldrb	w15, [x13, #0x1]
+  a15bf8: 39400dad     	ldrb	w13, [x13, #0x3]
+  a15bfc: 710001df     	cmp	w14, #0x0
+  a15c00: 5280200e     	mov	w14, #0x100             // =256
+  a15c04: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a15c08: 2a0f01ce     	orr	w14, w14, w15
+  a15c0c: 7103f1df     	cmp	w14, #0xfc
+  a15c10: b90013ee     	str	w14, [sp, #0x10]
+  a15c14: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a15c18: 54000060     	b.eq	0xa15c24 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x3f4>
+  a15c1c: 2a0d42b5     	orr	w21, w21, w13, lsl #16
+  a15c20: 528000b9     	mov	w25, #0x5               // =5
+  a15c24: 350000a8     	cbnz	w8, 0xa15c38 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x408>
+  a15c28: 14000020     	b	0xa15ca8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x478>
+  a15c2c: 52801f8d     	mov	w13, #0xfc              // =252
+  a15c30: b90013ed     	str	w13, [sp, #0x10]
+  a15c34: 340003a8     	cbz	w8, 0xa15ca8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x478>
+  a15c38: aa1f03ed     	mov	x13, xzr
+  a15c3c: aa0903ee     	mov	x14, x9
+  a15c40: 384055cf     	ldrb	w15, [x14], #0x5
+  a15c44: 710025ff     	cmp	w15, #0x9
+  a15c48: 540000a0     	b.eq	0xa15c5c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x42c>
+  a15c4c: 910005ad     	add	x13, x13, #0x1
+  a15c50: eb0d017f     	cmp	x11, x13
+  a15c54: 54ffff61     	b.ne	0xa15c40 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x410>
+  a15c58: 14000014     	b	0xa15ca8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x478>
+  a15c5c: 37f8026d     	tbnz	w13, #0x1f, 0xa15ca8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x478>
+  a15c60: 924079ad     	and	x13, x13, #0x7fffffff
+  a15c64: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a15c68: 8b0d012d     	add	x13, x9, x13
+  a15c6c: 394011ae     	ldrb	w14, [x13, #0x4]
+  a15c70: 394005af     	ldrb	w15, [x13, #0x1]
+  a15c74: 39400dad     	ldrb	w13, [x13, #0x3]
+  a15c78: 710001df     	cmp	w14, #0x0
+  a15c7c: 5280200e     	mov	w14, #0x100             // =256
+  a15c80: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a15c84: 2a0f01ce     	orr	w14, w14, w15
+  a15c88: 7103f1df     	cmp	w14, #0xfc
+  a15c8c: b90017ee     	str	w14, [sp, #0x14]
+  a15c90: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a15c94: 54000060     	b.eq	0xa15ca0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x470>
+  a15c98: 2a0d52b5     	orr	w21, w21, w13, lsl #20
+  a15c9c: 528000d9     	mov	w25, #0x6               // =6
+  a15ca0: 350000a8     	cbnz	w8, 0xa15cb4 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x484>
+  a15ca4: 14000020     	b	0xa15d24 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x4f4>
+  a15ca8: 52801f8d     	mov	w13, #0xfc              // =252
+  a15cac: b90017ed     	str	w13, [sp, #0x14]
+  a15cb0: 340003a8     	cbz	w8, 0xa15d24 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x4f4>
+  a15cb4: aa1f03ed     	mov	x13, xzr
+  a15cb8: aa0903ee     	mov	x14, x9
+  a15cbc: 384055cf     	ldrb	w15, [x14], #0x5
+  a15cc0: 710029ff     	cmp	w15, #0xa
+  a15cc4: 540000a0     	b.eq	0xa15cd8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x4a8>
+  a15cc8: 910005ad     	add	x13, x13, #0x1
+  a15ccc: eb0d017f     	cmp	x11, x13
+  a15cd0: 54ffff61     	b.ne	0xa15cbc <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x48c>
+  a15cd4: 14000014     	b	0xa15d24 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x4f4>
+  a15cd8: 37f8026d     	tbnz	w13, #0x1f, 0xa15d24 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x4f4>
+  a15cdc: 924079ad     	and	x13, x13, #0x7fffffff
+  a15ce0: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a15ce4: 8b0d012d     	add	x13, x9, x13
+  a15ce8: 394011ae     	ldrb	w14, [x13, #0x4]
+  a15cec: 394005af     	ldrb	w15, [x13, #0x1]
+  a15cf0: 39400dad     	ldrb	w13, [x13, #0x3]
+  a15cf4: 710001df     	cmp	w14, #0x0
+  a15cf8: 5280200e     	mov	w14, #0x100             // =256
+  a15cfc: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a15d00: 2a0f01ce     	orr	w14, w14, w15
+  a15d04: 7103f1df     	cmp	w14, #0xfc
+  a15d08: b9001bee     	str	w14, [sp, #0x18]
+  a15d0c: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a15d10: 54000060     	b.eq	0xa15d1c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x4ec>
+  a15d14: 2a0d62b5     	orr	w21, w21, w13, lsl #24
+  a15d18: 528000f9     	mov	w25, #0x7               // =7
+  a15d1c: 350000a8     	cbnz	w8, 0xa15d30 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x500>
+  a15d20: 1400001f     	b	0xa15d9c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x56c>
+  a15d24: 52801f8d     	mov	w13, #0xfc              // =252
+  a15d28: b9001bed     	str	w13, [sp, #0x18]
+  a15d2c: 34000388     	cbz	w8, 0xa15d9c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x56c>
+  a15d30: aa1f03e8     	mov	x8, xzr
+  a15d34: aa0903ed     	mov	x13, x9
+  a15d38: 384055ae     	ldrb	w14, [x13], #0x5
+  a15d3c: 71002ddf     	cmp	w14, #0xb
+  a15d40: 540000a0     	b.eq	0xa15d54 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x524>
+  a15d44: 91000508     	add	x8, x8, #0x1
+  a15d48: eb08017f     	cmp	x11, x8
+  a15d4c: 54ffff61     	b.ne	0xa15d38 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x508>
+  a15d50: 14000013     	b	0xa15d9c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x56c>
+  a15d54: 37f80248     	tbnz	w8, #0x1f, 0xa15d9c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x56c>
+  a15d58: 92407908     	and	x8, x8, #0x7fffffff
+  a15d5c: 8b080908     	add	x8, x8, x8, lsl #2
+  a15d60: 8b080128     	add	x8, x9, x8
+  a15d64: 39401109     	ldrb	w9, [x8, #0x4]
+  a15d68: 3940050b     	ldrb	w11, [x8, #0x1]
+  a15d6c: 39400d08     	ldrb	w8, [x8, #0x3]
+  a15d70: 7100013f     	cmp	w9, #0x0
+  a15d74: 52802009     	mov	w9, #0x100              // =256
+  a15d78: 1a9f1129     	csel	w9, w9, wzr, ne
+  a15d7c: 2a0b0129     	orr	w9, w9, w11
+  a15d80: 7103f13f     	cmp	w9, #0xfc
+  a15d84: b9001fe9     	str	w9, [sp, #0x1c]
+  a15d88: 7a400900     	ccmp	w8, #0x0, #0x0, eq
+  a15d8c: 540000c0     	b.eq	0xa15da4 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x574>
+  a15d90: 2a0872b5     	orr	w21, w21, w8, lsl #28
+  a15d94: 52800119     	mov	w25, #0x8               // =8
+  a15d98: 14000003     	b	0xa15da4 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x574>
+  a15d9c: 52801f88     	mov	w8, #0xfc               // =252
+  a15da0: b9001fe8     	str	w8, [sp, #0x1c]
+  a15da4: 394c0a88     	ldrb	w8, [x20, #0x302]
+  a15da8: 7103f19f     	cmp	w12, #0xfc
+  a15dac: 54000080     	b.eq	0xa15dbc <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x58c>
+  a15db0: 0a080149     	and	w9, w10, w8
+  a15db4: 34000049     	cbz	w9, 0xa15dbc <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x58c>
+  a15db8: b90003ec     	str	w12, [sp]
+  a15dbc: b9403e69     	ldr	w9, [x19, #0x3c]
+  a15dc0: 35002209     	cbnz	w9, 0xa16200 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x9d0>
+  a15dc4: b9403269     	ldr	w9, [x19, #0x30]
+  a15dc8: 35000209     	cbnz	w9, 0xa15e08 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x5d8>
+  a15dcc: f9400669     	ldr	x9, [x19, #0x8]
+  a15dd0: f9400e6a     	ldr	x10, [x19, #0x18]
+  a15dd4: cb09014a     	sub	x10, x10, x9
+  a15dd8: f27d795f     	tst	x10, #0x3fffffff8
+  a15ddc: 540000e0     	b.eq	0xa15df8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x5c8>
+  a15de0: 29492e6a     	ldp	w10, w11, [x19, #0x48]
+  a15de4: 6b0b015f     	cmp	w10, w11
+  a15de8: 54000082     	b.hs	0xa15df8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x5c8>
+  a15dec: 91002129     	add	x9, x9, #0x8
+  a15df0: f9000a69     	str	x9, [x19, #0x10]
+  a15df4: 14000005     	b	0xa15e08 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x5d8>
+  a15df8: aa1303e0     	mov	x0, x19
+  a15dfc: 52800041     	mov	w1, #0x2                // =2
+  a15e00: 97fdc44c     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a15e04: 394c0a88     	ldrb	w8, [x20, #0x302]
+  a15e08: 53181ec9     	ubfiz	w9, w22, #8, #8
+  a15e0c: 53101eea     	ubfiz	w10, w23, #16, #8
+  a15e10: f940066b     	ldr	x11, [x19, #0x8]
+  a15e14: 5291802c     	mov	w12, #0x8c01            // =35841
+  a15e18: 52916037     	mov	w23, #0x8b01            // =35585
+  a15e1c: 7100073f     	cmp	w25, #0x1
+  a15e20: 2a0a030a     	orr	w10, w24, w10
+  a15e24: 2a080128     	orr	w8, w9, w8
+  a15e28: 72a8152c     	movk	w12, #0x40a9, lsl #16
+  a15e2c: 2a080149     	orr	w9, w10, w8
+  a15e30: 91002168     	add	x8, x11, #0x8
+  a15e34: 72a91537     	movk	w23, #0x48a9, lsl #16
+  a15e38: 2900256c     	stp	w12, w9, [x11]
+  a15e3c: f9000668     	str	x8, [x19, #0x8]
+  a15e40: 5400022b     	b.lt	0xa15e84 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x654>
+  a15e44: b9403e69     	ldr	w9, [x19, #0x3c]
+  a15e48: 35001f09     	cbnz	w9, 0xa16228 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x9f8>
+  a15e4c: b9403269     	ldr	w9, [x19, #0x30]
+  a15e50: 35000309     	cbnz	w9, 0xa15eb0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x680>
+  a15e54: f9400e69     	ldr	x9, [x19, #0x18]
+  a15e58: 11000721     	add	w1, w25, #0x1
+  a15e5c: cb080129     	sub	x9, x9, x8
+  a15e60: d342fd29     	lsr	x9, x9, #2
+  a15e64: 6b09033f     	cmp	w25, w9
+  a15e68: 540001e2     	b.hs	0xa15ea4 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x674>
+  a15e6c: 29492a69     	ldp	w9, w10, [x19, #0x48]
+  a15e70: 6b0a013f     	cmp	w9, w10
+  a15e74: 54000182     	b.hs	0xa15ea4 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x674>
+  a15e78: 8b214909     	add	x9, x8, w1, uxtw #2
+  a15e7c: f9000a69     	str	x9, [x19, #0x10]
+  a15e80: 1400000c     	b	0xa15eb0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x680>
+  a15e84: 34001959     	cbz	w25, 0xa161ac <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x97c>
+  a15e88: 7100233f     	cmp	w25, #0x8
+  a15e8c: 2a1903e9     	mov	w9, w25
+  a15e90: 54000242     	b.hs	0xa15ed8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x6a8>
+  a15e94: aa1f03eb     	mov	x11, xzr
+  a15e98: 2a1f03f6     	mov	w22, wzr
+  a15e9c: aa0803ea     	mov	x10, x8
+  a15ea0: 1400002d     	b	0xa15f54 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x724>
+  a15ea4: aa1303e0     	mov	x0, x19
+  a15ea8: 97fdc422     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a15eac: f9400668     	ldr	x8, [x19, #0x8]
+  a15eb0: 128d32c9     	mov	w9, #-0x6997            // =-27031
+  a15eb4: 2a1903ea     	mov	w10, w25
+  a15eb8: 1ad92529     	lsr	w9, w9, w25
+  a15ebc: 3319012a     	bfi	w10, w9, #7, #1
+  a15ec0: 110bfee9     	add	w9, w23, #0x2ff
+  a15ec4: 2a090149     	orr	w9, w10, w9
+  a15ec8: b8004509     	str	w9, [x8], #0x4
+  a15ecc: 7100233f     	cmp	w25, #0x8
+  a15ed0: 2a1903e9     	mov	w9, w25
+  a15ed4: 54fffe03     	b.lo	0xa15e94 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x664>
+  a15ed8: 4e040ea0     	dup	v0.4s, w21
+  a15edc: b0ffb4ca     	adrp	x10, 0xae000 <mesa_bytes_to_hex.hex_digits+0xf710>
+  a15ee0: b0ffb4cb     	adrp	x11, 0xae000 <mesa_bytes_to_hex.hex_digits+0xf710>
+  a15ee4: 3dc16542     	ldr	q2, [x10, #0x590]
+  a15ee8: 3dc36d63     	ldr	q3, [x11, #0xdb0]
+  a15eec: 4f070781     	movi	v1.4s, #0xfc
+  a15ef0: ad4013e6     	ldp	q6, q4, [sp]
+  a15ef4: 927d012b     	and	x11, x9, #0x8
+  a15ef8: 4e221c05     	and	v5.16b, v0.16b, v2.16b
+  a15efc: 4e231c00     	and	v0.16b, v0.16b, v3.16b
+  a15f00: 8b0b090a     	add	x10, x8, x11, lsl #2
+  a15f04: eb09017f     	cmp	x11, x9
+  a15f08: 6ea18c87     	cmeq	v7.4s, v4.4s, v1.4s
+  a15f0c: 6ea18cc1     	cmeq	v1.4s, v6.4s, v1.4s
+  a15f10: 4ea098a5     	cmeq	v5.4s, v5.4s, #0
+  a15f14: 4ea09800     	cmeq	v0.4s, v0.4s, #0
+  a15f18: 4e251ce5     	and	v5.16b, v7.16b, v5.16b
+  a15f1c: 4e201c20     	and	v0.16b, v1.16b, v0.16b
+  a15f20: 4e651c41     	bic	v1.16b, v2.16b, v5.16b
+  a15f24: 4e601c60     	bic	v0.16b, v3.16b, v0.16b
+  a15f28: 4f00c422     	movi	v2.4s, #0x1, msl #8
+  a15f2c: 4ea01c20     	orr	v0.16b, v1.16b, v0.16b
+  a15f30: 6e004001     	ext	v1.16b, v0.16b, v0.16b, #0x8
+  a15f34: 0ea11c00     	orr	v0.8b, v0.8b, v1.8b
+  a15f38: 4e221cc1     	and	v1.16b, v6.16b, v2.16b
+  a15f3c: 4e221c82     	and	v2.16b, v4.16b, v2.16b
+  a15f40: 9e66000c     	fmov	x12, d0
+  a15f44: ad000901     	stp	q1, q2, [x8]
+  a15f48: d360fd8d     	lsr	x13, x12, #32
+  a15f4c: 2a0d0196     	orr	w22, w12, w13
+  a15f50: 54000220     	b.eq	0xa15f94 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x764>
+  a15f54: d37ef568     	lsl	x8, x11, #2
+  a15f58: cb0b0129     	sub	x9, x9, x11
+  a15f5c: 910003eb     	mov	x11, sp
+  a15f60: 528001ec     	mov	w12, #0xf               // =15
+  a15f64: 52801f8d     	mov	w13, #0xfc              // =252
+  a15f68: 1ac8218f     	lsl	w15, w12, w8
+  a15f6c: b868696e     	ldr	w14, [x11, x8]
+  a15f70: 91001108     	add	x8, x8, #0x4
+  a15f74: 6a1501ff     	tst	w15, w21
+  a15f78: 120021d0     	and	w16, w14, #0x1ff
+  a15f7c: 7a4d01c0     	ccmp	w14, w13, #0x0, eq
+  a15f80: b8004550     	str	w16, [x10], #0x4
+  a15f84: 1a8f03ee     	csel	w14, wzr, w15, eq
+  a15f88: f1000529     	subs	x9, x9, #0x1
+  a15f8c: 2a0e02d6     	orr	w22, w22, w14
+  a15f90: 54fffec1     	b.ne	0xa15f68 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x738>
+  a15f94: aa0a03e8     	mov	x8, x10
+  a15f98: f900066a     	str	x10, [x19, #0x8]
+  a15f9c: b9403e69     	ldr	w9, [x19, #0x3c]
+  a15fa0: 350010c9     	cbnz	w9, 0xa161b8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x988>
+  a15fa4: b9403269     	ldr	w9, [x19, #0x30]
+  a15fa8: 340000e9     	cbz	w9, 0xa15fc4 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x794>
+  a15fac: 710002bf     	cmp	w21, #0x0
+  a15fb0: 29005917     	stp	w23, w22, [x8]
+  a15fb4: 91002109     	add	x9, x8, #0x8
+  a15fb8: 1a9f07f7     	cset	w23, ne
+  a15fbc: f9000669     	str	x9, [x19, #0x8]
+  a15fc0: 14000016     	b	0xa16018 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x7e8>
+  a15fc4: f9400e69     	ldr	x9, [x19, #0x18]
+  a15fc8: cb080129     	sub	x9, x9, x8
+  a15fcc: f27d793f     	tst	x9, #0x3fffffff8
+  a15fd0: 540000e0     	b.eq	0xa15fec <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x7bc>
+  a15fd4: 29492a69     	ldp	w9, w10, [x19, #0x48]
+  a15fd8: 6b0a013f     	cmp	w9, w10
+  a15fdc: 54000082     	b.hs	0xa15fec <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x7bc>
+  a15fe0: 91002109     	add	x9, x8, #0x8
+  a15fe4: f9000a69     	str	x9, [x19, #0x10]
+  a15fe8: 17fffff1     	b	0xa15fac <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x77c>
+  a15fec: aa1303e0     	mov	x0, x19
+  a15ff0: 52800041     	mov	w1, #0x2                // =2
+  a15ff4: 97fdc3cf     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a15ff8: f9400668     	ldr	x8, [x19, #0x8]
+  a15ffc: b9403e6a     	ldr	w10, [x19, #0x3c]
+  a16000: 710002bf     	cmp	w21, #0x0
+  a16004: 29005917     	stp	w23, w22, [x8]
+  a16008: 91002109     	add	x9, x8, #0x8
+  a1600c: 1a9f07f7     	cset	w23, ne
+  a16010: f9000669     	str	x9, [x19, #0x8]
+  a16014: 35000dea     	cbnz	w10, 0xa161d0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x9a0>
+  a16018: b940326a     	ldr	w10, [x19, #0x30]
+  a1601c: 52804058     	mov	w24, #0x202             // =514
+  a16020: 72a81558     	movk	w24, #0x40aa, lsl #16
+  a16024: 340000ca     	cbz	w10, 0xa1603c <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x80c>
+  a16028: 91003128     	add	x8, x9, #0xc
+  a1602c: 29005d38     	stp	w24, w23, [x9]
+  a16030: b9000935     	str	w21, [x9, #0x8]
+  a16034: f9000668     	str	x8, [x19, #0x8]
+  a16038: 14000016     	b	0xa16090 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x860>
+  a1603c: f9400e6a     	ldr	x10, [x19, #0x18]
+  a16040: cb09014a     	sub	x10, x10, x9
+  a16044: d342fd4a     	lsr	x10, x10, #2
+  a16048: 71000d5f     	cmp	w10, #0x3
+  a1604c: 540000e3     	b.lo	0xa16068 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x838>
+  a16050: 29492e6a     	ldp	w10, w11, [x19, #0x48]
+  a16054: 6b0b015f     	cmp	w10, w11
+  a16058: 54000082     	b.hs	0xa16068 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x838>
+  a1605c: 91005108     	add	x8, x8, #0x14
+  a16060: f9000a68     	str	x8, [x19, #0x10]
+  a16064: 17fffff1     	b	0xa16028 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x7f8>
+  a16068: aa1303e0     	mov	x0, x19
+  a1606c: 52800061     	mov	w1, #0x3                // =3
+  a16070: 97fdc3b0     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a16074: f9400669     	ldr	x9, [x19, #0x8]
+  a16078: b9403e6a     	ldr	w10, [x19, #0x3c]
+  a1607c: 91003128     	add	x8, x9, #0xc
+  a16080: b9000138     	str	w24, [x9]
+  a16084: 2900d537     	stp	w23, w21, [x9, #0x4]
+  a16088: f9000668     	str	x8, [x19, #0x8]
+  a1608c: 35000aea     	cbnz	w10, 0xa161e8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x9b8>
+  a16090: b940326a     	ldr	w10, [x19, #0x30]
+  a16094: 3400006a     	cbz	w10, 0xa160a0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x870>
+  a16098: 52800029     	mov	w9, #0x1                // =1
+  a1609c: 14000013     	b	0xa160e8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x8b8>
+  a160a0: f9400e6a     	ldr	x10, [x19, #0x18]
+  a160a4: cb08014a     	sub	x10, x10, x8
+  a160a8: f27d795f     	tst	x10, #0x3fffffff8
+  a160ac: 54000100     	b.eq	0xa160cc <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x89c>
+  a160b0: 29492e6a     	ldp	w10, w11, [x19, #0x48]
+  a160b4: 6b0b015f     	cmp	w10, w11
+  a160b8: 540000a2     	b.hs	0xa160cc <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x89c>
+  a160bc: 91005129     	add	x9, x9, #0x14
+  a160c0: f9000a69     	str	x9, [x19, #0x10]
+  a160c4: 52800029     	mov	w9, #0x1                // =1
+  a160c8: 14000008     	b	0xa160e8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x8b8>
+  a160cc: aa1303e0     	mov	x0, x19
+  a160d0: 52800041     	mov	w1, #0x2                // =2
+  a160d4: 97fdc397     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a160d8: b9403e69     	ldr	w9, [x19, #0x3c]
+  a160dc: f9400668     	ldr	x8, [x19, #0x8]
+  a160e0: 7100013f     	cmp	w9, #0x0
+  a160e4: 1a9f17e9     	cset	w9, eq
+  a160e8: 394eea8a     	ldrb	w10, [x20, #0x3ba]
+  a160ec: 394eee8b     	ldrb	w11, [x20, #0x3bb]
+  a160f0: 5280004c     	mov	w12, #0x2               // =2
+  a160f4: 394c0a8d     	ldrb	w13, [x20, #0x302]
+  a160f8: 7100015f     	cmp	w10, #0x0
+  a160fc: 5280008a     	mov	w10, #0x4               // =4
+  a16100: 1a9f118c     	csel	w12, w12, wzr, ne
+  a16104: 7100017f     	cmp	w11, #0x0
+  a16108: 394efa8b     	ldrb	w11, [x20, #0x3be]
+  a1610c: 1a9f114a     	csel	w10, w10, wzr, ne
+  a16110: 52816034     	mov	w20, #0xb01             // =2817
+  a16114: 7100017f     	cmp	w11, #0x0
+  a16118: 5280010b     	mov	w11, #0x8               // =8
+  a1611c: 2a0c014a     	orr	w10, w10, w12
+  a16120: 1a9f116b     	csel	w11, w11, wzr, ne
+  a16124: 72a81114     	movk	w20, #0x4088, lsl #16
+  a16128: 2a0d016b     	orr	w11, w11, w13
+  a1612c: 2a0b014b     	orr	w11, w10, w11
+  a16130: 9100210a     	add	x10, x8, #0x8
+  a16134: 29002d14     	stp	w20, w11, [x8]
+  a16138: f900066a     	str	x10, [x19, #0x8]
+  a1613c: 360006c9     	tbz	w9, #0x0, 0xa16214 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x9e4>
+  a16140: b9403269     	ldr	w9, [x19, #0x30]
+  a16144: 350001e9     	cbnz	w9, 0xa16180 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x950>
+  a16148: f9400e69     	ldr	x9, [x19, #0x18]
+  a1614c: cb0a0129     	sub	x9, x9, x10
+  a16150: f27d793f     	tst	x9, #0x3fffffff8
+  a16154: 540000e0     	b.eq	0xa16170 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x940>
+  a16158: 29492e69     	ldp	w9, w11, [x19, #0x48]
+  a1615c: 6b0b013f     	cmp	w9, w11
+  a16160: 54000082     	b.hs	0xa16170 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x940>
+  a16164: 91004108     	add	x8, x8, #0x10
+  a16168: f9000a68     	str	x8, [x19, #0x10]
+  a1616c: 14000005     	b	0xa16180 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x950>
+  a16170: aa1303e0     	mov	x0, x19
+  a16174: 52800041     	mov	w1, #0x2                // =2
+  a16178: 97fdc36e     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a1617c: f940066a     	ldr	x10, [x19, #0x8]
+  a16180: 11080288     	add	w8, w20, #0x200
+  a16184: a9445ff8     	ldp	x24, x23, [sp, #0x40]
+  a16188: 29005948     	stp	w8, w22, [x10]
+  a1618c: 91002148     	add	x8, x10, #0x8
+  a16190: f9401bf9     	ldr	x25, [sp, #0x30]
+  a16194: f9000668     	str	x8, [x19, #0x8]
+  a16198: a9464ff4     	ldp	x20, x19, [sp, #0x60]
+  a1619c: a94557f6     	ldp	x22, x21, [sp, #0x50]
+  a161a0: a9427bfd     	ldp	x29, x30, [sp, #0x20]
+  a161a4: 9101c3ff     	add	sp, sp, #0x70
+  a161a8: d65f03c0     	ret
+  a161ac: 2a1f03f6     	mov	w22, wzr
+  a161b0: b9403e69     	ldr	w9, [x19, #0x3c]
+  a161b4: 34ffef89     	cbz	w9, 0xa15fa4 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x774>
+  a161b8: 90001b48     	adrp	x8, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  a161bc: 710002bf     	cmp	w21, #0x0
+  a161c0: f9400d08     	ldr	x8, [x8, #0x18]
+  a161c4: 1a9f07f7     	cset	w23, ne
+  a161c8: 91404109     	add	x9, x8, #0x10, lsl #12  // =0x10000
+  a161cc: a900a668     	stp	x8, x9, [x19, #0x8]
+  a161d0: 90001b48     	adrp	x8, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  a161d4: 52804049     	mov	w9, #0x202              // =514
+  a161d8: f9400d08     	ldr	x8, [x8, #0x18]
+  a161dc: 72a81549     	movk	w9, #0x40aa, lsl #16
+  a161e0: 29005d09     	stp	w9, w23, [x8]
+  a161e4: b9000915     	str	w21, [x8, #0x8]
+  a161e8: 90001b48     	adrp	x8, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  a161ec: 2a1f03e9     	mov	w9, wzr
+  a161f0: f9400d08     	ldr	x8, [x8, #0x18]
+  a161f4: 9140410a     	add	x10, x8, #0x10, lsl #12 // =0x10000
+  a161f8: f9000a6a     	str	x10, [x19, #0x10]
+  a161fc: 17ffffbb     	b	0xa160e8 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x8b8>
+  a16200: f0001b69     	adrp	x9, 0xd85000 <__instruction+0x7a0>
+  a16204: 9127c129     	add	x9, x9, #0x9f0
+  a16208: 9140412a     	add	x10, x9, #0x10, lsl #12 // =0x10000
+  a1620c: a900aa69     	stp	x9, x10, [x19, #0x8]
+  a16210: 17fffefe     	b	0xa15e08 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x5d8>
+  a16214: f0001b6a     	adrp	x10, 0xd85000 <__instruction+0x7a0>
+  a16218: 9127c14a     	add	x10, x10, #0x9f0
+  a1621c: 91404148     	add	x8, x10, #0x10, lsl #12 // =0x10000
+  a16220: f9000a68     	str	x8, [x19, #0x10]
+  a16224: 17ffffd7     	b	0xa16180 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x950>
+  a16228: f0001b68     	adrp	x8, 0xd85000 <__instruction+0x7a0>
+  a1622c: 9127c108     	add	x8, x8, #0x9f0
+  a16230: 91404109     	add	x9, x8, #0x10, lsl #12  // =0x10000
+  a16234: f9000a69     	str	x9, [x19, #0x10]
+  a16238: 17ffff1e     	b	0xa15eb0 <_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant+0x680>
+  a173f8: d101c3ff     	sub	sp, sp, #0x70
+  a173fc: b9430c28     	ldr	w8, [x1, #0x30c]
+  a17400: a9064ff4     	stp	x20, x19, [sp, #0x60]
+  a17404: aa0103f4     	mov	x20, x1
+  a17408: aa0003f3     	mov	x19, x0
+  a1740c: a9027bfd     	stp	x29, x30, [sp, #0x20]
+  a17410: 910083fd     	add	x29, sp, #0x20
+  a17414: f9001bf9     	str	x25, [sp, #0x30]
+  a17418: a9045ff8     	stp	x24, x23, [sp, #0x40]
+  a1741c: a90557f6     	stp	x22, x21, [sp, #0x50]
+  a17420: 34000148     	cbz	w8, 0xa17448 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x50>
+  a17424: 910c4289     	add	x9, x20, #0x310
+  a17428: aa1f03ea     	mov	x10, xzr
+  a1742c: aa0903eb     	mov	x11, x9
+  a17430: 3840556c     	ldrb	w12, [x11], #0x5
+  a17434: 3400022c     	cbz	w12, 0xa17478 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x80>
+  a17438: 9100054a     	add	x10, x10, #0x1
+  a1743c: eb0a011f     	cmp	x8, x10
+  a17440: 54ffff81     	b.ne	0xa17430 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x38>
+  a17444: 14000018     	b	0xa174a4 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0xac>
+  a17448: aa1f03eb     	mov	x11, xzr
+  a1744c: 910c4289     	add	x9, x20, #0x310
+  a17450: 52801f96     	mov	w22, #0xfc              // =252
+  a17454: 52bf8018     	mov	w24, #-0x4000000        // =-67108864
+  a17458: 52801f97     	mov	w23, #0xfc              // =252
+  a1745c: 52801f8a     	mov	w10, #0xfc              // =252
+  a17460: 2a1f03f5     	mov	w21, wzr
+  a17464: 2a1f03f9     	mov	w25, wzr
+  a17468: b90003ea     	str	w10, [sp]
+  a1746c: 5280002a     	mov	w10, #0x1               // =1
+  a17470: 35000c28     	cbnz	w8, 0xa175f4 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x1fc>
+  a17474: 14000081     	b	0xa17678 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a17478: 37f8016a     	tbnz	w10, #0x1f, 0xa174a4 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0xac>
+  a1747c: 9240794a     	and	x10, x10, #0x7fffffff
+  a17480: 8b0a094a     	add	x10, x10, x10, lsl #2
+  a17484: 8b0a012a     	add	x10, x9, x10
+  a17488: 3940114b     	ldrb	w11, [x10, #0x4]
+  a1748c: 3940054a     	ldrb	w10, [x10, #0x1]
+  a17490: 7100017f     	cmp	w11, #0x0
+  a17494: 5280200b     	mov	w11, #0x100             // =256
+  a17498: 1a9f116b     	csel	w11, w11, wzr, ne
+  a1749c: 2a0a0176     	orr	w22, w11, w10
+  a174a0: 14000002     	b	0xa174a8 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0xb0>
+  a174a4: 52801f96     	mov	w22, #0xfc              // =252
+  a174a8: aa1f03ea     	mov	x10, xzr
+  a174ac: aa0903eb     	mov	x11, x9
+  a174b0: 3840556c     	ldrb	w12, [x11], #0x5
+  a174b4: 71000d9f     	cmp	w12, #0x3
+  a174b8: 540000a0     	b.eq	0xa174cc <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0xd4>
+  a174bc: 9100054a     	add	x10, x10, #0x1
+  a174c0: eb0a011f     	cmp	x8, x10
+  a174c4: 54ffff61     	b.ne	0xa174b0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0xb8>
+  a174c8: 1400000c     	b	0xa174f8 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x100>
+  a174cc: 37f8016a     	tbnz	w10, #0x1f, 0xa174f8 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x100>
+  a174d0: 9240794a     	and	x10, x10, #0x7fffffff
+  a174d4: 8b0a094a     	add	x10, x10, x10, lsl #2
+  a174d8: 8b0a012a     	add	x10, x9, x10
+  a174dc: 3940114b     	ldrb	w11, [x10, #0x4]
+  a174e0: 3940054a     	ldrb	w10, [x10, #0x1]
+  a174e4: 7100017f     	cmp	w11, #0x0
+  a174e8: 5280200b     	mov	w11, #0x100             // =256
+  a174ec: 1a9f116b     	csel	w11, w11, wzr, ne
+  a174f0: 2a0a0177     	orr	w23, w11, w10
+  a174f4: 14000002     	b	0xa174fc <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x104>
+  a174f8: 52801f97     	mov	w23, #0xfc              // =252
+  a174fc: aa1f03ea     	mov	x10, xzr
+  a17500: aa0903eb     	mov	x11, x9
+  a17504: 3840556c     	ldrb	w12, [x11], #0x5
+  a17508: 7100059f     	cmp	w12, #0x1
+  a1750c: 54000180     	b.eq	0xa1753c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x144>
+  a17510: 9100054a     	add	x10, x10, #0x1
+  a17514: eb0a011f     	cmp	x8, x10
+  a17518: 54ffff61     	b.ne	0xa17504 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x10c>
+  a1751c: aa1f03ea     	mov	x10, xzr
+  a17520: 3840552b     	ldrb	w11, [x9], #0x5
+  a17524: 7100357f     	cmp	w11, #0xd
+  a17528: 540000a0     	b.eq	0xa1753c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x144>
+  a1752c: 9100054a     	add	x10, x10, #0x1
+  a17530: eb0a011f     	cmp	x8, x10
+  a17534: 54ffff61     	b.ne	0xa17520 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x128>
+  a17538: 14000008     	b	0xa17558 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x160>
+  a1753c: 37f800ea     	tbnz	w10, #0x1f, 0xa17558 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x160>
+  a17540: 92407949     	and	x9, x10, #0x7fffffff
+  a17544: 8b090929     	add	x9, x9, x9, lsl #2
+  a17548: 8b090289     	add	x9, x20, x9
+  a1754c: 394c4529     	ldrb	w9, [x9, #0x311]
+  a17550: 53081d38     	lsl	w24, w9, #24
+  a17554: 14000002     	b	0xa1755c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x164>
+  a17558: 52bf8018     	mov	w24, #-0x4000000        // =-67108864
+  a1755c: 910c4289     	add	x9, x20, #0x310
+  a17560: aa1f03ea     	mov	x10, xzr
+  a17564: aa0903eb     	mov	x11, x9
+  a17568: 3840556c     	ldrb	w12, [x11], #0x5
+  a1756c: 7100119f     	cmp	w12, #0x4
+  a17570: 540000a0     	b.eq	0xa17584 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x18c>
+  a17574: 9100054a     	add	x10, x10, #0x1
+  a17578: eb0a011f     	cmp	x8, x10
+  a1757c: 54ffff61     	b.ne	0xa17568 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x170>
+  a17580: 14000016     	b	0xa175d8 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x1e0>
+  a17584: 37f802aa     	tbnz	w10, #0x1f, 0xa175d8 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x1e0>
+  a17588: 9240794a     	and	x10, x10, #0x7fffffff
+  a1758c: 8b0a094a     	add	x10, x10, x10, lsl #2
+  a17590: 8b0a012b     	add	x11, x9, x10
+  a17594: 3940116a     	ldrb	w10, [x11, #0x4]
+  a17598: 3940056c     	ldrb	w12, [x11, #0x1]
+  a1759c: 39400d75     	ldrb	w21, [x11, #0x3]
+  a175a0: 7100015f     	cmp	w10, #0x0
+  a175a4: 5280200a     	mov	w10, #0x100             // =256
+  a175a8: 1a9f114a     	csel	w10, w10, wzr, ne
+  a175ac: 2a0c014a     	orr	w10, w10, w12
+  a175b0: 7103f15f     	cmp	w10, #0xfc
+  a175b4: b90003ea     	str	w10, [sp]
+  a175b8: 7a400aa0     	ccmp	w21, #0x0, #0x0, eq
+  a175bc: 54000540     	b.eq	0xa17664 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x26c>
+  a175c0: 7103f15f     	cmp	w10, #0xfc
+  a175c4: 52800039     	mov	w25, #0x1               // =1
+  a175c8: 1a9f17ea     	cset	w10, eq
+  a175cc: aa0803eb     	mov	x11, x8
+  a175d0: 35000128     	cbnz	w8, 0xa175f4 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x1fc>
+  a175d4: 14000029     	b	0xa17678 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a175d8: aa0803eb     	mov	x11, x8
+  a175dc: 52801f8a     	mov	w10, #0xfc              // =252
+  a175e0: 2a1f03f5     	mov	w21, wzr
+  a175e4: 2a1f03f9     	mov	w25, wzr
+  a175e8: b90003ea     	str	w10, [sp]
+  a175ec: 5280002a     	mov	w10, #0x1               // =1
+  a175f0: 34000448     	cbz	w8, 0xa17678 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a175f4: aa1f03ec     	mov	x12, xzr
+  a175f8: aa0903ed     	mov	x13, x9
+  a175fc: 384055ae     	ldrb	w14, [x13], #0x5
+  a17600: 710015df     	cmp	w14, #0x5
+  a17604: 540000a0     	b.eq	0xa17618 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x220>
+  a17608: 9100058c     	add	x12, x12, #0x1
+  a1760c: eb0c017f     	cmp	x11, x12
+  a17610: 54ffff61     	b.ne	0xa175fc <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x204>
+  a17614: 14000019     	b	0xa17678 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a17618: 37f8030c     	tbnz	w12, #0x1f, 0xa17678 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x280>
+  a1761c: 9240798c     	and	x12, x12, #0x7fffffff
+  a17620: 8b0c098c     	add	x12, x12, x12, lsl #2
+  a17624: 8b0c012d     	add	x13, x9, x12
+  a17628: 394011ac     	ldrb	w12, [x13, #0x4]
+  a1762c: 394005ae     	ldrb	w14, [x13, #0x1]
+  a17630: 39400dad     	ldrb	w13, [x13, #0x3]
+  a17634: 7100019f     	cmp	w12, #0x0
+  a17638: 5280200c     	mov	w12, #0x100             // =256
+  a1763c: 1a9f118c     	csel	w12, w12, wzr, ne
+  a17640: 2a0e018c     	orr	w12, w12, w14
+  a17644: 7103f19f     	cmp	w12, #0xfc
+  a17648: b90007ec     	str	w12, [sp, #0x4]
+  a1764c: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a17650: 54000520     	b.eq	0xa176f4 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x2fc>
+  a17654: 2a0d12b5     	orr	w21, w21, w13, lsl #4
+  a17658: 52800059     	mov	w25, #0x2               // =2
+  a1765c: 35000148     	cbnz	w8, 0xa17684 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x28c>
+  a17660: 14000027     	b	0xa176fc <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x304>
+  a17664: 2a1f03f5     	mov	w21, wzr
+  a17668: 2a1f03f9     	mov	w25, wzr
+  a1766c: 5280002a     	mov	w10, #0x1               // =1
+  a17670: aa0803eb     	mov	x11, x8
+  a17674: 35fffc08     	cbnz	w8, 0xa175f4 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x1fc>
+  a17678: 52801f8c     	mov	w12, #0xfc              // =252
+  a1767c: b90007ec     	str	w12, [sp, #0x4]
+  a17680: 340003e8     	cbz	w8, 0xa176fc <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x304>
+  a17684: aa1f03ed     	mov	x13, xzr
+  a17688: aa0903ee     	mov	x14, x9
+  a1768c: 384055cf     	ldrb	w15, [x14], #0x5
+  a17690: 710019ff     	cmp	w15, #0x6
+  a17694: 540000a0     	b.eq	0xa176a8 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x2b0>
+  a17698: 910005ad     	add	x13, x13, #0x1
+  a1769c: eb0d017f     	cmp	x11, x13
+  a176a0: 54ffff61     	b.ne	0xa1768c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x294>
+  a176a4: 14000016     	b	0xa176fc <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x304>
+  a176a8: 37f802ad     	tbnz	w13, #0x1f, 0xa176fc <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x304>
+  a176ac: 924079ad     	and	x13, x13, #0x7fffffff
+  a176b0: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a176b4: 8b0d012d     	add	x13, x9, x13
+  a176b8: 394011ae     	ldrb	w14, [x13, #0x4]
+  a176bc: 394005af     	ldrb	w15, [x13, #0x1]
+  a176c0: 39400dad     	ldrb	w13, [x13, #0x3]
+  a176c4: 710001df     	cmp	w14, #0x0
+  a176c8: 5280200e     	mov	w14, #0x100             // =256
+  a176cc: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a176d0: 2a0f01ce     	orr	w14, w14, w15
+  a176d4: 7103f1df     	cmp	w14, #0xfc
+  a176d8: b9000bee     	str	w14, [sp, #0x8]
+  a176dc: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a176e0: 54000060     	b.eq	0xa176ec <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x2f4>
+  a176e4: 2a0d22b5     	orr	w21, w21, w13, lsl #8
+  a176e8: 52800079     	mov	w25, #0x3               // =3
+  a176ec: 350000e8     	cbnz	w8, 0xa17708 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x310>
+  a176f0: 14000022     	b	0xa17778 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x380>
+  a176f4: 52801f8c     	mov	w12, #0xfc              // =252
+  a176f8: 35fffc68     	cbnz	w8, 0xa17684 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x28c>
+  a176fc: 52801f8d     	mov	w13, #0xfc              // =252
+  a17700: b9000bed     	str	w13, [sp, #0x8]
+  a17704: 340003a8     	cbz	w8, 0xa17778 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x380>
+  a17708: aa1f03ed     	mov	x13, xzr
+  a1770c: aa0903ee     	mov	x14, x9
+  a17710: 384055cf     	ldrb	w15, [x14], #0x5
+  a17714: 71001dff     	cmp	w15, #0x7
+  a17718: 540000a0     	b.eq	0xa1772c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x334>
+  a1771c: 910005ad     	add	x13, x13, #0x1
+  a17720: eb0d017f     	cmp	x11, x13
+  a17724: 54ffff61     	b.ne	0xa17710 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x318>
+  a17728: 14000014     	b	0xa17778 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x380>
+  a1772c: 37f8026d     	tbnz	w13, #0x1f, 0xa17778 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x380>
+  a17730: 924079ad     	and	x13, x13, #0x7fffffff
+  a17734: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a17738: 8b0d012d     	add	x13, x9, x13
+  a1773c: 394011ae     	ldrb	w14, [x13, #0x4]
+  a17740: 394005af     	ldrb	w15, [x13, #0x1]
+  a17744: 39400dad     	ldrb	w13, [x13, #0x3]
+  a17748: 710001df     	cmp	w14, #0x0
+  a1774c: 5280200e     	mov	w14, #0x100             // =256
+  a17750: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a17754: 2a0f01ce     	orr	w14, w14, w15
+  a17758: 7103f1df     	cmp	w14, #0xfc
+  a1775c: b9000fee     	str	w14, [sp, #0xc]
+  a17760: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a17764: 54000060     	b.eq	0xa17770 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x378>
+  a17768: 2a0d32b5     	orr	w21, w21, w13, lsl #12
+  a1776c: 52800099     	mov	w25, #0x4               // =4
+  a17770: 350000a8     	cbnz	w8, 0xa17784 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x38c>
+  a17774: 14000020     	b	0xa177f4 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x3fc>
+  a17778: 52801f8d     	mov	w13, #0xfc              // =252
+  a1777c: b9000fed     	str	w13, [sp, #0xc]
+  a17780: 340003a8     	cbz	w8, 0xa177f4 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x3fc>
+  a17784: aa1f03ed     	mov	x13, xzr
+  a17788: aa0903ee     	mov	x14, x9
+  a1778c: 384055cf     	ldrb	w15, [x14], #0x5
+  a17790: 710021ff     	cmp	w15, #0x8
+  a17794: 540000a0     	b.eq	0xa177a8 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x3b0>
+  a17798: 910005ad     	add	x13, x13, #0x1
+  a1779c: eb0d017f     	cmp	x11, x13
+  a177a0: 54ffff61     	b.ne	0xa1778c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x394>
+  a177a4: 14000014     	b	0xa177f4 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x3fc>
+  a177a8: 37f8026d     	tbnz	w13, #0x1f, 0xa177f4 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x3fc>
+  a177ac: 924079ad     	and	x13, x13, #0x7fffffff
+  a177b0: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a177b4: 8b0d012d     	add	x13, x9, x13
+  a177b8: 394011ae     	ldrb	w14, [x13, #0x4]
+  a177bc: 394005af     	ldrb	w15, [x13, #0x1]
+  a177c0: 39400dad     	ldrb	w13, [x13, #0x3]
+  a177c4: 710001df     	cmp	w14, #0x0
+  a177c8: 5280200e     	mov	w14, #0x100             // =256
+  a177cc: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a177d0: 2a0f01ce     	orr	w14, w14, w15
+  a177d4: 7103f1df     	cmp	w14, #0xfc
+  a177d8: b90013ee     	str	w14, [sp, #0x10]
+  a177dc: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a177e0: 54000060     	b.eq	0xa177ec <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x3f4>
+  a177e4: 2a0d42b5     	orr	w21, w21, w13, lsl #16
+  a177e8: 528000b9     	mov	w25, #0x5               // =5
+  a177ec: 350000a8     	cbnz	w8, 0xa17800 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x408>
+  a177f0: 14000020     	b	0xa17870 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x478>
+  a177f4: 52801f8d     	mov	w13, #0xfc              // =252
+  a177f8: b90013ed     	str	w13, [sp, #0x10]
+  a177fc: 340003a8     	cbz	w8, 0xa17870 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x478>
+  a17800: aa1f03ed     	mov	x13, xzr
+  a17804: aa0903ee     	mov	x14, x9
+  a17808: 384055cf     	ldrb	w15, [x14], #0x5
+  a1780c: 710025ff     	cmp	w15, #0x9
+  a17810: 540000a0     	b.eq	0xa17824 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x42c>
+  a17814: 910005ad     	add	x13, x13, #0x1
+  a17818: eb0d017f     	cmp	x11, x13
+  a1781c: 54ffff61     	b.ne	0xa17808 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x410>
+  a17820: 14000014     	b	0xa17870 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x478>
+  a17824: 37f8026d     	tbnz	w13, #0x1f, 0xa17870 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x478>
+  a17828: 924079ad     	and	x13, x13, #0x7fffffff
+  a1782c: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a17830: 8b0d012d     	add	x13, x9, x13
+  a17834: 394011ae     	ldrb	w14, [x13, #0x4]
+  a17838: 394005af     	ldrb	w15, [x13, #0x1]
+  a1783c: 39400dad     	ldrb	w13, [x13, #0x3]
+  a17840: 710001df     	cmp	w14, #0x0
+  a17844: 5280200e     	mov	w14, #0x100             // =256
+  a17848: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a1784c: 2a0f01ce     	orr	w14, w14, w15
+  a17850: 7103f1df     	cmp	w14, #0xfc
+  a17854: b90017ee     	str	w14, [sp, #0x14]
+  a17858: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a1785c: 54000060     	b.eq	0xa17868 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x470>
+  a17860: 2a0d52b5     	orr	w21, w21, w13, lsl #20
+  a17864: 528000d9     	mov	w25, #0x6               // =6
+  a17868: 350000a8     	cbnz	w8, 0xa1787c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x484>
+  a1786c: 14000020     	b	0xa178ec <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x4f4>
+  a17870: 52801f8d     	mov	w13, #0xfc              // =252
+  a17874: b90017ed     	str	w13, [sp, #0x14]
+  a17878: 340003a8     	cbz	w8, 0xa178ec <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x4f4>
+  a1787c: aa1f03ed     	mov	x13, xzr
+  a17880: aa0903ee     	mov	x14, x9
+  a17884: 384055cf     	ldrb	w15, [x14], #0x5
+  a17888: 710029ff     	cmp	w15, #0xa
+  a1788c: 540000a0     	b.eq	0xa178a0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x4a8>
+  a17890: 910005ad     	add	x13, x13, #0x1
+  a17894: eb0d017f     	cmp	x11, x13
+  a17898: 54ffff61     	b.ne	0xa17884 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x48c>
+  a1789c: 14000014     	b	0xa178ec <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x4f4>
+  a178a0: 37f8026d     	tbnz	w13, #0x1f, 0xa178ec <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x4f4>
+  a178a4: 924079ad     	and	x13, x13, #0x7fffffff
+  a178a8: 8b0d09ad     	add	x13, x13, x13, lsl #2
+  a178ac: 8b0d012d     	add	x13, x9, x13
+  a178b0: 394011ae     	ldrb	w14, [x13, #0x4]
+  a178b4: 394005af     	ldrb	w15, [x13, #0x1]
+  a178b8: 39400dad     	ldrb	w13, [x13, #0x3]
+  a178bc: 710001df     	cmp	w14, #0x0
+  a178c0: 5280200e     	mov	w14, #0x100             // =256
+  a178c4: 1a9f11ce     	csel	w14, w14, wzr, ne
+  a178c8: 2a0f01ce     	orr	w14, w14, w15
+  a178cc: 7103f1df     	cmp	w14, #0xfc
+  a178d0: b9001bee     	str	w14, [sp, #0x18]
+  a178d4: 7a4009a0     	ccmp	w13, #0x0, #0x0, eq
+  a178d8: 54000060     	b.eq	0xa178e4 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x4ec>
+  a178dc: 2a0d62b5     	orr	w21, w21, w13, lsl #24
+  a178e0: 528000f9     	mov	w25, #0x7               // =7
+  a178e4: 350000a8     	cbnz	w8, 0xa178f8 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x500>
+  a178e8: 1400001f     	b	0xa17964 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x56c>
+  a178ec: 52801f8d     	mov	w13, #0xfc              // =252
+  a178f0: b9001bed     	str	w13, [sp, #0x18]
+  a178f4: 34000388     	cbz	w8, 0xa17964 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x56c>
+  a178f8: aa1f03e8     	mov	x8, xzr
+  a178fc: aa0903ed     	mov	x13, x9
+  a17900: 384055ae     	ldrb	w14, [x13], #0x5
+  a17904: 71002ddf     	cmp	w14, #0xb
+  a17908: 540000a0     	b.eq	0xa1791c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x524>
+  a1790c: 91000508     	add	x8, x8, #0x1
+  a17910: eb08017f     	cmp	x11, x8
+  a17914: 54ffff61     	b.ne	0xa17900 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x508>
+  a17918: 14000013     	b	0xa17964 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x56c>
+  a1791c: 37f80248     	tbnz	w8, #0x1f, 0xa17964 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x56c>
+  a17920: 92407908     	and	x8, x8, #0x7fffffff
+  a17924: 8b080908     	add	x8, x8, x8, lsl #2
+  a17928: 8b080128     	add	x8, x9, x8
+  a1792c: 39401109     	ldrb	w9, [x8, #0x4]
+  a17930: 3940050b     	ldrb	w11, [x8, #0x1]
+  a17934: 39400d08     	ldrb	w8, [x8, #0x3]
+  a17938: 7100013f     	cmp	w9, #0x0
+  a1793c: 52802009     	mov	w9, #0x100              // =256
+  a17940: 1a9f1129     	csel	w9, w9, wzr, ne
+  a17944: 2a0b0129     	orr	w9, w9, w11
+  a17948: 7103f13f     	cmp	w9, #0xfc
+  a1794c: b9001fe9     	str	w9, [sp, #0x1c]
+  a17950: 7a400900     	ccmp	w8, #0x0, #0x0, eq
+  a17954: 540000c0     	b.eq	0xa1796c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x574>
+  a17958: 2a0872b5     	orr	w21, w21, w8, lsl #28
+  a1795c: 52800119     	mov	w25, #0x8               // =8
+  a17960: 14000003     	b	0xa1796c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x574>
+  a17964: 52801f88     	mov	w8, #0xfc               // =252
+  a17968: b9001fe8     	str	w8, [sp, #0x1c]
+  a1796c: 394c0a88     	ldrb	w8, [x20, #0x302]
+  a17970: 7103f19f     	cmp	w12, #0xfc
+  a17974: 54000080     	b.eq	0xa17984 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x58c>
+  a17978: 0a080149     	and	w9, w10, w8
+  a1797c: 34000049     	cbz	w9, 0xa17984 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x58c>
+  a17980: b90003ec     	str	w12, [sp]
+  a17984: b9403e69     	ldr	w9, [x19, #0x3c]
+  a17988: 35002209     	cbnz	w9, 0xa17dc8 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x9d0>
+  a1798c: b9403269     	ldr	w9, [x19, #0x30]
+  a17990: 35000209     	cbnz	w9, 0xa179d0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x5d8>
+  a17994: f9400669     	ldr	x9, [x19, #0x8]
+  a17998: f9400e6a     	ldr	x10, [x19, #0x18]
+  a1799c: cb09014a     	sub	x10, x10, x9
+  a179a0: f27d795f     	tst	x10, #0x3fffffff8
+  a179a4: 540000e0     	b.eq	0xa179c0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x5c8>
+  a179a8: 29492e6a     	ldp	w10, w11, [x19, #0x48]
+  a179ac: 6b0b015f     	cmp	w10, w11
+  a179b0: 54000082     	b.hs	0xa179c0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x5c8>
+  a179b4: 91002129     	add	x9, x9, #0x8
+  a179b8: f9000a69     	str	x9, [x19, #0x10]
+  a179bc: 14000005     	b	0xa179d0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x5d8>
+  a179c0: aa1303e0     	mov	x0, x19
+  a179c4: 52800041     	mov	w1, #0x2                // =2
+  a179c8: 97fdbd5a     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a179cc: 394c0a88     	ldrb	w8, [x20, #0x302]
+  a179d0: 53181ec9     	ubfiz	w9, w22, #8, #8
+  a179d4: 53101eea     	ubfiz	w10, w23, #16, #8
+  a179d8: f940066b     	ldr	x11, [x19, #0x8]
+  a179dc: 5291802c     	mov	w12, #0x8c01            // =35841
+  a179e0: 52916037     	mov	w23, #0x8b01            // =35585
+  a179e4: 7100073f     	cmp	w25, #0x1
+  a179e8: 2a0a030a     	orr	w10, w24, w10
+  a179ec: 2a080128     	orr	w8, w9, w8
+  a179f0: 72a8152c     	movk	w12, #0x40a9, lsl #16
+  a179f4: 2a080149     	orr	w9, w10, w8
+  a179f8: 91002168     	add	x8, x11, #0x8
+  a179fc: 72a91537     	movk	w23, #0x48a9, lsl #16
+  a17a00: 2900256c     	stp	w12, w9, [x11]
+  a17a04: f9000668     	str	x8, [x19, #0x8]
+  a17a08: 5400022b     	b.lt	0xa17a4c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x654>
+  a17a0c: b9403e69     	ldr	w9, [x19, #0x3c]
+  a17a10: 35001f09     	cbnz	w9, 0xa17df0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x9f8>
+  a17a14: b9403269     	ldr	w9, [x19, #0x30]
+  a17a18: 35000309     	cbnz	w9, 0xa17a78 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x680>
+  a17a1c: f9400e69     	ldr	x9, [x19, #0x18]
+  a17a20: 11000721     	add	w1, w25, #0x1
+  a17a24: cb080129     	sub	x9, x9, x8
+  a17a28: d342fd29     	lsr	x9, x9, #2
+  a17a2c: 6b09033f     	cmp	w25, w9
+  a17a30: 540001e2     	b.hs	0xa17a6c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x674>
+  a17a34: 29492a69     	ldp	w9, w10, [x19, #0x48]
+  a17a38: 6b0a013f     	cmp	w9, w10
+  a17a3c: 54000182     	b.hs	0xa17a6c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x674>
+  a17a40: 8b214909     	add	x9, x8, w1, uxtw #2
+  a17a44: f9000a69     	str	x9, [x19, #0x10]
+  a17a48: 1400000c     	b	0xa17a78 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x680>
+  a17a4c: 34001959     	cbz	w25, 0xa17d74 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x97c>
+  a17a50: 7100233f     	cmp	w25, #0x8
+  a17a54: 2a1903e9     	mov	w9, w25
+  a17a58: 54000242     	b.hs	0xa17aa0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x6a8>
+  a17a5c: aa1f03eb     	mov	x11, xzr
+  a17a60: 2a1f03f6     	mov	w22, wzr
+  a17a64: aa0803ea     	mov	x10, x8
+  a17a68: 1400002d     	b	0xa17b1c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x724>
+  a17a6c: aa1303e0     	mov	x0, x19
+  a17a70: 97fdbd30     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a17a74: f9400668     	ldr	x8, [x19, #0x8]
+  a17a78: 128d32c9     	mov	w9, #-0x6997            // =-27031
+  a17a7c: 2a1903ea     	mov	w10, w25
+  a17a80: 1ad92529     	lsr	w9, w9, w25
+  a17a84: 3319012a     	bfi	w10, w9, #7, #1
+  a17a88: 110bfee9     	add	w9, w23, #0x2ff
+  a17a8c: 2a090149     	orr	w9, w10, w9
+  a17a90: b8004509     	str	w9, [x8], #0x4
+  a17a94: 7100233f     	cmp	w25, #0x8
+  a17a98: 2a1903e9     	mov	w9, w25
+  a17a9c: 54fffe03     	b.lo	0xa17a5c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x664>
+  a17aa0: 4e040ea0     	dup	v0.4s, w21
+  a17aa4: f0ffb4aa     	adrp	x10, 0xae000 <mesa_bytes_to_hex.hex_digits+0xf710>
+  a17aa8: f0ffb4ab     	adrp	x11, 0xae000 <mesa_bytes_to_hex.hex_digits+0xf710>
+  a17aac: 3dc16542     	ldr	q2, [x10, #0x590]
+  a17ab0: 3dc36d63     	ldr	q3, [x11, #0xdb0]
+  a17ab4: 4f070781     	movi	v1.4s, #0xfc
+  a17ab8: ad4013e6     	ldp	q6, q4, [sp]
+  a17abc: 927d012b     	and	x11, x9, #0x8
+  a17ac0: 4e221c05     	and	v5.16b, v0.16b, v2.16b
+  a17ac4: 4e231c00     	and	v0.16b, v0.16b, v3.16b
+  a17ac8: 8b0b090a     	add	x10, x8, x11, lsl #2
+  a17acc: eb09017f     	cmp	x11, x9
+  a17ad0: 6ea18c87     	cmeq	v7.4s, v4.4s, v1.4s
+  a17ad4: 6ea18cc1     	cmeq	v1.4s, v6.4s, v1.4s
+  a17ad8: 4ea098a5     	cmeq	v5.4s, v5.4s, #0
+  a17adc: 4ea09800     	cmeq	v0.4s, v0.4s, #0
+  a17ae0: 4e251ce5     	and	v5.16b, v7.16b, v5.16b
+  a17ae4: 4e201c20     	and	v0.16b, v1.16b, v0.16b
+  a17ae8: 4e651c41     	bic	v1.16b, v2.16b, v5.16b
+  a17aec: 4e601c60     	bic	v0.16b, v3.16b, v0.16b
+  a17af0: 4f00c422     	movi	v2.4s, #0x1, msl #8
+  a17af4: 4ea01c20     	orr	v0.16b, v1.16b, v0.16b
+  a17af8: 6e004001     	ext	v1.16b, v0.16b, v0.16b, #0x8
+  a17afc: 0ea11c00     	orr	v0.8b, v0.8b, v1.8b
+  a17b00: 4e221cc1     	and	v1.16b, v6.16b, v2.16b
+  a17b04: 4e221c82     	and	v2.16b, v4.16b, v2.16b
+  a17b08: 9e66000c     	fmov	x12, d0
+  a17b0c: ad000901     	stp	q1, q2, [x8]
+  a17b10: d360fd8d     	lsr	x13, x12, #32
+  a17b14: 2a0d0196     	orr	w22, w12, w13
+  a17b18: 54000220     	b.eq	0xa17b5c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x764>
+  a17b1c: d37ef568     	lsl	x8, x11, #2
+  a17b20: cb0b0129     	sub	x9, x9, x11
+  a17b24: 910003eb     	mov	x11, sp
+  a17b28: 528001ec     	mov	w12, #0xf               // =15
+  a17b2c: 52801f8d     	mov	w13, #0xfc              // =252
+  a17b30: 1ac8218f     	lsl	w15, w12, w8
+  a17b34: b868696e     	ldr	w14, [x11, x8]
+  a17b38: 91001108     	add	x8, x8, #0x4
+  a17b3c: 6a1501ff     	tst	w15, w21
+  a17b40: 120021d0     	and	w16, w14, #0x1ff
+  a17b44: 7a4d01c0     	ccmp	w14, w13, #0x0, eq
+  a17b48: b8004550     	str	w16, [x10], #0x4
+  a17b4c: 1a8f03ee     	csel	w14, wzr, w15, eq
+  a17b50: f1000529     	subs	x9, x9, #0x1
+  a17b54: 2a0e02d6     	orr	w22, w22, w14
+  a17b58: 54fffec1     	b.ne	0xa17b30 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x738>
+  a17b5c: aa0a03e8     	mov	x8, x10
+  a17b60: f900066a     	str	x10, [x19, #0x8]
+  a17b64: b9403e69     	ldr	w9, [x19, #0x3c]
+  a17b68: 350010c9     	cbnz	w9, 0xa17d80 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x988>
+  a17b6c: b9403269     	ldr	w9, [x19, #0x30]
+  a17b70: 340000e9     	cbz	w9, 0xa17b8c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x794>
+  a17b74: 710002bf     	cmp	w21, #0x0
+  a17b78: 29005917     	stp	w23, w22, [x8]
+  a17b7c: 91002109     	add	x9, x8, #0x8
+  a17b80: 1a9f07f7     	cset	w23, ne
+  a17b84: f9000669     	str	x9, [x19, #0x8]
+  a17b88: 14000016     	b	0xa17be0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x7e8>
+  a17b8c: f9400e69     	ldr	x9, [x19, #0x18]
+  a17b90: cb080129     	sub	x9, x9, x8
+  a17b94: f27d793f     	tst	x9, #0x3fffffff8
+  a17b98: 540000e0     	b.eq	0xa17bb4 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x7bc>
+  a17b9c: 29492a69     	ldp	w9, w10, [x19, #0x48]
+  a17ba0: 6b0a013f     	cmp	w9, w10
+  a17ba4: 54000082     	b.hs	0xa17bb4 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x7bc>
+  a17ba8: 91002109     	add	x9, x8, #0x8
+  a17bac: f9000a69     	str	x9, [x19, #0x10]
+  a17bb0: 17fffff1     	b	0xa17b74 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x77c>
+  a17bb4: aa1303e0     	mov	x0, x19
+  a17bb8: 52800041     	mov	w1, #0x2                // =2
+  a17bbc: 97fdbcdd     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a17bc0: f9400668     	ldr	x8, [x19, #0x8]
+  a17bc4: b9403e6a     	ldr	w10, [x19, #0x3c]
+  a17bc8: 710002bf     	cmp	w21, #0x0
+  a17bcc: 29005917     	stp	w23, w22, [x8]
+  a17bd0: 91002109     	add	x9, x8, #0x8
+  a17bd4: 1a9f07f7     	cset	w23, ne
+  a17bd8: f9000669     	str	x9, [x19, #0x8]
+  a17bdc: 35000dea     	cbnz	w10, 0xa17d98 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x9a0>
+  a17be0: b940326a     	ldr	w10, [x19, #0x30]
+  a17be4: 52804058     	mov	w24, #0x202             // =514
+  a17be8: 72a81558     	movk	w24, #0x40aa, lsl #16
+  a17bec: 340000ca     	cbz	w10, 0xa17c04 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x80c>
+  a17bf0: 91003128     	add	x8, x9, #0xc
+  a17bf4: 29005d38     	stp	w24, w23, [x9]
+  a17bf8: b9000935     	str	w21, [x9, #0x8]
+  a17bfc: f9000668     	str	x8, [x19, #0x8]
+  a17c00: 14000016     	b	0xa17c58 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x860>
+  a17c04: f9400e6a     	ldr	x10, [x19, #0x18]
+  a17c08: cb09014a     	sub	x10, x10, x9
+  a17c0c: d342fd4a     	lsr	x10, x10, #2
+  a17c10: 71000d5f     	cmp	w10, #0x3
+  a17c14: 540000e3     	b.lo	0xa17c30 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x838>
+  a17c18: 29492e6a     	ldp	w10, w11, [x19, #0x48]
+  a17c1c: 6b0b015f     	cmp	w10, w11
+  a17c20: 54000082     	b.hs	0xa17c30 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x838>
+  a17c24: 91005108     	add	x8, x8, #0x14
+  a17c28: f9000a68     	str	x8, [x19, #0x10]
+  a17c2c: 17fffff1     	b	0xa17bf0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x7f8>
+  a17c30: aa1303e0     	mov	x0, x19
+  a17c34: 52800061     	mov	w1, #0x3                // =3
+  a17c38: 97fdbcbe     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a17c3c: f9400669     	ldr	x9, [x19, #0x8]
+  a17c40: b9403e6a     	ldr	w10, [x19, #0x3c]
+  a17c44: 91003128     	add	x8, x9, #0xc
+  a17c48: b9000138     	str	w24, [x9]
+  a17c4c: 2900d537     	stp	w23, w21, [x9, #0x4]
+  a17c50: f9000668     	str	x8, [x19, #0x8]
+  a17c54: 35000aea     	cbnz	w10, 0xa17db0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x9b8>
+  a17c58: b940326a     	ldr	w10, [x19, #0x30]
+  a17c5c: 3400006a     	cbz	w10, 0xa17c68 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x870>
+  a17c60: 52800029     	mov	w9, #0x1                // =1
+  a17c64: 14000013     	b	0xa17cb0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x8b8>
+  a17c68: f9400e6a     	ldr	x10, [x19, #0x18]
+  a17c6c: cb08014a     	sub	x10, x10, x8
+  a17c70: f27d795f     	tst	x10, #0x3fffffff8
+  a17c74: 54000100     	b.eq	0xa17c94 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x89c>
+  a17c78: 29492e6a     	ldp	w10, w11, [x19, #0x48]
+  a17c7c: 6b0b015f     	cmp	w10, w11
+  a17c80: 540000a2     	b.hs	0xa17c94 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x89c>
+  a17c84: 91005129     	add	x9, x9, #0x14
+  a17c88: f9000a69     	str	x9, [x19, #0x10]
+  a17c8c: 52800029     	mov	w9, #0x1                // =1
+  a17c90: 14000008     	b	0xa17cb0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x8b8>
+  a17c94: aa1303e0     	mov	x0, x19
+  a17c98: 52800041     	mov	w1, #0x2                // =2
+  a17c9c: 97fdbca5     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a17ca0: b9403e69     	ldr	w9, [x19, #0x3c]
+  a17ca4: f9400668     	ldr	x8, [x19, #0x8]
+  a17ca8: 7100013f     	cmp	w9, #0x0
+  a17cac: 1a9f17e9     	cset	w9, eq
+  a17cb0: 394eea8a     	ldrb	w10, [x20, #0x3ba]
+  a17cb4: 394eee8b     	ldrb	w11, [x20, #0x3bb]
+  a17cb8: 5280004c     	mov	w12, #0x2               // =2
+  a17cbc: 394c0a8d     	ldrb	w13, [x20, #0x302]
+  a17cc0: 7100015f     	cmp	w10, #0x0
+  a17cc4: 5280008a     	mov	w10, #0x4               // =4
+  a17cc8: 1a9f118c     	csel	w12, w12, wzr, ne
+  a17ccc: 7100017f     	cmp	w11, #0x0
+  a17cd0: 394efa8b     	ldrb	w11, [x20, #0x3be]
+  a17cd4: 1a9f114a     	csel	w10, w10, wzr, ne
+  a17cd8: 52816034     	mov	w20, #0xb01             // =2817
+  a17cdc: 7100017f     	cmp	w11, #0x0
+  a17ce0: 5280010b     	mov	w11, #0x8               // =8
+  a17ce4: 2a0c014a     	orr	w10, w10, w12
+  a17ce8: 1a9f116b     	csel	w11, w11, wzr, ne
+  a17cec: 72a81114     	movk	w20, #0x4088, lsl #16
+  a17cf0: 2a0d016b     	orr	w11, w11, w13
+  a17cf4: 2a0b014b     	orr	w11, w10, w11
+  a17cf8: 9100210a     	add	x10, x8, #0x8
+  a17cfc: 29002d14     	stp	w20, w11, [x8]
+  a17d00: f900066a     	str	x10, [x19, #0x8]
+  a17d04: 360006c9     	tbz	w9, #0x0, 0xa17ddc <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x9e4>
+  a17d08: b9403269     	ldr	w9, [x19, #0x30]
+  a17d0c: 350001e9     	cbnz	w9, 0xa17d48 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x950>
+  a17d10: f9400e69     	ldr	x9, [x19, #0x18]
+  a17d14: cb0a0129     	sub	x9, x9, x10
+  a17d18: f27d793f     	tst	x9, #0x3fffffff8
+  a17d1c: 540000e0     	b.eq	0xa17d38 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x940>
+  a17d20: 29492e69     	ldp	w9, w11, [x19, #0x48]
+  a17d24: 6b0b013f     	cmp	w9, w11
+  a17d28: 54000082     	b.hs	0xa17d38 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x940>
+  a17d2c: 91004108     	add	x8, x8, #0x10
+  a17d30: f9000a68     	str	x8, [x19, #0x10]
+  a17d34: 14000005     	b	0xa17d48 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x950>
+  a17d38: aa1303e0     	mov	x0, x19
+  a17d3c: 52800041     	mov	w1, #0x2                // =2
+  a17d40: 97fdbc7c     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  a17d44: f940066a     	ldr	x10, [x19, #0x8]
+  a17d48: 11080288     	add	w8, w20, #0x200
+  a17d4c: a9445ff8     	ldp	x24, x23, [sp, #0x40]
+  a17d50: 29005948     	stp	w8, w22, [x10]
+  a17d54: 91002148     	add	x8, x10, #0x8
+  a17d58: f9401bf9     	ldr	x25, [sp, #0x30]
+  a17d5c: f9000668     	str	x8, [x19, #0x8]
+  a17d60: a9464ff4     	ldp	x20, x19, [sp, #0x60]
+  a17d64: a94557f6     	ldp	x22, x21, [sp, #0x50]
+  a17d68: a9427bfd     	ldp	x29, x30, [sp, #0x20]
+  a17d6c: 9101c3ff     	add	sp, sp, #0x70
+  a17d70: d65f03c0     	ret
+  a17d74: 2a1f03f6     	mov	w22, wzr
+  a17d78: b9403e69     	ldr	w9, [x19, #0x3c]
+  a17d7c: 34ffef89     	cbz	w9, 0xa17b6c <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x774>
+  a17d80: f0001b28     	adrp	x8, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  a17d84: 710002bf     	cmp	w21, #0x0
+  a17d88: f9400d08     	ldr	x8, [x8, #0x18]
+  a17d8c: 1a9f07f7     	cset	w23, ne
+  a17d90: 91404109     	add	x9, x8, #0x10, lsl #12  // =0x10000
+  a17d94: a900a668     	stp	x8, x9, [x19, #0x8]
+  a17d98: f0001b28     	adrp	x8, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  a17d9c: 52804049     	mov	w9, #0x202              // =514
+  a17da0: f9400d08     	ldr	x8, [x8, #0x18]
+  a17da4: 72a81549     	movk	w9, #0x40aa, lsl #16
+  a17da8: 29005d09     	stp	w9, w23, [x8]
+  a17dac: b9000915     	str	w21, [x8, #0x8]
+  a17db0: f0001b28     	adrp	x8, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  a17db4: 2a1f03e9     	mov	w9, wzr
+  a17db8: f9400d08     	ldr	x8, [x8, #0x18]
+  a17dbc: 9140410a     	add	x10, x8, #0x10, lsl #12 // =0x10000
+  a17dc0: f9000a6a     	str	x10, [x19, #0x10]
+  a17dc4: 17ffffbb     	b	0xa17cb0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x8b8>
+  a17dc8: d0001b69     	adrp	x9, 0xd85000 <__instruction+0x7a0>
+  a17dcc: 9127c129     	add	x9, x9, #0x9f0
+  a17dd0: 9140412a     	add	x10, x9, #0x10, lsl #12 // =0x10000
+  a17dd4: a900aa69     	stp	x9, x10, [x19, #0x8]
+  a17dd8: 17fffefe     	b	0xa179d0 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x5d8>
+  a17ddc: d0001b6a     	adrp	x10, 0xd85000 <__instruction+0x7a0>
+  a17de0: 9127c14a     	add	x10, x10, #0x9f0
+  a17de4: 91404148     	add	x8, x10, #0x10, lsl #12 // =0x10000
+  a17de8: f9000a68     	str	x8, [x19, #0x10]
+  a17dec: 17ffffd7     	b	0xa17d48 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x950>
+  a17df0: d0001b68     	adrp	x8, 0xd85000 <__instruction+0x7a0>
+  a17df4: 9127c108     	add	x8, x8, #0x9f0
+  a17df8: 91404109     	add	x9, x8, #0x10, lsl #12  // =0x10000
+  a17dfc: f9000a69     	str	x9, [x19, #0x10]
+  a17e00: 17ffff1e     	b	0xa17a78 <_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant+0x680>

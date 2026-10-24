@@ -1,0 +1,30 @@
+{
+  "area": "Dual-source FS missing-DATA0 hardware output register fallback",
+  "native_functions": [
+    "tu6_emit_fs_outputs<A6> ELF0xa13dbc size2400",
+    "tu6_emit_fs_outputs<A7> ELF0xa15830 size2572",
+    "tu6_emit_fs_outputs<A8> ELF0xa173f8 size2572"
+  ],
+  "native_anchor": {
+    "A6": "0xa14330..0xa14344",
+    "A7": "0xa15da4..0xa15db8",
+    "A8": "0xa1796c..0xa17980"
+  },
+  "predicate": "dual_src flag at original variant+0x302, packed output0 register==INVALID0xfc and packed output1 register!=0xfc. Copy output1 register to array[0] before SP output emission.",
+  "field_provenance": "Same original+0x302 low bit is directly ORed into SP_PS_OUTPUT_CNTL0xa98c DUAL_COLOR_IN_ENABLE(bit0) and separately RB_PS_OUTPUT_CNTL0x880b dual bit3. Original output records stride5: slot+0, regid+1, alias+3, half+4.",
+  "source_transfer": "Mirror fragdata_regid[1] into[0] only under exact native predicate, all chip templates. Retain output_reg_count and alias nibbles. This can enable first render-components nibble just as original does.",
+  "already_present": "ir3_alias.c prohibits alias.rt for dual-source lacking DATA0, but does not perform this later register-state fallback.",
+  "unresolved_neighbor": "Original stencil lookup also scans raw slot13 after slot1. Current named gl_frag_result table covers0..12 only. No meaning/producer for13 established here; do not invent a frontend slot or silently copy raw ordinals.",
+  "cache_policy": "0x4753381d unchanged; generated shader and serialized metadata unchanged, command register state only",
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "final_cases": [
+    "Dual-source shader writing only source1 vs both sources vs no source1; correct blend factors/color mask",
+    "Half/full register IDs and invalid0xfc guard; alias restrictions and output count/masks",
+    "A6/A7/A8 static/dynamic/GPL and rendering, normal MRT controls",
+    "Resolve raw native stencil-slot13 producer before claiming full neighboring lookup parity"
+  ],
+  "evidence_sha256": "dbe3f819fc3d4e97c13516fc93ad8010dc3730d05ef1f2d5d8499e332a5479f5"
+}
