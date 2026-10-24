@@ -109,7 +109,8 @@ kgsl_timeline_wait_ioctl(int fd,
       .flags = flags
    };
 
-   return safe_ioctl(fd, IOCTL_KGSL_TIMELINE_WAIT, &req);
+   /* The absolute-deadline wrapper owns EINTR/EAGAIN retries. */
+   return ioctl(fd, IOCTL_KGSL_TIMELINE_WAIT, &req);
 }
 
 static int
@@ -144,12 +145,22 @@ static int
 kgsl_submitqueue_new(struct tu_device *dev, struct tu_queue *queue)
 {
    struct kgsl_drawctxt_create req = {
+      /* Tag the context as Vulkan, like the proprietary driver does. KGSL
+       * and the GMU may use the context type for scheduling and power
+       * decisions.
+       */
       .flags = KGSL_CONTEXT_SAVE_GMEM |
               KGSL_CONTEXT_NO_GMEM_ALLOC |
-              KGSL_CONTEXT_PREAMBLE,
+              KGSL_CONTEXT_PREAMBLE |
+              (KGSL_CONTEXT_TYPE_VK << KGSL_CONTEXT_TYPE_SHIFT),
    };
 
    int ret = safe_ioctl(dev->physical_device->local_fd, IOCTL_KGSL_DRAWCTXT_CREATE, &req);
+   if (ret) {
+      /* Older kernels may not accept a context type. */
+      req.flags &= ~KGSL_CONTEXT_TYPE_MASK;
+      ret = safe_ioctl(dev->physical_device->local_fd, IOCTL_KGSL_DRAWCTXT_CREATE, &req);
+   }
    if (ret)
       goto fail;
    queue->msm_queue_id = req.drawctxt_id;
@@ -960,6 +971,24 @@ get_relative_ns(uint64_t abs_timeout_ns)
    return abs_timeout_ns - cur_time_ns;
 }
 
+/* Recompute the remaining duration after every interrupted/retryable wait.
+ * Retrying the same relative timeout in safe_ioctl could extend the API's
+ * absolute deadline each time a signal or EAGAIN interrupts the ioctl.
+ */
+static int
+kgsl_timeline_wait_absolute_ioctl(int fd, uint64_t abs_timeout_ns,
+                                   struct kgsl_timeline_val *values,
+                                   uint32_t count, uint32_t flags)
+{
+   int ret;
+   do {
+      ret = kgsl_timeline_wait_ioctl(fd, get_relative_ns(abs_timeout_ns),
+                                     values, count, flags);
+   } while (ret == -1 && (errno == EINTR || errno == EAGAIN));
+   return ret;
+}
+
+
 static VkResult
 kgsl_timestamp_error(
    struct tu_device *device, unsigned int context_id, unsigned int timestamp, const char *operation, int error)
@@ -1536,7 +1565,11 @@ vk_kgsl_timeline_finish(struct vk_device *_device,
    struct tu_device *device = container_of(_device, struct tu_device, vk);
    struct vk_kgsl_timeline *timeline = container_of(sync, struct vk_kgsl_timeline, vk);
 
-   kgsl_timeline_destroy_ioctl(device->physical_device->local_fd, timeline->id);
+   /* Original finish ignores an empty ID and clears the destroyed payload. */
+   if (timeline->id) {
+      kgsl_timeline_destroy_ioctl(device->physical_device->local_fd, timeline->id);
+      timeline->id = 0;
+   }
 }
 
 static VkResult
@@ -1560,8 +1593,8 @@ vk_kgsl_timeline_signal_many(struct vk_device *_device,
    STACK_ARRAY_FINISH(timeline_vals);
 
    if (ret) {
-      return vk_errorf(_device, VK_ERROR_UNKNOWN,
-                       "kgsl_timeline_signal failed: %m");
+      return vk_device_set_lost(_device,
+                                "kgsl_timeline_signal failed: %m");
    }
    return VK_SUCCESS;
 }
@@ -1589,6 +1622,9 @@ vk_kgsl_timeline_wait_many(struct vk_device *_device,
 {
    struct tu_device *device = container_of(_device, struct tu_device, vk);
 
+   if (!wait_count)
+      return VK_SUCCESS;
+
    STACK_ARRAY(struct kgsl_timeline_val, timeline_vals, wait_count);
    for (uint32_t i = 0; i < wait_count; ++i) {
       struct vk_kgsl_timeline *timeline = container_of(waits[i].sync, struct vk_kgsl_timeline, vk);
@@ -1602,17 +1638,17 @@ vk_kgsl_timeline_wait_many(struct vk_device *_device,
    if (wait_flags & VK_SYNC_WAIT_ANY)
       flag = KGSL_TIMELINE_WAIT_ANY;
 
-   int ret = kgsl_timeline_wait_ioctl(device->physical_device->local_fd,
-                                      get_relative_ns(abs_timeout_ns),
-                                      timeline_vals, wait_count, flag);
+   int ret = kgsl_timeline_wait_absolute_ioctl(device->physical_device->local_fd,
+                                               abs_timeout_ns,
+                                               timeline_vals, wait_count, flag);
    STACK_ARRAY_FINISH(timeline_vals);
 
    if (ret) {
       if (errno == EBUSY || errno == ETIMEDOUT)
          return VK_TIMEOUT;
 
-      return vk_errorf(_device, VK_ERROR_UNKNOWN,
-                       "kgsl_timeline_wait failed: %m");
+      return vk_device_set_lost(_device,
+                                "kgsl_timeline_wait failed: %m");
    }
    return VK_SUCCESS;
 }
@@ -1628,8 +1664,8 @@ vk_kgsl_timeline_get_value(struct vk_device *_device,
    int ret = kgsl_timeline_query_ioctl(device->physical_device->local_fd,
                                        timeline->id, value);
    if (ret) {
-      return vk_errorf(_device, VK_ERROR_UNKNOWN,
-                       "kgsl_timeline_query failed: %m");
+      return vk_device_set_lost(_device,
+                                "kgsl_timeline_query failed: %m");
    }
    return VK_SUCCESS;
 }
@@ -1890,9 +1926,9 @@ vk_kgsl_binary_wait_many(struct vk_device *_device,
    if (wait_flags & VK_SYNC_WAIT_ANY)
       flag = KGSL_TIMELINE_WAIT_ANY;
 
-   int ret = kgsl_timeline_wait_ioctl(device->physical_device->local_fd,
-                                      get_relative_ns(abs_timeout_ns),
-                                      timeline_vals, wait_count, flag);
+   int ret = kgsl_timeline_wait_absolute_ioctl(device->physical_device->local_fd,
+                                               abs_timeout_ns,
+                                               timeline_vals, wait_count, flag);
    STACK_ARRAY_FINISH(timeline_vals);
 
    if (ret) {
@@ -2509,6 +2545,7 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
 
    uint32_t wait_timeline_vals_count = 0;
    uint32_t wait_fences_count = 0;
+   uint32_t wait_signaled_fences_count = 0;
    {
       for (uint32_t i = 0; i < wait_count; ++i) {
          switch (vk_kgsl_get_sync_type(waits[i].sync)) {
@@ -2517,7 +2554,10 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
             ++wait_timeline_vals_count;
             break;
          case VK_KGSL_SYNC_TYPE_FENCE:
-            ++wait_fences_count;
+            if (vk_kgsl_get_sync_file(waits[i].sync)->fd < 0)
+               ++wait_signaled_fences_count;
+            else
+               ++wait_fences_count;
             break;
          case VK_KGSL_SYNC_TYPE_INVALID:
             assert(!"invalid sync type");
@@ -2526,7 +2566,8 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
       }
 
       ++wait_timeline_vals_count;
-      assert(wait_timeline_vals_count + wait_fences_count == wait_count + 1);
+      assert(wait_timeline_vals_count + wait_fences_count +
+                wait_signaled_fences_count == wait_count + 1);
    }
 
    STACK_ARRAY(struct kgsl_timeline_val, wait_timeline_vals, wait_timeline_vals_count);
@@ -2563,11 +2604,15 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
    }
 
    uint32_t signal_timeline_vals_count = 0;
+   bool all_signals_native_timeline = true;
    {
       for (uint32_t i = 0; i < signal_count; ++i) {
          switch (vk_kgsl_get_sync_type(signals[i].sync)) {
          case VK_KGSL_SYNC_TYPE_TIMELINE:
+            ++signal_timeline_vals_count;
+            break;
          case VK_KGSL_SYNC_TYPE_BINARY:
+            all_signals_native_timeline = false;
             ++signal_timeline_vals_count;
             break;
          case VK_KGSL_SYNC_TYPE_INVALID:
@@ -2614,14 +2659,44 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
       assert(signal_timeline_vals_idx == signal_timeline_vals_count);
    }
 
-   /* It's possible to employ a fast path here when the submit has no instruction buffers
-    * or bind commands and no wait flags are fences, using ioctls to first check if all
-    * the wait timelines are signaled and then signal the signal timelines if that's the
-    * case.
-    * Main requirement for this is keeping a queue-specific internal timeline that will
-    * make sure that any previous submit is complete. This isn't ideal but could be
-    * manageable.
+   /* Original GameSir queue-submit (ELF 0xa202f8) CPU-signals an empty
+    * submission only when it has no API waits, every signal is a native
+    * timeline, and the previous queue submission has completed. Its queue
+    * tracks a timestamp fence; this backend tracks completion with the
+    * private queue timeline included above. Poll that dependency instead
+    * of dropping queue ordering or blocking on unfinished work.
     */
+   if (submit->commands.size == 0 && submit->bind_cmds.size == 0 &&
+       wait_count == 0 && signal_count != 0 && all_signals_native_timeline) {
+      assert(wait_timeline_vals_count == 1);
+      int ret = kgsl_timeline_wait_absolute_ioctl(
+         queue->device->physical_device->local_fd, 0,
+         wait_timeline_vals, wait_timeline_vals_count, KGSL_TIMELINE_WAIT_ALL);
+      if (!ret) {
+         ret = kgsl_timeline_signal_ioctl(queue->device->physical_device->local_fd,
+                                          signal_timeline_vals,
+                                          signal_timeline_vals_count);
+         VkResult result = VK_SUCCESS;
+         if (ret) {
+            result = vk_device_set_lost(&queue->device->vk,
+                                        "CPU timeline signal failed: %m");
+         } else {
+            /* Publish the new queue point only after successful signaling. */
+            queue->kgsl_queue_timeline_seqno = current_submit_timeline_seqno;
+         }
+         STACK_ARRAY_FINISH(signal_timeline_vals);
+         STACK_ARRAY_FINISH(wait_timeline_vals);
+         return result;
+      }
+      if (errno != EBUSY && errno != ETIMEDOUT) {
+         VkResult result = vk_device_set_lost(&queue->device->vk,
+                                               "Queue timeline poll failed: %m");
+         STACK_ARRAY_FINISH(signal_timeline_vals);
+         STACK_ARRAY_FINISH(wait_timeline_vals);
+         return result;
+      }
+      /* Prior queue work is still pending: retain the GPU wait/signal path. */
+   }
 
    uint32_t cmd_syncpoints_count = 0;
    if (wait_timeline_vals_count > 0)
@@ -2653,6 +2728,14 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
             continue;
 
          struct vk_kgsl_sync_file *sync_file = vk_kgsl_get_sync_file(waits[i].sync);
+         /* Importing fd == -1 produces an already-signaled payload. Like
+          * the legacy syncobj merge, omit it instead of submitting an
+          * invalid fence descriptor to KGSL. The private queue timeline
+          * still preserves ordering with earlier submissions.
+          */
+         if (sync_file->fd < 0)
+            continue;
+
          cmd_syncpoint_fence[syncpoint_fence_idx] = (struct kgsl_cmd_syncpoint_fence) {
             .fd = sync_file->fd,
          };

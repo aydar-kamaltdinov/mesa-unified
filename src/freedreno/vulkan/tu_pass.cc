@@ -1124,6 +1124,8 @@ tu_init_renderpass_attachment(struct tu_device *device,
                               VkSampleCountFlagBits samples)
 {
    att->format = pAttachment->format;
+   att->resolve_skip_transfer_function = pAttachment->flags &
+      VK_ATTACHMENT_DESCRIPTION_RESOLVE_SKIP_TRANSFER_FUNCTION_BIT_KHR;
    att->samples = samples;
    /* for d32s8, cpp is for the depth image, and
     * att->samples will be used as the cpp for the stencil image
@@ -1301,6 +1303,10 @@ tu_CreateRenderPass2(VkDevice _device,
       subpass->input_count = desc->inputAttachmentCount;
       subpass->color_count = desc->colorAttachmentCount;
       subpass->resolve_depth_stencil = is_depth_stencil_resolve_enabled(ds_resolve);
+      subpass->depth_resolve_mode = ds_resolve ? ds_resolve->depthResolveMode :
+                                                VK_RESOLVE_MODE_SAMPLE_ZERO_BIT;
+      subpass->stencil_resolve_mode = ds_resolve ? ds_resolve->stencilResolveMode :
+                                                  VK_RESOLVE_MODE_SAMPLE_ZERO_BIT;
       subpass->samples = (VkSampleCountFlagBits) 0;
       subpass->srgb_cntl = 0;
       subpass->legacy_dithering_enabled = desc->flags &
@@ -1411,6 +1417,10 @@ tu_CreateRenderPass2(VkDevice _device,
       subpass->depth_used = a != VK_ATTACHMENT_UNUSED;
       subpass->stencil_used = a != VK_ATTACHMENT_UNUSED;
       if (a != VK_ATTACHMENT_UNUSED) {
+         if (!vk_format_has_depth(pass->attachments[a].format))
+            subpass->depth_resolve_mode = VK_RESOLVE_MODE_NONE;
+         if (!vk_format_has_stencil(pass->attachments[a].format))
+            subpass->stencil_resolve_mode = VK_RESOLVE_MODE_NONE;
          if (msrtss && msrtss->multisampledRenderToSingleSampledEnable &&
              msrtss->rasterizationSamples !=
              pCreateInfo->pAttachments[a].samples) {
@@ -1530,6 +1540,8 @@ tu_setup_dynamic_render_pass(struct tu_cmd_buffer *cmd_buffer,
 
    *pass = {};
    *subpass = {};
+   subpass->depth_resolve_mode = VK_RESOLVE_MODE_SAMPLE_ZERO_BIT;
+   subpass->stencil_resolve_mode = VK_RESOLVE_MODE_SAMPLE_ZERO_BIT;
 
    if (info->flags & VK_RENDERING_CUSTOM_RESOLVE_BIT_EXT) {
       *resolve_subpass = {};
@@ -1608,6 +1620,8 @@ tu_setup_dynamic_render_pass(struct tu_cmd_buffer *cmd_buffer,
       VK_FROM_HANDLE(tu_image_view, view, att_info->imageView);
       tu_setup_dynamic_attachment(att, view,
                                   (VkSampleCountFlagBits)view->image->layout->nr_samples);
+      att->resolve_skip_transfer_function = vk_get_rendering_attachment_flags(att_info) &
+         VK_RENDERING_ATTACHMENT_RESOLVE_SKIP_TRANSFER_FUNCTION_BIT_KHR;
       uint32_t att_idx = a++;
       bool att_is_msrtss = false;
       if (msrtss && msrtss->multisampledRenderToSingleSampledEnable &&
@@ -1656,6 +1670,9 @@ tu_setup_dynamic_render_pass(struct tu_cmd_buffer *cmd_buffer,
             VK_FROM_HANDLE(tu_image_view, resolve_view, att_info->resolveImageView);
             tu_setup_dynamic_attachment(resolve_att, resolve_view,
                                         VK_SAMPLE_COUNT_1_BIT);
+            resolve_att->resolve_skip_transfer_function =
+               vk_get_rendering_attachment_flags(att_info) &
+               VK_RENDERING_ATTACHMENT_RESOLVE_SKIP_TRANSFER_FUNCTION_BIT_KHR;
             resolve_att->gmem = false;
             attachment_set_ops(
                device, resolve_att, VK_ATTACHMENT_LOAD_OP_NONE,
@@ -1792,6 +1809,14 @@ tu_setup_dynamic_render_pass(struct tu_cmd_buffer *cmd_buffer,
                   subpass->resolve_attachments[i].attachment = a++;
                   att->will_be_resolved = true;
                   subpass->resolve_depth_stencil = true;
+                  subpass->depth_resolve_mode =
+                     vk_format_has_depth(view->vk.format) &&
+                     info->pDepthAttachment && info->pDepthAttachment->imageView ?
+                     info->pDepthAttachment->resolveMode : VK_RESOLVE_MODE_NONE;
+                  subpass->stencil_resolve_mode =
+                     vk_format_has_stencil(view->vk.format) &&
+                     info->pStencilAttachment && info->pStencilAttachment->imageView ?
+                     info->pStencilAttachment->resolveMode : VK_RESOLVE_MODE_NONE;
                   resolve_att->resolve_views = info->viewMask;
                   resolve_att->used_views = 0;
                   if (pass->subpass_count > 1) {

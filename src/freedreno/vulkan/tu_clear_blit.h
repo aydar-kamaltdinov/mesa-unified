@@ -18,6 +18,9 @@
 
 struct tu_rect2d_float;
 
+/* A8xx shader averaging; FDM retains its existing store path for now. */
+bool tu_gmem_color_resolve_needs_shader(uint32_t chip, VkFormat format, bool has_fdm);
+
 void tu_init_clear_blit_shaders(struct tu_device *dev);
 
 void tu_destroy_clear_blit_shaders(struct tu_device *dev);
@@ -44,7 +47,10 @@ tu_resolve_sysmem(struct tu_cmd_buffer *cmd,
                   uint32_t layer_mask,
                   uint32_t layers,
                   bool per_layer_rect,
-                  const VkRect2D *rect);
+                  const VkRect2D *rect,
+                  VkResolveModeFlagBits depth_mode = VK_RESOLVE_MODE_SAMPLE_ZERO_BIT,
+                  VkResolveModeFlagBits stencil_mode = VK_RESOLVE_MODE_SAMPLE_ZERO_BIT,
+                  bool skip_transfer_function = false);
 
 struct tu_resolve_group {
    uint32_t color_buffer_id;
@@ -100,7 +106,9 @@ tu_store_gmem_attachment(struct tu_cmd_buffer *cmd,
                          uint32_t layers,
                          uint32_t layer_mask,
                          bool per_layer_render_area,
-                         bool cond_exec_allowed);
+                         bool cond_exec_allowed,
+                         VkResolveModeFlagBits depth_mode = VK_RESOLVE_MODE_NONE,
+                         VkResolveModeFlagBits stencil_mode = VK_RESOLVE_MODE_NONE);
 
 /* AK: GMEM->GMEM resolve prototype. Attempts to resolve gmem_a's
  * multisampled GMEM content directly into a's GMEM-resident, single-sample

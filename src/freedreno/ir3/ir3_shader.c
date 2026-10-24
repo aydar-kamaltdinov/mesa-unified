@@ -243,16 +243,91 @@ ir3_shader_assemble(struct ir3_shader_variant *v)
    return bin;
 }
 
+/* Preserve the compiled inputs before trying either override format.  These
+ * files use the original binary's identifier, including its wave size.
+ */
+static FILE *
+open_shader_dump(const char *identifier, const char *suffix, bool binary)
+{
+   char *name = ralloc_asprintf(NULL, "%s/%s.%s", ir3_shader_override_path,
+                                identifier, suffix);
+   if (!name)
+      return NULL;
+
+   FILE *f = fopen(name, binary ? "rb" : "r");
+   if (f) {
+      fclose(f);
+      f = NULL;
+   } else {
+      f = fopen(name, binary ? "wb" : "w");
+   }
+   ralloc_free(name);
+   return f;
+}
+
+static void
+dump_original_shader_variant(struct ir3_shader_variant *v)
+{
+   FILE *f = open_shader_dump(v->blake3_str, "orig.bin", true);
+   if (f) {
+      fwrite(v->bin, 1, v->info.size, f);
+      fclose(f);
+   }
+
+   f = open_shader_dump(v->blake3_str, "orig.asm", false);
+   if (f) {
+      ir3_shader_disasm(v, v->bin, f);
+      fclose(f);
+   }
+
+   f = open_shader_dump(v->blake3_str, "meta", false);
+   if (f) {
+      fprintf(f, "blake3=%s\nstage=%s\nsize=%u\ndouble_threadsize=%u\n",
+              v->blake3_str, ir3_shader_stage(v), v->info.size,
+              (unsigned)v->info.double_threadsize);
+      fclose(f);
+   }
+}
+
 static bool
 try_override_shader_variant(struct ir3_shader_variant *v,
                             const char *identifier)
 {
    assert(ir3_shader_override_path);
 
+   /* GameSir checks an exact-size binary first, then falls back to the
+    * existing assembler path only when there is no binary override.
+    * Metadata stays that of the compiled shader for a binary replacement.
+    */
    char *name =
-      ralloc_asprintf(NULL, "%s/%s.asm", ir3_shader_override_path, identifier);
+      ralloc_asprintf(NULL, "%s/%s.bin", ir3_shader_override_path, identifier);
+   if (!name)
+      return false;
 
-   FILE *f = fopen(name, "r");
+   FILE *f = fopen(name, "rb");
+   if (f) {
+      long size = -1;
+      if (fseek(f, 0, SEEK_END) == 0)
+         size = ftell(f);
+      bool valid = size >= 0 && (unsigned long)size == v->info.size &&
+                   fseek(f, 0, SEEK_SET) == 0 &&
+                   fread(v->bin, 1, v->info.size, f) == v->info.size;
+      fclose(f);
+      if (!valid) {
+         fprintf(stderr,
+                 "Invalid shader binary override %s: expected %u bytes, got %ld\n",
+                 name, v->info.size, size);
+         exit(1);
+      }
+      ralloc_free(name);
+      return true;
+   }
+   ralloc_free(name);
+
+   name = ralloc_asprintf(NULL, "%s/%s.asm", ir3_shader_override_path, identifier);
+   if (!name)
+      return false;
+   f = fopen(name, "r");
 
    if (!f) {
       ralloc_free(name);
@@ -464,6 +539,9 @@ assemble_variant(struct ir3_shader_variant *v, bool internal)
    _mesa_blake3_final(&ctx, blake3);
    _mesa_blake3_format(v->blake3_str, blake3);
 
+   if (ir3_shader_override_path)
+      dump_original_shader_variant(v);
+
    bool dbg_enabled = shader_debug_enabled(v->type, internal) ||
                       ir3_shader_bisect_disasm_select(v);
    if (dbg_enabled || ir3_shader_override_path || v->disasm_info.write_disasm) {
@@ -595,6 +673,8 @@ alloc_variant(struct ir3_shader *shader, const struct ir3_shader_key *key,
       v->fs.yuv_color            = info->fs.yuv_color;
       break;
 
+   case MESA_SHADER_TASK:
+   case MESA_SHADER_MESH:
    case MESA_SHADER_COMPUTE:
    case MESA_SHADER_KERNEL:
       v->cs.req_local_mem = shader->cs.req_local_mem;
@@ -836,11 +916,36 @@ ir3_setup_used_key(struct ir3_shader *shader)
     * ucp_enables to determine whether to lower legacy clip planes to
     * gl_ClipDistance.
     */
-   if (!mesa_shader_stage_is_compute(info->stage) &&
+   if (!ir3_stage_is_compute(info->stage) &&
        (info->stage != MESA_SHADER_FRAGMENT || !shader->compiler->has_clip_cull))
       key->ucp_enables = 0xff;
 
    if (info->stage == MESA_SHADER_FRAGMENT) {
+      bool per_vertex = false;
+      if (BITSET_TEST(info->system_values_read, SYSTEM_VALUE_BARYCENTRIC_PERSP_COORD) ||
+          BITSET_TEST(info->system_values_read, SYSTEM_VALUE_BARYCENTRIC_LINEAR_COORD))
+         key->fs_primitive = 3;
+      nir_foreach_variable_with_modes(var, nir, nir_var_shader_in) {
+         if (var->data.per_vertex || var->data.interpolation == INTERP_MODE_EXPLICIT) {
+            key->fs_primitive = 3;
+            per_vertex = true;
+         }
+      }
+      nir_foreach_function_impl(impl, nir) {
+         nir_foreach_block(block, impl) {
+            nir_foreach_instr(instr, block) {
+               if (instr->type == nir_instr_type_intrinsic) {
+                  nir_intrinsic_op op = nir_instr_as_intrinsic(instr)->intrinsic;
+                  if (op == nir_intrinsic_load_input_vertex ||
+                      op == nir_intrinsic_load_per_vertex_input) {
+                     key->fs_primitive = 3;
+                     per_vertex = true;
+                  }
+               }
+            }
+         }
+      }
+      key->fs_provoking_vtx_last = shader->compiler->gen >= 8 && per_vertex;
       key->fastc_srgb = ~0;
       key->fsamples = ~0;
       memset(key->fsampler_swizzles, 0xff, sizeof(key->fsampler_swizzles));
@@ -864,7 +969,7 @@ ir3_setup_used_key(struct ir3_shader *shader)
        * enabled:
        */
       key->force_dual_color_blend = shader->compiler->options.dual_color_blend_by_location;
-   } else if (mesa_shader_stage_is_compute(info->stage)) {
+   } else if (ir3_stage_is_compute(info->stage)) {
       key->fastc_srgb = ~0;
       key->fsamples = ~0;
       memset(key->fsampler_swizzles, 0xff, sizeof(key->fsampler_swizzles));
@@ -1013,6 +1118,8 @@ ir3_shader_from_nir(struct ir3_compiler *compiler, nir_shader *nir,
    translate_xfb_info(nir, &shader->stream_output);
    shader->options = *options;
    shader->nir = nir;
+   if (mesa_shader_stage_is_mesh(shader->type))
+      shader->cs.req_local_mem = nir->info.shared_size;
 
    ir3_disk_cache_init_shader_key(compiler, shader);
 

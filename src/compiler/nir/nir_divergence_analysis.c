@@ -763,9 +763,11 @@ visit_intrinsic(nir_intrinsic_instr *instr, struct divergence_state *state)
    case nir_intrinsic_ddx:
    case nir_intrinsic_ddx_fine:
    case nir_intrinsic_ddx_coarse:
+   case nir_intrinsic_ddx_3d_ir3:
    case nir_intrinsic_ddy:
    case nir_intrinsic_ddy_fine:
    case nir_intrinsic_ddy_coarse:
+   case nir_intrinsic_ddy_3d_ir3:
    case nir_intrinsic_ballot_bitfield_extract:
    case nir_intrinsic_ballot_find_lsb:
    case nir_intrinsic_ballot_find_msb:
@@ -792,6 +794,8 @@ visit_intrinsic(nir_intrinsic_instr *instr, struct divergence_state *state)
    case nir_intrinsic_load_uniform:
    case nir_intrinsic_load_constant:
    case nir_intrinsic_load_sample_pos_from_id:
+   case nir_intrinsic_load_sample_pos_from_id_ir3:
+   case nir_intrinsic_select_barycentric_at_center_ir3:
    case nir_intrinsic_load_kernel_input:
    case nir_intrinsic_load_task_payload:
    case nir_intrinsic_load_buffer_amd:
@@ -933,6 +937,7 @@ visit_intrinsic(nir_intrinsic_instr *instr, struct divergence_state *state)
    case nir_intrinsic_load_barycentric_at_offset:
    case nir_intrinsic_load_barycentric_at_offset_nv:
    case nir_intrinsic_load_barycentric_coord_pixel:
+   case nir_intrinsic_load_barycentric_coord_ir3:
    case nir_intrinsic_load_barycentric_coord_centroid:
    case nir_intrinsic_load_barycentric_coord_sample:
    case nir_intrinsic_load_barycentric_coord_at_sample:

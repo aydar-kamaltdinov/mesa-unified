@@ -988,7 +988,10 @@ static void
 apply_push_consts_load_macro(struct ir3_legalize_ctx *ctx,
                              struct ir3_block *block)
 {
-   foreach_instr (n, &block->instr_list) {
+   /* Native ELF 0xad9a60..0xad9bc0 expands every copy: API push constants
+    * and AQE DrawID/ViewIndex can coexist in the same preamble block.
+    */
+   foreach_instr_safe (n, &block->instr_list) {
       if (n->opc == OPC_PUSH_CONSTS_LOAD_MACRO) {
          struct ir3_instruction *stsc =
             ir3_instr_create_at(ir3_after_instr(n), OPC_STSC, 0, 2);
@@ -1007,9 +1010,6 @@ apply_push_consts_load_macro(struct ir3_legalize_ctx *ctx,
          }
 
          list_delinit(&n->node);
-         break;
-      } else if (!is_meta(n)) {
-         break;
       }
    }
 }
@@ -1629,11 +1629,12 @@ dbg_nop_sched(struct ir3 *ir, struct ir3_shader_variant *so)
 }
 
 static void
-dbg_expand_rpt(struct ir3 *ir)
+expand_rpt(struct ir3 *ir, bool cat4_only)
 {
    foreach_block (block, &ir->block_list) {
       foreach_instr_safe (instr, &block->instr_list) {
-         if (instr->repeat == 0 || instr->opc == OPC_NOP ||
+         if ((cat4_only && opc_cat(instr->opc) != 4) ||
+             instr->repeat == 0 || instr->opc == OPC_NOP ||
              instr->opc == OPC_SWZ || instr->opc == OPC_GAT ||
              instr->opc == OPC_SCT) {
             continue;
@@ -2632,8 +2633,9 @@ ir3_legalize(struct ir3 *ir, struct ir3_shader_variant *so, int *max_bary,
 
    assert(ctx->early_input_release || ctx->compiler->gen >= 5);
 
-   if (ir3_shader_debug & IR3_DBG_EXPANDRPT) {
-      dbg_expand_rpt(ir);
+   if ((ir3_shader_debug & IR3_DBG_EXPANDRPT) ||
+       ir->compiler->info->props.has_cat4_rpt_quirk) {
+      expand_rpt(ir, !(ir3_shader_debug & IR3_DBG_EXPANDRPT));
    }
 
    /* process each block: */

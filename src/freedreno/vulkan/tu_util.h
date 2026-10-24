@@ -166,7 +166,7 @@ tu_framebuffer_get_tiling_config(struct tu_framebuffer *fb,
                                  int gmem_layout,
                                  uint32_t divisor);
 
-#define TU_STAGE_MASK ((1 << MESA_SHADER_STAGES) - 1)
+#define TU_STAGE_MASK ((1 << MESA_SHADER_MESH_STAGES) - 1)
 
 #define tu_foreach_stage(stage, stage_bits)                                  \
    for (mesa_shader_stage stage,                                               \
@@ -184,7 +184,7 @@ tu_msaa_samples(uint32_t samples)
 static inline uint32_t
 tu6_stage2opcode(mesa_shader_stage stage)
 {
-   if (stage == MESA_SHADER_FRAGMENT || stage == MESA_SHADER_COMPUTE)
+   if (stage == MESA_SHADER_FRAGMENT || mesa_shader_stage_uses_workgroup(stage))
       return CP_LOAD_STATE6_FRAG;
    return CP_LOAD_STATE6_GEOM;
 }
@@ -192,12 +192,19 @@ tu6_stage2opcode(mesa_shader_stage stage)
 static inline enum a6xx_state_block
 tu6_stage2texsb(mesa_shader_stage stage)
 {
+   /* AQE TS/MS keep their shader identity but use the compute state bank,
+    * just as the recovered stage6/7 CP_LOAD_STATE6 packets do.
+    */
+   if (mesa_shader_stage_uses_workgroup(stage))
+      return SB6_CS_TEX;
    return (enum a6xx_state_block) (SB6_VS_TEX + stage);
 }
 
 static inline enum a6xx_state_block
 tu6_stage2shadersb(mesa_shader_stage stage)
 {
+   if (mesa_shader_stage_uses_workgroup(stage))
+      return SB6_CS_SHADER;
    return (enum a6xx_state_block) (SB6_VS_SHADER + stage);
 }
 

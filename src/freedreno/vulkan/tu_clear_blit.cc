@@ -23,6 +23,9 @@
 #include "tu_descriptor_set.h"
 #include "tu_formats.h"
 #include "tu_image.h"
+#include "tu_indirect_copy_format.h"
+#include "tu_nir_indirect_copy.h"
+#include "tu_nir_resolve.h"
 #include "tu_lrz.h"
 #include "tu_scratch_ram.h"
 #include "tu_tracepoints.h"
@@ -162,8 +165,15 @@ tu_quantize_float32_for_unorm_depth(float val, int bits)
 }
 
 static uint32_t
-tu_pack_float32_for_d32(float val)
+tu_pack_float32_for_d32(const struct tu_device *device, float val)
 {
+   /* GameSir preserves the original D32 payload when unrestricted depth is
+    * enabled, including in 2D, shader and event clear paths. UNORM formats
+    * continue to use their normalized depth conversion.
+    */
+   if (device->vk.enabled_extensions.EXT_depth_range_unrestricted)
+      return fui(val);
+
    if (!(val > 0.0f) || val < 0x1p-126f)
       return fui(0.0f);
 
@@ -323,7 +333,7 @@ r2d_clear_value(struct tu_cmd_buffer *cmd,
       break;
    case PIPE_FORMAT_Z32_FLOAT:
       /* R2D_FLOAT32 */
-      clear_value[0] = tu_pack_float32_for_d32(val->depthStencil.depth);
+      clear_value[0] = tu_pack_float32_for_d32(cmd->device, val->depthStencil.depth);
       break;
    case PIPE_FORMAT_S8_UINT:
       clear_value[0] = val->depthStencil.stencil;
@@ -1055,6 +1065,30 @@ tu_init_clear_blit_shaders(struct tu_device *dev)
       compile_shader(dev, build_ms_resolve_fs_shader(8), 0, &offset, GLOBAL_SH_FS_RESOLVE_MS8);
    }
 
+   compile_shader(dev, tu_nir_copy_memory_to_image_indirect_vs(NULL), 2,
+                  &offset, GLOBAL_SH_VS_INDIRECT_COPY);
+   compile_shader(dev, tu_nir_copy_memory_to_image_indirect_fs(false, NULL), 4,
+                  &offset, GLOBAL_SH_FS_INDIRECT_COPY);
+   compile_shader(dev, tu_nir_copy_memory_to_image_indirect_fs(true, NULL), 4,
+                  &offset, GLOBAL_SH_FS_INDIRECT_COPY_UINT);
+
+   compile_shader(dev, tu_nir_resolve_fs(VK_RESOLVE_MODE_MIN_BIT, false, NULL),
+                  0, &offset, GLOBAL_SH_FS_RESOLVE_FLOAT_MIN);
+   compile_shader(dev, tu_nir_resolve_fs(VK_RESOLVE_MODE_MAX_BIT, false, NULL),
+                  0, &offset, GLOBAL_SH_FS_RESOLVE_FLOAT_MAX);
+   compile_shader(dev, tu_nir_resolve_fs(VK_RESOLVE_MODE_AVERAGE_BIT, false, NULL),
+                  0, &offset, GLOBAL_SH_FS_RESOLVE_FLOAT_AVERAGE);
+   compile_shader(dev, tu_nir_resolve_fs(VK_RESOLVE_MODE_MIN_BIT, true, NULL),
+                  0, &offset, GLOBAL_SH_FS_RESOLVE_UINT_MIN);
+   compile_shader(dev, tu_nir_resolve_fs(VK_RESOLVE_MODE_MAX_BIT, true, NULL),
+                  0, &offset, GLOBAL_SH_FS_RESOLVE_UINT_MAX);
+   compile_shader(dev, tu_nir_resolve_d24_min_fs(NULL),
+                  0, &offset, GLOBAL_SH_FS_RESOLVE_D24_MIN);
+   compile_shader(dev, tu_nir_resolve_d24_fs(VK_RESOLVE_MODE_MAX_BIT, NULL),
+                  0, &offset, GLOBAL_SH_FS_RESOLVE_D24_MAX);
+   compile_shader(dev, tu_nir_resolve_d24_fs(VK_RESOLVE_MODE_AVERAGE_BIT, NULL),
+                  0, &offset, GLOBAL_SH_FS_RESOLVE_D24_AVERAGE);
+
    for (uint32_t num_rts = 0; num_rts <= MAX_RTS; num_rts++) {
       compile_shader(dev, build_clear_fs_shader(num_rts), num_rts, &offset,
                      (enum global_shader) (GLOBAL_SH_FS_CLEAR0 + num_rts));
@@ -1074,15 +1108,88 @@ enum r3d_type {
    R3D_CLEAR,
    R3D_BLIT,
    R3D_MULTI_BLIT,
+   R3D_INDIRECT_COPY,
+   R3D_INDIRECT_COPY_UINT,
 };
+
+enum r3d_blit_param {
+   R3D_Z_SCALE = 1 << 0,
+   R3D_DST_GMEM = 1 << 1,
+   R3D_COPY = 1 << 2,
+   R3D_USE_MULTI_BLIT = 1 << 3,
+   R3D_OUTSIDE_PASS = 1 << 4,
+   R3D_OVERLAPPING = 1 << 5,
+   R3D_RESOLVE_MIN = 1 << 6,
+   R3D_RESOLVE_MAX = 1 << 7,
+   R3D_RESOLVE_AVERAGE = 1 << 8,
+   R3D_RESOLVE_UINT = 1 << 9,
+   R3D_RESOLVE_D24_MIN = 1 << 10,
+   R3D_INDIRECT = 1 << 11,
+   R3D_INDIRECT_UINT = 1 << 12,
+   /* Source correction for byte-encoded depth MAX/AVERAGE. */
+   R3D_RESOLVE_D24 = 1 << 13,
+   R3D_RESOLVE_SAMPLE_ZERO = 1 << 14,
+};
+
+static unsigned
+tu_resolve_blit_param(VkFormat format, VkResolveModeFlagBits mode)
+{
+   if (mode == VK_RESOLVE_MODE_SAMPLE_ZERO_BIT)
+      return R3D_RESOLVE_SAMPLE_ZERO;
+   unsigned param;
+   switch (mode) {
+   case VK_RESOLVE_MODE_MIN_BIT: param = R3D_RESOLVE_MIN; break;
+   case VK_RESOLVE_MODE_MAX_BIT: param = R3D_RESOLVE_MAX; break;
+   case VK_RESOLVE_MODE_AVERAGE_BIT: param = R3D_RESOLVE_AVERAGE; break;
+   default: return 0;
+   }
+   if (util_format_is_pure_integer(vk_format_to_pipe_format(format)))
+      param |= R3D_RESOLVE_UINT;
+   if (format == VK_FORMAT_X8_D24_UNORM_PACK32 ||
+       format == VK_FORMAT_D24_UNORM_S8_UINT)
+      param |= mode == VK_RESOLVE_MODE_MIN_BIT ? R3D_RESOLVE_D24_MIN :
+                                               R3D_RESOLVE_D24;
+   return param;
+}
+
+/* Original mode flags reproduce GameSir's selection. R3D_RESOLVE_D24 adds
+ * depth-aware MAX/AVERAGE instead of reducing encoded bytes independently.
+ * Commands must provide matching depth/stencil views and component masks.
+ */
+static enum global_shader
+tu_r3d_resolve_shader_idx(unsigned blit_param)
+{
+   if (blit_param & R3D_RESOLVE_D24_MIN)
+      return GLOBAL_SH_FS_RESOLVE_D24_MIN;
+   if (blit_param & R3D_RESOLVE_D24) {
+      if (blit_param & R3D_RESOLVE_MIN)
+         return GLOBAL_SH_FS_RESOLVE_D24_MIN;
+      if (blit_param & R3D_RESOLVE_MAX)
+         return GLOBAL_SH_FS_RESOLVE_D24_MAX;
+      if (blit_param & R3D_RESOLVE_AVERAGE)
+         return GLOBAL_SH_FS_RESOLVE_D24_AVERAGE;
+      return GLOBAL_SH_COUNT;
+   }
+   if (blit_param & R3D_RESOLVE_MIN)
+      return blit_param & R3D_RESOLVE_UINT ? GLOBAL_SH_FS_RESOLVE_UINT_MIN :
+                                            GLOBAL_SH_FS_RESOLVE_FLOAT_MIN;
+   if (blit_param & R3D_RESOLVE_MAX)
+      return blit_param & R3D_RESOLVE_UINT ? GLOBAL_SH_FS_RESOLVE_UINT_MAX :
+                                            GLOBAL_SH_FS_RESOLVE_FLOAT_MAX;
+   if (blit_param & R3D_RESOLVE_AVERAGE)
+      return GLOBAL_SH_FS_RESOLVE_FLOAT_AVERAGE;
+   return GLOBAL_SH_COUNT;
+}
 
 template <chip CHIP>
 static void
 r3d_common(struct tu_cmd_buffer *cmd, struct tu_cs *cs, enum r3d_type type,
-           uint32_t rts_mask, bool z_scale, VkSampleCountFlagBits src_samples,
+           uint32_t rts_mask, unsigned blit_param, VkSampleCountFlagBits src_samples,
            VkSampleCountFlagBits dst_samples)
 {
    enum global_shader vs_id =
+      type == R3D_INDIRECT_COPY || type == R3D_INDIRECT_COPY_UINT ?
+      GLOBAL_SH_VS_INDIRECT_COPY :
       type == R3D_CLEAR ? GLOBAL_SH_VS_CLEAR :
       (type == R3D_MULTI_BLIT ? GLOBAL_SH_VS_MULTI_BLIT : GLOBAL_SH_VS_BLIT);
 
@@ -1091,8 +1198,17 @@ r3d_common(struct tu_cmd_buffer *cmd, struct tu_cs *cs, enum r3d_type type,
 
    enum global_shader fs_id = GLOBAL_SH_FS_BLIT;
 
-   if (z_scale)
+   if (type == R3D_INDIRECT_COPY || type == R3D_INDIRECT_COPY_UINT)
+      fs_id = type == R3D_INDIRECT_COPY_UINT ? GLOBAL_SH_FS_INDIRECT_COPY_UINT :
+                                               GLOBAL_SH_FS_INDIRECT_COPY;
+   else if (blit_param & R3D_Z_SCALE)
       fs_id = GLOBAL_SH_FS_BLIT_ZSCALE;
+   else if (src_samples != VK_SAMPLE_COUNT_1_BIT &&
+            (blit_param & R3D_RESOLVE_SAMPLE_ZERO))
+      fs_id = GLOBAL_SH_FS_COPY_MS;
+   else if (src_samples != VK_SAMPLE_COUNT_1_BIT &&
+            tu_r3d_resolve_shader_idx(blit_param) != GLOBAL_SH_COUNT)
+      fs_id = tu_r3d_resolve_shader_idx(blit_param);
    else if (src_samples != VK_SAMPLE_COUNT_1_BIT &&
             dst_samples == VK_SAMPLE_COUNT_1_BIT) {
       /* AK: a real resolve (samples -> 1), as opposed to the existing
@@ -1359,7 +1475,7 @@ r3d_clear_value(struct tu_cmd_buffer *cmd, struct tu_cs *cs, enum pipe_format fo
       coords[3] = 0;
       break;
    case PIPE_FORMAT_Z32_FLOAT:
-      coords[0] = tu_pack_float32_for_d32(val->depthStencil.depth);
+      coords[0] = tu_pack_float32_for_d32(cmd->device, val->depthStencil.depth);
       coords[1] = 0;
       coords[2] = 0;
       coords[3] = 0;
@@ -1777,14 +1893,7 @@ aspect_write_mask_generic_clear(enum pipe_format format, VkImageAspectFlags aspe
    return mask;
 }
 
-enum r3d_blit_param {
-   R3D_Z_SCALE = 1 << 0,
-   R3D_DST_GMEM = 1 << 1,
-   R3D_COPY = 1 << 2,
-   R3D_USE_MULTI_BLIT = 1 << 3,
-   R3D_OUTSIDE_PASS = 1 << 4,
-   R3D_OVERLAPPING = 1 << 5,
-};
+
 
 template <chip CHIP>
 static void
@@ -1841,9 +1950,12 @@ r3d_setup(struct tu_cmd_buffer *cmd,
       }
    }
 
-   const enum r3d_type type = (clear) ? R3D_CLEAR :
+   const enum r3d_type type =
+      (blit_param & R3D_INDIRECT) ?
+         ((blit_param & R3D_INDIRECT_UINT) ? R3D_INDIRECT_COPY_UINT : R3D_INDIRECT_COPY) :
+      (clear) ? R3D_CLEAR :
       ((blit_param & R3D_USE_MULTI_BLIT) ? R3D_MULTI_BLIT : R3D_BLIT);
-   r3d_common<CHIP>(cmd, cs, type, 1, blit_param & R3D_Z_SCALE, src_samples,
+   r3d_common<CHIP>(cmd, cs, type, 1, blit_param, src_samples,
                     dst_samples);
 
    tu_cs_emit_regs(cs, A6XX_SP_PS_MRT_CNTL(.mrt = 1));
@@ -1965,6 +2077,11 @@ r3d_teardown(struct tu_cmd_buffer *cmd, struct tu_cs *cs)
    if (cmd->state.prim_generated_query_running_before_rp) {
       tu_emit_event_write<CHIP>(cmd, cs, FD_START_PRIMITIVE_CTRS);
    }
+
+   /* The 3D blit overwrote state that draws normally get from draw states,
+    * so have the next draw re-enable all of them.
+    */
+   cmd->state.dirty |= TU_CMD_DIRTY_DRAW_STATE;
 }
 
 /* blit ops - common interface for 2d/shader paths */
@@ -2095,7 +2212,8 @@ copy_format(VkFormat vk_format, VkImageAspectFlags aspect_mask)
 }
 
 static void
-pack_blit_event_clear_value(const VkClearValue *val, enum pipe_format format, uint32_t clear_value[4])
+pack_blit_event_clear_value(struct tu_cmd_buffer *cmd, const VkClearValue *val,
+                            enum pipe_format format, uint32_t clear_value[4])
 {
    switch (format) {
    case PIPE_FORMAT_Z24X8_UNORM:
@@ -2107,7 +2225,7 @@ pack_blit_event_clear_value(const VkClearValue *val, enum pipe_format format, ui
       clear_value[0] = tu_pack_float32_for_unorm_depth(val->depthStencil.depth, 16);
       return;
    case PIPE_FORMAT_Z32_FLOAT:
-      clear_value[0] = tu_pack_float32_for_d32(val->depthStencil.depth);
+      clear_value[0] = tu_pack_float32_for_d32(cmd->device, val->depthStencil.depth);
       return;
    case PIPE_FORMAT_S8_UINT:
       clear_value[0] = val->depthStencil.stencil;
@@ -2253,7 +2371,7 @@ tu7_generic_layer_clear(struct tu_cmd_buffer *cmd,
    const struct fdl6_view *fdl_view = tu_image_view_fdl_view(iview, separate_stencil);
 
    uint32_t clear_vals[4] = {};
-   pack_blit_event_clear_value(value, format, clear_vals);
+   pack_blit_event_clear_value(cmd, value, format, clear_vals);
 
    tu_cs_emit_pkt4(cs, REG_A6XX_RB_RESOLVE_CLEAR_COLOR_DW0, 4);
    tu_cs_emit_array(cs, clear_vals, 4);
@@ -2544,6 +2662,73 @@ tu_image_view_copy(struct fdl6_view *iview,
 {
    tu_image_view_copy_blit<CHIP>(iview, image, format, subres, layer, false);
 }
+
+/* GPU-written copy records supply the rectangle and source address.  The
+ * CPU subresource array supplies layers, including the starting 3D slice:
+ * imageOffset.z/imageExtent.depth are not available while recording.
+ */
+template <chip CHIP>
+VKAPI_ATTR void VKAPI_CALL
+tu_CmdCopyMemoryToImageIndirectKHR(
+   VkCommandBuffer commandBuffer,
+   const VkCopyMemoryToImageIndirectInfoKHR *info)
+{
+   VK_FROM_HANDLE(tu_cmd_buffer, cmd, commandBuffer);
+   VK_FROM_HANDLE(tu_image, image, info->dstImage);
+   struct tu_cs *cs = &cmd->cs;
+   if (!info->copyCount)
+      return;
+
+   /* This transfer uses shader global loads, rather than the texture path,
+    * to read both the indirect records and source pixels.
+    */
+   tu_flush_for_access<CHIP>(&cmd->state.cache, TU_ACCESS_NONE,
+      (tu_cmd_access_mask)(TU_ACCESS_UCHE_READ | TU_ACCESS_CCU_COLOR_WRITE));
+
+   for (uint32_t i = 0; i < info->copyCount; i++) {
+      const VkImageSubresourceLayers *subres = &info->pImageSubresources[i];
+      enum pipe_format dst_format = copy_format(image->vk.format, subres->aspectMask);
+      enum pipe_format src_format = dst_format;
+      if (image->vk.format == VK_FORMAT_D24_UNORM_S8_UINT &&
+          subres->aspectMask == VK_IMAGE_ASPECT_STENCIL_BIT)
+         src_format = PIPE_FORMAT_S8_UINT;
+
+      const struct tu_indirect_copy_format format =
+         tu_get_indirect_copy_format(src_format, dst_format, subres->aspectMask);
+      const struct util_format_description *desc = util_format_description(src_format);
+      r3d_setup<CHIP>(cmd, cs, src_format, dst_format, subres->aspectMask,
+                     R3D_INDIRECT | (format.integer ? R3D_INDIRECT_UINT : 0),
+                     false, image->layout[0].ubwc,
+                     VK_SAMPLE_COUNT_1_BIT, VK_SAMPLE_COUNT_1_BIT);
+
+      struct fdl6_view dst;
+      tu_image_view_copy<CHIP>(&dst, image, dst_format, subres, 0);
+      const uint32_t layers = image->vk.image_type == VK_IMAGE_TYPE_3D ?
+         subres->layerCount : vk_image_subresource_layer_count(&image->vk, subres);
+      const uint64_t address = info->copyAddressRange.address +
+                               uint64_t(i) * info->copyAddressRange.stride;
+      for (uint32_t layer = 0; layer < layers; layer++) {
+         const uint32_t constants[16] = {
+            uint32_t(address), uint32_t(address >> 32), layer, 0,
+            desc->block.width, desc->block.height, desc->block.bits / 8,
+            uint32_t(format.kind), format.components, format.srgb,
+            format.stencil_in_z24, 0,
+            format.channel[0], format.channel[1], format.channel[2], format.channel[3],
+         };
+         tu6_emit_blit_consts_load(cmd, cs, CP_LOAD_STATE6_GEOM, SB6_VS_SHADER,
+                                   0, constants, 2);
+         tu6_emit_blit_consts_load(cmd, cs, CP_LOAD_STATE6_FRAG, SB6_FS_SHADER,
+                                   0, constants, 4);
+         r3d_dst<CHIP>(cs, &dst, layer, src_format);
+         r3d_run(cmd, cs);
+      }
+      r3d_teardown<CHIP>(cmd, cs);
+   }
+
+   if (image->lrz_layout.lrz_total_size)
+      tu_disable_lrz<CHIP>(cmd, cs, image);
+}
+TU_GENX(tu_CmdCopyMemoryToImageIndirectKHR);
 
 template<chip CHIP>
 static void
@@ -3858,6 +4043,88 @@ tu_CmdFillBuffer(VkCommandBuffer commandBuffer,
 }
 TU_GENX(tu_CmdFillBuffer);
 
+/* Explicit depth/stencil and maintenance10 resolve modes use the shader
+ * path. Keep ordinary color resolves on the existing A2D path below.
+ */
+template <chip CHIP>
+static VkImageAspectFlags
+tu_resolve_image_region(struct tu_cmd_buffer *cmd,
+                         struct tu_cs *cs,
+                         struct tu_image *src_image,
+                         struct tu_image *dst_image,
+                         const VkImageResolve2 *region,
+                         const VkResolveImageModeInfoKHR *mode_info)
+{
+   const VkResolveModeFlagBits depth_mode = mode_info ? mode_info->resolveMode :
+      VK_RESOLVE_MODE_SAMPLE_ZERO_BIT;
+   const VkResolveModeFlagBits stencil_mode = mode_info ? mode_info->stencilResolveMode :
+      VK_RESOLVE_MODE_SAMPLE_ZERO_BIT;
+   const bool skip_transfer = mode_info &&
+      (mode_info->flags & VK_RESOLVE_IMAGE_SKIP_TRANSFER_FUNCTION_BIT_KHR);
+   const uint32_t layers = MAX2(region->extent.depth,
+      vk_image_subresource_layer_count(&dst_image->vk, &region->dstSubresource));
+   if (!layers)
+      return 0;
+
+   const VkImageAspectFlags aspects = region->srcSubresource.aspectMask;
+   VkImageAspectFlags written = 0;
+   auto resolve = [&](VkImageAspectFlags mask, VkResolveModeFlagBits mode) {
+      if (mode == VK_RESOLVE_MODE_NONE)
+         return;
+
+      enum pipe_format src_format = tu_aspects_to_plane(src_image->vk.format, mask);
+      enum pipe_format dst_format = tu_aspects_to_plane(dst_image->vk.format, mask);
+      if (skip_transfer && mask == VK_IMAGE_ASPECT_COLOR_BIT) {
+         src_format = vk_format_to_pipe_format(vk_format_srgb_to_linear(src_image->vk.format));
+         dst_format = vk_format_to_pipe_format(vk_format_srgb_to_linear(dst_image->vk.format));
+      }
+
+      VkImageSubresourceLayers src_subresource = region->srcSubresource;
+      VkImageSubresourceLayers dst_subresource = region->dstSubresource;
+      src_subresource.aspectMask = dst_subresource.aspectMask = mask;
+      struct fdl6_view src, dst;
+      tu_image_view_copy<CHIP>(&src, src_image, src_format, &src_subresource,
+                               region->srcOffset.z);
+      tu_image_view_copy<CHIP>(&dst, dst_image, dst_format, &dst_subresource,
+                               region->dstOffset.z);
+
+      const struct blit_ops *ops = &r3d_ops<CHIP>;
+      ops->setup(cmd, cs, src_format, dst_format, mask,
+                 tu_resolve_blit_param(vk_format_from_pipe_format(src_format), mode),
+                 false, dst.ubwc_enabled,
+                 (VkSampleCountFlagBits)src_image->layout[0].nr_samples,
+                 VK_SAMPLE_COUNT_1_BIT);
+      coords(ops, cmd, cs, region->dstOffset, region->srcOffset, region->extent);
+      for (uint32_t i = 0; i < layers; i++) {
+         ops->src(cmd, cs, &src, i, VK_FILTER_NEAREST, dst_format);
+         ops->dst(cs, &dst, i, src_format);
+         ops->run(cmd, cs);
+      }
+      ops->teardown(cmd, cs);
+      written |= mask;
+   };
+
+   /* D24 depth and stencil share a byte-encoded plane. Equal sample-zero/
+    * MIN modes can reduce both components in one pass; differing modes must
+    * preserve the companion aspect via the render-target write mask.
+    */
+   const bool packed_ds = src_image->vk.format == VK_FORMAT_D24_UNORM_S8_UINT &&
+                          dst_image->vk.format == VK_FORMAT_D24_UNORM_S8_UINT;
+   if (packed_ds && aspects == (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT) &&
+       depth_mode == stencil_mode &&
+       (depth_mode == VK_RESOLVE_MODE_SAMPLE_ZERO_BIT || depth_mode == VK_RESOLVE_MODE_MIN_BIT)) {
+      resolve(aspects, depth_mode);
+   } else {
+      if (aspects & VK_IMAGE_ASPECT_COLOR_BIT)
+         resolve(VK_IMAGE_ASPECT_COLOR_BIT, depth_mode);
+      if (aspects & VK_IMAGE_ASPECT_DEPTH_BIT)
+         resolve(VK_IMAGE_ASPECT_DEPTH_BIT, depth_mode);
+      if (aspects & VK_IMAGE_ASPECT_STENCIL_BIT)
+         resolve(VK_IMAGE_ASPECT_STENCIL_BIT, stencil_mode);
+   }
+   return written;
+}
+
 template <chip CHIP>
 VKAPI_ATTR void VKAPI_CALL
 tu_CmdResolveImage2(VkCommandBuffer commandBuffer,
@@ -3871,6 +4138,28 @@ tu_CmdResolveImage2(VkCommandBuffer commandBuffer,
 
    trace_start_resolve_image(&cmd->trace, &cmd->cs, cmd, src_image->vk.format,
                              dst_image->vk.format);
+
+   const VkResolveImageModeInfoKHR *mode_info =
+      vk_find_struct_const(pResolveImageInfo->pNext, RESOLVE_IMAGE_MODE_INFO_KHR);
+   if (mode_info || vk_format_is_depth_or_stencil(src_image->vk.format)) {
+      VkImageAspectFlags written = 0;
+      for (uint32_t i = 0; i < pResolveImageInfo->regionCount; i++) {
+         written |= tu_resolve_image_region<CHIP>(cmd, cs, src_image, dst_image,
+            &pResolveImageInfo->pRegions[i], mode_info);
+      }
+      if (written) {
+         /* Shader resolves write through the color CCU, including DS images. */
+         tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_CLEAN_COLOR);
+         tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_INVALIDATE_COLOR);
+         tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_INVALIDATE_DEPTH);
+         tu_emit_event_write<CHIP>(cmd, cs, FD_CACHE_INVALIDATE);
+         tu_cs_emit_wfi(cs);
+      }
+      if ((written & VK_IMAGE_ASPECT_DEPTH_BIT) && dst_image->lrz_layout.lrz_total_size)
+         tu_disable_lrz<CHIP>(cmd, cs, dst_image);
+      trace_end_resolve_image(&cmd->trace, cs);
+      return;
+   }
 
    enum pipe_format src_format =
       vk_format_to_pipe_format(src_image->vk.format);
@@ -3911,6 +4200,30 @@ tu_CmdResolveImage2(VkCommandBuffer commandBuffer,
 }
 TU_GENX(tu_CmdResolveImage2);
 
+/* Shader resolves can reinterpret a full depth/stencil view as one plane.
+ * Rebuild the view in the operation's format, preserving its subresource base.
+ */
+template <chip CHIP>
+static const struct fdl6_view *
+tu_resolve_image_view(const struct tu_image_view *iview,
+                      VkFormat format,
+                      bool stencil,
+                      struct fdl6_view *temporary)
+{
+   if (format == iview->vk.format)
+      return tu_image_view_fdl_view(iview, stencil);
+
+   const VkImageSubresourceLayers subresource = {
+      .aspectMask = vk_format_aspects(format),
+      .mipLevel = iview->vk.base_mip_level,
+      .baseArrayLayer = iview->vk.base_array_layer,
+      .layerCount = 1,
+   };
+   tu_image_view_copy<CHIP>(temporary, iview->image,
+                            vk_format_to_pipe_format(format), &subresource, 0);
+   return temporary;
+}
+
 template <chip CHIP>
 static void
 resolve_sysmem(struct tu_cmd_buffer *cmd,
@@ -3924,12 +4237,21 @@ resolve_sysmem(struct tu_cmd_buffer *cmd,
                bool per_layer_rect,
                const VkRect2D *rect,
                bool src_separate_ds,
-               bool dst_separate_ds)
+               bool dst_separate_ds,
+               VkResolveModeFlagBits mode = VK_RESOLVE_MODE_SAMPLE_ZERO_BIT,
+               VkImageAspectFlags resolve_aspects = VK_IMAGE_ASPECT_COLOR_BIT,
+               bool reinterpret_views = false)
 {
+   if (mode == VK_RESOLVE_MODE_NONE)
+      return;
+
+   const bool shader_resolve = mode == VK_RESOLVE_MODE_MIN_BIT ||
+                               mode == VK_RESOLVE_MODE_MAX_BIT ||
+                               mode == VK_RESOLVE_MODE_AVERAGE_BIT;
    const struct blit_ops *ops = &r2d_ops<CHIP>;
 
    /* A2D does not support "unresolve". */
-   if (dst->image->layout[0].nr_samples > 1) {
+   if (shader_resolve || dst->image->layout[0].nr_samples > 1) {
       ops = &r3d_ops<CHIP>;
    }
 
@@ -3938,14 +4260,25 @@ resolve_sysmem(struct tu_cmd_buffer *cmd,
    enum pipe_format src_format = vk_format_to_pipe_format(vk_src_format);
    enum pipe_format dst_format = vk_format_to_pipe_format(vk_dst_format);
 
+   unsigned blit_param =
+      shader_resolve ? tu_resolve_blit_param(vk_src_format, mode) : 0;
+
    bool src_separate_stencil =
       src_separate_ds && (vk_src_format == VK_FORMAT_S8_UINT || vk_dst_format == VK_FORMAT_S8_UINT);
    bool dst_separate_stencil = dst_separate_ds && (vk_dst_format == VK_FORMAT_S8_UINT);
    const struct fdl6_view *src_fdl_view = tu_image_view_fdl_view(src, src_separate_stencil);
    const struct fdl6_view *dst_fdl_view = tu_image_view_fdl_view(dst, dst_separate_stencil);
 
+   struct fdl6_view src_temporary, dst_temporary;
+   if (shader_resolve || reinterpret_views) {
+      src_fdl_view = tu_resolve_image_view<CHIP>(src, vk_src_format,
+                                                src_separate_stencil, &src_temporary);
+      dst_fdl_view = tu_resolve_image_view<CHIP>(dst, vk_dst_format,
+                                                dst_separate_stencil, &dst_temporary);
+   }
+
    ops->setup(cmd, cs, src_format, dst_format,
-              VK_IMAGE_ASPECT_COLOR_BIT, 0, false, dst_fdl_view->ubwc_enabled,
+              resolve_aspects, blit_param, false, dst_fdl_view->ubwc_enabled,
               (VkSampleCountFlagBits)src->image->layout[0].nr_samples,
               (VkSampleCountFlagBits)dst->image->layout[0].nr_samples);
 
@@ -3981,14 +4314,68 @@ tu_resolve_sysmem(struct tu_cmd_buffer *cmd,
                   uint32_t layer_mask,
                   uint32_t layers,
                   bool per_layer_rect,
-                  const VkRect2D *rect)
+                  const VkRect2D *rect,
+                  VkResolveModeFlagBits depth_mode,
+                  VkResolveModeFlagBits stencil_mode,
+                  bool skip_transfer_function)
 {
    assert(src->vk.format == dst->vk.format ||
           (vk_format_is_depth_or_stencil(src->image->vk.format) &&
            vk_format_is_depth_or_stencil(dst->image->vk.format)));
 
+   const VkFormat src_format = skip_transfer_function ?
+      vk_format_srgb_to_linear(src->vk.format) : src->vk.format;
+   const VkFormat dst_format = skip_transfer_function ?
+      vk_format_srgb_to_linear(dst->vk.format) : dst->vk.format;
+
    bool src_separate_ds = src->image->vk.format == VK_FORMAT_D32_SFLOAT_S8_UINT;
    bool dst_separate_ds = dst->image->vk.format == VK_FORMAT_D32_SFLOAT_S8_UINT;
+
+   const VkResolveModeFlags shader_modes = VK_RESOLVE_MODE_MIN_BIT |
+      VK_RESOLVE_MODE_MAX_BIT | VK_RESOLVE_MODE_AVERAGE_BIT;
+   if ((depth_mode | stencil_mode) & shader_modes) {
+      VkImageAspectFlags aspects = vk_format_aspects(src_format) &
+                                   vk_format_aspects(dst_format);
+      if (dst_separate_ds) {
+         resolve_sysmem<CHIP>(cmd, cs, VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT,
+            src, dst, layer_mask, layers, per_layer_rect, rect,
+            src_separate_ds, true,
+            aspects & VK_IMAGE_ASPECT_DEPTH_BIT ? depth_mode : VK_RESOLVE_MODE_NONE,
+            VK_IMAGE_ASPECT_DEPTH_BIT);
+         resolve_sysmem<CHIP>(cmd, cs, VK_FORMAT_S8_UINT, VK_FORMAT_S8_UINT,
+            src, dst, layer_mask, layers, per_layer_rect, rect,
+            src_separate_ds, true,
+            aspects & VK_IMAGE_ASPECT_STENCIL_BIT ? stencil_mode : VK_RESOLVE_MODE_NONE,
+            VK_IMAGE_ASPECT_STENCIL_BIT);
+      } else if (depth_mode == stencil_mode &&
+                 aspects == (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT)) {
+         resolve_sysmem<CHIP>(cmd, cs, src_format, dst_format,
+            src, dst, layer_mask, layers, per_layer_rect, rect,
+            src_separate_ds, false, depth_mode, aspects);
+      } else {
+         if (aspects & VK_IMAGE_ASPECT_DEPTH_BIT)
+            resolve_sysmem<CHIP>(cmd, cs, src_format, dst_format,
+               src, dst, layer_mask, layers, per_layer_rect, rect,
+               src_separate_ds, false, depth_mode, VK_IMAGE_ASPECT_DEPTH_BIT);
+         if (aspects & VK_IMAGE_ASPECT_STENCIL_BIT)
+            resolve_sysmem<CHIP>(cmd, cs, src_format, dst_format,
+               src, dst, layer_mask, layers, per_layer_rect, rect,
+               src_separate_ds, false, stencil_mode, VK_IMAGE_ASPECT_STENCIL_BIT);
+      }
+      if ((aspects & VK_IMAGE_ASPECT_DEPTH_BIT) && depth_mode != VK_RESOLVE_MODE_NONE &&
+          dst->image->lrz_layout.lrz_total_size)
+         tu_disable_lrz<CHIP>(cmd, cs, dst->image);
+      /* The resolve FS writes depth/stencil through the color CCU. Drain it
+       * before a later subpass uses either the depth CCU or UCHE for the same
+       * image. This conservative boundary is confined to the new modes.
+       */
+      tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_CLEAN_COLOR);
+      tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_INVALIDATE_COLOR);
+      tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_INVALIDATE_DEPTH);
+      tu_emit_event_write<CHIP>(cmd, cs, FD_CACHE_INVALIDATE);
+      tu_cs_emit_wfi(cs);
+      return;
+   }
 
    if (dst_separate_ds) {
       resolve_sysmem<CHIP>(cmd, cs, VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT,
@@ -3998,9 +4385,11 @@ tu_resolve_sysmem(struct tu_cmd_buffer *cmd,
                      src, dst, layer_mask, layers, per_layer_rect, rect,
                      src_separate_ds, dst_separate_ds);
    } else {
-      resolve_sysmem<CHIP>(cmd, cs, src->vk.format, dst->vk.format,
+      resolve_sysmem<CHIP>(cmd, cs, src_format, dst_format,
                      src, dst, layer_mask, layers, per_layer_rect, rect,
-                     src_separate_ds, dst_separate_ds);
+                     src_separate_ds, dst_separate_ds,
+                     VK_RESOLVE_MODE_SAMPLE_ZERO_BIT, VK_IMAGE_ASPECT_COLOR_BIT,
+                     skip_transfer_function);
    }
 }
 TU_GENX(tu_resolve_sysmem);
@@ -4164,7 +4553,7 @@ clear_image_event_blit(struct tu_cmd_buffer *cmd,
                 .buffer_id = buffer_id));
 
    uint32_t clear_vals[4] = {};
-   pack_blit_event_clear_value(clear_value, format, clear_vals);
+   pack_blit_event_clear_value(cmd, clear_value, format, clear_vals);
    tu_cs_emit_pkt4(cs, REG_A6XX_RB_RESOLVE_CLEAR_COLOR_DW0, 4);
    tu_cs_emit_array(cs, clear_vals, 4);
 
@@ -4525,12 +4914,14 @@ tu_clear_sysmem_attachments(struct tu_cmd_buffer *cmd,
    tu_cs_emit_regs(cs, A6XX_RB_LRZ_CNTL(0));
 
    tu_cs_emit_regs(cs, A6XX_RB_DEPTH_PLANE_CNTL());
+   const bool unrestricted_depth =
+      cmd->device->vk.enabled_extensions.EXT_depth_range_unrestricted;
    tu_cs_emit_regs(cs, A6XX_RB_DEPTH_CNTL(
          .z_test_enable = z_clear,
          .z_write_enable = z_clear,
          .zfunc = FUNC_ALWAYS,
-         .z_clamp_enable = CHIP >= A7XX,
-         .o_depth_01_clamp_en = CHIP >= A8XX));
+         .z_clamp_enable = CHIP >= A7XX && !unrestricted_depth,
+         .o_depth_01_clamp_en = CHIP >= A8XX && !unrestricted_depth));
    tu_cs_emit_regs(cs, A6XX_RB_DEPTH_BOUND_MIN(0.0),
                        A6XX_RB_DEPTH_BOUND_MAX(1.0));
    tu_cs_emit_regs(cs, GRAS_SU_DEPTH_CNTL(CHIP, z_clear));
@@ -4656,7 +5047,7 @@ clear_gmem_attachment(struct tu_cmd_buffer *cmd,
    tu_cs_emit(cs, 0);
 
    uint32_t clear_vals[4] = {};
-   pack_blit_event_clear_value(value, format, clear_vals);
+   pack_blit_event_clear_value(cmd, value, format, clear_vals);
 
    tu_cs_emit_pkt4(cs, REG_A6XX_RB_RESOLVE_CLEAR_COLOR_DW0, 4);
    tu_cs_emit_array(cs, clear_vals, 4);
@@ -5428,7 +5819,7 @@ tu_emit_blit(struct tu_cmd_buffer *cmd,
       clear_mask = aspect_write_mask_generic_clear(format, aspect_mask);
 
       uint32_t clear_vals[4] = {};
-      pack_blit_event_clear_value(clear_value, format, clear_vals);
+      pack_blit_event_clear_value(cmd, clear_value, format, clear_vals);
 
       tu_cs_emit_pkt4(cs, REG_A6XX_RB_RESOLVE_CLEAR_COLOR_DW0, 4);
       tu_cs_emit_array(cs, clear_vals, 4);
@@ -5462,6 +5853,17 @@ tu_emit_blit(struct tu_cmd_buffer *cmd,
 
    tu_flush_for_access<CHIP>(&cmd->state.cache, TU_ACCESS_BLIT_WRITE_GMEM,
                              TU_ACCESS_NONE);
+}
+
+bool
+tu_gmem_color_resolve_needs_shader(uint32_t chip, VkFormat format, bool /*has_fdm*/)
+{
+   /* Original A8 store route selects non-integer color independently of FDM
+    * (ELF0x90d218). The descriptor helper already handles FDM offsets.
+    */
+   return chip >= 8 &&
+          vk_format_aspects(format) == VK_IMAGE_ASPECT_COLOR_BIT &&
+          !util_format_is_pure_integer(vk_format_to_pipe_format(format));
 }
 
 static bool
@@ -5823,10 +6225,22 @@ store_3d_blit(struct tu_cmd_buffer *cmd,
               const VkRect2D *render_area,
               uint32_t layer,
               uint32_t gmem_offset,
-              uint32_t cpp)
+              uint32_t cpp,
+              VkSampleCountFlagBits src_samples = (VkSampleCountFlagBits)0,
+              unsigned blit_param = 0,
+              VkImageAspectFlags aspects = VK_IMAGE_ASPECT_COLOR_BIT,
+              bool reinterpret_views = false)
 {
    const struct fdl6_view *src_fdl_view = tu_image_view_fdl_view(src_iview, separate_stencil);
    const struct fdl6_view *dst_fdl_view = tu_image_view_fdl_view(dst_iview, separate_stencil);
+
+   struct fdl6_view src_temporary, dst_temporary;
+   if (reinterpret_views) {
+      src_fdl_view = tu_resolve_image_view<CHIP>(src_iview,
+         vk_format_from_pipe_format(src_format), separate_stencil, &src_temporary);
+      dst_fdl_view = tu_resolve_image_view<CHIP>(dst_iview,
+         vk_format_from_pipe_format(dst_format), separate_stencil, &dst_temporary);
+   }
 
    /* RB_CNTL/GRAS_SC_BIN_CNTL are normally only set once and they
     * aren't set until we know whether we're HW binning or not, and we want to
@@ -5841,8 +6255,9 @@ store_3d_blit(struct tu_cmd_buffer *cmd,
       cs->reg_to_scratch(tu_scratch(store_3d_blit.RB_BUFFER_CNTL), RB_BUFFER_CNTL(CHIP), 1);
    }
 
-   r3d_setup<CHIP>(cmd, cs, src_format, dst_format, VK_IMAGE_ASPECT_COLOR_BIT,
-                   0, false, dst_fdl_view->ubwc_enabled, dst_samples, dst_samples);
+   r3d_setup<CHIP>(cmd, cs, src_format, dst_format, aspects,
+                   blit_param, false, dst_fdl_view->ubwc_enabled,
+                   src_samples ? src_samples : dst_samples, dst_samples);
 
    r3d_coords(cmd, cs, render_area->offset, render_area->offset, render_area->extent);
 
@@ -6038,6 +6453,9 @@ tu_resolve_gmem_attachment(struct tu_cmd_buffer *cmd,
    /* First-version scope, see the comment on resolve_3d_blit(). Bail out
     * to the existing store-then-load-back path for anything outside it --
     * correctness over coverage for this prototype. */
+   /* The prototype does not rebuild linear views for skip-transfer. */
+   if (dst->resolve_skip_transfer_function && vk_format_is_srgb(dst->format))
+      return false;
    if (cmd->state.pass->has_fdm)
       return false;
    if (dst->format != src->format)
@@ -6296,6 +6714,12 @@ tu_choose_gmem_layout(struct tu_cmd_buffer *cmd)
 
    for (unsigned i = 0; i < cmd->state.pass->subpass_count; i++) {
       const struct tu_subpass *subpass = &cmd->state.pass->subpasses[i];
+      const VkResolveModeFlags shader_modes = VK_RESOLVE_MODE_MIN_BIT |
+         VK_RESOLVE_MODE_MAX_BIT | VK_RESOLVE_MODE_AVERAGE_BIT;
+      if (subpass->resolve_depth_stencil &&
+          ((subpass->depth_resolve_mode | subpass->stencil_resolve_mode) & shader_modes))
+         cmd->state.gmem_layout = TU_GMEM_LAYOUT_AVOID_CCU;
+
       if (subpass->custom_resolve)
          cmd->state.gmem_layout = TU_GMEM_LAYOUT_AVOID_CCU;
 
@@ -6303,6 +6727,11 @@ tu_choose_gmem_layout(struct tu_cmd_buffer *cmd)
          uint32_t a = subpass->resolve_attachments[j].attachment;
          if (a == VK_ATTACHMENT_UNUSED)
             continue;
+         const struct tu_render_pass_attachment *dst = &cmd->state.pass->attachments[a];
+         if ((dst->resolve_skip_transfer_function && vk_format_is_srgb(dst->format)) ||
+             tu_gmem_color_resolve_needs_shader(cmd->device->physical_device->info->chip,
+                                                 dst->format, cmd->state.pass->has_fdm))
+            cmd->state.gmem_layout = TU_GMEM_LAYOUT_AVOID_CCU;
          uint32_t gmem_a =
             j == subpass->color_count ?
                subpass->depth_stencil_attachment.attachment :
@@ -6434,7 +6863,9 @@ tu_store_gmem_attachment(struct tu_cmd_buffer *cmd,
                          uint32_t layers,
                          uint32_t layer_mask,
                          bool per_layer_render_area,
-                         bool cond_exec_allowed)
+                         bool cond_exec_allowed,
+                         VkResolveModeFlagBits depth_mode,
+                         VkResolveModeFlagBits stencil_mode)
 {
    struct tu_render_pass_attachment *dst = &cmd->state.pass->attachments[a];
    const struct tu_image_view *dst_iview = cmd->state.attachments[a];
@@ -6442,6 +6873,13 @@ tu_store_gmem_attachment(struct tu_cmd_buffer *cmd,
    const struct tu_image_view *src_iview = cmd->state.attachments[gmem_a];
    const VkClearValue *clear_value = &cmd->state.clear_values[gmem_a];
    bool resolve = a != gmem_a;
+   const VkResolveModeFlags shader_modes = VK_RESOLVE_MODE_MIN_BIT |
+      VK_RESOLVE_MODE_MAX_BIT | VK_RESOLVE_MODE_AVERAGE_BIT;
+   const bool skip_transfer = resolve && dst->resolve_skip_transfer_function &&
+                              vk_format_is_srgb(dst->format);
+   bool shader_resolve = resolve &&
+      (((depth_mode | stencil_mode) & shader_modes) || skip_transfer ||
+       tu_gmem_color_resolve_needs_shader(CHIP, src->format, cmd->state.pass->has_fdm));
    if (resolve)
       clear_value = NULL;
 
@@ -6470,7 +6908,7 @@ tu_store_gmem_attachment(struct tu_cmd_buffer *cmd,
    bool store_common = dst->store && !resolve_d32s8_s8;
    bool store_separate_stencil = dst->store_stencil || resolve_d32s8_s8;
 
-   bool use_fast_path = !unaligned && !mismatched_mutability &&
+   bool use_fast_path = !shader_resolve && !unaligned && !mismatched_mutability &&
                         !resolve_d24s8_s8 &&
                         (a == gmem_a || blit_can_resolve(dst->format)) &&
                         (!cmd->state.pass->has_fdm || CHIP >= A7XX);
@@ -6537,7 +6975,57 @@ tu_store_gmem_attachment(struct tu_cmd_buffer *cmd,
    if (dst_format == PIPE_FORMAT_Z32_FLOAT_S8X24_UINT)
       dst_format = PIPE_FORMAT_Z32_FLOAT;
 
-   if (dst->samples > 1) {
+   if (skip_transfer) {
+      src_format = vk_format_to_pipe_format(vk_format_srgb_to_linear(src->format));
+      dst_format = vk_format_to_pipe_format(vk_format_srgb_to_linear(dst->format));
+   }
+
+   if (shader_resolve) {
+      /* Original shader stores also accept FDM. Reuse the ordinary 3D store
+       * and its GMEM descriptor/state restoration instead of inventing a
+       * separate coordinate patchpoint or forcing the whole pass to sysmem.
+       */
+      if (store_common || store_separate_stencil)
+         tu_disable_draw_states(cmd, cs);
+      for_each_layer(i, layer_mask, layers) {
+         const VkRect2D *render_area =
+            &cmd->state.render_areas[per_layer_render_area ? i : 0];
+         if (store_common) {
+            /* D32S8 has a separate stencil plane; this view is depth only. */
+            const VkImageAspectFlags aspects =
+               dst->format == VK_FORMAT_D32_SFLOAT_S8_UINT ? VK_IMAGE_ASPECT_DEPTH_BIT :
+                                                            vk_format_aspects(dst->format);
+            auto emit_common = [&](VkResolveModeFlagBits mode, VkImageAspectFlags mask) {
+               if (mode == VK_RESOLVE_MODE_NONE)
+                  return;
+               store_3d_blit<CHIP>(cmd, cs, src_iview, dst_iview, dst->samples,
+                  false, src_format, dst_format, render_area, i,
+                  tu_attachment_gmem_offset(cmd, src, i), src->cpp, src->samples,
+                  tu_resolve_blit_param(src->format, mode), mask, skip_transfer);
+            };
+            if (aspects == (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT) &&
+                depth_mode != stencil_mode) {
+               emit_common(depth_mode, VK_IMAGE_ASPECT_DEPTH_BIT);
+               emit_common(stencil_mode, VK_IMAGE_ASPECT_STENCIL_BIT);
+            } else {
+               const VkResolveModeFlagBits mode = aspects == VK_IMAGE_ASPECT_COLOR_BIT ?
+                  VK_RESOLVE_MODE_AVERAGE_BIT :
+                  (aspects & VK_IMAGE_ASPECT_DEPTH_BIT ? depth_mode : stencil_mode);
+               emit_common(mode, aspects);
+            }
+         }
+         if (store_separate_stencil && stencil_mode != VK_RESOLVE_MODE_NONE) {
+            store_3d_blit<CHIP>(cmd, cs, src_iview, dst_iview, dst->samples,
+               true, PIPE_FORMAT_S8_UINT, PIPE_FORMAT_S8_UINT, render_area, i,
+               tu_attachment_gmem_offset_stencil(cmd, src, i), src->samples,
+               src->samples, tu_resolve_blit_param(VK_FORMAT_S8_UINT, stencil_mode),
+               VK_IMAGE_ASPECT_STENCIL_BIT);
+         }
+      }
+      if (vk_format_has_depth(dst->format) && depth_mode != VK_RESOLVE_MODE_NONE &&
+          dst_iview->image->lrz_layout.lrz_total_size)
+         tu_disable_lrz<CHIP>(cmd, cs, dst_iview->image);
+   } else if (dst->samples > 1) {
       /* If we hit this path, we have to disable draw states after every tile
        * instead of once at the end of the renderpass, so that they aren't
        * executed when calling CP_DRAW.

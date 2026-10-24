@@ -1021,7 +1021,9 @@ build_vote(nir_builder *b, nir_def *src,
       ballot = nir_iand(b, ballot, mask);
    }
 
-   return all ? nir_ieq_imm(b, ballot, 0) : nir_ine_imm(b, ballot, 0);
+   /* A ballot can span multiple components, but a vote is scalar. */
+   return all ? nir_ball(b, nir_ieq_imm(b, ballot, 0))
+              : nir_bany(b, nir_ine_imm(b, ballot, 0));
 }
 
 static nir_def *

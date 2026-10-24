@@ -40,6 +40,7 @@
 #include "tu_dynamic_rendering.h"
 #include "tu_image.h"
 #include "tu_pass.h"
+#include "tu_mesh_dispatch.h"
 #include "tu_query_pool.h"
 #include "tu_queue.h"
 #include "tu_rmv.h"
@@ -88,7 +89,9 @@ tu_physical_device_compiler_options_init(struct tu_physical_device *device,
       if (device->info->props.max_storage_buffer_range_bytes < TU_D3D12_MAX_STORAGE_BUFFER_RANGE_BYTES) {
          assert(fd_dev_gen(&device->dev_id) == 7);
          device->compiler_options.enable_ssbo_emulation =
-            instance->drirc.misc.enable_ssbo_emulation;
+            instance->drirc.misc.enable_ssbo_emulation ||
+            (fd_dev_gen(&device->dev_id) == 7 &&
+             instance->drirc.misc.uncharted_legacy_adreno_compat);
       }
    }
 
@@ -120,6 +123,15 @@ tu_device_get_cache_uuid(struct tu_physical_device *device, void *uuid)
 
    if (!tu_device_get_build_id(&ctx))
       return -1;
+
+   /* GameSir also separates the mesh cache ABI in the device UUID. Keep
+    * our reconstruction distinct when TU_BUILD_ID_OVERRIDE stays fixed.
+    * This schema must track the graphics/compute and IR3 cache schemas.
+    */
+   static const char cache_abi[] = "AK-Turnip GameSir reconstruction";
+   const uint32_t cache_schema = 0x47533814;
+   _mesa_blake3_update(&ctx, cache_abi, sizeof(cache_abi));
+   _mesa_blake3_update(&ctx, &cache_schema, sizeof(cache_schema));
 
    _mesa_blake3_update(&ctx, &chip_id, sizeof(chip_id));
    _mesa_blake3_update(&ctx, &device->uche_trap_base, sizeof(device->uche_trap_base));
@@ -212,6 +224,21 @@ tu_subgroup_size(const struct tu_physical_device *device)
           (device->expose_double_threadsize ? 2 : 1);
 }
 
+static bool
+tu_has_cooperative_matrix(const struct tu_physical_device *device)
+{
+   /* The recovered software layout assigns an 8x8 tile to 64 lanes. */
+   return device->info->threadsize_base == 64 && !device->expose_double_threadsize;
+}
+
+static bool
+tu_uncharted_legacy_adreno_compat(const struct tu_physical_device *device)
+{
+   const unsigned gen = fd_dev_gen(&device->dev_id);
+   return (gen == 6 || gen == 7) &&
+          device->instance->drirc.misc.uncharted_legacy_adreno_compat;
+}
+
 static void
 get_device_extensions(const struct tu_physical_device *device,
                       struct vk_device_extension_table *ext)
@@ -234,7 +261,9 @@ get_device_extensions(const struct tu_physical_device *device,
       .KHR_buffer_device_address = true,
       .KHR_calibrated_timestamps = device->info->props.has_persistent_counter,
       .KHR_compute_shader_derivatives = true,
+      .KHR_cooperative_matrix = tu_has_cooperative_matrix(device),
       .KHR_copy_commands2 = true,
+      .KHR_copy_memory_indirect = true,
       // TODO workaround for https://github.com/KhronosGroup/VK-GL-CTS/issues/525
       .KHR_create_renderpass2 = true, // tu_has_multiview(device),
       .KHR_dedicated_allocation = true,
@@ -308,6 +337,8 @@ get_device_extensions(const struct tu_physical_device *device,
       .KHR_shader_subgroup_rotate = true,
       .KHR_shader_subgroup_uniform_control_flow = tu_is_vk_1_1(device),
       .KHR_shader_terminate_invocation = true,
+      /* Generic SPIR-V frontend already lowers untyped pointers to NIR. */
+      .KHR_shader_untyped_pointers = true,
       .KHR_spirv_1_4 = tu_is_vk_1_1(device),
       .KHR_storage_buffer_storage_class = true,
 #ifdef TU_USE_WSI_PLATFORM
@@ -328,6 +359,7 @@ get_device_extensions(const struct tu_physical_device *device,
       .EXT_4444_formats = true,
       .EXT_attachment_feedback_loop_dynamic_state = true,
       .EXT_attachment_feedback_loop_layout = true,
+      .EXT_astc_decode_mode = device->info->chip >= 8,
       .EXT_border_color_swizzle = true,
       .EXT_calibrated_timestamps = device->info->props.has_persistent_counter,
       .EXT_color_write_enable = true,
@@ -340,7 +372,10 @@ get_device_extensions(const struct tu_physical_device *device,
       .EXT_depth_clamp_zero_one = true,
       .EXT_depth_clip_control = true,
       .EXT_depth_clip_enable = true,
-      .EXT_descriptor_buffer = true,
+      /* Original depth-range state is transferred; exposure waits for the
+       * coordinated clamp/depth rendering validation. */
+      .EXT_depth_range_unrestricted = false,
+      .EXT_descriptor_buffer = !tu_uncharted_legacy_adreno_compat(device),
       .EXT_descriptor_indexing = true,
       .EXT_device_address_binding_report = true,
       .EXT_device_memory_report = true,
@@ -351,6 +386,7 @@ get_device_extensions(const struct tu_physical_device *device,
       .EXT_extended_dynamic_state = true,
       .EXT_extended_dynamic_state2 = true,
       .EXT_extended_dynamic_state3 = true,
+      .EXT_frame_boundary = true,
       .EXT_external_memory_dma_buf = true,
       .EXT_filter_cubic = device->info->props.has_tex_filter_cubic,
       .EXT_fragment_density_map = true,
@@ -385,6 +421,7 @@ get_device_extensions(const struct tu_physical_device *device,
       .EXT_physical_device_drm = !is_kgsl(device->instance),
       .EXT_pipeline_creation_cache_control = true,
       .EXT_pipeline_creation_feedback = true,
+      .EXT_pipeline_robustness = true,
 #ifdef TU_USE_WSI_PLATFORM
       .EXT_present_timing = device->info->props.has_persistent_counter,
 #endif
@@ -455,6 +492,12 @@ tu_get_features(struct tu_physical_device *pdevice,
 {
    *features = (struct vk_features) { false };
 
+   /* Match GameSir's capture/replay eligibility across all three features.
+    * The sparse path additionally requires VM_BIND in that implementation.
+    */
+   const bool has_capture_replay = pdevice->has_set_iova &&
+      (!pdevice->has_sparse || pdevice->has_vm_bind);
+
    /* Vulkan 1.0 */
    features->robustBufferAccess = true;
    features->fullDrawIndexUint32 = true;
@@ -514,7 +557,12 @@ tu_get_features(struct tu_physical_device *pdevice,
 
    /* Vulkan 1.1 */
    features->storageBuffer16BitAccess            = pdevice->info->props.storage_16bit;
-   features->uniformAndStorageBuffer16BitAccess  = false;
+   /* GameSir ELF0x988d3c..0x988d78: A8 also exposes 16-bit UBO storage.
+    * IR3 lowers sub-dword UBO accesses to 32-bit loads and extracts the
+    * requested bits; this does not enable 16-bit push constants or stage I/O.
+    */
+   features->uniformAndStorageBuffer16BitAccess  =
+      pdevice->info->chip >= 8 && pdevice->info->props.storage_16bit;
    features->storagePushConstant16               = false;
    features->storageInputOutput16                = false;
    features->multiview                           = true;
@@ -540,7 +588,7 @@ tu_get_features(struct tu_physical_device *pdevice,
    features->shaderBufferInt64Atomics =
       pdevice->info->props.has_64b_ssbo_atomics;
    features->shaderSharedInt64Atomics            = false;
-   features->shaderFloat16                       = true;
+   features->shaderFloat16 = !tu_uncharted_legacy_adreno_compat(pdevice);
    features->shaderInt8                          = true;
 
    features->descriptorIndexing                                 = true;
@@ -575,7 +623,7 @@ tu_get_features(struct tu_physical_device *pdevice,
    features->hostQueryReset                      = true;
    features->timelineSemaphore                   = true;
    features->bufferDeviceAddress                 = true;
-   features->bufferDeviceAddressCaptureReplay    = pdevice->has_set_iova;
+   features->bufferDeviceAddressCaptureReplay    = has_capture_replay;
    features->bufferDeviceAddressMultiDevice      = false;
    features->vulkanMemoryModel                   = true;
    features->vulkanMemoryModelDeviceScope        = true;
@@ -606,7 +654,7 @@ tu_get_features(struct tu_physical_device *pdevice,
 
    /* VK_KHR_acceleration_structure */
    features->accelerationStructure = true;
-   features->accelerationStructureCaptureReplay = pdevice->has_set_iova;
+   features->accelerationStructureCaptureReplay = has_capture_replay;
    features->descriptorBindingAccelerationStructureUpdateAfterBind = true;
 
    /* VK_KHR_compute_shader_derivatives */
@@ -726,10 +774,11 @@ tu_get_features(struct tu_physical_device *pdevice,
    features->depthClipEnable = true;
 
    /* VK_EXT_descriptor_buffer */
-   features->descriptorBuffer = true;
-   features->descriptorBufferCaptureReplay = pdevice->has_set_iova;
-   features->descriptorBufferImageLayoutIgnored = true;
-   features->descriptorBufferPushDescriptors = true;
+   features->descriptorBuffer = !tu_uncharted_legacy_adreno_compat(pdevice);
+   features->descriptorBufferCaptureReplay = features->descriptorBuffer &&
+                                             has_capture_replay;
+   features->descriptorBufferImageLayoutIgnored = features->descriptorBuffer;
+   features->descriptorBufferPushDescriptors = features->descriptorBuffer;
 
    /* VK_EXT_device_address_binding_report */
    features->reportAddressBinding = true;
@@ -842,6 +891,15 @@ tu_get_features(struct tu_physical_device *pdevice,
    /* VK_EXT_pipeline_robustness */
    features->pipelineRobustness = true;
 
+   /* Original feature byte+0x428; no separate IR3 pointer representation. */
+   features->shaderUntypedPointers = true;
+
+   /* GameSir advertises frame-boundary metadata unconditionally. */
+   features->frameBoundary = true;
+
+   /* VK_EXT_astc_decode_mode: FP16/UNORM8/FP32, no shared exponent. */
+   features->decodeModeSharedExponent = false;
+
    /* VK_EXT_primitive_restart_index */
    features->primitiveRestartIndex = true;
 
@@ -916,6 +974,21 @@ tu_get_features(struct tu_physical_device *pdevice,
 
    /* VK_EXT_vertex_input_dynamic_state */
    features->vertexInputDynamicState = true;
+
+   /* GameSir reports both cooperative-matrix features under the same 64-lane
+    * eligibility predicate (physical bytes 0x3cd/0x3ce). Matrix memory accesses
+    * are scalarized before ordinary descriptor/explicit-I/O lowering; the
+    * original pass has no separate robust-matrix memory backend.
+    */
+   features->cooperativeMatrix = pdevice->vk.supported_extensions.KHR_cooperative_matrix;
+   features->cooperativeMatrixRobustBufferAccess = features->cooperativeMatrix;
+
+   /* VK_KHR_copy_memory_indirect: original extension and both feature bits
+    * are unconditional. Only destination format support has the A8xx guard.
+    * The SDK/Android extension allowlist still applies independently.
+    */
+   features->indirectMemoryCopy = pdevice->vk.supported_extensions.KHR_copy_memory_indirect;
+   features->indirectMemoryToImageCopy = pdevice->vk.supported_extensions.KHR_copy_memory_indirect;
 
    /* VK_KHR_shader_relaxed_extended_instruction */
    features->shaderRelaxedExtendedInstruction = true;
@@ -1125,6 +1198,9 @@ tu_get_physical_device_properties_1_3(struct tu_physical_device *pdevice,
                                       struct vk_properties *p)
 {
    p->minSubgroupSize = pdevice->info->threadsize_base;
+   /* GameSir's opt-in compatibility range does not change native wave size. */
+   if (pdevice->instance->drirc.misc.advertise_wave32_compat)
+      p->minSubgroupSize = MIN2(p->minSubgroupSize, 32);
    p->maxSubgroupSize = tu_subgroup_size(pdevice);
    p->maxComputeWorkgroupSubgroups = pdevice->info->max_waves;
    /* Only compute and fragment shaders can run with a doubled wave size, the
@@ -1261,6 +1337,9 @@ tu_get_properties(struct tu_physical_device *pdevice,
    props->maxFragmentDualSrcAttachments = 1;
    props->maxFragmentCombinedOutputResources = MAX_RTS + max_descriptor_set_size * 2;
    props->maxComputeSharedMemorySize = pdevice->info->cs_shared_mem_size;
+   props->cooperativeMatrixSupportedStages = VK_SHADER_STAGE_COMPUTE_BIT;
+   props->supportedQueues = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT |
+                            VK_QUEUE_TRANSFER_BIT;
    /* keep in sync with nir_shader_compiler_options */
    props->maxComputeWorkGroupCount[0] =
       props->maxComputeWorkGroupCount[1] =
@@ -1360,7 +1439,55 @@ tu_get_properties(struct tu_physical_device *pdevice,
    tu_get_physical_device_properties_1_2(pdevice, props);
    tu_get_physical_device_properties_1_3(pdevice, props);
 
+   /* VK_EXT_mesh_shader: recovered original property table (physical
+    * offsets 0xc9c..0xd34). Reporting these limits does not advertise mesh;
+    * compiler/context integration and feature gates remain incomplete.
+    */
+   props->maxTaskWorkGroupTotalCount = 1u << 22;
+   props->maxTaskWorkGroupCount[0] =
+      props->maxTaskWorkGroupCount[1] = props->maxTaskWorkGroupCount[2] = 65535;
+   props->maxTaskWorkGroupInvocations = 1024;
+   props->maxTaskWorkGroupSize[0] =
+      props->maxTaskWorkGroupSize[1] = props->maxTaskWorkGroupSize[2] = 1024;
+   props->maxTaskPayloadSize = 16 * 1024;
+   props->maxTaskSharedMemorySize = 32 * 1024;
+   props->maxTaskPayloadAndSharedMemorySize = 48 * 1024;
+   props->maxMeshWorkGroupTotalCount = 1u << 22;
+   props->maxMeshWorkGroupCount[0] =
+      props->maxMeshWorkGroupCount[1] = props->maxMeshWorkGroupCount[2] = 65535;
+   props->maxMeshWorkGroupInvocations = 256;
+   props->maxMeshWorkGroupSize[0] =
+      props->maxMeshWorkGroupSize[1] = props->maxMeshWorkGroupSize[2] = 256;
+   props->maxMeshSharedMemorySize = 28 * 1024;
+   props->maxMeshPayloadAndSharedMemorySize = 28 * 1024;
+   props->maxMeshOutputMemorySize = 32 * 1024;
+   props->maxMeshPayloadAndOutputMemorySize = 48 * 1024;
+   props->maxMeshOutputComponents = 128;
+   props->maxMeshOutputVertices = 256;
+   props->maxMeshOutputPrimitives = 256;
+   props->maxMeshOutputLayers = 256;
+   props->maxMeshMultiviewViewCount = 6;
+   props->meshOutputPerVertexGranularity = 32;
+   props->meshOutputPerPrimitiveGranularity = 32;
+   props->maxPreferredTaskWorkGroupInvocations = 1024;
+   props->maxPreferredMeshWorkGroupInvocations = 256;
+   props->prefersLocalInvocationVertexOutput = false;
+   props->prefersLocalInvocationPrimitiveOutput = false;
+   props->prefersCompactVertexOutput = false;
+   props->prefersCompactPrimitiveOutput = false;
+
+   /* VK_KHR_maintenance10: original reports all three properties for A8+.
+    * Feature/extension exposure stays disabled until the full resolve paths,
+    * including FDM and attachment/image flag overrides, are validated.
+    */
+   props->rgba4OpaqueBlackSwizzled = pdevice->info->chip >= A8XX;
+   props->resolveSrgbFormatAppliesTransferFunction = pdevice->info->chip >= A8XX;
+   props->resolveSrgbFormatSupportsTransferFunctionControl = pdevice->info->chip >= A8XX;
+
    /* VK_KHR_compute_shader_derivatives */
+   /* Original reports chip >= A8XX. Keep the task/mesh derivative contract
+    * gated together with task/mesh execution until final validation.
+    */
    props->meshAndTaskShaderDerivatives = false;
 
    /* VK_KHR_fragment_shading_rate */
@@ -1387,6 +1514,7 @@ tu_get_properties(struct tu_physical_device *pdevice,
    props->fragmentShadingRateWithSampleMask = true;
    props->fragmentShadingRateWithShaderSampleMask = true;
    props->fragmentShadingRateWithConservativeRasterization = true;
+   /* Original: chip >= A8XX; activation follows the held interlock feature. */
    props->fragmentShadingRateWithFragmentShaderInterlock = false;
    props->fragmentShadingRateWithCustomSampleLocations = true;
    props->fragmentShadingRateStrictMultiplyCombiner = true;
@@ -1644,6 +1772,9 @@ tu_get_properties(struct tu_physical_device *pdevice,
    props->conservativePointAndLineRasterization = false;
    props->degenerateTrianglesRasterized = true;
    props->degenerateLinesRasterized = false;
+   /* Original: chip >= A8XX. Compiler/input/raster source is transferred;
+    * advertise only after the full coverage/sample-mask chain is validated.
+    */
    props->fullyCoveredFragmentShaderInputVariable = false;
    props->conservativeRasterizationPostDepthCoverage = false;
 
@@ -2911,6 +3042,23 @@ tu_CreateDevice(VkPhysicalDevice physicalDevice,
    device->physical_device = physical_device;
    device->device_idx = device->physical_device->device_count++;
 
+   const bool indexed_split_default =
+      physical_device->info->props.has_indexed_draw_split_quirk &&
+      device->instance->drirc.misc.split_indexed_draws;
+   device->diagnostic_split_indexed = fd_dev_gen(&physical_device->dev_id) == 8 &&
+      debug_get_bool_option("TU_DIAGNOSTIC_SPLIT_INDEXED", indexed_split_default);
+   const int64_t indexed_chunk =
+      debug_get_num_option("TU_DIAGNOSTIC_INDEXED_CHUNK",
+                           indexed_split_default ? 0x1800 : 0x600);
+   device->diagnostic_indexed_chunk =
+      CLAMP(indexed_chunk, 3, 0xc000) / 3 * 3;
+   if (TU_DEBUG(STARTUP)) {
+      mesa_logi("Indexed draw split: %s, chunk=%u, application default=%s",
+                device->diagnostic_split_indexed ? "enabled" : "disabled",
+                device->diagnostic_indexed_chunk,
+                indexed_split_default ? "enabled" : "disabled");
+   }
+
    result = tu_drm_device_init(device);
    if (result != VK_SUCCESS) {
       vk_free(&device->vk.alloc, device);
@@ -3377,6 +3525,9 @@ tu_DestroyDevice(VkDevice _device, const VkAllocationCallbacks *pAllocator)
    if (device->wave_pvtmem_bo.bo)
       tu_bo_finish(device, device->wave_pvtmem_bo.bo);
 
+   if (device->mesh_aqe_bo)
+      tu_bo_finish(device, device->mesh_aqe_bo);
+
    tu_destroy_clear_blit_shaders(device);
 
    tu_destroy_empty_shaders(device);
@@ -3464,6 +3615,49 @@ tu_DestroyDevice(VkDevice _device, const VkAllocationCallbacks *pAllocator)
    util_dynarray_fini(&device->dump_bo_list);
    vk_device_finish(&device->vk);
    vk_free(&device->vk.alloc, device);
+}
+
+bool
+tu_mesh_shader_hw_eligible(const struct tu_physical_device *pdevice)
+{
+   return fd_dev_gen(&pdevice->dev_id) == 8 &&
+          (pdevice->gmem_size >> 21) > 8 &&
+          !pdevice->instance->drirc.misc.disable_mesh_shader;
+}
+
+VkResult
+tu_get_mesh_aqe_bo(struct tu_device *dev, struct tu_bo **out_bo)
+{
+   *out_bo = NULL;
+   if (!tu_mesh_shader_hw_eligible(dev->physical_device))
+      return VK_ERROR_FEATURE_NOT_PRESENT;
+
+   /* GameSir mesh_draw_begin lazily creates this device-owned allocation.
+    * Publish only after map/initialization: its original direct-to-device
+    * allocation would leave a non-NULL but unmapped BO on mapping failure.
+    */
+   mtx_lock(&dev->mutex);
+   VkResult result = VK_SUCCESS;
+   if (!dev->mesh_aqe_bo) {
+      struct tu_bo *bo = NULL;
+      result = tu_bo_init_new(dev, NULL, &bo, TU_A8_MESH_AQE_SIZE,
+                              tu_bo_alloc_flags(TU_BO_ALLOC_ALLOW_DUMP |
+                                                TU_BO_ALLOC_INTERNAL_RESOURCE),
+                              "mesh_aqe_memory");
+      if (result == VK_SUCCESS) {
+         result = tu_bo_map(dev, bo, NULL);
+         if (result == VK_SUCCESS) {
+            memset(bo->map, 0, TU_A8_MESH_AQE_SIZE);
+            dev->mesh_aqe_bo = bo;
+         } else {
+            tu_bo_finish(dev, bo);
+         }
+      }
+   }
+   if (result == VK_SUCCESS)
+      *out_bo = dev->mesh_aqe_bo;
+   mtx_unlock(&dev->mutex);
+   return result;
 }
 
 VkResult
@@ -4505,6 +4699,62 @@ tu_GetMemoryFdPropertiesKHR(VkDevice _device,
    pMemoryFdProperties->memoryTypeBits =
       (1 << device->physical_device->memory.non_lazy_type_count) - 1;
    return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL
+tu_GetPhysicalDeviceCooperativeMatrixPropertiesKHR(
+   VkPhysicalDevice physicalDevice, uint32_t *pPropertyCount,
+   VkCooperativeMatrixPropertiesKHR *pProperties)
+{
+   VK_FROM_HANDLE(tu_physical_device, pdevice, physicalDevice);
+   VK_OUTARRAY_MAKE_TYPED(VkCooperativeMatrixPropertiesKHR, out,
+                         pProperties, pPropertyCount);
+   if (!tu_has_cooperative_matrix(pdevice))
+      return VK_SUCCESS;
+
+   /* Recovered from the original GameSir property enumeration. */
+   static const struct {
+      uint32_t m, n, k;
+      VkComponentTypeKHR a, b, c, result;
+      VkBool32 saturating;
+      VkScopeKHR scope;
+   } properties[] = {
+      {64, 64, 16, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT16_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+      {64, 64, 16, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+      {64, 64, 8, VK_COMPONENT_TYPE_FLOAT32_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+      {64, 64, 32, VK_COMPONENT_TYPE_UINT8_KHR, VK_COMPONENT_TYPE_UINT8_KHR, VK_COMPONENT_TYPE_SINT32_KHR, VK_COMPONENT_TYPE_SINT32_KHR, true, VK_SCOPE_SUBGROUP_KHR},
+      {64, 64, 32, VK_COMPONENT_TYPE_SINT8_KHR, VK_COMPONENT_TYPE_SINT8_KHR, VK_COMPONENT_TYPE_SINT32_KHR, VK_COMPONENT_TYPE_SINT32_KHR, true, VK_SCOPE_SUBGROUP_KHR},
+      {64, 64, 32, VK_COMPONENT_TYPE_UINT8_KHR, VK_COMPONENT_TYPE_UINT8_KHR, VK_COMPONENT_TYPE_SINT32_KHR, VK_COMPONENT_TYPE_SINT32_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+      {64, 64, 32, VK_COMPONENT_TYPE_SINT8_KHR, VK_COMPONENT_TYPE_SINT8_KHR, VK_COMPONENT_TYPE_SINT32_KHR, VK_COMPONENT_TYPE_SINT32_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+      {64, 32, 16, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT16_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+      {64, 32, 16, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+      {64, 32, 8, VK_COMPONENT_TYPE_FLOAT32_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+      {64, 32, 32, VK_COMPONENT_TYPE_UINT8_KHR, VK_COMPONENT_TYPE_UINT8_KHR, VK_COMPONENT_TYPE_SINT32_KHR, VK_COMPONENT_TYPE_SINT32_KHR, true, VK_SCOPE_SUBGROUP_KHR},
+      {64, 32, 32, VK_COMPONENT_TYPE_SINT8_KHR, VK_COMPONENT_TYPE_SINT8_KHR, VK_COMPONENT_TYPE_SINT32_KHR, VK_COMPONENT_TYPE_SINT32_KHR, true, VK_SCOPE_SUBGROUP_KHR},
+      {64, 32, 32, VK_COMPONENT_TYPE_UINT8_KHR, VK_COMPONENT_TYPE_UINT8_KHR, VK_COMPONENT_TYPE_SINT32_KHR, VK_COMPONENT_TYPE_SINT32_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+      {64, 32, 32, VK_COMPONENT_TYPE_SINT8_KHR, VK_COMPONENT_TYPE_SINT8_KHR, VK_COMPONENT_TYPE_SINT32_KHR, VK_COMPONENT_TYPE_SINT32_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+      {64, 16, 16, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT16_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+      {64, 16, 16, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT16_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+      {64, 16, 8, VK_COMPONENT_TYPE_FLOAT32_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, VK_COMPONENT_TYPE_FLOAT32_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+      {64, 16, 32, VK_COMPONENT_TYPE_UINT8_KHR, VK_COMPONENT_TYPE_UINT8_KHR, VK_COMPONENT_TYPE_SINT32_KHR, VK_COMPONENT_TYPE_SINT32_KHR, true, VK_SCOPE_SUBGROUP_KHR},
+      {64, 16, 32, VK_COMPONENT_TYPE_SINT8_KHR, VK_COMPONENT_TYPE_SINT8_KHR, VK_COMPONENT_TYPE_SINT32_KHR, VK_COMPONENT_TYPE_SINT32_KHR, true, VK_SCOPE_SUBGROUP_KHR},
+      {64, 16, 32, VK_COMPONENT_TYPE_UINT8_KHR, VK_COMPONENT_TYPE_UINT8_KHR, VK_COMPONENT_TYPE_SINT32_KHR, VK_COMPONENT_TYPE_SINT32_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+      {64, 16, 32, VK_COMPONENT_TYPE_SINT8_KHR, VK_COMPONENT_TYPE_SINT8_KHR, VK_COMPONENT_TYPE_SINT32_KHR, VK_COMPONENT_TYPE_SINT32_KHR, false, VK_SCOPE_SUBGROUP_KHR},
+   };
+   for (const auto &entry : properties) {
+      vk_outarray_append_typed(VkCooperativeMatrixPropertiesKHR, &out, p) {
+         p->MSize = entry.m;
+         p->NSize = entry.n;
+         p->KSize = entry.k;
+         p->AType = entry.a;
+         p->BType = entry.b;
+         p->CType = entry.c;
+         p->ResultType = entry.result;
+         p->saturatingAccumulation = entry.saturating;
+         p->scope = entry.scope;
+      }
+   }
+   return vk_outarray_status(&out);
 }
 
 VKAPI_ATTR void VKAPI_CALL

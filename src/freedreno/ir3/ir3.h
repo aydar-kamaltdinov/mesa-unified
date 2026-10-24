@@ -616,6 +616,8 @@ struct ir3_instruction {
       IR3_BARRIER_CONST_W = 1 << 11,
       IR3_BARRIER_ACTIVE_FIBERS_R = 1 << 12,
       IR3_BARRIER_ACTIVE_FIBERS_W = 1 << 13,
+      /* Per-vertex varying reads must stay ordered against full barriers. */
+      IR3_BARRIER_VARYING_R = 1 << 14,
    } barrier_class,
       barrier_conflict;
 
@@ -3233,6 +3235,8 @@ INSTR5(RAY_INTERSECTION)
 /* cat7 instructions: */
 INSTR0(BAR)
 INSTR0(FENCE)
+INSTR0(BAR_SET)
+INSTR0(BAR_SYNC)
 INSTR0(CCINV)
 
 /* ************************************************************************* */

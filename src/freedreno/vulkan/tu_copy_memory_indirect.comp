@@ -1,0 +1,44 @@
+/* SPDX-License-Identifier: MIT */
+#version 460
+#extension GL_EXT_buffer_reference : require
+#extension GL_EXT_buffer_reference2 : require
+#extension GL_EXT_scalar_block_layout : require
+#extension GL_EXT_shader_explicit_arithmetic_types_int64 : require
+
+layout(local_size_x = 64) in;
+
+/* The command array stride is only required to be a multiple of four.
+ * Use two uint components so even a command starting at address 4 mod 8
+ * is loaded without claiming eight-byte alignment.
+ */
+layout(buffer_reference, scalar, buffer_reference_align = 4) readonly buffer Command {
+   uvec2 src_address;
+   uvec2 dst_address;
+   uvec2 size;
+};
+layout(buffer_reference, scalar, buffer_reference_align = 4) readonly buffer SrcWord {
+   uint value;
+};
+layout(buffer_reference, scalar, buffer_reference_align = 4) writeonly buffer DstWord {
+   uint value;
+};
+layout(push_constant, scalar) uniform PushConstants {
+   uint64_t command_address;
+};
+
+uint64_t address(uvec2 v)
+{
+   return uint64_t(v.x) | (uint64_t(v.y) << 32);
+}
+
+void main()
+{
+   Command command = Command(command_address);
+   uint64_t src = address(command.src_address);
+   uint64_t dst = address(command.dst_address);
+   uint64_t size = address(command.size);
+   for (uint64_t offset = uint64_t(gl_LocalInvocationIndex) * 4;
+        offset < size; offset += 256) {
+      DstWord(dst + offset).value = SrcWord(src + offset).value;
+   }
+}

@@ -1032,12 +1032,13 @@ ir3_nir_post_finalize(struct ir3_shader *shader)
    MESA_TRACE_FUNC();
 
    if (s->info.stage == MESA_SHADER_FRAGMENT) {
-      /* NOTE: nir_opt_barycentric comes first, since it
-       * produces load_barycentric_at_offset:
+      /* Coordinate loads first produce ordinary at-offset loads, which the
+       * barycentric optimizer and derivative lowering can then handle.
        */
+      NIR_PASS(_, s, ir3_nir_lower_barycentric_coord_at_offset);
       NIR_PASS(_, s, nir_opt_barycentric, true);
       NIR_PASS(_, s, ir3_nir_lower_load_sample_pos);
-      NIR_PASS(_, s, ir3_nir_lower_load_barycentric_at_offset);
+      NIR_PASS(_, s, ir3_nir_lower_load_barycentric_at_offset, compiler);
       NIR_PASS(_, s, nir_lower_fb_read);
       NIR_PASS(_, s, ir3_nir_lower_layer_id);
       if (!compiler->info->props.shading_rate_matches_vk)
@@ -1111,7 +1112,7 @@ ir3_nir_post_finalize(struct ir3_shader *shader)
             .filter_data = compiler,
       };
 
-      if (!(mesa_shader_stage_is_compute(s->info.stage) ||
+      if (!(ir3_stage_is_compute(s->info.stage) ||
             compiler->info->props.has_getfiberid)) {
          options.subgroup_size = 1;
          options.lower_vote_trivial = true;
@@ -1122,7 +1123,7 @@ ir3_nir_post_finalize(struct ir3_shader *shader)
       OPT(s, ir3_nir_lower_shuffle, shader);
    }
 
-   if (mesa_shader_stage_is_compute(s->info.stage)) {
+   if (ir3_stage_is_compute(s->info.stage)) {
       bool progress = false;
       NIR_PASS(progress, s, ir3_nir_lower_subgroup_id_cs, shader);
 
@@ -1255,6 +1256,18 @@ atomic_supported(const nir_instr * instr, const void * data)
 {
    /* No atomic 64b arithmetic is supported in A7XX so far */
    return nir_instr_as_intrinsic(instr)->def.bit_size != 64;
+}
+
+/* GameSir ELF 0xa7dd64: only bindless-image UMAX may bypass the
+ * compare/exchange arithmetic loop on devices with this native operation.
+ */
+static bool
+atomic_supported_native_u64_image_umax(const nir_instr *instr, const void *data)
+{
+   const nir_intrinsic_instr *intr = nir_instr_as_intrinsic(instr);
+   return intr->def.bit_size != 64 ||
+          (intr->intrinsic == nir_intrinsic_bindless_image_atomic &&
+           nir_intrinsic_atomic_op(intr) == nir_atomic_op_umax);
 }
 
 /**
@@ -1460,7 +1473,7 @@ ir3_nir_set_threadsize(struct ir3_shader_variant *v, const nir_shader *s)
    if (v->shader_options.real_wavesize != IR3_SINGLE_OR_DOUBLE)
       return;
 
-   if (mesa_shader_stage_is_compute(v->type)) {
+   if (ir3_stage_is_compute(v->type)) {
       struct ir3_compiler *compiler = v->compiler;
       const shader_info *info = &s->info;
       unsigned threads_per_wg = info->workgroup_size[0] *
@@ -1599,7 +1612,9 @@ ir3_nir_lower_variant(struct ir3_shader_variant *so,
    }
 
    /* Lower scratch writemasks */
-   progress |= OPT(s, nir_lower_atomics, atomic_supported);
+   progress |= OPT(s, nir_lower_atomics,
+                   so->compiler->info->props.has_native_64b_image_umax ?
+                      atomic_supported_native_u64_image_umax : atomic_supported);
 
    if (OPT(s, nir_lower_locals_to_regs, 1)) {
       progress = true;
@@ -1659,7 +1674,12 @@ ir3_nir_lower_variant(struct ir3_shader_variant *so,
     * have to lower the preamble after UBO lowering so that UBO lowering can
     * insert instructions in the preamble to push UBOs.
     */
-   if (so->compiler->has_preamble &&
+   /* GameSir ELF 0xa7d870: A8 compute-like stages retain mandatory
+    * preamble copies, but skip optional hoisting and descriptor prefetch.
+    */
+   const bool limit_compute_preamble =
+      so->compiler->gen >= 8 && ir3_shader_compute(so);
+   if (!limit_compute_preamble && so->compiler->has_preamble &&
        !(ir3_shader_debug & IR3_DBG_NOPREAMBLE))
       progress |= OPT(s, ir3_nir_opt_preamble, so);
 
@@ -1681,11 +1701,13 @@ ir3_nir_lower_variant(struct ir3_shader_variant *so,
 
    progress |= OPT(s, ir3_nir_lower_ubo_loads, so);
 
-   if (so->compiler->gen >= 7 &&
+   if (so->compiler->gen >= 7 && !limit_compute_preamble &&
        !(ir3_shader_debug & (IR3_DBG_NOPREAMBLE | IR3_DBG_NODESCPREFETCH)))
       progress |= OPT(s, ir3_nir_opt_prefetch_descriptors, so);
 
-   if (so->shader_options.push_consts_type == IR3_PUSH_CONSTS_SHARED_PREAMBLE)
+   if (so->shader_options.push_consts_type == IR3_PUSH_CONSTS_SHARED_PREAMBLE ||
+       so->shader_options.mesh_multiview ||
+       mesa_shader_stage_is_mesh(s->info.stage))
       progress |= OPT(s, ir3_nir_lower_push_consts_to_preamble, so);
 
    progress |= OPT(s, ir3_nir_lower_preamble, so);
@@ -1789,7 +1811,7 @@ ir3_get_driver_param_info(const nir_shader *shader, nir_intrinsic_instr *intr,
       param_info->offset = IR3_DP_CS(local_group_size_x);
       break;
    case nir_intrinsic_load_subgroup_size:
-      if (mesa_shader_stage_is_compute(shader->info.stage)) {
+      if (ir3_stage_is_compute(shader->info.stage)) {
          param_info->offset = IR3_DP_CS(subgroup_size);
       } else if (shader->info.stage == MESA_SHADER_FRAGMENT) {
          param_info->offset = IR3_DP_FS(subgroup_size);
@@ -1914,7 +1936,7 @@ ir3_nir_scan_driver_consts(struct ir3_compiler *compiler, nir_shader *shader,
     * hardware to upload these.
     */
    if (!compiler->has_shared_regfile &&
-       mesa_shader_stage_is_compute(shader->info.stage)) {
+       ir3_stage_is_compute(shader->info.stage)) {
       num_driver_params =
          MAX2(num_driver_params, IR3_DP_CS(workgroup_id_z) + 1);
    }
@@ -1993,7 +2015,7 @@ ir3_alloc_driver_params(struct ir3_const_allocations *const_alloc,
     */
    *num_driver_params = align(*num_driver_params, 4);
    unsigned upload_unit = 1;
-   if (mesa_shader_stage_is_compute(shader_stage) ||
+   if (ir3_stage_is_compute(shader_stage) ||
        (*num_driver_params >= IR3_DP_VS(vtxid_base))) {
       upload_unit = compiler->const_upload_unit;
    }
@@ -2109,18 +2131,21 @@ ir3_nir_intrinsic_barycentric_sysval(nir_intrinsic_instr *intr)
 
    switch (intr->intrinsic) {
    case nir_intrinsic_load_barycentric_pixel:
+   case nir_intrinsic_load_barycentric_coord_pixel:
       if (interp_mode == INTERP_MODE_NOPERSPECTIVE)
          sysval = SYSTEM_VALUE_BARYCENTRIC_LINEAR_PIXEL;
       else
          sysval = SYSTEM_VALUE_BARYCENTRIC_PERSP_PIXEL;
       break;
    case nir_intrinsic_load_barycentric_centroid:
+   case nir_intrinsic_load_barycentric_coord_centroid:
       if (interp_mode == INTERP_MODE_NOPERSPECTIVE)
          sysval = SYSTEM_VALUE_BARYCENTRIC_LINEAR_CENTROID;
       else
          sysval = SYSTEM_VALUE_BARYCENTRIC_PERSP_CENTROID;
       break;
    case nir_intrinsic_load_barycentric_sample:
+   case nir_intrinsic_load_barycentric_coord_sample:
       if (interp_mode == INTERP_MODE_NOPERSPECTIVE)
          sysval = SYSTEM_VALUE_BARYCENTRIC_LINEAR_SAMPLE;
       else

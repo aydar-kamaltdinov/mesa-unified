@@ -366,6 +366,13 @@ enum fdl_chroma_location {
    FDL_CHROMA_LOCATION_MIDPOINT = 1,
 };
 
+/* A8xx ASTC decode precision, recovered from the GameSir view descriptor. */
+enum fdl_astc_decode_mode {
+   FDL_ASTC_DECODE_FP32 = 0,
+   FDL_ASTC_DECODE_FP16 = 1,
+   FDL_ASTC_DECODE_UNORM8 = 2,
+};
+
 struct fdl_view_args {
    uint64_t iova;
    uint32_t base_miplevel;
@@ -383,6 +390,9 @@ struct fdl_view_args {
    uint32_t filter_center_x;
    uint32_t filter_center_y;
    uint32_t filter_num_phases;
+
+   /* Appended so existing positional initializers retain their meaning. */
+   enum fdl_astc_decode_mode astc_decode_mode;
 };
 
 #define FDL6_TEX_CONST_DWORDS 16

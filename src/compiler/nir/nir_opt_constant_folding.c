@@ -335,6 +335,8 @@ try_fold_intrinsic(nir_builder *b, nir_intrinsic_instr *intrin,
    case nir_intrinsic_ddx:
    case nir_intrinsic_ddx_fine:
    case nir_intrinsic_ddx_coarse:
+   case nir_intrinsic_ddx_3d_ir3:
+   case nir_intrinsic_ddy_3d_ir3:
    case nir_intrinsic_ddy:
    case nir_intrinsic_ddy_fine:
    case nir_intrinsic_ddy_coarse: {

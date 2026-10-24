@@ -31,6 +31,7 @@
 #include "tu_buffer.h"
 #include "tu_cmd_buffer.h"
 #include "tu_device.h"
+#include "tu_meta_compute.h"
 
 static const uint32_t encode_spv[] = {
 #include "bvh/encode.spv.h"
@@ -295,31 +296,6 @@ const struct vk_acceleration_structure_build_ops tu_as_build_ops = {
    .get_as_size = get_bvh_size,
    .encode = tu_encode,
 };
-
-struct tu_saved_compute_state {
-   uint32_t push_constants[MAX_PUSH_CONSTANTS_SIZE / 4];
-   struct tu_shader *compute_shader;
-};
-
-static void
-tu_save_compute_state(struct tu_cmd_buffer *cmd,
-                      struct tu_saved_compute_state *state)
-{
-   memcpy(state->push_constants, cmd->push_constants, sizeof(cmd->push_constants));
-   state->compute_shader = cmd->state.shaders[MESA_SHADER_COMPUTE];
-}
-
-static void
-tu_restore_compute_state(struct tu_cmd_buffer *cmd,
-                         struct tu_saved_compute_state *state)
-{
-   cmd->state.shaders[MESA_SHADER_COMPUTE] = state->compute_shader;
-   if (state->compute_shader) {
-      tu_cs_emit_state_ib(&cmd->cs, state->compute_shader->state);
-   }
-   memcpy(cmd->push_constants, state->push_constants, sizeof(cmd->push_constants));
-   cmd->state.dirty |= TU_CMD_DIRTY_SHADER_CONSTS;
-}
 
 VKAPI_ATTR void VKAPI_CALL
 tu_CmdBuildAccelerationStructuresKHR(VkCommandBuffer commandBuffer, uint32_t infoCount,

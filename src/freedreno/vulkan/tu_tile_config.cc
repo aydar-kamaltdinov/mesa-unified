@@ -30,7 +30,7 @@ tu_calc_frag_area(struct tu_cmd_buffer *cmd,
    unsigned views = tu_fdm_num_layers(cmd);
    const struct tu_framebuffer *fb = cmd->state.framebuffer;
    struct tu_frag_area raw_areas[views];
-   if (fdm) {
+   if (fdm && !cmd->device->physical_device->info->props.fdm_requires_full_density) {
       for (unsigned i = 0; i < views; i++) {
          VkOffset2D sample_pos = { 0, 0 };
 

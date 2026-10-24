@@ -184,6 +184,8 @@ tu_image_view_init(struct tu_device *device,
       vk_ycbcr_conversion_from_handle(ycbcr_conversion->conversion) : NULL;
    const VkImageViewSampleWeightCreateInfoQCOM *sample_weights =
       vk_find_struct_const(pCreateInfo->pNext, IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM);
+   const VkImageViewASTCDecodeModeEXT *astc_decode =
+      vk_find_struct_const(pCreateInfo->pNext, IMAGE_VIEW_ASTC_DECODE_MODE_EXT);
 
    vk_image_view_init(&device->vk, &iview->vk, pCreateInfo);
    assert(iview->vk.format != VK_FORMAT_UNDEFINED);
@@ -241,6 +243,16 @@ tu_image_view_init(struct tu_device *device,
    args.level_count = vk_image_subresource_level_count(&image->vk, range);
    args.min_lod_clamp = iview->vk.min_lod;
    args.format = tu_format_for_aspect(format, aspect_mask);
+   /* GameSir tu_image_view_init ELF0x999e6c: only A8 has these controls.
+    * FP32/default leaves both precision bits clear; shared exponent is not
+    * supported. Vulkan validation restricts this pNext to valid ASTC views.
+    */
+   if (astc_decode && device->physical_device->info->chip >= 8) {
+      if (astc_decode->decodeMode == VK_FORMAT_R16G16B16A16_SFLOAT)
+         args.astc_decode_mode = FDL_ASTC_DECODE_FP16;
+      else if (astc_decode->decodeMode == VK_FORMAT_R8G8B8A8_UNORM)
+         args.astc_decode_mode = FDL_ASTC_DECODE_UNORM8;
+   }
    vk_component_mapping_to_pipe_swizzle(pCreateInfo->components, args.swiz);
    if (conversion) {
       unsigned char conversion_swiz[4], create_swiz[4];

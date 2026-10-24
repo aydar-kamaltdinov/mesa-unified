@@ -1406,60 +1406,126 @@ TODO rename UAV src to "UAV" so disasm_field_cb can find it easily?
 	</encode>
 </bitset>
 
-<bitset name="atomic.b.add" extends="#instruction-cat6-a6xx-ibo-atomic">
+<!-- GameSir A8 atomic IBO encodings clear bit52; A6/A7 retain it.
+     The opcode, operand and type fields are shared across generations. -->
+<bitset name="#instruction-cat6-a6xx-ibo-atomic-a7" extends="#instruction-cat6-a6xx-ibo-atomic">
+	<gen max="799"/>
+	<pattern low="52" high="53">11</pattern>
+</bitset>
+
+<bitset name="#instruction-cat6-a6xx-ibo-atomic-a8" extends="#instruction-cat6-a6xx-ibo-atomic">
+	<gen min="800"/>
+	<pattern low="52" high="53">10</pattern>
+</bitset>
+
+<bitset name="atomic.b.add" extends="#instruction-cat6-a6xx-ibo-atomic-a7">
+	<gen min="600" max="799"/>
 	<pattern pos="0"           >x</pattern>
 	<pattern low="14" high="19">010000</pattern>   <!-- OPC -->
-	<pattern low="52" high="53">11</pattern>
 </bitset>
 
-<bitset name="atomic.b.sub" extends="#instruction-cat6-a6xx-ibo-atomic">
+<bitset name="atomic.b.add" extends="#instruction-cat6-a6xx-ibo-atomic-a8">
+	<gen min="800"/>
+	<pattern pos="0"           >x</pattern>
+	<pattern low="14" high="19">010000</pattern>   <!-- OPC -->
+</bitset>
+
+<bitset name="atomic.b.sub" extends="#instruction-cat6-a6xx-ibo-atomic-a7">
+	<gen min="600" max="799"/>
 	<pattern pos="0"           >x</pattern>
 	<pattern low="14" high="19">010001</pattern>   <!-- OPC -->
-	<pattern low="52" high="53">11</pattern>
 </bitset>
 
-<bitset name="atomic.b.xchg" extends="#instruction-cat6-a6xx-ibo-atomic">
+<bitset name="atomic.b.sub" extends="#instruction-cat6-a6xx-ibo-atomic-a8">
+	<gen min="800"/>
+	<pattern pos="0"           >x</pattern>
+	<pattern low="14" high="19">010001</pattern>   <!-- OPC -->
+</bitset>
+
+<bitset name="atomic.b.xchg" extends="#instruction-cat6-a6xx-ibo-atomic-a7">
+	<gen min="600" max="799"/>
 	<pattern pos="0"           >x</pattern>
 	<pattern low="14" high="19">010010</pattern>   <!-- OPC -->
-	<pattern low="52" high="53">11</pattern>
+</bitset>
+
+<bitset name="atomic.b.xchg" extends="#instruction-cat6-a6xx-ibo-atomic-a8">
+	<gen min="800"/>
+	<pattern pos="0"           >x</pattern>
+	<pattern low="14" high="19">010010</pattern>   <!-- OPC -->
 </bitset>
 
 <!-- inc/dec? -->
 
-<bitset name="atomic.b.cmpxchg" extends="#instruction-cat6-a6xx-ibo-atomic">
+<bitset name="atomic.b.cmpxchg" extends="#instruction-cat6-a6xx-ibo-atomic-a7">
+	<gen min="600" max="799"/>
 	<pattern pos="0"           >x</pattern>
 	<pattern low="14" high="19">010101</pattern>   <!-- OPC -->
-	<pattern low="52" high="53">11</pattern>
 </bitset>
 
-<bitset name="atomic.b.min" extends="#instruction-cat6-a6xx-ibo-atomic">
+<bitset name="atomic.b.cmpxchg" extends="#instruction-cat6-a6xx-ibo-atomic-a8">
+	<gen min="800"/>
+	<pattern pos="0"           >x</pattern>
+	<pattern low="14" high="19">010101</pattern>   <!-- OPC -->
+</bitset>
+
+<bitset name="atomic.b.min" extends="#instruction-cat6-a6xx-ibo-atomic-a7">
+	<gen min="600" max="799"/>
 	<pattern pos="0"           >x</pattern>
 	<pattern low="14" high="19">010110</pattern>   <!-- OPC -->
-	<pattern low="52" high="53">11</pattern>
 </bitset>
 
-<bitset name="atomic.b.max" extends="#instruction-cat6-a6xx-ibo-atomic">
+<bitset name="atomic.b.min" extends="#instruction-cat6-a6xx-ibo-atomic-a8">
+	<gen min="800"/>
+	<pattern pos="0"           >x</pattern>
+	<pattern low="14" high="19">010110</pattern>   <!-- OPC -->
+</bitset>
+
+<bitset name="atomic.b.max" extends="#instruction-cat6-a6xx-ibo-atomic-a7">
+	<gen min="600" max="799"/>
 	<pattern pos="0"           >x</pattern>
 	<pattern low="14" high="19">010111</pattern>   <!-- OPC -->
-	<pattern low="52" high="53">11</pattern>
 </bitset>
 
-<bitset name="atomic.b.and" extends="#instruction-cat6-a6xx-ibo-atomic">
+<bitset name="atomic.b.max" extends="#instruction-cat6-a6xx-ibo-atomic-a8">
+	<gen min="800"/>
+	<pattern pos="0"           >x</pattern>
+	<pattern low="14" high="19">010111</pattern>   <!-- OPC -->
+</bitset>
+
+<bitset name="atomic.b.and" extends="#instruction-cat6-a6xx-ibo-atomic-a7">
+	<gen min="600" max="799"/>
 	<pattern pos="0"           >x</pattern>
 	<pattern low="14" high="19">011000</pattern>   <!-- OPC -->
-	<pattern low="52" high="53">11</pattern>
 </bitset>
 
-<bitset name="atomic.b.or" extends="#instruction-cat6-a6xx-ibo-atomic">
+<bitset name="atomic.b.and" extends="#instruction-cat6-a6xx-ibo-atomic-a8">
+	<gen min="800"/>
+	<pattern pos="0"           >x</pattern>
+	<pattern low="14" high="19">011000</pattern>   <!-- OPC -->
+</bitset>
+
+<bitset name="atomic.b.or" extends="#instruction-cat6-a6xx-ibo-atomic-a7">
+	<gen min="600" max="799"/>
 	<pattern pos="0"           >x</pattern>
 	<pattern low="14" high="19">011001</pattern>   <!-- OPC -->
-	<pattern low="52" high="53">11</pattern>
 </bitset>
 
-<bitset name="atomic.b.xor" extends="#instruction-cat6-a6xx-ibo-atomic">
+<bitset name="atomic.b.or" extends="#instruction-cat6-a6xx-ibo-atomic-a8">
+	<gen min="800"/>
+	<pattern pos="0"           >x</pattern>
+	<pattern low="14" high="19">011001</pattern>   <!-- OPC -->
+</bitset>
+
+<bitset name="atomic.b.xor" extends="#instruction-cat6-a6xx-ibo-atomic-a7">
+	<gen min="600" max="799"/>
 	<pattern pos="0"           >x</pattern>
 	<pattern low="14" high="19">011010</pattern>   <!-- OPC -->
-	<pattern low="52" high="53">11</pattern>
+</bitset>
+
+<bitset name="atomic.b.xor" extends="#instruction-cat6-a6xx-ibo-atomic-a8">
+	<gen min="800"/>
+	<pattern pos="0"           >x</pattern>
+	<pattern low="14" high="19">011010</pattern>   <!-- OPC -->
 </bitset>
 
 <enum name="#cat6-shfl-mode">

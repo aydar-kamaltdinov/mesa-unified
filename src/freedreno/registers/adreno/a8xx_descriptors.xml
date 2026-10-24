@@ -83,6 +83,9 @@ xsi:schemaLocation="https://gitlab.freedesktop.org/freedreno/ rules-fd.xsd">
 		<!-- For multiplanar: -->
 		<bitfield name="BASE_U_HI" low="0" high="16" variants="DESC_MULTI_PLANE"/>
 		<bitfield name="FLAG_BUFFER_PITCH" low="17" high="24" shr="6" type="uint" variants="DESC_SINGLE_PLANE DESC_MULTI_PLANE"/>
+		<!-- GameSir fdl6_view_init A8 ELF0xc73618: explicit ASTC precision. -->
+		<bitfield name="ASTC_DECODE_FP16" pos="26" type="boolean" variants="DESC_SINGLE_PLANE"/>
+		<bitfield name="ASTC_DECODE_UNORM8" pos="28" type="boolean" variants="DESC_SINGLE_PLANE"/>
 		<bitfield name="ALL_SAMPLES_CENTER" pos="29" type="boolean" variants="DESC_SINGLE_PLANE"/>
 		<bitfield name="MUTABLEEN" pos="31" type="boolean" variants="DESC_SINGLE_PLANE DESC_WEIGHT"/>
 

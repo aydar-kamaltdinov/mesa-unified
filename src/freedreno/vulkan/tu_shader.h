@@ -15,6 +15,7 @@
 #include "tu_cs.h"
 #include "tu_descriptor_set.h"
 #include "tu_suballoc.h"
+#include "tu_mesh_layout.h"
 
 struct tu_inline_ubo
 {
@@ -92,6 +93,9 @@ struct tu_shader
    bool per_layer_viewport;
 
    union {
+      /* GameSir persists this stage payload as the full600-byte layout. */
+      struct tu_mesh_shader_layout mesh;
+
       struct {
          unsigned patch_type;
          enum a6xx_tess_output tess_output_upper_left, tess_output_lower_left;
@@ -104,6 +108,11 @@ struct tu_shader
           * VkPipelineMultisampleStateCreateInfo->sampleShadingEnable.
           */
          bool sample_shading;
+         bool uses_primitive_key;
+         /* Serialize this with the FS payload: raster-order state is built
+          * after shader compilation, including when the shader came from cache.
+          */
+         bool uses_interlock;
          bool has_fdm;
 
          uint16_t dynamic_input_attachments_used;
@@ -141,7 +150,9 @@ struct tu_shader_key {
    bool lower_view_index_to_device_index : 1;
    bool custom_resolve : 1;
    bool emulate_alpha_to_coverage : 1;
-   uint32_t padding : 23;
+   bool fs_provoking_vtx_last : 1;
+   unsigned fs_primitive : 2;
+   uint32_t padding : 20;
 
    enum ir3_wavesize_option api_wavesize, real_wavesize;
 
@@ -154,6 +165,10 @@ struct tu_shader_key {
  */
 struct tu_shader_info {
    bool per_layer_viewport;
+   /* FS ViewIndex comes from AQE when a mesh producer uses multiview. */
+   bool mesh_multiview;
+   struct tu_mesh_shader_layout mesh;
+   struct ir3_mesh_fs_inputs mesh_fs_inputs;
 };
 
 extern const struct vk_pipeline_cache_object_ops tu_shader_ops;
@@ -245,6 +260,7 @@ void
 tu_shader_key_robustness(struct tu_shader_key *key,
                          const struct vk_pipeline_robustness_state *rs);
 
+/* Every stage-indexed input/output array has MESA_SHADER_MESH_STAGES slots. */
 VkResult
 tu_compile_shaders(struct tu_device *device,
                    VkPipelineCreateFlags2KHR pipeline_flags,
@@ -257,6 +273,8 @@ tu_compile_shaders(struct tu_device *device,
                    char **nir_initial_disasm,
                    void *nir_initial_disasm_mem_ctx,
                    nir_shader **nir_out,
+                   bool retain_all_nir,
+                   bool retain_mesh_interface_nir,
                    VkPipelineCreationFeedback *stage_feedbacks);
 
 VkResult

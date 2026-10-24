@@ -277,6 +277,8 @@ enum tu_cmd_ccu_state {
    TU_CMD_CCU_SYSMEM,
    TU_CMD_CCU_GMEM,
    TU_CMD_CCU_UNKNOWN,
+   /* Symbolic local value; original GameSir state1 is mesh, state2 GMEM. */
+   TU_CMD_CCU_MESH_SYSMEM,
 };
 
 struct tu_cache_state {
@@ -312,6 +314,7 @@ struct tu_render_pass_state
 {
    bool xfb_used;
    bool has_tess;
+   bool has_mesh;
    bool has_prim_generated_query_in_rp;
    bool has_vtx_stats_query_in_rp;
    bool has_zpass_done_sample_count_write_in_rp;
@@ -488,7 +491,7 @@ struct tu_cmd_state
 {
    uint32_t dirty;
 
-   struct tu_shader *shaders[MESA_SHADER_STAGES];
+   struct tu_shader *shaders[MESA_SHADER_MESH_STAGES];
 
    struct tu_program_state program;
 
@@ -649,6 +652,11 @@ struct tu_cmd_state
    bool vtx_stats_query_running_before_rp;
    bool xfb_query_running_before_rp;
 
+   /* Conservative AQE accounting latch: inherited pipeline statistics or
+    * a begun pipeline/primitive query. Kept until command-state reset.
+    */
+   bool statistics_query_may_be_running;
+
    bool occlusion_query_may_be_running;
 
    bool trace_draws_enabled;
@@ -668,6 +676,7 @@ struct tu_cmd_state
 
    struct tu_vs_params last_vs_params;
    bool last_draw_indexed;
+   bool last_fragment_vertex_ordering;
 
    struct tu_tess_params tess_params;
 
@@ -1105,5 +1114,14 @@ tu_fdm_num_layers(const struct tu_cmd_buffer *cmd)
    return cmd->state.pass->num_views ? cmd->state.pass->num_views : 
       (cmd->state.fdm_per_layer ? cmd->state.framebuffer->layers : 1);
 }
+
+/* Internal recording boundaries; Vulkan TASK/MESH entrypoints stay guarded.
+ * A session borrows pipeline data only until the matching end call.
+ */
+struct tu_a8_mesh_draw_session;
+VkResult tu_a8_begin_mesh_draw(struct tu_cmd_buffer *cmd,
+                               struct tu_a8_mesh_draw_session *session);
+VkResult tu_a8_end_mesh_draw(struct tu_cmd_buffer *cmd,
+                             struct tu_a8_mesh_draw_session *session);
 
 #endif /* TU_CMD_BUFFER_H */

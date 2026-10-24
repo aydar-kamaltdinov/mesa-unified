@@ -3178,6 +3178,9 @@ by a particular renderpass/blit.
 		<!-- for fixed-function (i.e. no GS) gl_PrimitiveID in FS -->
 		<bitfield name="PRIMIDLOC" low="8" high="15" type="uint"/>
 		<bitfield name="VARYING" pos="16" type="boolean"/>
+		<!-- Generate the three vertex-basis weights after ordinary FS inputs.
+		     Recovered from the GameSir A6xx/A7xx/A8xx register emission. -->
+		<bitfield name="BARYCENTRIC_COORD" pos="17" type="boolean"/>
 		<bitfield name="VIEWIDLOC" low="24" high="31" type="uint">
 			<doc>
 				This VPC location will be overwritten with
@@ -3575,6 +3578,14 @@ by a particular renderpass/blit.
 		<bitfield name="VERTEX" pos="0" type="boolean"/>
 		<!-- add VFD_INSTANCE_START_OFFSET to REGID4INST -->
 		<bitfield name="INSTANCE" pos="1" type="boolean"/>
+	</reg32>
+
+	<!-- GameSir A850 hardware draw parameters; disabled on earlier records. -->
+	<reg32 offset="0xa00a" name="VFD_DRAW_PARAMS" variants="A8XX-" usage="draw">
+		<bitfield name="REGID_DRAW_ID" low="0" high="7" type="a3xx_regid"/>
+		<bitfield name="REGID_FIRST_VERTEX" low="8" high="15" type="a3xx_regid"/>
+		<bitfield name="REGID_BASE_INSTANCE" low="16" high="23" type="a3xx_regid"/>
+		<bitfield name="REGID_UNK" low="24" high="31" type="a3xx_regid"/>
 	</reg32>
 
 	<reg32 offset="0xa00e" name="VFD_INDEX_OFFSET" usage="draw"/>
@@ -4495,6 +4506,7 @@ by a particular renderpass/blit.
 	<reg32 offset="0xb309" name="TPL1_MODE_CNTL" usage="cmd" type="a6xx_tpl1_mode_cntl" variants="A6XX-A7XX"/>
 	<reg32 offset="0xb309" name="TPL1_MODE_CNTL" usage="cmd" type="a6xx_tpl1_mode_cntl" variants="A8XX-">
 		<bitfield name="CLAMP_DISABLE" pos="12" type="boolean"/>
+		<bitfield name="UNK16" pos="16" type="boolean"/>
 	</reg32>
 	<reg32 offset="0xb310" name="SP_UNKNOWN_B310" variants="A7XX-" usage="cmd"/>
 

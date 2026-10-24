@@ -426,6 +426,8 @@ static const struct opc_info {
    OPC(6, OPC_RELOAD_MACRO, reload.macro),
 
    OPC(7, OPC_BAR,          bar),
+   OPC(7, OPC_BAR_SET,      bar.set),
+   OPC(7, OPC_BAR_SYNC,     bar.sync),
    OPC(7, OPC_FENCE,        fence),
    OPC(7, OPC_LOCK,         lock),
    OPC(7, OPC_UNLOCK,       unlock),

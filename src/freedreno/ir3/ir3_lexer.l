@@ -450,6 +450,8 @@ static int parse_reg(const char *str)
 
                                   /* category 7: */
 "bar"                             return TOKEN(T_OP_BAR);
+"bar.set"                         return TOKEN(T_OP_BAR_SET);
+"bar.sync"                        return TOKEN(T_OP_BAR_SYNC);
 "fence"                           return TOKEN(T_OP_FENCE);
 "sleep.l"                         return TOKEN(T_OP_SLEEP);
 "icinv"                           return TOKEN(T_OP_ICINV);

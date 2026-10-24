@@ -875,6 +875,53 @@ disk_cache_write_item_to_disk(struct disk_cache_put_job *dc_job,
    blob_finish(&cache_blob);
 }
 
+/* Explicit cache paths may come from a Windows application even when Mesa
+ * runs on the host side of Wine.  Match GameSir's prefix/Steam translation;
+ * paths outside those recognized cases retain the existing fallback.
+ */
+static char *
+translate_wine_cache_path(void *mem_ctx, const char *path)
+{
+   if (strlen(path) < 3 || path[1] != ':' ||
+       (path[2] != '\\' && path[2] != '/'))
+      return NULL;
+
+   char drive = path[0];
+   if (drive >= 'A' && drive <= 'Z')
+      drive += 'a' - 'A';
+
+   char *translated = NULL;
+   const char *prefix = os_get_option("WINEPREFIX");
+   if (prefix && prefix[0]) {
+      translated = ralloc_asprintf(mem_ctx, "%s/drive_%c/%s", prefix, drive,
+                                    path + 3);
+   } else {
+      static const char steam_prefix[] = "Program Files (x86)\\Steam\\";
+      if (drive != 'c' ||
+          strncmp(path + 3, steam_prefix, sizeof(steam_prefix) - 1) != 0)
+         return NULL;
+
+      char cwd[4096];
+      if (!getcwd(cwd, sizeof(cwd)))
+         return NULL;
+
+      const char *steamapps = strstr(cwd, "/steamapps/");
+      if (!steamapps)
+         return NULL;
+
+      translated = ralloc_asprintf(mem_ctx, "%.*s/%s", (int)(steamapps - cwd),
+                                    cwd, path + 3 + sizeof(steam_prefix) - 1);
+   }
+
+   if (translated) {
+      for (char *p = translated; *p; p++) {
+         if (*p == '\\')
+            *p = '/';
+      }
+   }
+   return translated;
+}
+
 /* Determine path for cache based on the first defined name as follows:
  *
  *   $MESA_SHADER_CACHE_DIR/mesa_shader_cache*
@@ -921,6 +968,9 @@ disk_cache_generate_cache_dir(void *mem_ctx, const char *gpu_name,
    }
 
    if (path) {
+      char *translated = translate_wine_cache_path(mem_ctx, path);
+      if (translated)
+         path = translated;
       path = concatenate_and_mkdir(mem_ctx, path, cache_dir_name, mkdir);
       if (!path)
          return NULL;

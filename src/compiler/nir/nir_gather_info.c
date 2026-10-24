@@ -833,6 +833,7 @@ gather_intrinsic_info(nir_intrinsic_instr *instr, nir_shader *shader)
       break;
 
    case nir_intrinsic_load_barycentric_coord_pixel:
+   case nir_intrinsic_load_barycentric_coord_ir3:
    case nir_intrinsic_load_barycentric_coord_centroid:
    case nir_intrinsic_load_barycentric_coord_sample:
    case nir_intrinsic_load_barycentric_coord_at_offset:
@@ -928,7 +929,9 @@ gather_intrinsic_info(nir_intrinsic_instr *instr, nir_shader *shader)
             if (instr->intrinsic != nir_intrinsic_ddx &&
                 instr->intrinsic != nir_intrinsic_ddy &&
                 instr->intrinsic != nir_intrinsic_ddx_coarse &&
-                instr->intrinsic != nir_intrinsic_ddy_coarse)
+                instr->intrinsic != nir_intrinsic_ddy_coarse &&
+                instr->intrinsic != nir_intrinsic_ddx_3d_ir3 &&
+                instr->intrinsic != nir_intrinsic_ddy_3d_ir3)
                shader->info.fs.needs_full_quad_helper_invocations = true;
          }
       } else if (nir_intrinsic_has_semantic(instr, NIR_INTRINSIC_SUBGROUP)) {

@@ -372,6 +372,9 @@ ir3_compiler_create(struct fd_device *dev, const struct fd_dev_id *dev_id,
       compiler->const_upload_unit = 8;
    }
 
+   if (dev_info->props.has_array_index_rounding)
+      compiler->array_index_add_half = false;
+
    compiler->bool_type = (compiler->gen >= 5) ? TYPE_U16 : TYPE_U32;
    compiler->has_shared_regfile = compiler->gen >= 5;
    compiler->has_bitwise_triops = compiler->gen >= 5;
@@ -436,7 +439,7 @@ ir3_compiler_create(struct fd_device *dev, const struct fd_dev_id *dev_id,
    compiler->nir_options.support_indirect_inputs =
       BITFIELD_BIT(MESA_SHADER_TESS_CTRL) |
       BITFIELD_BIT(MESA_SHADER_TESS_EVAL);
-   compiler->nir_options.support_indirect_outputs = (uint8_t)BITFIELD_MASK(MESA_SHADER_STAGES);
+   compiler->nir_options.support_indirect_outputs = (uint8_t)BITFIELD_MASK(MESA_SHADER_MESH_STAGES);
    compiler->nir_options.max_offset_shift = ir3_nir_max_offset_shift;
    compiler->nir_options.cb_data = compiler;
 

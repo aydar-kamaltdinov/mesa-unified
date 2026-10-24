@@ -70,7 +70,7 @@ struct tu_nir_shaders
    /* This is optional, and is only filled out when a library pipeline is
     * compiled with RETAIN_LINK_TIME_OPTIMIZATION_INFO.
     */
-   nir_shader *nir[MESA_SHADER_STAGES];
+   nir_shader *nir[MESA_SHADER_MESH_STAGES];
 };
 
 extern const struct vk_pipeline_cache_object_ops tu_nir_shaders_ops;
@@ -105,12 +105,16 @@ struct tu_program_state
       struct tu_draw_state gs_state, gs_binning_state;
       struct tu_draw_state vpc_state;
       struct tu_draw_state fs_state;
+      /* Separate uploads referenced by AQE metadata; commands schedule them. */
+      struct tu_draw_state ts_state, ms_state;
+      /* Twenty AQE data words, not an executable PM4 draw state. */
+      struct tu_draw_state mesh_metadata;
 
       struct tu_push_constant_range shared_consts;
 
-      struct tu_program_descriptor_linkage link[MESA_SHADER_STAGES];
+      struct tu_program_descriptor_linkage link[MESA_SHADER_MESH_STAGES];
 
-      char stage_blake3[MESA_SHADER_STAGES][BLAKE3_HEX_LEN];
+      char stage_blake3[MESA_SHADER_MESH_STAGES][BLAKE3_HEX_LEN];
 
       unsigned dynamic_descriptor_offsets[MAX_SETS];
 
@@ -216,7 +220,7 @@ struct tu_pipeline
    /* draw states for the pipeline */
    struct tu_draw_state load_state;
 
-   struct tu_shader *shaders[MESA_SHADER_STAGES];
+   struct tu_shader *shaders[MESA_SHADER_MESH_STAGES];
 
    struct tu_program_state program;
 
@@ -243,7 +247,7 @@ struct tu_graphics_lib_pipeline {
    struct {
       nir_shader *nir;
       struct tu_shader_key key;
-   } shaders[MESA_SHADER_FRAGMENT + 1];
+   } shaders[MESA_SHADER_MESH_STAGES];
 
    /* Used to stitch together an overall layout for the final pipeline. */
    struct tu_descriptor_set_layout *layouts[MAX_SETS];

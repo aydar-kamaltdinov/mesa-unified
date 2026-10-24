@@ -39,7 +39,22 @@
  * Depending on how/if they shuffle around in the future, we might need
  * to shift to reading them individually, like gallium does.
  */
-#define STAT_COUNT ((__COUNTER_REG(A6XX, CSINVOCATIONS).reg - __COUNTER_REG(A6XX, IAVERTICES).reg) / 2 + 1)
+#define LEGACY_STAT_COUNT ((__COUNTER_REG(A6XX, CSINVOCATIONS).reg - __COUNTER_REG(A6XX, IAVERTICES).reg) / 2 + 1)
+#define MAX_STAT_COUNT ((__COUNTER_REG(A8XX, MSPRIMITIVES).reg - __COUNTER_REG(A8XX, IAVERTICES).reg) / 2 + 1)
+
+template <chip CHIP>
+static unsigned
+statistics_count(uint32_t statistics)
+{
+   /* The original A8 snapshot reads all fourteen registers. The trailing
+    * counters are only consumed by mesh queries here; retain the existing
+    * eleven-counter work for ordinary pipeline-statistics requests.
+    */
+   return CHIP >= A8XX &&
+      (statistics & (VK_QUERY_PIPELINE_STATISTIC_TASK_SHADER_INVOCATIONS_BIT_EXT |
+                     VK_QUERY_PIPELINE_STATISTIC_MESH_SHADER_INVOCATIONS_BIT_EXT)) ?
+      MAX_STAT_COUNT : LEGACY_STAT_COUNT;
+}
 
 struct alignas(8) PACKED query_slot {
    alignas(8) uint64_t available;
@@ -66,11 +81,16 @@ struct alignas(8) PACKED primitive_slot_value {
 
 struct alignas(8) PACKED pipeline_stat_query_slot {
    struct query_slot common;
-   uint64_t results[STAT_COUNT];
+   uint64_t results[MAX_STAT_COUNT];
 
-   uint64_t begin[STAT_COUNT];
-   uint64_t end[STAT_COUNT];
+   uint64_t begin[MAX_STAT_COUNT];
+   uint64_t end[MAX_STAT_COUNT];
 };
+
+/* Original query-pool pipeline-stat slot is 0x158 bytes. A6/A7 keep reading
+ * only their eleven valid counters; A8 adds AS/MS invocation/primitive slots.
+ */
+static_assert(sizeof(pipeline_stat_query_slot) == 0x158);
 
 struct alignas(8) PACKED primitive_query_slot {
    struct query_slot common;
@@ -340,6 +360,7 @@ tu_CreateQueryPool(VkDevice _device,
       slot_size = sizeof(struct primitive_query_slot);
       break;
    case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+   case VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT:
       slot_size = sizeof(struct primitives_generated_query_slot);
       break;
    case VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR: {
@@ -514,6 +535,7 @@ get_result_count(struct tu_query_pool *pool)
    case VK_QUERY_TYPE_OCCLUSION:
    case VK_QUERY_TYPE_TIMESTAMP:
    case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+   case VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT:
    case VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR:
    case VK_QUERY_TYPE_ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR:
    case VK_QUERY_TYPE_ACCELERATION_STRUCTURE_SERIALIZATION_BOTTOM_LEVEL_POINTERS_KHR:
@@ -567,6 +589,12 @@ statistics_index(uint32_t *statistics)
       return COUNTER_OFFSET(DSINVOCATIONS);
    case VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT:
       return COUNTER_OFFSET(CSINVOCATIONS);
+   case VK_QUERY_PIPELINE_STATISTIC_TASK_SHADER_INVOCATIONS_BIT_EXT:
+      return CHIP >= A8XX ?
+         (__COUNTER_REG(A8XX, ASINVOCATIONS).reg - __COUNTER_REG(A8XX, IAVERTICES).reg) / 2 : 0;
+   case VK_QUERY_PIPELINE_STATISTIC_MESH_SHADER_INVOCATIONS_BIT_EXT:
+      return CHIP >= A8XX ?
+         (__COUNTER_REG(A8XX, MSINVOCATIONS).reg - __COUNTER_REG(A8XX, IAVERTICES).reg) / 2 : 0;
    default:
       return 0;
    }
@@ -584,7 +612,9 @@ is_pipeline_query_with_vertex_stage(uint32_t pipeline_statistics)
            VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT |
            VK_QUERY_PIPELINE_STATISTIC_CLIPPING_PRIMITIVES_BIT |
            VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_CONTROL_SHADER_PATCHES_BIT |
-           VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT);
+           VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT |
+           VK_QUERY_PIPELINE_STATISTIC_TASK_SHADER_INVOCATIONS_BIT_EXT |
+           VK_QUERY_PIPELINE_STATISTIC_MESH_SHADER_INVOCATIONS_BIT_EXT);
 }
 
 static bool
@@ -811,6 +841,7 @@ tu_GetQueryPoolResults(VkDevice _device,
    case VK_QUERY_TYPE_TIMESTAMP:
    case VK_QUERY_TYPE_TRANSFORM_FEEDBACK_STREAM_EXT:
    case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+   case VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT:
    case VK_QUERY_TYPE_PIPELINE_STATISTICS:
    case VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR:
    case VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR:
@@ -969,6 +1000,7 @@ tu_CmdCopyQueryPoolResults(VkCommandBuffer commandBuffer,
    case VK_QUERY_TYPE_TIMESTAMP:
    case VK_QUERY_TYPE_TRANSFORM_FEEDBACK_STREAM_EXT:
    case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+   case VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT:
    case VK_QUERY_TYPE_PIPELINE_STATISTICS:
    case VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR:
    case VK_QUERY_TYPE_ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR:
@@ -1099,6 +1131,7 @@ tu_CmdResetQueryPool(VkCommandBuffer commandBuffer,
    case VK_QUERY_TYPE_OCCLUSION:
    case VK_QUERY_TYPE_TRANSFORM_FEEDBACK_STREAM_EXT:
    case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+   case VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT:
    case VK_QUERY_TYPE_PIPELINE_STATISTICS:
    case VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR:
    case VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR:
@@ -1202,6 +1235,7 @@ emit_begin_stat_query(struct tu_cmd_buffer *cmdbuf,
                       struct tu_query_pool *pool,
                       uint32_t query)
 {
+   cmdbuf->state.statistics_query_may_be_running = true;
    struct tu_cs *cs = cmdbuf->state.pass ? &cmdbuf->draw_cs : &cmdbuf->cs;
    uint64_t begin_iova = pipeline_stat_query_iova(pool, query, begin, 0);
 
@@ -1259,7 +1293,7 @@ emit_begin_stat_query(struct tu_cmd_buffer *cmdbuf,
    emit_counter_barrier<CHIP>(cs);
 
    cs->reg_to_mem(begin_iova, COUNTER_REG(IAVERTICES), {
-      .cnt = STAT_COUNT * 2,
+      .cnt = statistics_count<CHIP>(pool->vk.pipeline_statistics) * 2,
       .is_64b = true,
    });
 }
@@ -1451,6 +1485,7 @@ emit_begin_prim_generated_query(struct tu_cmd_buffer *cmdbuf,
                                 struct tu_query_pool *pool,
                                 uint32_t query)
 {
+   cmdbuf->state.statistics_query_may_be_running = true;
    struct tu_cs *cs = cmdbuf->state.pass ? &cmdbuf->draw_cs : &cmdbuf->cs;
    uint64_t begin_iova = primitives_generated_query_iova(pool, query, begin);
 
@@ -1509,6 +1544,7 @@ tu_CmdBeginQueryIndexedEXT(VkCommandBuffer commandBuffer,
       emit_begin_xfb_query<CHIP>(cmdbuf, pool, query, index);
       break;
    case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+   case VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT:
       emit_begin_prim_generated_query<CHIP>(cmdbuf, pool, query);
       break;
    case VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR:
@@ -1680,7 +1716,8 @@ emit_stop_primitive_ctrs(struct tu_cmd_buffer *cmdbuf,
    if (cmdbuf->state.prim_counters_running == 0) {
       bool need_cond_exec =
          is_secondary &&
-         query_type == VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT &&
+         (query_type == VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT ||
+          query_type == VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT) &&
          is_pipeline_query_with_vertex_stage(cmdbuf->inherited_pipeline_statistics);
 
       if (!need_cond_exec) {
@@ -1754,11 +1791,11 @@ emit_end_stat_query(struct tu_cmd_buffer *cmdbuf,
    emit_counter_barrier<CHIP>(cs);
 
    cs->reg_to_mem(end_iova, COUNTER_REG(IAVERTICES), {
-      .cnt = STAT_COUNT * 2,
+      .cnt = statistics_count<CHIP>(pool->vk.pipeline_statistics) * 2,
       .is_64b = true,
    });
 
-   for (int i = 0; i < STAT_COUNT; i++) {
+   for (unsigned i = 0; i < statistics_count<CHIP>(pool->vk.pipeline_statistics); i++) {
       result_iova = query_result_iova(pool, query, uint64_t, i);
       stat_start_iova = pipeline_stat_query_iova(pool, query, begin, i);
       stat_stop_iova = pipeline_stat_query_iova(pool, query, end, i);
@@ -2053,7 +2090,7 @@ emit_end_prim_generated_query(struct tu_cmd_buffer *cmdbuf,
    /* Should be after waiting for mem writes to have up to date info
     * about which query is running.
     */
-   emit_stop_primitive_ctrs<CHIP>(cmdbuf, cs, VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT);
+   emit_stop_primitive_ctrs<CHIP>(cmdbuf, cs, pool->vk.query_type);
 
    if (cmdbuf->state.pass) {
       tu_cond_exec_end(cs);
@@ -2126,6 +2163,7 @@ tu_CmdEndQueryIndexedEXT(VkCommandBuffer commandBuffer,
       emit_end_xfb_query<CHIP>(cmdbuf, pool, query, index);
       break;
    case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+   case VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT:
       emit_end_prim_generated_query<CHIP>(cmdbuf, pool, query);
       break;
    case VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR:

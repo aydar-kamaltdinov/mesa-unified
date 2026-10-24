@@ -358,6 +358,10 @@ struct fd_dev_info {
       bool has_64b_ssbo_atomics;
       bool has_64b_image_atomics;
 
+      /* Native image U64 UMAX, distinct from the existing compare/exchange
+       * support used to emulate other 64-bit atomic arithmetic. */
+      bool has_native_64b_image_umax;
+
       bool load_inline_uniforms_via_preamble_ldgk;
       bool load_shader_consts_via_preamble;
 
@@ -463,6 +467,16 @@ struct fd_dev_info {
        */
       bool has_salu_int_narrowing_quirk;
 
+      /* Requires the application-gated indexed triangle-list split path. */
+      bool has_indexed_draw_split_quirk;
+
+      /* Recovered A850-specific policy. Leave disabled on earlier devices. */
+      bool tpl1_mode_cntl_unk16;
+      /* Requires the complete indirect draw-parameter command path. */
+      bool has_hw_vs_draw_params;
+      bool has_array_index_rounding;
+      bool has_cat4_rpt_quirk;
+
       /* Whether the device supports the image processing opcode */
       bool has_image_processing;
 
@@ -486,6 +500,12 @@ struct fd_dev_info {
 
       /* On a750+ SUBPASS_FENCE also implicitly does CCU_RESOLVE_CLEAN */
       bool subpass_fence_cleans_resolve;
+
+      /* GameSir uses identity fragment areas for FDM on these devices.
+       * Keep the FDM interface and offsets, but do not sample a reduced
+       * density for the GMEM tile configuration.
+       */
+      bool fdm_requires_full_density;
    } props;
 
 #define FD_QUIRK(info, name) (info)->quirks.name

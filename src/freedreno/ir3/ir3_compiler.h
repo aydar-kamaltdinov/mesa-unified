@@ -268,6 +268,7 @@ struct ir3_compiler *ir3_compiler_create(struct fd_device *dev,
 void ir3_disk_cache_init(struct ir3_compiler *compiler);
 void ir3_disk_cache_init_shader_key(struct ir3_compiler *compiler,
                                     struct ir3_shader *shader);
+/* Returns NULL on a truncated record or allocation failure. */
 struct ir3_shader_variant *ir3_retrieve_variant(struct blob_reader *blob,
                                                 struct ir3_compiler *compiler,
                                                 void *mem_ctx);
@@ -345,6 +346,8 @@ shader_debug_enabled(mesa_shader_stage type, bool internal)
       return !!(ir3_shader_debug & IR3_DBG_SHADER_GS);
    case MESA_SHADER_FRAGMENT:
       return !!(ir3_shader_debug & IR3_DBG_SHADER_FS);
+   case MESA_SHADER_TASK:
+   case MESA_SHADER_MESH:
    case MESA_SHADER_COMPUTE:
    case MESA_SHADER_KERNEL:
       return !!(ir3_shader_debug & IR3_DBG_SHADER_CS);

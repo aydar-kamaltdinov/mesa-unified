@@ -41,7 +41,6 @@ SOFTWARE.
 	<display>
 		{SY}{SS}{JP}{NAME}{G}{L}{R}{W}
 	</display>
-	<pattern low="45" high="50">x1xxxx</pattern>
 	<field   pos="51"          name="W"  type="bool" display=".w"  />  <!-- write -->
 	<field   pos="52"          name="R"  type="bool" display=".r"  />  <!-- read -->
 	<field   pos="53"          name="L"  type="bool" display=".l"  />  <!-- local -->
@@ -54,12 +53,50 @@ SOFTWARE.
 	</encode>
 </bitset>
 
-<bitset name="bar" extends="#instruction-cat7-barrier">
+<!-- GameSir encode__instruction and decoder tables agree: bit49 is set
+     through A7 and clear on A8 for ordinary bar/fence instructions. -->
+<bitset name="#instruction-cat7-barrier-a7" extends="#instruction-cat7-barrier">
+	<gen max="799"/>
+	<pattern low="45" high="50">x1xxxx</pattern>
+</bitset>
+
+<bitset name="#instruction-cat7-barrier-a8" extends="#instruction-cat7-barrier">
+	<gen min="800"/>
+	<pattern low="45" high="50">x0xxxx</pattern>
+</bitset>
+
+<bitset name="bar" extends="#instruction-cat7-barrier-a7">
+	<gen min="0" max="799"/>
 	<pattern low="55" high="58">0000</pattern>
 </bitset>
 
-<bitset name="fence" extends="#instruction-cat7-barrier">
+<bitset name="bar" extends="#instruction-cat7-barrier-a8">
+	<gen min="800"/>
+	<pattern low="55" high="58">0000</pattern>
+</bitset>
+
+<bitset name="fence" extends="#instruction-cat7-barrier-a7">
+	<gen min="0" max="799"/>
 	<pattern low="55" high="58">0001</pattern>
+</bitset>
+
+<bitset name="fence" extends="#instruction-cat7-barrier-a8">
+	<gen min="800"/>
+	<pattern low="55" high="58">0001</pattern>
+</bitset>
+
+<!-- Fixed A8 instruction words, also present in the original assembler.
+     No compiler insertion policy is inferred from decoder availability. -->
+<bitset name="bar.set" extends="#instruction">
+	<gen min="800"/>
+	<display>{NAME}</display>
+	<pattern low="0" high="63">1110010000010101011000001010000000000000000000000000000000000000</pattern>
+</bitset>
+
+<bitset name="bar.sync" extends="#instruction">
+	<gen min="800"/>
+	<display>{NAME}</display>
+	<pattern low="0" high="63">1110010000010101010000001010000000000000000000000000000000000000</pattern>
 </bitset>
 
 <enum name="#dccln-type">
@@ -296,7 +333,7 @@ SOFTWARE.
 	</encode>
 </bitset>
 
-<bitset name="alias" extends="#instruction">
+<bitset name="#instruction-cat7-alias" extends="#instruction">
 	<doc>
 		For alias.tex (and possibly alias.mem):
 
@@ -339,7 +376,6 @@ SOFTWARE.
 		number of render targets/components and the TABLE_SIZE_MINUS_ONE
 		field is not used.
 	</doc>
-	<gen min="700"/>
 	<display>
 		{SY}{SS}{JP}{NAME}.{SCOPE}.{TYPE}{TYPE_SIZE}.{TABLE_SIZE_MINUS_ONE} {DST_HALF}{DST}, {SRC}
 	</display>
@@ -373,7 +409,6 @@ SOFTWARE.
 	<field   low="32" high="39" name="DST" type="#reg-gpr"/>
 	<field   low="40" high="43" name="TABLE_SIZE_MINUS_ONE" type="uint"/>
 	<field   pos="44"           name="SS" type="bool" display="(ss)"/>
-	<pattern low="45" high="46">xx</pattern>
 	<field   pos="47"           name="SCOPE_LO" type="uint"/>
 	<field   pos="48"           name="TYPE" type="#alias-type"/>
 	<field   pos="49"           name="SCOPE_HI" type="uint"/>
@@ -399,6 +434,17 @@ SOFTWARE.
 		<map name="SCOPE_HI">src->cat7.alias_scope &gt;&gt; 1</map>
 		<map name="TYPE">!src->cat7.alias_type_float</map>
 	</encode>
+</bitset>
+
+<!-- A8 makes the previously ignored alias bits45/46 explicitly zero. -->
+<bitset name="alias" extends="#instruction-cat7-alias">
+	<gen min="700" max="799"/>
+	<pattern low="45" high="46">xx</pattern>
+</bitset>
+
+<bitset name="alias" extends="#instruction-cat7-alias">
+	<gen min="800"/>
+	<pattern low="45" high="46">00</pattern>
 </bitset>
 
 </isa>

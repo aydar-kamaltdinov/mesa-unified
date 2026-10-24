@@ -21,7 +21,10 @@ bool ir3_nir_apply_trig_workarounds(nir_shader *shader);
 bool ir3_nir_lower_imul(nir_shader *shader);
 bool ir3_nir_lower_io_offsets(nir_shader *shader, struct ir3_compiler *c);
 bool ir3_nir_lower_load_sample_pos(nir_shader *shader);
-bool ir3_nir_lower_load_barycentric_at_offset(nir_shader *shader);
+bool ir3_gamesir_sample_center_enabled(void);
+bool ir3_nir_lower_load_barycentric_at_offset(nir_shader *shader,
+                                                struct ir3_compiler *compiler);
+bool ir3_nir_lower_barycentric_coord_at_offset(nir_shader *shader);
 bool ir3_nir_lower_push_consts_to_preamble(nir_shader *nir,
                                            struct ir3_shader_variant *v);
 bool ir3_nir_lower_driver_params_to_ubo(nir_shader *nir,

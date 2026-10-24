@@ -427,6 +427,18 @@ struct ir3_shader_key {
           * enabled
           */
          unsigned force_dual_color_blend : 1;
+
+         /* Primitive delivered to the fragment stage: vertex weights for
+          * points/lines differ from the VPC-generated triangle basis.
+          */
+#define IR3_FS_UNSPECIFIED 0
+#define IR3_FS_POINTS 1
+#define IR3_FS_LINES 2
+#define IR3_FS_TRIANGLES 3
+         unsigned fs_primitive : 2;
+
+         /* A8xx per-vertex inputs require explicit last-vertex flat reads. */
+         unsigned fs_provoking_vtx_last : 1;
       };
       uint32_t global;
    };
@@ -495,6 +507,12 @@ ir3_shader_key_changes_fs(struct ir3_shader_key *key,
                 sizeof(key->fsampler_swizzles)))
          return true;
    }
+
+   if (last_key->fs_provoking_vtx_last != key->fs_provoking_vtx_last)
+      return true;
+
+   if (last_key->fs_primitive != key->fs_primitive)
+      return true;
 
    if (last_key->rasterflat != key->rasterflat)
       return true;
@@ -599,6 +617,45 @@ struct ir3_shader_nir_options {
    nir_variable_mode robust_modes;
 };
 
+/* Mesh producer-specific FS placement. Nonzero map entries encode a physical
+ * component location plus one; zero leaves the ordinary location unchanged.
+ * These options are immutable for a shader, rather than dynamic variant bits.
+ */
+struct ir3_mesh_fs_inputs {
+   bool enabled;
+   uint16_t primitive_base;
+   uint16_t layer_viewport_base;
+   uint8_t location_plus_one[64];
+};
+
+static inline unsigned
+ir3_mesh_fs_input_location(const struct ir3_mesh_fs_inputs *mesh,
+                           unsigned slot, bool per_primitive, unsigned fallback)
+{
+   if (!mesh->enabled)
+      return fallback;
+
+   bool mapped_slot = (slot >= VARYING_SLOT_VAR0 && slot < VARYING_SLOT_VAR0 + 32) ||
+      (slot >= VARYING_SLOT_CLIP_DIST0 && slot <= VARYING_SLOT_CULL_DIST1) ||
+      slot == VARYING_SLOT_PRIMITIVE_ID;
+   if (mapped_slot && slot < ARRAY_SIZE(mesh->location_plus_one) &&
+       mesh->location_plus_one[slot])
+      return mesh->location_plus_one[slot] - 1;
+
+   if ((slot == VARYING_SLOT_LAYER || slot == VARYING_SLOT_VIEWPORT) &&
+       mesh->layer_viewport_base)
+      return mesh->layer_viewport_base + (slot == VARYING_SLOT_VIEWPORT);
+
+   if (mesh->primitive_base) {
+      if (per_primitive && slot >= VARYING_SLOT_VAR0 && slot < VARYING_SLOT_VAR0 + 32)
+         return mesh->primitive_base + (slot - VARYING_SLOT_VAR0) * 4;
+      if (slot == VARYING_SLOT_LAYER || slot == VARYING_SLOT_VIEWPORT ||
+          slot == VARYING_SLOT_PRIMITIVE_ID)
+         return mesh->primitive_base;
+   }
+   return fallback;
+}
+
 struct ir3_shader_options {
    /* What API-visible wavesizes are allowed. Even if only double wavesize is
     * allowed, we may still use the smaller wavesize "under the hood" and the
@@ -618,6 +675,10 @@ struct ir3_shader_options {
    struct ir3_const_allocations const_allocs;
 
    struct ir3_shader_nir_options nir_options;
+   struct ir3_mesh_fs_inputs mesh_fs_inputs;
+
+   /* Mesh-pipeline FS reads ViewIndex from the fixed AQE constant prefix. */
+   bool mesh_multiview;
 
    /* Whether FRAG_RESULT_DATAi slots may be dynamically remapped by the driver.
     * If true, ir3 will assume it cannot statically use the value of such slots
@@ -810,6 +871,8 @@ struct ir3_shader_variant {
       bool rasterflat : 1; /* special handling for emit->rasterflat */
       bool half       : 1;
       bool flat       : 1;
+      bool per_vertex : 1;
+      bool per_primitive : 1; /* Mesh-produced FS input, separate from per_vertex. */
       /* inputs[] array is sized for 32 FS input varyings plus sysvals.  Vulkan
        * says that the built-ins (face, coord, etc.) count against the input
        * components limit, so we shouldn't need to have space for them, but GL
@@ -818,12 +881,19 @@ struct ir3_shader_variant {
        * total_in slots.
        *
        * FS sysval list: FRAG_COORD, FACE, SAMPLE_ID, SAMPLE_MASK_IN,
-       * FRAG_SHADING_RATE
+       * FRAG_SHADING_RATE, FULLY_COVERED
        */
    } inputs[32 + IJ_COUNT + 5];
+   /* VPC generates the three triangle vertex-basis components after the
+    * ordinary fragment inputs. These are not outputs of the producer shader.
+    */
+   bool has_per_vertex_input;
+   bool has_barycentric_coord;
+   uint8_t barycentric_coord_inloc;
    bool reads_primid;
    bool reads_shading_rate;
    bool reads_smask;
+   bool reads_fully_covered;
 
    /* sum of input components (scalar).  For frag shaders, it only counts
     * the varying inputs:
@@ -987,10 +1057,18 @@ struct ir3_shader_variant {
    struct ir3_stream_output_info stream_output;
 };
 
+/* AQE task/mesh shaders use compute execution resources, while retaining
+ * their API stage identity in variants and cache records. */
+static inline bool
+ir3_stage_is_compute(mesa_shader_stage stage)
+{
+   return mesa_shader_stage_is_compute(stage) || mesa_shader_stage_is_mesh(stage);
+}
+
 static inline bool
 ir3_shader_compute(const struct ir3_shader_variant *v)
 {
-   return mesa_shader_stage_is_compute(v->type);
+   return ir3_stage_is_compute(v->type);
 }
 
 static inline const char *
@@ -1007,6 +1085,10 @@ ir3_shader_stage(struct ir3_shader_variant *v)
       return "GEOM";
    case MESA_SHADER_FRAGMENT:
       return "FRAG";
+   case MESA_SHADER_TASK:
+      return "TASK";
+   case MESA_SHADER_MESH:
+      return "MESH";
    case MESA_SHADER_COMPUTE:
    case MESA_SHADER_KERNEL:
       return "CL";
@@ -1344,13 +1426,16 @@ struct ir3_shader_linkage {
     */
    uint32_t varmask[4];
 
-   /* Map from VS output to location. */
+   /* Map from VS output to location. Runtime linkage can have packed mesh
+    * aliases plus fixed outputs. Hardware maps are compacted separately;
+    * this is not cached variant data.
+    */
    struct {
       uint8_t slot;
       uint8_t regid;
       uint8_t compmask;
       uint8_t loc;
-   } var[32];
+   } var[66];
 
    /* location for fixed-function gl_PrimitiveID passthrough */
    uint8_t primid_loc;

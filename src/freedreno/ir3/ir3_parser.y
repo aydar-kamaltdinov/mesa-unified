@@ -390,6 +390,8 @@ static void print_token(FILE *file, int type, YYSTYPE value)
 
 /* category 7: */
 %token <tok> T_OP_BAR
+%token <tok> T_OP_BAR_SET
+%token <tok> T_OP_BAR_SYNC
 %token <tok> T_OP_FENCE
 %token <tok> T_OP_SLEEP
 %token <tok> T_OP_ICINV
@@ -1252,6 +1254,8 @@ cat7_alias_type:  cat7_alias_int_type
 cat7_alias_table_size_minus_one: T_INT { instr->cat7.alias_table_size_minus_one = $1; }
 
 cat7_instr:        cat7_barrier
+|                  T_OP_BAR_SET            { new_instr(OPC_BAR_SET); }
+|                  T_OP_BAR_SYNC           { new_instr(OPC_BAR_SYNC); }
 |                  cat7_data_cache
 |                  T_OP_SLEEP              { new_instr(OPC_SLEEP); }
 |                  T_OP_CCINV              { new_instr(OPC_CCINV); }

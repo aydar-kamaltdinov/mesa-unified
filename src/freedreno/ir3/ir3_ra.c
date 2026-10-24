@@ -2764,7 +2764,7 @@ ir3_ra_get_reg_file_limits(struct ir3_shader_variant *v)
       .shared_half = RA_SHARED_HALF_SIZE,
    };
 
-   if (v->mergedregs && mesa_shader_stage_is_compute(v->type) &&
+   if (v->mergedregs && ir3_stage_is_compute(v->type) &&
        v->shader->nir->info.uses_control_barrier) {
       limit_pressure.full =
          MIN2(limit_pressure.full, calc_cs_barrier_reg_budget(v, true));
@@ -2850,7 +2850,7 @@ ir3_ra(struct ir3_shader_variant *v)
    /* Both banks come out of one file, in half-units. */
    unsigned phys_file_size = v->compiler->reg_size_vec4 * 4 * 2;
 
-   if (!v->mergedregs && mesa_shader_stage_is_compute(v->type) &&
+   if (!v->mergedregs && ir3_stage_is_compute(v->type) &&
        v->shader->nir->info.uses_control_barrier)
       phys_file_size = MIN2(phys_file_size, calc_cs_barrier_reg_budget(v, false));
 

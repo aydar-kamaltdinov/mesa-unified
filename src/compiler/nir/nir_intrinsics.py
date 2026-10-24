@@ -517,6 +517,12 @@ for suffix in ["", "_fine", "_coarse"]:
         intrinsic(f"dd{axis}{suffix}", dest_comp=0, src_comp=[0],
                   bit_sizes=[16, 32], indices=[FP_MATH_CTRL], flags=[CAN_ELIMINATE, QUADGROUP])
 
+# Packed three-component coarse derivatives consumed by IR3's dsx.3d/dsy.3d.
+# Keep the fixed vector intact instead of scalarizing three separate derivatives.
+for axis in ["x", "y"]:
+    intrinsic(f"dd{axis}_3d_ir3", dest_comp=3, src_comp=[3],
+              bit_sizes=[32], flags=QUADGROUP_FLAGS)
+
 # a barrier is an intrinsic with no inputs/outputs but which can't be moved
 # around/optimized in general
 def barrier(name):
@@ -1243,12 +1249,27 @@ barycentric("at_offset", 2, [2])
 barycentric("at_offset_nv", 2, [1])
 barycentric("coord_at_offset", 3, [2])
 
+# IR3 converts a pair of interpolation coordinates to the three vertex weights.
+# Triangle weights use the VPC-generated vertex-basis varying.
+intrinsic("load_barycentric_coord_ir3", src_comp=[2], dest_comp=3,
+          indices=[INTERP_MODE], flags=[CAN_ELIMINATE, CAN_REORDER])
+
 # Load sample position:
 #
 # Takes a sample # and returns a sample position (where the pixel center is
 # (0.5, 0.5)).  Used for lowering interpolateAtSample() to interpolateAtOffset()
 intrinsic("load_sample_pos_from_id", src_comp=[1], dest_comp=2,
           flags=[CAN_ELIMINATE, CAN_REORDER])
+
+# IR3 RGETPOS uses a zero-based pixel center. Keep it distinct from the
+# API-neutral 0.5-center operation, including when tracing at-sample offsets.
+intrinsic("load_sample_pos_from_id_ir3", src_comp=[1], dest_comp=2,
+          bit_sizes=[32], flags=[CAN_ELIMINATE])
+
+# Keep the coordinate choice intact through late NIR optimization. Source order
+# is condition/first/second; the backend emits SEL_B32 first/condition/second.
+intrinsic("select_barycentric_at_center_ir3", src_comp=[1, 2, 2], dest_comp=2,
+          bit_sizes=[32], flags=[CAN_ELIMINATE])
 
 # Load input attachment coordinate:
 #

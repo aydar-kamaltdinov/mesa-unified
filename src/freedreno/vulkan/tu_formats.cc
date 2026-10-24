@@ -17,6 +17,7 @@
 #include "fdl/fd6_format_table.h"
 #include "tu_device.h"
 #include "tu_image.h"
+#include "tu_indirect_copy_format.h"
 
 static bool
 tu6_format_vtx_supported(enum pipe_format format)
@@ -377,6 +378,12 @@ tu_physical_device_get_format_properties(
 
    if (vk_acceleration_struct_vtx_format_supported(vk_format))
       buffer |= VK_FORMAT_FEATURE_2_ACCELERATION_STRUCTURE_VERTEX_BUFFER_BIT_KHR;
+
+   if (physical_device->vk.supported_extensions.KHR_copy_memory_indirect &&
+       physical_device->info->chip >= 8 &&
+       (optimal & VK_FORMAT_FEATURE_2_TRANSFER_DST_BIT) &&
+       tu_indirect_copy_image_format_supported(vk_format))
+      optimal |= VK_FORMAT_FEATURE_2_COPY_IMAGE_INDIRECT_DST_BIT_KHR;
 
 end:
    out_properties->linearTilingFeatures = linear;

@@ -520,6 +520,8 @@ typedef struct shader_info {
          bool pixel_interlock_unordered:1;
          bool sample_interlock_ordered:1;
          bool sample_interlock_unordered:1;
+         bool shading_rate_interlock_ordered:1;
+         bool shading_rate_interlock_unordered:1;
 
          /**
           * Whether the original shader had sample_mask_in regardless of

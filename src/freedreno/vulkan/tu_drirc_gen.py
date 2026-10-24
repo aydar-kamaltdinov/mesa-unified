@@ -37,6 +37,13 @@ def declare_options():
     ]
 
     misc_options = [
+        B("tu_disable_mesh_shader", False,
+          "Disable mesh and task shader support",
+          c_name="disable_mesh_shader"),
+        B("tu_split_indexed_draws", False,
+          "Split eligible indexed triangle-list draws for affected applications and hardware",
+          c_name="split_indexed_draws"),
+
         # Conservative LRZ (default true) invalidates LRZ on draws with
         # blend and depth-write enabled, because this can lead to incorrect
         # rendering.  Driconf can be used to disable conservative LRZ for
@@ -102,6 +109,12 @@ def declare_options():
         B("tu_restrict_subgroup_size_64", False,
           "Restrict subgroup size to 64 (instead of a max of 128) to work around games assuming desktop GPU 32/64 sizes",
           c_name="restrict_subgroup_size_64"),
+        B("tu_advertise_wave32_compat", False,
+          "Advertise a Wave32-compatible minimum subgroup size and accept smaller required sizes using a native single wave; this does not implement native Wave32 execution",
+          c_name="advertise_wave32_compat"),
+        B("tu_uncharted_legacy_adreno_compat", False,
+          "Use the Uncharted minimum-precision and descriptor-set compatibility path on A6xx/A7xx, with SSBO emulation on A7xx",
+          c_name="uncharted_legacy_adreno_compat"),
         B("tu_emulate_second_queue", False,
           "Provide a second queue for applications that require it, like the Android framework",
           c_name="emulate_second_queue"),
