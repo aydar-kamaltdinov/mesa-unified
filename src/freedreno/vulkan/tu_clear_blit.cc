@@ -3132,6 +3132,28 @@ tu_copy_memory_to_image(struct tu_device *device,
    }
 }
 
+/* GameSir host-copy entrypoints also handle images without a cached CPU map.
+ * Keep the BO mapping owned by the ordinary memory/BO lifetime.
+ */
+static VkResult
+tu_host_copy_ensure_image_mapped(struct tu_device *device, struct tu_image *image)
+{
+   if (image->map)
+      return VK_SUCCESS;
+
+   if (!image->mem || !image->mem->bo)
+      return VK_ERROR_MEMORY_MAP_FAILED;
+
+   if (!image->mem->bo->map) {
+      VkResult result = tu_bo_map(device, image->mem->bo, NULL);
+      if (result != VK_SUCCESS)
+         return result;
+   }
+
+   image->map = (char *)image->mem->bo->map + image->mem_offset;
+   return VK_SUCCESS;
+}
+
 VKAPI_ATTR VkResult VKAPI_CALL
 tu_CopyMemoryToImageEXT(VkDevice _device,
                         const VkCopyMemoryToImageInfoEXT *info)
@@ -3140,6 +3162,10 @@ tu_CopyMemoryToImageEXT(VkDevice _device,
    VK_FROM_HANDLE(tu_image, dst_image, info->dstImage);
 
    assert(!dst_image->lrz_layout.lrz_total_size);
+
+   VkResult result = tu_host_copy_ensure_image_mapped(device, dst_image);
+   if (result != VK_SUCCESS)
+      return result;
 
    for (unsigned i = 0; i < info->regionCount; i++) {
       tu_copy_memory_to_image(device, dst_image, &info->pRegions[i],
@@ -3344,6 +3370,10 @@ tu_CopyImageToMemoryEXT(VkDevice _device,
 {
    VK_FROM_HANDLE(tu_device, device, _device);
    VK_FROM_HANDLE(tu_image, image, info->srcImage);
+
+   VkResult result = tu_host_copy_ensure_image_mapped(device, image);
+   if (result != VK_SUCCESS)
+      return result;
 
    for (unsigned i = 0; i < info->regionCount; i++) {
       tu_copy_image_to_memory(device, image, &info->pRegions[i],
@@ -3801,6 +3831,13 @@ tu_CopyImageToImageEXT(VkDevice _device,
       VK_HOST_IMAGE_COPY_MEMCPY_EXT;
 
    assert(!dst_image->lrz_layout.lrz_total_size);
+
+   VkResult result = tu_host_copy_ensure_image_mapped(device, src_image);
+   if (result != VK_SUCCESS)
+      return result;
+   result = tu_host_copy_ensure_image_mapped(device, dst_image);
+   if (result != VK_SUCCESS)
+      return result;
 
    for (uint32_t i = 0; i < pCopyImageToImageInfo->regionCount; ++i) {
       if (src_image->vk.format == VK_FORMAT_D32_SFLOAT_S8_UINT) {

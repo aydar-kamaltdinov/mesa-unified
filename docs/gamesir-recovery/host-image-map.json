@@ -1,0 +1,38 @@
+{
+  "area": "Host image copy lazy mapping and errors",
+  "binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "original_functions": {
+    "CopyMemoryToImageEXT": "ELF0x8fd9a8 size1088",
+    "CopyImageToMemoryEXT": "ELF0x90117c size1076",
+    "CopyImageToImageEXT": "ELF0x901a9c size484"
+  },
+  "native_contract": {
+    "mapped": "Nonzero image.map returns directly to copy",
+    "unmapped": "Require image.mem and mem.bo, otherwise return -5/VK_ERROR_MEMORY_MAP_FAILED",
+    "map": "If bo.map is absent call tu_bo_map(device,bo,NULL); propagate exact VkResult failure",
+    "publish": "image.map = bo.map + image.mem_offset",
+    "image_image": "Ensure source first, then destination, before region loop"
+  },
+  "local_adaptation": "Factor repeated original inline branches into tu_host_copy_ensure_image_mapped and call at all three public entrypoints; same result and lifetime rules",
+  "existing_source_context": "BindImageMemory already maps HOST_TRANSFER/FDM images; the restored fallback handles a missing cached map. This is not proof that valid ordinary host-copy calls previously crashed.",
+  "source_files": [
+    "src/freedreno/vulkan/tu_clear_blit.cc"
+  ],
+  "policy": "0x47533819 unchanged; no compiled shader/cache ABI change",
+  "limits": [
+    "No transfer format, pitches, cache maintenance or LRZ policy change",
+    "No new host transfer capability/exposure or blanket image-mapping at bind time",
+    "No new map lifetime/unmap owner introduced"
+  ],
+  "final_cases": [
+    "Already mapped image and mapped BO/nonzero memory offset",
+    "Unmapped BO success and mapping failure; null mem/BO returns MEMORY_MAP_FAILED",
+    "Image-image source failure versus destination failure and source/destination alias",
+    "HOST_TRANSFER, imported/device-local BO, layered/compressed/multiplanar/depth-stencil copies",
+    "Mapping ownership, host synchronization and cached/noncoherent behavior on target backend"
+  ],
+  "build": false,
+  "tests": false,
+  "full_validation_deferred": true,
+  "evidence_sha256": "1a4a09c45890e077afd5a958e3a47ea9efd93f4bbbebbad2a1f23efae59f89fc"
+}

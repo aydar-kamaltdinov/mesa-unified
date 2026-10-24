@@ -290,3 +290,8 @@ Native ir3_nir_lower_io_vars_to_temporaries ELF0xa7c2d8 excludes MESH in additio
 ## 2026-10-24 — KGSL GPU timestamp reader
 
 Original kgsl_device_get_gpu_timestamp ELF0xa1effc issues IOCTL_KGSL_READ_CALIBRATED_TIMESTAMPS0xc0200960 with one DEVICE-domain source, caller output, zero deviation and padding, and safe EINTR/EAGAIN retries. The named 32-byte ABI already exists in msm_kgsl.h, but the recovered backend callback was still UNREACHABLE. Restore the actual request through safe_ioctl. Existing common timestamp hook, extension predicates and unsupported-kernel error propagation remain unchanged. Compiler/cache policy19 unchanged. No build/kernel/API execution. Evidence and final cases: docs/gamesir-recovery/kgsl-timestamp.json.
+
+
+## 2026-10-24 — Host image-copy mapping fallback
+
+Original CopyMemoryToImageEXT ELF0x8fd9a8, CopyImageToMemoryEXT0x90117c and CopyImageToImageEXT0x901a9c ensure image.map before accessing region memory. Missing mem/BO returns MEMORY_MAP_FAILED; a missing BO map calls tu_bo_map and propagates its result; successful image pointer includes mem_offset. Image-image checks source then destination. Restore this shared helper at all three entrypoints. BindImageMemory already maps ordinary HOST_TRANSFER/FDM images, so the missing fallback alone is not proof of a valid-API rendering bug. Copy formats/pitches/cache/LRZ behavior and mapping ownership remain unchanged; no cache schema bump. Final mapping/imported-memory/host-synchronization/API validation deferred. See docs/gamesir-recovery/host-image-map.json.
