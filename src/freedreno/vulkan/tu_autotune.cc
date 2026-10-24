@@ -1854,6 +1854,19 @@ tu_autotune::get_optimal_mode(struct tu_cmd_buffer *cmd_buffer, rp_ctx_t *rp_ctx
    if (pass->has_msrtss)
       return forced("Uses MSRTSS", render_mode::GMEM);
 
+   /* GameSir get_optimal_mode (ELF0x8eae64..0x8eaea8) keeps single-subpass
+    * MSAA passes in GMEM on A8xx. The caller has already rejected cases
+    * that cannot use GMEM, including the separate A8xx MSAA restrictions.
+    * Make this decision before the autotuner's configuration/history paths.
+    */
+   if (cmd_buffer->device->physical_device->info->chip >= 8 &&
+       pass->subpass_count == 1) {
+      for (uint32_t i = 0; i < pass->attachment_count; i++) {
+         if (pass->attachments[i].samples > VK_SAMPLE_COUNT_1_BIT)
+            return forced("Single-subpass MSAA on A8xx", render_mode::GMEM);
+      }
+   }
+
    /* SYSMEM is always a safe default mode when we can't fully engage the autotuner. From testing, we know that for an
     * incorrect decision towards SYSMEM tends to be far less impactful than an incorrect decision towards GMEM, which
     * can cause significant performance issues.

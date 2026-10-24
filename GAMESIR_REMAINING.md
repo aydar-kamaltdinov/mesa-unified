@@ -257,3 +257,10 @@ UUID используется в заголовке кеша приложени�
 Получены10новых typed C/high-Pcode exports helpers/callbacks и3уточнённых memory-index exports. Имена и index_map для18NIR intrinsics восстановлены из original ELF nir_intrinsic_index_names/infos; номера enum локальной Mesa не подставлялись. Неопределённые native поля не считаются доказанными layouts. Источник: native-complete/sparse-address-aqe-hour-20261024/shared-special-access-source-evidence.json, original-address-aqe-index-abi.json и raw ARM64.
 
 Рассмотренный get_barycentric(0) у mesh flat inputs НЕ новый gap: и native ir3_compile_shader_nir, и local emit_instructions заранее создают IJ_PERSP_PIXEL для FS. Условный native вызов повторно проверяет уже существующий cache entry; дублирующая инициализация не добавлена.
+
+
+## 2026-10-24 — Restore A8 single-subpass MSAA GMEM policy
+
+GameSir get_optimal_mode ELF0x8eae64..0x8eaea8 returns GMEM for chip>=8, exactly one subpass and any attachment with samples>1. This branch follows FDM/MSRTSS rules and precedes tuner configuration/history allocation. The reconstructed source lacked it. The same early predicate is now connected; the local trace reason is set explicitly. use_sysmem_rendering still rejects unsupported/impossible GMEM cases before invoking the autotuner. Existing AK depth-only policy remains, but the recovered MSAA early rule takes precedence when eligible, as the original does.
+
+Source and native evidence: docs/gamesir-recovery/a8-msaa-autotune.json; recovery/native-complete/rutabaga-operand-hour-20261024/. No build, shader execution, GPU test or measured performance/thermal result. Cache schema0x47533814 is unchanged: no shader format/code changes. Final validation must cover caller restrictions, single/multiple subpasses, dynamic/legacy rendering, all MSAA counts and autotuner/debug configurations.

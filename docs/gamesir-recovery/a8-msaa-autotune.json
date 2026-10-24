@@ -1,0 +1,46 @@
+{
+  "area": "A8 single-subpass MSAA autotune mode",
+  "original_binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "native_symbol": "_ZN11tu_autotune16get_optimal_modeEP13tu_cmd_bufferPPNS_8rp_entryENS_10rp_key_optE",
+  "elf_function": "0x8eadc4",
+  "elf_branch": "0x8eae64..0x8eaea8",
+  "native_predicate": "chip >= 8 && pass.subpass_count == 1 && any signed(samples) > 1",
+  "result": "GMEM enum1; early return before configuration/history allocation; *rp_ctx already cleared",
+  "native_offsets": {
+    "pass_attachment_count": "0x40",
+    "pass_subpass_count": "0x48",
+    "pass_attachments": "0x88",
+    "attachment_stride": "0x44",
+    "attachment_samples": "0x4"
+  },
+  "source_file": "src/freedreno/vulkan/tu_autotune.cc",
+  "source_predicate": "chip >= 8 && subpass_count == 1 && any samples > VK_SAMPLE_COUNT_1_BIT",
+  "placement": "After FDM and MSRTSS forced-GMEM rules, before tuner disabled/simultaneous/small-pass/config/history paths",
+  "caller": "use_sysmem_rendering rejects debug SYSMEM, unsupported A8 MSAA cases, impossible/empty GMEM, tessellation and other disallowed GMEM paths first",
+  "adaptation": "Set force_render_mode_reason for this early return; original native MSAA return leaves reason untouched",
+  "baseline_behavior": "Missing original early return; could use default/config/bandwidth/profiled selection instead",
+  "cache_policy": "0x47533814 unchanged; render-mode selection does not change shader code or serialized format",
+  "build": false,
+  "shader_execution": false,
+  "runtime_test": false,
+  "performance_measured": false,
+  "full_validation_deferred": true,
+  "required_final_cases": [
+    "A6/A7 control",
+    "A8 1x vs 2x/4x/8x; attachments with resolves/depth/stencil",
+    "Single versus multiple subpasses; zero attachments",
+    "Caller sysmem restrictions and debug forced modes",
+    "Dynamic rendering and legacy renderpasses",
+    "Tuner disabled/simultaneous/small-pass/forced config and history lifetime",
+    "AK depth-only tiled policy precedence and thermal/FPS A/B"
+  ],
+  "arm64_excerpt_sha256": "85f92a556526ff49e4d9909f631b3f5fdd0aa3d79e3389519739e7925e2fba63",
+  "independent_constructor_evidence": {
+    "ELF": "0x9bd21c",
+    "allocation_stride": "0x9bd350 mov w8,#0x44;0x9bd35c umaddl allocation",
+    "counts": "0x9bd36c..0x9bd384 reads VkRenderPassCreateInfo2 attachmentCount/subpassCount then stores pass+0x40/0x48",
+    "attachments_pointer": "0x9bd388 stores base+fixed/subpass area to pass+0x88",
+    "format_samples": "0x9bd410 loads VkAttachmentDescription2.format/samples at0x14/0x18;0x9bd41c stores pair at attachment+0/4",
+    "limitation": "Constructor C export follows an external debug tail branch into vk_common_CreateRenderPass2 despite bounded body; use raw instructions for this corroboration"
+  }
+}
