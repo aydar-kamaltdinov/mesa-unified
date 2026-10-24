@@ -1,0 +1,28 @@
+{
+  "area": "A8 next-subpass synchronization",
+  "native_function": "tu_CmdNextSubpass2<A8XX> ELF0x949b9c size768",
+  "native_anchors": {
+    "flush": "0x949c98..0x949ca8: mark blit-clean state if needed, call tu6_emit_flushes when pending/debug",
+    "subpass_fence": "0x949cc4/0x949d1c: load original literal pair at ELF0xb0688 =0x70460001,0x35",
+    "wait_for_idle": "0x949d38..0x949d44: single CP_WAIT_FOR_IDLE header0x70268000",
+    "cache_invalidate": "0x949de4..0x949dfc: literal pair at ELF0xaf8e0 =0x70460001,0x33",
+    "next_state": "0x949e0c fills render-pass state;0x949e24 tailcalls subpass begin"
+  },
+  "source_transfer": "After subpass stores/barrier/optional feedback invalidation, drain pending renderpass cache, emit FD_SUBPASS_FENCE, WFI and FD_CACHE_INVALIDATE into draw_cs before next state/begin",
+  "scope": "CHIP>=A8XX in CmdNextSubpass2 only; ordinary A6/A7 and custom resolve/dynamic-rendering entry points unchanged",
+  "why_not_redundant": "Existing tu_feedback_invalidate only schedules conditional cache/stage flags, not this unconditional native full-event/WFI/event sequence",
+  "cost": "Full WFI/cache invalidation can cost throughput; native compatibility restoration, not a measured optimization or proved application bug fix",
+  "cache_policy": "0x4753381d unchanged: command-recording path, no compiled shader/pipeline serialization change",
+  "feature_gates_changed": false,
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "final_cases": [
+    "A8 multiple subpasses in GMEM and sysmem; input attachment feedback and no-feedback controls",
+    "Pending/empty/debug renderpass flush state, blit_cache_cleaned and event ordering",
+    "Secondary replay, renderpass suspension/dynamic rendering/custom resolve routes separately",
+    "A6/A7 controls and transition performance/heat; do not promote unmeasured experiment to baseline"
+  ],
+  "evidence_sha256": "6ada85ca0cebb47a5098f1036e59ba41e96cd62afd03cc7fbd32376db696a5b3"
+}

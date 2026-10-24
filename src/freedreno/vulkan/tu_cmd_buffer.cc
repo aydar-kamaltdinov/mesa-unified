@@ -8325,6 +8325,18 @@ tu_CmdNextSubpass2(VkCommandBuffer commandBuffer,
       tu_feedback_invalidate<CHIP>(cmd);
    }
 
+   /* GameSir A8 next-subpass ELF0x949ca0..0x949dfc drains the
+    * renderpass flushes, then emits SUBPASS_FENCE / WFI / UCHE invalidate
+    * before installing the next subpass state. Keep the full fence here;
+    * SUBPASS_SLICE_FENCE is a different event.
+    */
+   if (CHIP >= A8XX) {
+      tu_emit_cache_flush_renderpass<CHIP>(cmd);
+      tu_emit_event_write<CHIP>(cmd, &cmd->draw_cs, FD_SUBPASS_FENCE);
+      tu_cs_emit_wfi(&cmd->draw_cs);
+      tu_emit_event_write<CHIP>(cmd, &cmd->draw_cs, FD_CACHE_INVALIDATE);
+   }
+
    tu_fill_render_pass_state(&cmd->state.vk_rp,
                              &cmd->state.vk_mv,
                              cmd->state.pass, new_subpass);

@@ -321,3 +321,10 @@ Native shared get_reg ELF0xae4d44 first tries a META_INPUT requested register wh
 Сначала проверяется весь shader: зависимости вне entry могут быть ALU/deref/constant/undef либо reorderable intrinsic; phi/texture/непереставляемая операция отменяет весь проход до изменений. Затем зависимости и входы добавляются в entry в порядке зависимостей. Сохраняется control_flow metadata0x83. Локальная адаптация явно отделена от оригинала: возвращается фактический progress, тогда как native функция возвращаетfalse даже после nir_progress. Четыре cache/compiler markers1c→1d.
 
 Доказательства: docs/gamesir-recovery/fs-input-hoist.json и native-complete/rutabaga-execution-hour-20261024/fs-input-hoist-native.arm64.txt. Только статическое восстановление и diff --check; без сборки, исполнения NIR/шейдеров и GPU. Полная проверка на конец: условные/циклические и sparse/per-primitive FS входы, phi/texture abort без частичного переноса, ordering/metadata, давление регистров, prefetch/VPC и игры. Ускорение пока не измерено.
+
+
+## 25 октября — A8 next-subpass synchronization (без сборки)
+
+Native CmdNextSubpass2<A8> ELF0x949b9c/768 байт после feedback scheduling выдаёт pending renderpass flushes, затем SUBPASS_FENCE(0x35) → WFI → CACHE_INVALIDATE7(0x33), до next renderpass state/subpass begin. Оригинальные пары данных: ELF0xb0688=(0x70460001,0x35),0xaf8e0=(0x70460001,0x33); WFI header0x70268000. Восстановлено в draw_cs только для A8; SUBPASS_SLICE_FENCE(0x36) не подставляем. Existing feedback helper только ставит условные cache/stage flags и не заменяет эту последовательность.
+
+Это перенос native совместимости, не доказанное исправление игры или ускорение: full WFI/invalidate может снижать throughput. Остальные entry points не менялись. Cache policy1d сохранена: shader/code/serialization не меняются. Доказательство docs/gamesir-recovery/next-subpass-sync.json + compact ARM excerpt. Финальная проверка позже: GMEM/sysmem, input/no-input/feedback, pending/debug flushes, secondary replay, A6/A7 и latency/нагрев.

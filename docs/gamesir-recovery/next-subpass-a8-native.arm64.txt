@@ -1,0 +1,192 @@
+  949b9c: a9bc7bfd     	stp	x29, x30, [sp, #-0x40]!
+  949ba0: a9015ff8     	stp	x24, x23, [sp, #0x10]
+  949ba4: b00021b8     	adrp	x24, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  949ba8: 910003fd     	mov	x29, sp
+  949bac: a90257f6     	stp	x22, x21, [sp, #0x20]
+  949bb0: a9034ff4     	stp	x20, x19, [sp, #0x30]
+  949bb4: aa0003f3     	mov	x19, x0
+  949bb8: f9401318     	ldr	x24, [x24, #0x20]
+  949bbc: c8dfff08     	ldar	x8, [x24]
+  949bc0: 37981408     	tbnz	w8, #0x13, 0x949e40 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x2a4>
+  949bc4: f96ae275     	ldr	x21, [x19, #0x55c0]
+  949bc8: 529b260a     	mov	w10, #0xd930            // =55600
+  949bcc: 528ab48b     	mov	w11, #0x55a4            // =21924
+  949bd0: 8b0a0276     	add	x22, x19, x10
+  949bd4: 8b0b0277     	add	x23, x19, x11
+  949bd8: 39441aa9     	ldrb	w9, [x21, #0x106]
+  949bdc: b940f2a8     	ldr	w8, [x21, #0xf0]
+  949be0: 9102a2b4     	add	x20, x21, #0xa8
+  949be4: f92ae274     	str	x20, [x19, #0x55c0]
+  949be8: 7100053f     	cmp	w9, #0x1
+  949bec: 540000c1     	b.ne	0x949c04 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x68>
+  949bf0: 3100051f     	cmn	w8, #0x1
+  949bf4: 54000180     	b.eq	0x949c24 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x88>
+  949bf8: b0ffb841     	adrp	x1, 0x52000 <wsi_WriteSamplerDescriptorsEXT+0x52000>
+  949bfc: 91128421     	add	x1, x1, #0x4a1
+  949c00: 14000006     	b	0x949c18 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x7c>
+  949c04: b9404aa9     	ldr	w9, [x21, #0x48]
+  949c08: 6b09011f     	cmp	w8, w9
+  949c0c: 54000120     	b.eq	0x949c30 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x94>
+  949c10: f0ffb921     	adrp	x1, 0x70000 <wsi_WriteSamplerDescriptorsEXT+0x70000>
+  949c14: 911f0021     	add	x1, x1, #0x7c0
+  949c18: aa1303e0     	mov	x0, x19
+  949c1c: 9401687a     	bl	0x9a3e04 <_Z32tu_lrz_disable_during_renderpassIL4chip8EEvP13tu_cmd_bufferPKc>
+  949c20: 14000004     	b	0x949c30 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x94>
+  949c24: b9592a68     	ldr	w8, [x19, #0x1928]
+  949c28: 321c0108     	orr	w8, w8, #0x10
+  949c2c: b9192a68     	str	w8, [x19, #0x1928]
+  949c30: aa1303e0     	mov	x0, x19
+  949c34: aa1503e1     	mov	x1, x21
+  949c38: 9400c950     	bl	0x97c178 <_ZL22tu_emit_subpass_storesIL4chip8EEvP13tu_cmd_bufferPK10tu_subpass>
+  949c3c: f96ae268     	ldr	x8, [x19, #0x55c0]
+  949c40: aa1303e0     	mov	x0, x19
+  949c44: 2a1f03e2     	mov	w2, wzr
+  949c48: 9101c101     	add	x1, x8, #0x70
+  949c4c: 94003bab     	bl	0x958af8 <_ZL18tu_subpass_barrierIL4chip8EEvP13tu_cmd_bufferPK18tu_subpass_barrierb>
+  949c50: f96ae268     	ldr	x8, [x19, #0x55c0]
+  949c54: 39407d09     	ldrb	w9, [x8, #0x1f]
+  949c58: b94002e8     	ldr	w8, [x23]
+  949c5c: 7100053f     	cmp	w9, #0x1
+  949c60: 54000121     	b.ne	0x949c84 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0xe8>
+  949c64: 52812409     	mov	w9, #0x920              // =2336
+  949c68: 2a090108     	orr	w8, w8, w9
+  949c6c: 529b2509     	mov	w9, #0xd928             // =55592
+  949c70: b90002e8     	str	w8, [x23]
+  949c74: 8b090275     	add	x21, x19, x9
+  949c78: 528ab409     	mov	w9, #0x55a0             // =21920
+  949c7c: 375800e8     	tbnz	w8, #0xb, 0x949c98 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0xfc>
+  949c80: 14000008     	b	0x949ca0 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x104>
+  949c84: 529b2509     	mov	w9, #0xd928             // =55592
+  949c88: 8b090275     	add	x21, x19, x9
+  949c8c: 34000ce8     	cbz	w8, 0x949e28 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x28c>
+  949c90: 528ab409     	mov	w9, #0x55a0             // =21920
+  949c94: 36580068     	tbz	w8, #0xb, 0x949ca0 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x104>
+  949c98: 52800028     	mov	w8, #0x1                // =1
+  949c9c: 3905eae8     	strb	w8, [x23, #0x17a]
+  949ca0: 8b090261     	add	x1, x19, x9
+  949ca4: aa1503e0     	mov	x0, x21
+  949ca8: 94004eee     	bl	0x95d860 <_ZL16tu6_emit_flushesIL4chip8EEvP13tu_cmd_bufferP5tu_csP14tu_cache_state>
+  949cac: b94036c8     	ldr	w8, [x22, #0x34]
+  949cb0: 35000d48     	cbnz	w8, 0x949e58 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x2bc>
+  949cb4: b9402ac8     	ldr	w8, [x22, #0x28]
+  949cb8: 34000108     	cbz	w8, 0x949cd8 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x13c>
+  949cbc: f94002c9     	ldr	x9, [x22]
+  949cc0: f0ffbb28     	adrp	x8, 0xb0000 <_ZZL14tu6_blit_imageIL4chip8EEvP13tu_cmd_bufferP8tu_imageS4_PK12VkImageBlit28VkFilterE6rotate+0x1850>
+  949cc4: fd434500     	ldr	d0, [x8, #0x688]
+  949cc8: aa0903e8     	mov	x8, x9
+  949ccc: fc008500     	str	d0, [x8], #0x8
+  949cd0: f90002c8     	str	x8, [x22]
+  949cd4: 14000017     	b	0x949d30 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x194>
+  949cd8: f94002c8     	ldr	x8, [x22]
+  949cdc: f9400ac9     	ldr	x9, [x22, #0x10]
+  949ce0: cb080129     	sub	x9, x9, x8
+  949ce4: f27d793f     	tst	x9, #0x3fffffff8
+  949ce8: 540000e0     	b.eq	0x949d04 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x168>
+  949cec: 29482ac9     	ldp	w9, w10, [x22, #0x40]
+  949cf0: 6b0a013f     	cmp	w9, w10
+  949cf4: 54000082     	b.hs	0x949d04 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x168>
+  949cf8: 91002108     	add	x8, x8, #0x8
+  949cfc: f90006c8     	str	x8, [x22, #0x8]
+  949d00: 17ffffef     	b	0x949cbc <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x120>
+  949d04: aa1503e0     	mov	x0, x21
+  949d08: 52800041     	mov	w1, #0x2                // =2
+  949d0c: 9400f489     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  949d10: f94002c9     	ldr	x9, [x22]
+  949d14: f0ffbb28     	adrp	x8, 0xb0000 <_ZZL14tu6_blit_imageIL4chip8EEvP13tu_cmd_bufferP8tu_imageS4_PK12VkImageBlit28VkFilterE6rotate+0x1850>
+  949d18: b94036ca     	ldr	w10, [x22, #0x34]
+  949d1c: fd434500     	ldr	d0, [x8, #0x688]
+  949d20: aa0903e8     	mov	x8, x9
+  949d24: fc008500     	str	d0, [x8], #0x8
+  949d28: f90002c8     	str	x8, [x22]
+  949d2c: 35000a2a     	cbnz	w10, 0x949e70 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x2d4>
+  949d30: b9402aca     	ldr	w10, [x22, #0x28]
+  949d34: 340000ea     	cbz	w10, 0x949d50 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x1b4>
+  949d38: 5290000a     	mov	w10, #0x8000            // =32768
+  949d3c: aa0803e9     	mov	x9, x8
+  949d40: 72ae04ca     	movk	w10, #0x7026, lsl #16
+  949d44: b800452a     	str	w10, [x9], #0x4
+  949d48: f90002c9     	str	x9, [x22]
+  949d4c: 14000016     	b	0x949da4 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x208>
+  949d50: f9400aca     	ldr	x10, [x22, #0x10]
+  949d54: cb08014a     	sub	x10, x10, x8
+  949d58: f27e7d5f     	tst	x10, #0x3fffffffc
+  949d5c: 540000e0     	b.eq	0x949d78 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x1dc>
+  949d60: 29482eca     	ldp	w10, w11, [x22, #0x40]
+  949d64: 6b0b015f     	cmp	w10, w11
+  949d68: 54000082     	b.hs	0x949d78 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x1dc>
+  949d6c: 91003129     	add	x9, x9, #0xc
+  949d70: f90006c9     	str	x9, [x22, #0x8]
+  949d74: 17fffff1     	b	0x949d38 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x19c>
+  949d78: aa1503e0     	mov	x0, x21
+  949d7c: 52800021     	mov	w1, #0x1                // =1
+  949d80: 9400f46c     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  949d84: f94002c8     	ldr	x8, [x22]
+  949d88: b94036ca     	ldr	w10, [x22, #0x34]
+  949d8c: 5290000b     	mov	w11, #0x8000            // =32768
+  949d90: 72ae04cb     	movk	w11, #0x7026, lsl #16
+  949d94: aa0803e9     	mov	x9, x8
+  949d98: b800452b     	str	w11, [x9], #0x4
+  949d9c: f90002c9     	str	x9, [x22]
+  949da0: 3500074a     	cbnz	w10, 0x949e88 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x2ec>
+  949da4: b9402aca     	ldr	w10, [x22, #0x28]
+  949da8: 350001ea     	cbnz	w10, 0x949de4 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x248>
+  949dac: f9400aca     	ldr	x10, [x22, #0x10]
+  949db0: cb09014a     	sub	x10, x10, x9
+  949db4: f27d795f     	tst	x10, #0x3fffffff8
+  949db8: 540000e0     	b.eq	0x949dd4 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x238>
+  949dbc: 29482eca     	ldp	w10, w11, [x22, #0x40]
+  949dc0: 6b0b015f     	cmp	w10, w11
+  949dc4: 54000082     	b.hs	0x949dd4 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x238>
+  949dc8: 91003108     	add	x8, x8, #0xc
+  949dcc: f90006c8     	str	x8, [x22, #0x8]
+  949dd0: 14000005     	b	0x949de4 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x248>
+  949dd4: aa1503e0     	mov	x0, x21
+  949dd8: 52800041     	mov	w1, #0x2                // =2
+  949ddc: 9400f455     	bl	0x986f30 <_Z19tu_cs_reserve_spaceP5tu_csj>
+  949de0: f94002c9     	ldr	x9, [x22]
+  949de4: d0ffbb28     	adrp	x8, 0xaf000 <_ZZL14tu6_blit_imageIL4chip8EEvP13tu_cmd_bufferP8tu_imageS4_PK12VkImageBlit28VkFilterE6rotate+0x850>
+  949de8: f96ade62     	ldr	x2, [x19, #0x55b8]
+  949dec: aa1403e3     	mov	x3, x20
+  949df0: fd447100     	ldr	d0, [x8, #0x8e0]
+  949df4: 5289c708     	mov	w8, #0x4e38             // =20024
+  949df8: 8b080260     	add	x0, x19, x8
+  949dfc: fc008520     	str	d0, [x9], #0x8
+  949e00: f90002c9     	str	x9, [x22]
+  949e04: 5289ce89     	mov	w9, #0x4e74             // =20084
+  949e08: 8b090261     	add	x1, x19, x9
+  949e0c: 94020af4     	bl	0x9cc9dc <_Z25tu_fill_render_pass_stateP20vk_render_pass_stateP18vk_multiview_statePK14tu_render_passPK10tu_subpass>
+  949e10: aa1303e0     	mov	x0, x19
+  949e14: a9434ff4     	ldp	x20, x19, [sp, #0x30]
+  949e18: a94257f6     	ldp	x22, x21, [sp, #0x20]
+  949e1c: a9415ff8     	ldp	x24, x23, [sp, #0x10]
+  949e20: a8c47bfd     	ldp	x29, x30, [sp], #0x40
+  949e24: 1400bce2     	b	0x9791ac <_ZL21tu_emit_subpass_beginIL4chip8EEvP13tu_cmd_buffer>
+  949e28: c8dfff08     	ldar	x8, [x24]
+  949e2c: b4fff408     	cbz	x8, 0x949cac <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x110>
+  949e30: b94002e8     	ldr	w8, [x23]
+  949e34: 528ab409     	mov	w9, #0x55a0             // =21920
+  949e38: 375ff308     	tbnz	w8, #0xb, 0x949c98 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0xfc>
+  949e3c: 17ffff99     	b	0x949ca0 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x104>
+  949e40: aa1303e0     	mov	x0, x19
+  949e44: a9434ff4     	ldp	x20, x19, [sp, #0x30]
+  949e48: a94257f6     	ldp	x22, x21, [sp, #0x20]
+  949e4c: a9415ff8     	ldp	x24, x23, [sp, #0x10]
+  949e50: a8c47bfd     	ldp	x29, x30, [sp], #0x40
+  949e54: 14044f4c     	b	0xa5db84 <vk_common_CmdNextSubpass2>
+  949e58: b00021a8     	adrp	x8, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  949e5c: f0ffbb29     	adrp	x9, 0xb0000 <_ZZL14tu6_blit_imageIL4chip8EEvP13tu_cmd_bufferP8tu_imageS4_PK12VkImageBlit28VkFilterE6rotate+0x1850>
+  949e60: f9400d08     	ldr	x8, [x8, #0x18]
+  949e64: fd434520     	ldr	d0, [x9, #0x688]
+  949e68: f90002c8     	str	x8, [x22]
+  949e6c: fd000100     	str	d0, [x8]
+  949e70: b00021a8     	adrp	x8, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  949e74: 52900009     	mov	w9, #0x8000             // =32768
+  949e78: f9400d08     	ldr	x8, [x8, #0x18]
+  949e7c: 72ae04c9     	movk	w9, #0x7026, lsl #16
+  949e80: b8004509     	str	w9, [x8], #0x4
+  949e84: f90002c8     	str	x8, [x22]
+  949e88: b00021a9     	adrp	x9, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  949e8c: f9400d29     	ldr	x9, [x9, #0x18]
+  949e90: 91404128     	add	x8, x9, #0x10, lsl #12  // =0x10000
+  949e94: a90022c9     	stp	x9, x8, [x22]
+  949e98: 17ffffd3     	b	0x949de4 <_Z18tu_CmdNextSubpass2IL4chip8EEvP17VkCommandBuffer_TPK18VkSubpassBeginInfoPK16VkSubpassEndInfo+0x248>
