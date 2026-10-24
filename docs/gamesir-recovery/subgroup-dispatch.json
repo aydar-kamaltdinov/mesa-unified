@@ -1,0 +1,72 @@
+{
+  "area": "Subgroup execution modes and compute-class dispatch layout",
+  "binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "producer": {
+    "function": "spirv_to_nir ELF0xc8805c size9500",
+    "uniform_control_flow": {
+      "mode4421": "SpvExecutionModeSubgroupUniformControlFlowKHR",
+      "constant_ELF": "0xc884cc (w5=0x1145), reloads0xc89030/0xc89114",
+      "store_ELF": "0xc8882c..0xc88840",
+      "native_shader_byte": "0x196 bit5"
+    },
+    "maximal_reconvergence": {
+      "mode6023": "SpvExecutionModeMaximallyReconvergesKHR",
+      "store_ELF": "0xc88848..0xc88860",
+      "native_shader_byte": "0x196 bit4"
+    }
+  },
+  "consumer": {
+    "function": "ir3_nir_post_finalize ELF0xa7ce8c size812",
+    "ELF": "0xa7d044..0xa7d0cc",
+    "stages": "COMPUTE5 /TASK6 /MESH7 /KERNEL14; native mask0x40e0",
+    "predicate": "maximally_reconverges || (subgroup_uniform_control_flow && has_dual_wave_dispatch)",
+    "action": "Set shader.cs.force_linear_dispatch after subgroup-ID lowering, alongside existing derivative_group==LINEAR rule"
+  },
+  "property": {
+    "native_info_byte": "0x2bd",
+    "name": "has_dual_wave_dispatch",
+    "string_ELF": "0x960dd",
+    "mapping": "fd_dev_info_apply_dbg_options strcmp(name, string0x960dd), parse bool, store info+0x2bd"
+  },
+  "source_transfer": [
+    "Add named subgroup_uniform_control_flow execution-mode metadata to shader_info",
+    "Store it for SPIR-V SubgroupUniformControlFlowKHR instead of ignoring the mode",
+    "Restore the exact compute-class dispatch predicate; do not reinterpret these booleans as derivative_group QUADS"
+  ],
+  "serialization": {
+    "clone": "nir_clone.c copies ns->info=s->info",
+    "serialize": "nir_serialize.c writes full shader_info bytes and restores the same struct; no separate field writer needed",
+    "gather": "No producer reset of the new execution-mode flag added; same persistence category as maximally_reconverges",
+    "policy_before": "0x47533815",
+    "policy_after": "0x47533816",
+    "sites": [
+      "TU device UUID",
+      "TU graphics key",
+      "TU compute key",
+      "IR3 variant key"
+    ]
+  },
+  "source_files": [
+    "src/compiler/shader_info.h",
+    "src/compiler/spirv/spirv_to_nir.c",
+    "src/freedreno/ir3/ir3_nir.c"
+  ],
+  "scope": "Native userspace metadata/dispatch policy; no claim that all subgroup/reconvergence execution semantics are complete",
+  "historical_note_correction": "Previous QUADS-at-info+0x2bd note misidentified the producer flags/property; property is dual-wave dispatch and shader bits originate in execution modes",
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "feature_gates_changed": false,
+  "full_validation_deferred": true,
+  "final_cases": [
+    "Neither/each/both execution modes on COMPUTE/TASK/MESH/KERNEL and non-compute controls",
+    "has_dual_wave_dispatch false/true; maximal mode independently forces linear",
+    "Existing LINEAR/QUADS derivative groups and subgroup-id/invocation/num-subgroups lowering",
+    "NIR clone, gather, serialized cache/GPL/snapshot and fixed build-ID UUID/key separation",
+    "Real subgroup reconvergence and dispatch on A6/A7/A8 before capability activation"
+  ],
+  "evidence_hashes": {
+    "spirv-execution-modes-native.arm64.txt": "c2a688137f87297ffaf076d2e985a86d6b33ea62c897009705f777b22404241a",
+    "subgroup-dispatch-native.arm64.txt": "6d0c42b5e6f9ac0082fa30a8d38b01406c8cef11a6e072f040b0160ba35b6184"
+  }
+}

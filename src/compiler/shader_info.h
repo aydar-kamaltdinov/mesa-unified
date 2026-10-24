@@ -328,6 +328,12 @@ typedef struct shader_info {
     */
    bool maximally_reconverges:1;
 
+   /**
+    * SPV_KHR_subgroup_uniform_control_flow. Drivers may need to preserve
+    * this execution mode when selecting the workgroup dispatch layout.
+    */
+   bool subgroup_uniform_control_flow:1;
+
    /* Use ACO instead of LLVM on AMD. */
    bool use_aco_amd:1;
 

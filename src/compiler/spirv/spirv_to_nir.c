@@ -6264,7 +6264,7 @@ vtn_handle_execution_mode(struct vtn_builder *b, struct vtn_value *entry_point,
       break;
 
    case SpvExecutionModeSubgroupUniformControlFlowKHR:
-      /* Nothing to do here */
+      b->shader->info.subgroup_uniform_control_flow = true;
       break;
 
    case SpvExecutionModeEarlyAndLateFragmentTestsAMD:

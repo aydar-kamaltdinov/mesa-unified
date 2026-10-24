@@ -1130,6 +1130,16 @@ ir3_nir_post_finalize(struct ir3_shader *shader)
       if (s->info.derivative_group == DERIVATIVE_GROUP_LINEAR)
          shader->cs.force_linear_dispatch = true;
 
+      /* GameSir keeps these execution-mode requirements distinct from the
+       * derivative-group layout. The uniform-control-flow rule is needed
+       * only on devices with dual-wave dispatch; maximal reconvergence
+       * selects linear dispatch independently of that property.
+       */
+      if (s->info.maximally_reconverges ||
+          (s->info.subgroup_uniform_control_flow &&
+           compiler->info->props.has_dual_wave_dispatch))
+         shader->cs.force_linear_dispatch = true;
+
       /* ir3_nir_lower_subgroup_id_cs creates extra compute intrinsics which
        * we need to lower again.
        */
