@@ -3291,6 +3291,16 @@ emit_intrinsic(struct ir3_context *ctx, nir_intrinsic_instr *intr)
             ctx->work_group_id->dsts[0]->flags |= IR3_REG_SHARED;
          }
          ir3_split_dest(b, dst, ctx->work_group_id, 0, 3);
+         /* The AQE stages receive the raw ID in shared registers, but the
+          * original frontend exposes vector copies to the lowered shader.
+          * The mesh copy-propagation guard preserves these moves.
+          */
+         if (mesa_shader_stage_is_mesh(ctx->so->type)) {
+            for (unsigned i = 0; i < 3; i++) {
+               dst[i] = ir3_MOV(b, dst[i], TYPE_U32);
+               dst[i]->dsts[0]->flags &= ~IR3_REG_SHARED;
+            }
+         }
       } else {
          /* For a3xx/a4xx, this comes in via const injection by the hw */
          for (int i = 0; i < dest_components; i++) {
@@ -6630,6 +6640,17 @@ ir3_compile_shader_nir(struct ir3_compiler *compiler,
          assert(idx < 2);
          instr->dsts[0]->num = idx;
          idx++;
+      }
+   }
+
+   /* AQE supplies TASK/MESH WorkgroupID at the original fixed shared
+    * register (ELF ir3_compile_shader_nir). Precolor the input before RA;
+    * the frontend's vector copies are separate from this hardware input.
+    */
+   if (mesa_shader_stage_is_mesh(so->type)) {
+      foreach_input (instr, ir) {
+         if (instr->input.sysval == SYSTEM_VALUE_WORKGROUP_ID)
+            instr->dsts[0]->num = regid(51, 3);
       }
    }
 

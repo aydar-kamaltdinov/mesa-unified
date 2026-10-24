@@ -41,7 +41,7 @@ struct ir3_cp_ctx {
  * NULL (ie. outputs)
  */
 static bool
-is_eligible_mov(struct ir3_instruction *instr,
+is_eligible_mov(struct ir3_cp_ctx *ctx, struct ir3_instruction *instr,
                 struct ir3_instruction *dst_instr, bool allow_flags)
 {
    if (is_same_type_mov(instr)) {
@@ -52,6 +52,20 @@ is_eligible_mov(struct ir3_instruction *instr,
       /* only if mov src is SSA (not const/immed): */
       if (!src_instr)
          return false;
+
+      /* GameSir keeps the vector copy of the shared WorkgroupID sysval in
+       * mesh shaders, both for ordinary users and for kept output moves.
+       * Look through exactly the META_SPLIT created by ir3_split_dest.
+       */
+      if (ctx->so && ctx->so->type == MESA_SHADER_MESH &&
+          (src->flags & IR3_REG_SHARED) &&
+          !(dst->flags & IR3_REG_SHARED) &&
+          src_instr->opc == OPC_META_SPLIT) {
+         struct ir3_instruction *input = ssa(src_instr->srcs[0]);
+         if (input && input->opc == OPC_META_INPUT &&
+             input->input.sysval == SYSTEM_VALUE_WORKGROUP_ID)
+            return false;
+      }
 
       /* no indirect: */
       if (dst->flags & IR3_REG_RELATIV)
@@ -310,7 +324,7 @@ reg_cp(struct ir3_cp_ctx *ctx, struct ir3_instruction *instr,
 {
    struct ir3_instruction *src = ssa(reg);
 
-   if (is_eligible_mov(src, instr, true)) {
+   if (is_eligible_mov(ctx, src, instr, true)) {
       /* simple case, no immed/const/relativ, only mov's w/ ssa src: */
       struct ir3_register *src_reg = src->srcs[0];
       unsigned new_flags = reg->flags;
@@ -505,7 +519,7 @@ reg_cp(struct ir3_cp_ctx *ctx, struct ir3_instruction *instr,
 static struct ir3_instruction *
 eliminate_output_mov(struct ir3_cp_ctx *ctx, struct ir3_instruction *instr)
 {
-   if (is_eligible_mov(instr, NULL, false)) {
+   if (is_eligible_mov(ctx, instr, NULL, false)) {
       struct ir3_register *reg = instr->srcs[0];
       if (!(reg->flags & IR3_REG_ARRAY)) {
          struct ir3_instruction *src_instr = ssa(reg);

@@ -1,0 +1,67 @@
+{
+  "area": "AQE WorkgroupID vector copies and mesh CP preservation",
+  "binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "native_intrinsic": {
+    "ordinal": "0x2f0",
+    "name": "load_workgroup_id",
+    "table_record_ELF": "0xd55a58"
+  },
+  "native_sysval": {
+    "ordinal47": "SYSTEM_VALUE_WORKGROUP_ID",
+    "name_string_ELF": "0x74bc8",
+    "resolved_from": "original sysval-name table; native-system-value-name-ordinals.json"
+  },
+  "frontend": {
+    "ELF": "0xab7ff0..0xab80d8",
+    "predicate": "has_shared_regfile and stage TASK6 or MESH7",
+    "action": "Create shared WorkgroupID sysval47, split xyz, emit three TYPE_U32 MOVs and clear SHARED on each destination"
+  },
+  "copy_propagation": {
+    "kept_output_ELF": "0xacdd20..0xacdd84",
+    "ordinary_users_ELF": "instr_cp ELF0xacddc8, same predicate",
+    "predicate": "so!=NULL && MESH && src.SHARED && !dst.SHARED && ssa(src)==META_SPLIT && ssa(split.src0)==META_INPUT && input.sysval==WORKGROUP_ID",
+    "action": "Reject is_eligible_mov for this exact chain, for reg_cp and eliminate_output_mov",
+    "scope": "Only MESH gets this native CP exception; TASK only receives the frontend copies"
+  },
+  "precolor": {
+    "ELF": "0xaad100..0xaad150",
+    "predicate": "TASK6 or MESH7, input.sysval==WORKGROUP_ID",
+    "action": "Set full shared input base to IR3 register0xcf (regid51.w) after scheduling and before cleanup_rpt/RA",
+    "scope": "IR3 shared register number, not CP shared-GFX constant address"
+  },
+  "source_files": [
+    "src/freedreno/ir3/ir3_compiler_nir.c",
+    "src/freedreno/ir3/ir3_cp.c"
+  ],
+  "schema": {
+    "before": "0x47533814",
+    "after": "0x47533815",
+    "sites": [
+      "TU device UUID",
+      "TU graphics key",
+      "TU compute key",
+      "IR3 variant key"
+    ]
+  },
+  "reason": "Restore a coupled native compiler policy, not a guessed hardware synchronization rule",
+  "driver_build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "feature_gates_changed": false,
+  "performance_measured": false,
+  "full_validation_deferred": true,
+  "final_cases": [
+    "TASK/MESH xyz WorkgroupID consumers and ordinary COMPUTE control",
+    "MESH shared->vector copies under reg_cp and kept-output elimination",
+    "Different sysval, absent so, non-split/non-input, vector->vector and shared->shared controls",
+    "All IR3 optimize passes including shared folding/RA/cleanup, repeat merging and final sysval register metadata",
+    "Precolored shared xyz at0xcf and vector copies: RA occupancy/spilling and final WGID register state",
+    "AQE direct/indirect/count/multiview and task payload execution",
+    "Cold/warm/GPL/serialized cache and fixed build-ID separation"
+  ],
+  "evidence_hashes": {
+    "workgroup-copy-native.arm64.txt": "f3da82fa0099459f3869224cec1e5bae06f8e830f033a174cdafc73c2839a0d3",
+    "workgroup-frontend-native.arm64.txt": "0ff31079573cc8f38088ce4d1df49058be0f6236cb6554160773194a602f00de",
+    "workgroup-precolor-native.arm64.txt": "e25e1ade96a3b4c6a26a682989cc3118e6517fc801f5583d0ff12d0f73f30d5c"
+  }
+}
