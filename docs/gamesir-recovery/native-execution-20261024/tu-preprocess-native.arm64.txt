@@ -1,0 +1,818 @@
+  a0842c: d10343ff     	sub	sp, sp, #0xd0
+  a08430: f9000fe0     	str	x0, [sp, #0x18]
+  a08434: aa0103e0     	mov	x0, x1
+  a08438: a9077bfd     	stp	x29, x30, [sp, #0x70]
+  a0843c: 9101c3fd     	add	x29, sp, #0x70
+  a08440: a9086ffc     	stp	x28, x27, [sp, #0x80]
+  a08444: a90967fa     	stp	x26, x25, [sp, #0x90]
+  a08448: a90a5ff8     	stp	x24, x23, [sp, #0xa0]
+  a0844c: aa0403f7     	mov	x23, x4
+  a08450: a90b57f6     	stp	x22, x21, [sp, #0xb0]
+  a08454: aa0303f6     	mov	x22, x3
+  a08458: a90c4ff4     	stp	x20, x19, [sp, #0xc0]
+  a0845c: aa0203f4     	mov	x20, x2
+  a08460: aa0103f3     	mov	x19, x1
+  a08464: 97fe8033     	bl	0x9a8530 <_Z31tu_nir_lower_cooperative_matrixP10nir_shader>
+  a08468: 52800028     	mov	w8, #0x1                // =1
+  a0846c: d100d3a1     	sub	x1, x29, #0x34
+  a08470: aa1303e0     	mov	x0, x19
+  a08474: 381cc3a8     	sturb	w8, [x29, #-0x34]
+  a08478: 9407f0ee     	bl	0xc04830 <nir_opt_access>
+  a0847c: 3941c268     	ldrb	w8, [x19, #0x70]
+  a08480: a9024ff4     	stp	x20, x19, [sp, #0x20]
+  a08484: 7100111f     	cmp	w8, #0x4
+  a08488: 54001841     	b.ne	0xa08790 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x364>
+  a0848c: b9400288     	ldr	w8, [x20]
+  a08490: 3900d3ff     	strb	wzr, [sp, #0x34]
+  a08494: 7100011f     	cmp	w8, #0x0
+  a08498: 39402a88     	ldrb	w8, [x20, #0xa]
+  a0849c: 1a9f07e9     	cset	w9, ne
+  a084a0: 3900d7e9     	strb	w9, [sp, #0x35]
+  a084a4: 37180088     	tbnz	w8, #0x3, 0xa084b4 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x88>
+  a084a8: 39402688     	ldrb	w8, [x20, #0x9]
+  a084ac: 2a1f03e9     	mov	w9, wzr
+  a084b0: 14000006     	b	0xa084c8 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x9c>
+  a084b4: 79400e89     	ldrh	w9, [x20, #0x6]
+  a084b8: 12800008     	mov	w8, #-0x1               // =-1
+  a084bc: 5280002a     	mov	w10, #0x1               // =1
+  a084c0: 4a490508     	eor	w8, w8, w9, lsr #1
+  a084c4: 0a290149     	bic	w9, w10, w9
+  a084c8: 9100d3e1     	add	x1, sp, #0x34
+  a084cc: aa1303e0     	mov	x0, x19
+  a084d0: 3900dbe9     	strb	w9, [sp, #0x36]
+  a084d4: b9003be8     	str	w8, [sp, #0x38]
+  a084d8: 94061426     	bl	0xb8d570 <nir_lower_input_attachments>
+  a084dc: 39401288     	ldrb	w8, [x20, #0x4]
+  a084e0: 7100051f     	cmp	w8, #0x1
+  a084e4: 54001481     	b.ne	0xa08774 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x348>
+  a084e8: f94017e8     	ldr	x8, [sp, #0x28]
+  a084ec: f940ed15     	ldr	x21, [x8, #0x1d8]
+  a084f0: f94002a8     	ldr	x8, [x21]
+  a084f4: b4001408     	cbz	x8, 0xa08774 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x348>
+  a084f8: f9401ab8     	ldr	x24, [x21, #0x30]
+  a084fc: b50000d8     	cbnz	x24, 0xa08514 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xe8>
+  a08500: aa0803e9     	mov	x9, x8
+  a08504: f9400108     	ldr	x8, [x8]
+  a08508: aa0903f5     	mov	x21, x9
+  a0850c: b5ffff68     	cbnz	x8, 0xa084f8 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xcc>
+  a08510: 14000099     	b	0xa08774 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x348>
+  a08514: a900dbf7     	stp	x23, x22, [sp, #0x8]
+  a08518: f81f03b8     	stur	x24, [x29, #-0x10]
+  a0851c: f9401308     	ldr	x8, [x24, #0x20]
+  a08520: a93d7fbf     	stp	xzr, xzr, [x29, #-0x30]
+  a08524: f9400d08     	ldr	x8, [x8, #0x18]
+  a08528: a93e23bf     	stp	xzr, x8, [x29, #-0x20]
+  a0852c: f9401b19     	ldr	x25, [x24, #0x30]
+  a08530: aa1903e0     	mov	x0, x25
+  a08534: 9405336b     	bl	0xb552e0 <nir_block_cf_tree_next>
+  a08538: 2a1f03f4     	mov	w20, wzr
+  a0853c: 1400002b     	b	0xa085e8 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x1bc>
+  a08540: aa0003fb     	mov	x27, x0
+  a08544: f9001c1f     	str	xzr, [x0, #0x38]
+  a08548: d100c3a0     	sub	x0, x29, #0x30
+  a0854c: aa1b03e1     	mov	x1, x27
+  a08550: 94053f0f     	bl	0xb5818c <nir_builder_instr_insert>
+  a08554: 91008377     	add	x23, x27, #0x20
+  a08558: f85e83a0     	ldur	x0, [x29, #-0x18]
+  a0855c: 52802ae1     	mov	w1, #0x157              // =343
+  a08560: 940529a1     	bl	0xb52be4 <nir_intrinsic_instr_create>
+  a08564: 52800028     	mov	w8, #0x1                // =1
+  a08568: 91008001     	add	x1, x0, #0x20
+  a0856c: 52800022     	mov	w2, #0x1                // =1
+  a08570: 52800403     	mov	w3, #0x20               // =32
+  a08574: aa0003fb     	mov	x27, x0
+  a08578: 3900f008     	strb	w8, [x0, #0x3c]
+  a0857c: 94052987     	bl	0xb52b98 <nir_def_init>
+  a08580: b9403b68     	ldr	w8, [x27, #0x38]
+  a08584: a9077f7f     	stp	xzr, xzr, [x27, #0x70]
+  a08588: d0001ba9     	adrp	x9, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  a0858c: 5280110a     	mov	w10, #0x88              // =136
+  a08590: f9402529     	ldr	x9, [x9, #0x48]
+  a08594: a9085f7f     	stp	xzr, x23, [x27, #0x80]
+  a08598: d503201f     	nop
+  a0859c: 9baa2508     	umaddl	x8, w8, w10, x9
+  a085a0: 52800429     	mov	w9, #0x21               // =33
+  a085a4: d100c3a0     	sub	x0, x29, #0x30
+  a085a8: aa1b03e1     	mov	x1, x27
+  a085ac: 39408d08     	ldrb	w8, [x8, #0x23]
+  a085b0: 8b080b68     	add	x8, x27, x8, lsl #2
+  a085b4: b9003d09     	str	w9, [x8, #0x3c]
+  a085b8: 94053ef5     	bl	0xb5818c <nir_builder_instr_insert>
+  a085bc: 91008340     	add	x0, x26, #0x20
+  a085c0: 91008361     	add	x1, x27, #0x20
+  a085c4: 94053217     	bl	0xb54e20 <nir_def_rewrite_uses>
+  a085c8: aa1a03e0     	mov	x0, x26
+  a085cc: 94052e13     	bl	0xb53e18 <nir_instr_remove_v>
+  a085d0: 710b727f     	cmp	w19, #0x2dc
+  a085d4: 1a9f17e8     	cset	w8, eq
+  a085d8: 2a080294     	orr	w20, w20, w8
+  a085dc: aa1903e0     	mov	x0, x25
+  a085e0: 94053340     	bl	0xb552e0 <nir_block_cf_tree_next>
+  a085e4: b4000ad9     	cbz	x25, 0xa0873c <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x310>
+  a085e8: f940133b     	ldr	x27, [x25, #0x20]
+  a085ec: aa0003f9     	mov	x25, x0
+  a085f0: f9400368     	ldr	x8, [x27]
+  a085f4: b4ffff48     	cbz	x8, 0xa085dc <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x1b0>
+  a085f8: f9400113     	ldr	x19, [x8]
+  a085fc: b40000d3     	cbz	x19, 0xa08614 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x1e8>
+  a08600: aa0803fa     	mov	x26, x8
+  a08604: 39406368     	ldrb	w8, [x27, #0x18]
+  a08608: 7100111f     	cmp	w8, #0x4
+  a0860c: 540000c0     	b.eq	0xa08624 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x1f8>
+  a08610: 14000038     	b	0xa086f0 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x2c4>
+  a08614: aa1f03fa     	mov	x26, xzr
+  a08618: 39406368     	ldrb	w8, [x27, #0x18]
+  a0861c: 7100111f     	cmp	w8, #0x4
+  a08620: 54000681     	b.ne	0xa086f0 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x2c4>
+  a08624: b9403b77     	ldr	w23, [x27, #0x38]
+  a08628: 710b72ff     	cmp	w23, #0x2dc
+  a0862c: 540005c1     	b.ne	0xa086e4 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x2b8>
+  a08630: f85e83a0     	ldur	x0, [x29, #-0x18]
+  a08634: 52800048     	mov	w8, #0x2                // =2
+  a08638: 52800021     	mov	w1, #0x1                // =1
+  a0863c: 52800402     	mov	w2, #0x20               // =32
+  a08640: a93d6fa8     	stp	x8, x27, [x29, #-0x30]
+  a08644: 94052931     	bl	0xb52b08 <nir_load_const_instr_create>
+  a08648: b4000100     	cbz	x0, 0xa08668 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x23c>
+  a0864c: aa0003fc     	mov	x28, x0
+  a08650: f9001c1f     	str	xzr, [x0, #0x38]
+  a08654: d100c3a0     	sub	x0, x29, #0x30
+  a08658: aa1c03e1     	mov	x1, x28
+  a0865c: 94053ecc     	bl	0xb5818c <nir_builder_instr_insert>
+  a08660: 91008396     	add	x22, x28, #0x20
+  a08664: 14000002     	b	0xa0866c <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x240>
+  a08668: aa1f03f6     	mov	x22, xzr
+  a0866c: f85e83a0     	ldur	x0, [x29, #-0x18]
+  a08670: 52802ae1     	mov	w1, #0x157              // =343
+  a08674: 9405295c     	bl	0xb52be4 <nir_intrinsic_instr_create>
+  a08678: 52800028     	mov	w8, #0x1                // =1
+  a0867c: 91008001     	add	x1, x0, #0x20
+  a08680: 52800022     	mov	w2, #0x1                // =1
+  a08684: 52800403     	mov	w3, #0x20               // =32
+  a08688: aa0003fc     	mov	x28, x0
+  a0868c: 3900f008     	strb	w8, [x0, #0x3c]
+  a08690: 94052942     	bl	0xb52b98 <nir_def_init>
+  a08694: b9403b88     	ldr	w8, [x28, #0x38]
+  a08698: a9077f9f     	stp	xzr, xzr, [x28, #0x70]
+  a0869c: d0001ba9     	adrp	x9, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  a086a0: 5280110a     	mov	w10, #0x88              // =136
+  a086a4: f9402529     	ldr	x9, [x9, #0x48]
+  a086a8: a9085b9f     	stp	xzr, x22, [x28, #0x80]
+  a086ac: d503201f     	nop
+  a086b0: 9baa2508     	umaddl	x8, w8, w10, x9
+  a086b4: 52800429     	mov	w9, #0x21               // =33
+  a086b8: d100c3a0     	sub	x0, x29, #0x30
+  a086bc: aa1c03e1     	mov	x1, x28
+  a086c0: 39408d08     	ldrb	w8, [x8, #0x23]
+  a086c4: 8b080b88     	add	x8, x28, x8, lsl #2
+  a086c8: b9003d09     	str	w9, [x8, #0x3c]
+  a086cc: 94053eb0     	bl	0xb5818c <nir_builder_instr_insert>
+  a086d0: 91008360     	add	x0, x27, #0x20
+  a086d4: 91008381     	add	x1, x28, #0x20
+  a086d8: 940531d2     	bl	0xb54e20 <nir_def_rewrite_uses>
+  a086dc: aa1b03e0     	mov	x0, x27
+  a086e0: 94052dce     	bl	0xb53e18 <nir_instr_remove_v>
+  a086e4: 710b72ff     	cmp	w23, #0x2dc
+  a086e8: 1a9f17e8     	cset	w8, eq
+  a086ec: 2a080294     	orr	w20, w20, w8
+  a086f0: b4fff773     	cbz	x19, 0xa085dc <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x1b0>
+  a086f4: f9400348     	ldr	x8, [x26]
+  a086f8: aa1a03fb     	mov	x27, x26
+  a086fc: b5fff7e8     	cbnz	x8, 0xa085f8 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x1cc>
+  a08700: 39406348     	ldrb	w8, [x26, #0x18]
+  a08704: 7100111f     	cmp	w8, #0x4
+  a08708: 54fff6a1     	b.ne	0xa085dc <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x1b0>
+  a0870c: b9403b53     	ldr	w19, [x26, #0x38]
+  a08710: 710b727f     	cmp	w19, #0x2dc
+  a08714: 54fff5e1     	b.ne	0xa085d0 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x1a4>
+  a08718: f85e83a0     	ldur	x0, [x29, #-0x18]
+  a0871c: 52800048     	mov	w8, #0x2                // =2
+  a08720: 52800021     	mov	w1, #0x1                // =1
+  a08724: 52800402     	mov	w2, #0x20               // =32
+  a08728: a93d6ba8     	stp	x8, x26, [x29, #-0x30]
+  a0872c: 940528f7     	bl	0xb52b08 <nir_load_const_instr_create>
+  a08730: b5fff080     	cbnz	x0, 0xa08540 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x114>
+  a08734: aa1f03f7     	mov	x23, xzr
+  a08738: 17ffff88     	b	0xa08558 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x12c>
+  a0873c: 12000280     	and	w0, w20, #0x1
+  a08740: aa1803e1     	mov	x1, x24
+  a08744: 52801062     	mov	w2, #0x83               // =131
+  a08748: 9406dc0e     	bl	0xbbf780 <nir_progress>
+  a0874c: f94002b5     	ldr	x21, [x21]
+  a08750: a940dbf7     	ldp	x23, x22, [sp, #0x8]
+  a08754: f94002a8     	ldr	x8, [x21]
+  a08758: b40000e8     	cbz	x8, 0xa08774 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x348>
+  a0875c: f9401ab8     	ldr	x24, [x21, #0x30]
+  a08760: b5ffedd8     	cbnz	x24, 0xa08518 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xec>
+  a08764: aa0803e9     	mov	x9, x8
+  a08768: f9400108     	ldr	x8, [x8]
+  a0876c: aa0903f5     	mov	x21, x9
+  a08770: b5ffff68     	cbnz	x8, 0xa0875c <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x330>
+  a08774: f94017f3     	ldr	x19, [sp, #0x28]
+  a08778: 52800388     	mov	w8, #0x1c               // =28
+  a0877c: d100c3a1     	sub	x1, x29, #0x30
+  a08780: 381d03a8     	sturb	w8, [x29, #-0x30]
+  a08784: aa1303e0     	mov	x0, x19
+  a08788: 9406d9cf     	bl	0xbbeec4 <nir_lower_sysvals_to_varyings>
+  a0878c: f94013f4     	ldr	x20, [sp, #0x20]
+  a08790: b9400288     	ldr	w8, [x20]
+  a08794: 340000a8     	cbz	w8, 0xa087a8 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x37c>
+  a08798: 7100051f     	cmp	w8, #0x1
+  a0879c: 540000e1     	b.ne	0xa087b8 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x38c>
+  a087a0: 52800029     	mov	w9, #0x1                // =1
+  a087a4: 14000008     	b	0xa087c4 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x398>
+  a087a8: 39402289     	ldrb	w9, [x20, #0x8]
+  a087ac: 7100053f     	cmp	w9, #0x1
+  a087b0: 1a9f8529     	csinc	w9, w9, wzr, hi
+  a087b4: 14000004     	b	0xa087c4 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x398>
+  a087b8: 5ac01109     	clz	w9, w8
+  a087bc: 5280040a     	mov	w10, #0x20              // =32
+  a087c0: 4b090149     	sub	w9, w10, w9
+  a087c4: 7940168a     	ldrh	w10, [x20, #0xa]
+  a087c8: 7100011f     	cmp	w8, #0x0
+  a087cc: 52801048     	mov	w8, #0x82               // =130
+  a087d0: b90037e9     	str	w9, [sp, #0x34]
+  a087d4: 1a9f17e9     	cset	w9, eq
+  a087d8: d503201f     	nop
+  a087dc: 10028a61     	adr	x1, 0xa0d928 <_ZL16lower_fdm_filterPK9nir_instrPKv>
+  a087e0: 5301054b     	ubfx	w11, w10, #1, #1
+  a087e4: 6a2a011f     	bics	wzr, w8, w10
+  a087e8: 1a9f17e8     	cset	w8, eq
+  a087ec: d503201f     	nop
+  a087f0: 10028be2     	adr	x2, 0xa0d96c <_ZL15lower_fdm_instrP11nir_builderP9nir_instrPv>
+  a087f4: 9100d3e3     	add	x3, sp, #0x34
+  a087f8: aa1303e0     	mov	x0, x19
+  a087fc: 3900e7e9     	strb	w9, [sp, #0x39]
+  a08800: 3900e3eb     	strb	w11, [sp, #0x38]
+  a08804: 3900ebe8     	strb	w8, [sp, #0x3a]
+  a08808: 9405361d     	bl	0xb5607c <nir_shader_lower_instructions>
+  a0880c: 3941c268     	ldrb	w8, [x19, #0x70]
+  a08810: 13001d09     	sxtb	w9, w8
+  a08814: 7100393f     	cmp	w9, #0xe
+  a08818: 54002e28     	b.hi	0xa08ddc <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x9b0>
+  a0881c: 12003d29     	and	w9, w9, #0xffff
+  a08820: 5280002a     	mov	w10, #0x1               // =1
+  a08824: 1ac92149     	lsl	w9, w10, w9
+  a08828: 52881c0a     	mov	w10, #0x40e0            // =16608
+  a0882c: 6a0a013f     	tst	w9, w10
+  a08830: 54002d60     	b.eq	0xa08ddc <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x9b0>
+  a08834: aa1303e0     	mov	x0, x19
+  a08838: 528000a1     	mov	w1, #0x5                // =5
+  a0883c: 9407f48f     	bl	0xc05a78 <nir_opt_acquire_release_barriers>
+  a08840: aa1303e0     	mov	x0, x19
+  a08844: 9401cea5     	bl	0xa7c2d8 <ir3_nir_lower_io_vars_to_temporaries>
+  a08848: 7940e268     	ldrh	w8, [x19, #0x70]
+  a0884c: 72001d1f     	tst	w8, #0xff
+  a08850: 54000141     	b.ne	0xa08878 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x44c>
+  a08854: b9400281     	ldr	w1, [x20]
+  a08858: 34000101     	cbz	w1, 0xa08878 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x44c>
+  a0885c: b94002c8     	ldr	w8, [x22]
+  a08860: f9400fe2     	ldr	x2, [sp, #0x18]
+  a08864: aa1303e0     	mov	x0, x19
+  a08868: 7215091f     	tst	w8, #0x3800
+  a0886c: 1a9f17e3     	cset	w3, eq
+  a08870: 97fea584     	bl	0x9b1e80 <_Z22tu_nir_lower_multiviewP10nir_shaderjP9tu_deviceb>
+  a08874: 7940e268     	ldrh	w8, [x19, #0x70]
+  a08878: 321e0109     	orr	w9, w8, #0x4
+  a0887c: 12001d2a     	and	w10, w9, #0xff
+  a08880: b9400289     	ldr	w9, [x20]
+  a08884: 71001d5f     	cmp	w10, #0x7
+  a08888: 54000041     	b.ne	0xa08890 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x464>
+  a0888c: b900da69     	str	w9, [x19, #0xd8]
+  a08890: 340000a9     	cbz	w9, 0xa088a4 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x478>
+  a08894: 12001d08     	and	w8, w8, #0xff
+  a08898: 7100111f     	cmp	w8, #0x4
+  a0889c: 540001a0     	b.eq	0xa088d0 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x4a4>
+  a088a0: 14000021     	b	0xa08924 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x4f8>
+  a088a4: d503201f     	nop
+  a088a8: 1002eee1     	adr	x1, 0xa0e684 <_ZL25lower_view_to_zero_filterPK9nir_instrPKv>
+  a088ac: d503201f     	nop
+  a088b0: 1002ef22     	adr	x2, 0xa0e694 <_ZL18lower_view_to_zeroP11nir_builderP9nir_instrPv>
+  a088b4: aa1303e0     	mov	x0, x19
+  a088b8: aa1f03e3     	mov	x3, xzr
+  a088bc: 940535f0     	bl	0xb5607c <nir_shader_lower_instructions>
+  a088c0: 7940e268     	ldrh	w8, [x19, #0x70]
+  a088c4: 12001d08     	and	w8, w8, #0xff
+  a088c8: 7100111f     	cmp	w8, #0x4
+  a088cc: 540002c1     	b.ne	0xa08924 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x4f8>
+  a088d0: 79401688     	ldrh	w8, [x20, #0xa]
+  a088d4: 36000288     	tbz	w8, #0x0, 0xa08924 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x4f8>
+  a088d8: b941a268     	ldr	w8, [x19, #0x1a0]
+  a088dc: 32170109     	orr	w9, w8, #0x200
+  a088e0: f9400668     	ldr	x8, [x19, #0x8]
+  a088e4: b901a269     	str	w9, [x19, #0x1a0]
+  a088e8: f9400109     	ldr	x9, [x8]
+  a088ec: b40001c9     	cbz	x9, 0xa08924 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x4f8>
+  a088f0: 52800089     	mov	w9, #0x4                // =4
+  a088f4: 72a20009     	movk	w9, #0x1000, lsl #16
+  a088f8: 14000004     	b	0xa08908 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x4dc>
+  a088fc: f9400108     	ldr	x8, [x8]
+  a08900: f940010a     	ldr	x10, [x8]
+  a08904: b400010a     	cbz	x10, 0xa08924 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x4f8>
+  a08908: f940110a     	ldr	x10, [x8, #0x20]
+  a0890c: 8a09014b     	and	x11, x10, x9
+  a08910: f100117f     	cmp	x11, #0x4
+  a08914: 54ffff41     	b.ne	0xa088fc <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x4d0>
+  a08918: b263014a     	orr	x10, x10, #0x20000000
+  a0891c: f900110a     	str	x10, [x8, #0x20]
+  a08920: 17fffff7     	b	0xa088fc <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x4d0>
+  a08924: aa1303e0     	mov	x0, x19
+  a08928: 52802001     	mov	w1, #0x100              // =256
+  a0892c: 52800122     	mov	w2, #0x9                // =9
+  a08930: 9405f599     	bl	0xb85f94 <nir_lower_explicit_io>
+  a08934: aa1303e0     	mov	x0, x19
+  a08938: 52805001     	mov	w1, #0x280              // =640
+  a0893c: 528000e2     	mov	w2, #0x7                // =7
+  a08940: 9405f595     	bl	0xb85f94 <nir_lower_explicit_io>
+  a08944: f940ee75     	ldr	x21, [x19, #0x1d8]
+  a08948: f94002a8     	ldr	x8, [x21]
+  a0894c: b4001188     	cbz	x8, 0xa08b7c <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x750>
+  a08950: f9401ab6     	ldr	x22, [x21, #0x30]
+  a08954: b50000d6     	cbnz	x22, 0xa0896c <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x540>
+  a08958: aa0803e9     	mov	x9, x8
+  a0895c: f9400108     	ldr	x8, [x8]
+  a08960: aa0903f5     	mov	x21, x9
+  a08964: b5ffff68     	cbnz	x8, 0xa08950 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x524>
+  a08968: 14000085     	b	0xa08b7c <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x750>
+  a0896c: d0001bb4     	adrp	x20, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  a08970: 5280111a     	mov	w26, #0x88              // =136
+  a08974: f9402694     	ldr	x20, [x20, #0x48]
+  a08978: f81f03b6     	stur	x22, [x29, #-0x10]
+  a0897c: f94012c8     	ldr	x8, [x22, #0x20]
+  a08980: a93d7fbf     	stp	xzr, xzr, [x29, #-0x30]
+  a08984: f9400d08     	ldr	x8, [x8, #0x18]
+  a08988: a93e23bf     	stp	xzr, x8, [x29, #-0x20]
+  a0898c: f9401ad7     	ldr	x23, [x22, #0x30]
+  a08990: aa1703e0     	mov	x0, x23
+  a08994: 94053253     	bl	0xb552e0 <nir_block_cf_tree_next>
+  a08998: 2a1f03f3     	mov	w19, wzr
+  a0899c: 14000005     	b	0xa089b0 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x584>
+  a089a0: 2a1f0273     	orr	w19, w19, wzr
+  a089a4: aa1703e0     	mov	x0, x23
+  a089a8: 9405324e     	bl	0xb552e0 <nir_block_cf_tree_next>
+  a089ac: b4000cf7     	cbz	x23, 0xa08b48 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x71c>
+  a089b0: f94012f9     	ldr	x25, [x23, #0x20]
+  a089b4: aa0003f7     	mov	x23, x0
+  a089b8: f9400328     	ldr	x8, [x25]
+  a089bc: b4ffff48     	cbz	x8, 0xa089a4 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x578>
+  a089c0: f940011b     	ldr	x27, [x8]
+  a089c4: 39406329     	ldrb	w9, [x25, #0x18]
+  a089c8: f100037f     	cmp	x27, #0x0
+  a089cc: 9a8803f8     	csel	x24, xzr, x8, eq
+  a089d0: 7100113f     	cmp	w9, #0x4
+  a089d4: 54000581     	b.ne	0xa08a84 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x658>
+  a089d8: b9403b28     	ldr	w8, [x25, #0x38]
+  a089dc: 510d5109     	sub	w9, w8, #0x354
+  a089e0: 7100d13f     	cmp	w9, #0x34
+  a089e4: 540000e8     	b.hi	0xa08a00 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x5d4>
+  a089e8: 5280002a     	mov	w10, #0x1               // =1
+  a089ec: 9ac92149     	lsl	x9, x10, x9
+  a089f0: d28000aa     	mov	x10, #0x5               // =5
+  a089f4: f2e0020a     	movk	x10, #0x10, lsl #48
+  a089f8: ea0a013f     	tst	x9, x10
+  a089fc: 54000061     	b.ne	0xa08a08 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x5dc>
+  a08a00: 710a091f     	cmp	w8, #0x282
+  a08a04: 540003c1     	b.ne	0xa08a7c <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x650>
+  a08a08: 9bba5108     	umaddl	x8, w8, w26, x20
+  a08a0c: aa1903e0     	mov	x0, x25
+  a08a10: 3940ed08     	ldrb	w8, [x8, #0x3b]
+  a08a14: 8b080b28     	add	x8, x25, x8, lsl #2
+  a08a18: b9403d1c     	ldr	w28, [x8, #0x3c]
+  a08a1c: 94062c9c     	bl	0xb93c8c <nir_get_io_offset_src>
+  a08a20: 340002fc     	cbz	w28, 0xa08a7c <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x650>
+  a08a24: f9400c01     	ldr	x1, [x0, #0x18]
+  a08a28: 39405428     	ldrb	w8, [x1, #0x15]
+  a08a2c: 7100811f     	cmp	w8, #0x20
+  a08a30: 54000261     	b.ne	0xa08a7c <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x650>
+  a08a34: 12800008     	mov	w8, #-0x1               // =-1
+  a08a38: 9adc2502     	lsr	x2, x8, x28
+  a08a3c: 52800048     	mov	w8, #0x2                // =2
+  a08a40: a93d67a8     	stp	x8, x25, [x29, #-0x30]
+  a08a44: aa0003f9     	mov	x25, x0
+  a08a48: d100c3a0     	sub	x0, x29, #0x30
+  a08a4c: 94001729     	bl	0xa0e6f0 <_ZL12nir_iand_immP11nir_builderP7nir_defm>
+  a08a50: a9c0a728     	ldp	x8, x9, [x25, #0x8]!
+  a08a54: f9000509     	str	x9, [x8, #0x8]
+  a08a58: f9000128     	str	x8, [x9]
+  a08a5c: a9008320     	stp	x0, x0, [x25, #0x8]
+  a08a60: f900033f     	str	xzr, [x25]
+  a08a64: f9400008     	ldr	x8, [x0]
+  a08a68: f9000328     	str	x8, [x25]
+  a08a6c: f9000519     	str	x25, [x8, #0x8]
+  a08a70: 52800028     	mov	w8, #0x1                // =1
+  a08a74: f9000019     	str	x25, [x0]
+  a08a78: 14000002     	b	0xa08a80 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x654>
+  a08a7c: 2a1f03e8     	mov	w8, wzr
+  a08a80: 2a080273     	orr	w19, w19, w8
+  a08a84: b4fff91b     	cbz	x27, 0xa089a4 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x578>
+  a08a88: f9400308     	ldr	x8, [x24]
+  a08a8c: aa1803f9     	mov	x25, x24
+  a08a90: b5fff988     	cbnz	x8, 0xa089c0 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x594>
+  a08a94: 39406308     	ldrb	w8, [x24, #0x18]
+  a08a98: 7100111f     	cmp	w8, #0x4
+  a08a9c: 54fff841     	b.ne	0xa089a4 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x578>
+  a08aa0: b9403b08     	ldr	w8, [x24, #0x38]
+  a08aa4: 510d5109     	sub	w9, w8, #0x354
+  a08aa8: 7100d13f     	cmp	w9, #0x34
+  a08aac: 540000e8     	b.hi	0xa08ac8 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x69c>
+  a08ab0: 5280002a     	mov	w10, #0x1               // =1
+  a08ab4: 9ac92149     	lsl	x9, x10, x9
+  a08ab8: d28000aa     	mov	x10, #0x5               // =5
+  a08abc: f2e0020a     	movk	x10, #0x10, lsl #48
+  a08ac0: ea0a013f     	tst	x9, x10
+  a08ac4: 54000061     	b.ne	0xa08ad0 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x6a4>
+  a08ac8: 710a091f     	cmp	w8, #0x282
+  a08acc: 54fff6a1     	b.ne	0xa089a0 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x574>
+  a08ad0: 9bba5108     	umaddl	x8, w8, w26, x20
+  a08ad4: aa1803e0     	mov	x0, x24
+  a08ad8: 3940ed08     	ldrb	w8, [x8, #0x3b]
+  a08adc: 8b080b08     	add	x8, x24, x8, lsl #2
+  a08ae0: b9403d19     	ldr	w25, [x8, #0x3c]
+  a08ae4: 94062c6a     	bl	0xb93c8c <nir_get_io_offset_src>
+  a08ae8: 34fff5d9     	cbz	w25, 0xa089a0 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x574>
+  a08aec: f9400c01     	ldr	x1, [x0, #0x18]
+  a08af0: 39405428     	ldrb	w8, [x1, #0x15]
+  a08af4: 7100811f     	cmp	w8, #0x20
+  a08af8: 54fff541     	b.ne	0xa089a0 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x574>
+  a08afc: 12800008     	mov	w8, #-0x1               // =-1
+  a08b00: 9ad92502     	lsr	x2, x8, x25
+  a08b04: 52800048     	mov	w8, #0x2                // =2
+  a08b08: a93d63a8     	stp	x8, x24, [x29, #-0x30]
+  a08b0c: aa0003f8     	mov	x24, x0
+  a08b10: d100c3a0     	sub	x0, x29, #0x30
+  a08b14: 940016f7     	bl	0xa0e6f0 <_ZL12nir_iand_immP11nir_builderP7nir_defm>
+  a08b18: a9c0a708     	ldp	x8, x9, [x24, #0x8]!
+  a08b1c: f9000509     	str	x9, [x8, #0x8]
+  a08b20: f9000128     	str	x8, [x9]
+  a08b24: a9008300     	stp	x0, x0, [x24, #0x8]
+  a08b28: f900031f     	str	xzr, [x24]
+  a08b2c: f9400008     	ldr	x8, [x0]
+  a08b30: f9000308     	str	x8, [x24]
+  a08b34: f9000518     	str	x24, [x8, #0x8]
+  a08b38: 52800028     	mov	w8, #0x1                // =1
+  a08b3c: f9000018     	str	x24, [x0]
+  a08b40: 2a080273     	orr	w19, w19, w8
+  a08b44: 17ffff98     	b	0xa089a4 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x578>
+  a08b48: 12000260     	and	w0, w19, #0x1
+  a08b4c: aa1603e1     	mov	x1, x22
+  a08b50: 52801062     	mov	w2, #0x83               // =131
+  a08b54: 9406db0b     	bl	0xbbf780 <nir_progress>
+  a08b58: f94002b5     	ldr	x21, [x21]
+  a08b5c: f94002a8     	ldr	x8, [x21]
+  a08b60: b40000e8     	cbz	x8, 0xa08b7c <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x750>
+  a08b64: f9401ab6     	ldr	x22, [x21, #0x30]
+  a08b68: b5fff096     	cbnz	x22, 0xa08978 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x54c>
+  a08b6c: aa0803e9     	mov	x9, x8
+  a08b70: f9400108     	ldr	x8, [x8]
+  a08b74: aa0903f5     	mov	x21, x9
+  a08b78: b5ffff68     	cbnz	x8, 0xa08b64 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x738>
+  a08b7c: f94017f5     	ldr	x21, [sp, #0x28]
+  a08b80: 52a04001     	mov	w1, #0x2000000          // =33554432
+  a08b84: 52800022     	mov	w2, #0x1                // =1
+  a08b88: 52800063     	mov	w3, #0x3                // =3
+  a08b8c: aa1503e0     	mov	x0, x21
+  a08b90: 940552c2     	bl	0xb5d698 <nir_convert_address_format>
+  a08b94: aa1503e0     	mov	x0, x21
+  a08b98: 52a04001     	mov	w1, #0x2000000          // =33554432
+  a08b9c: 52800062     	mov	w2, #0x3                // =3
+  a08ba0: 9405f4fd     	bl	0xb85f94 <nir_lower_explicit_io>
+  a08ba4: 7940e2a8     	ldrh	w8, [x21, #0x70]
+  a08ba8: 121f1909     	and	w9, w8, #0xfe
+  a08bac: 7100193f     	cmp	w9, #0x6
+  a08bb0: 54000161     	b.ne	0xa08bdc <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x7b0>
+  a08bb4: d503201f     	nop
+  a08bb8: 100035c2     	adr	x2, 0xa09270 <_ZL22task_payload_type_infoPK9glsl_typePjS2_>
+  a08bbc: aa1503e0     	mov	x0, x21
+  a08bc0: 52810001     	mov	w1, #0x800              // =2048
+  a08bc4: 9405f782     	bl	0xb869cc <nir_lower_vars_to_explicit_types>
+  a08bc8: aa1503e0     	mov	x0, x21
+  a08bcc: 52810001     	mov	w1, #0x800              // =2048
+  a08bd0: 52800122     	mov	w2, #0x9                // =9
+  a08bd4: 9405f4f0     	bl	0xb85f94 <nir_lower_explicit_io>
+  a08bd8: 7940e2a8     	ldrh	w8, [x21, #0x70]
+  a08bdc: 13001d08     	sxtb	w8, w8
+  a08be0: 7100391f     	cmp	w8, #0xe
+  a08be4: 54000788     	b.hi	0xa08cd4 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x8a8>
+  a08be8: 12003d08     	and	w8, w8, #0xffff
+  a08bec: 52800029     	mov	w9, #0x1                // =1
+  a08bf0: 1ac82128     	lsl	w8, w9, w8
+  a08bf4: 52881c09     	mov	w9, #0x40e0             // =16608
+  a08bf8: 6a09011f     	tst	w8, w9
+  a08bfc: 540006c0     	b.eq	0xa08cd4 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x8a8>
+  a08c00: d503201f     	nop
+  a08c04: 100035a2     	adr	x2, 0xa092b8 <_ZL16shared_type_infoPK9glsl_typePjS2_>
+  a08c08: aa1503e0     	mov	x0, x21
+  a08c0c: 52a02001     	mov	w1, #0x1000000          // =16777216
+  a08c10: 9405f76f     	bl	0xb869cc <nir_lower_vars_to_explicit_types>
+  a08c14: aa1503e0     	mov	x0, x21
+  a08c18: 52a02001     	mov	w1, #0x1000000          // =16777216
+  a08c1c: 52800122     	mov	w2, #0x9                // =9
+  a08c20: 9405f4dd     	bl	0xb85f94 <nir_lower_explicit_io>
+  a08c24: b9416eb4     	ldr	w20, [x21, #0x16c]
+  a08c28: 34000314     	cbz	w20, 0xa08c88 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x85c>
+  a08c2c: f9400fe8     	ldr	x8, [sp, #0x18]
+  a08c30: d37ef689     	lsl	x9, x20, #2
+  a08c34: aa1f03e0     	mov	x0, xzr
+  a08c38: f94d4108     	ldr	x8, [x8, #0x1a80]
+  a08c3c: f9505d08     	ldr	x8, [x8, #0x20b8]
+  a08c40: b9402108     	ldr	w8, [x8, #0x20]
+  a08c44: eb08013f     	cmp	x9, x8
+  a08c48: 9a883133     	csel	x19, x9, x8, lo
+  a08c4c: 940488f6     	bl	0xb2b024 <_mesa_pointer_hash_table_create>
+  a08c50: f940eebb     	ldr	x27, [x21, #0x1d8]
+  a08c54: aa0003f5     	mov	x21, x0
+  a08c58: f9400369     	ldr	x9, [x27]
+  a08c5c: b40000e9     	cbz	x9, 0xa08c78 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x84c>
+  a08c60: f9401b6a     	ldr	x10, [x27, #0x30]
+  a08c64: aa0903e8     	mov	x8, x9
+  a08c68: b500148a     	cbnz	x10, 0xa08ef8 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xacc>
+  a08c6c: f9400109     	ldr	x9, [x8]
+  a08c70: aa0803fb     	mov	x27, x8
+  a08c74: b5ffff69     	cbnz	x9, 0xa08c60 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x834>
+  a08c78: aa1503e0     	mov	x0, x21
+  a08c7c: aa1f03e1     	mov	x1, xzr
+  a08c80: 94048670     	bl	0xb2a640 <_mesa_hash_table_destroy>
+  a08c84: f94017f5     	ldr	x21, [sp, #0x28]
+  a08c88: 39465aa8     	ldrb	w8, [x21, #0x196]
+  a08c8c: 36080108     	tbz	w8, #0x1, 0xa08cac <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x880>
+  a08c90: b9416ea8     	ldr	w8, [x21, #0x16c]
+  a08c94: 340000c8     	cbz	w8, 0xa08cac <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x880>
+  a08c98: 11003d08     	add	w8, w8, #0xf
+  a08c9c: aa1503e0     	mov	x0, x21
+  a08ca0: 52800202     	mov	w2, #0x10               // =16
+  a08ca4: 121c6d01     	and	w1, w8, #0xfffffff0
+  a08ca8: 9405d735     	bl	0xb7e97c <nir_zero_initialize_shared_memory>
+  a08cac: 3941c2a8     	ldrb	w8, [x21, #0x70]
+  a08cb0: d100c3a1     	sub	x1, x29, #0x30
+  a08cb4: aa1503e0     	mov	x0, x21
+  a08cb8: f81d43bf     	stur	xzr, [x29, #-0x2c]
+  a08cbc: 71001d1f     	cmp	w8, #0x7
+  a08cc0: b81dc3bf     	stur	wzr, [x29, #-0x24]
+  a08cc4: 1a9f07e8     	cset	w8, ne
+  a08cc8: 531f7908     	lsl	w8, w8, #1
+  a08ccc: 781d03a8     	sturh	w8, [x29, #-0x30]
+  a08cd0: 94069635     	bl	0xbae5a4 <nir_lower_compute_system_values>
+  a08cd4: aa1503e0     	mov	x0, x21
+  a08cd8: 52800081     	mov	w1, #0x4                // =4
+  a08cdc: 94059fb6     	bl	0xb70bb4 <nir_assign_io_var_locations>
+  a08ce0: aa1503e0     	mov	x0, x21
+  a08ce4: 52800101     	mov	w1, #0x8                // =8
+  a08ce8: 94059fb3     	bl	0xb70bb4 <nir_assign_io_var_locations>
+  a08cec: 3941c2a8     	ldrb	w8, [x21, #0x70]
+  a08cf0: 71000d1f     	cmp	w8, #0x3
+  a08cf4: 540000a8     	b.hi	0xa08d08 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x8dc>
+  a08cf8: 7100051f     	cmp	w8, #0x1
+  a08cfc: 54000060     	b.eq	0xa08d08 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x8dc>
+  a08d00: aa1503e0     	mov	x0, x21
+  a08d04: 94059247     	bl	0xb6d620 <nir_shader_gather_xfb_info>
+  a08d08: d0001768     	adrp	x8, 0xcf6000 <_ZL14config_control+0x128>
+  a08d0c: 911b4108     	add	x8, x8, #0x6d0
+  a08d10: d100c3a1     	sub	x1, x29, #0x30
+  a08d14: 3dc00100     	ldr	q0, [x8]
+  a08d18: f9400908     	ldr	x8, [x8, #0x10]
+  a08d1c: aa1503e0     	mov	x0, x21
+  a08d20: 3c9d03a0     	stur	q0, [x29, #-0x30]
+  a08d24: f81e03a8     	stur	x8, [x29, #-0x20]
+  a08d28: 94065444     	bl	0xb9de38 <nir_lower_mem_access_bit_sizes>
+  a08d2c: aa1503e0     	mov	x0, x21
+  a08d30: 9401cfe9     	bl	0xa7ccd4 <ir3_nir_lower_io>
+  a08d34: f94013e8     	ldr	x8, [sp, #0x20]
+  a08d38: 79401508     	ldrh	w8, [x8, #0xa]
+  a08d3c: 36400ce8     	tbz	w8, #0x8, 0xa08ed8 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xaac>
+  a08d40: f940eea8     	ldr	x8, [x21, #0x1d8]
+  a08d44: aa1f03eb     	mov	x11, xzr
+  a08d48: f9400109     	ldr	x9, [x8]
+  a08d4c: aa0803ea     	mov	x10, x8
+  a08d50: aa0903ec     	mov	x12, x9
+  a08d54: 3940f14e     	ldrb	w14, [x10, #0x3c]
+  a08d58: aa0c03ed     	mov	x13, x12
+  a08d5c: f940018c     	ldr	x12, [x12]
+  a08d60: 710001df     	cmp	w14, #0x0
+  a08d64: 9a8b114b     	csel	x11, x10, x11, ne
+  a08d68: aa0d03ea     	mov	x10, x13
+  a08d6c: b5ffff4c     	cbnz	x12, 0xa08d54 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x928>
+  a08d70: f940196b     	ldr	x11, [x11, #0x30]
+  a08d74: aa1f03ea     	mov	x10, xzr
+  a08d78: f81f03ab     	stur	x11, [x29, #-0x10]
+  a08d7c: f940116b     	ldr	x11, [x11, #0x20]
+  a08d80: f9400d60     	ldr	x0, [x11, #0x18]
+  a08d84: a93e03bf     	stp	xzr, x0, [x29, #-0x20]
+  a08d88: 3940f10c     	ldrb	w12, [x8, #0x3c]
+  a08d8c: aa0903eb     	mov	x11, x9
+  a08d90: f9400129     	ldr	x9, [x9]
+  a08d94: 7100019f     	cmp	w12, #0x0
+  a08d98: 9a8a110a     	csel	x10, x8, x10, ne
+  a08d9c: aa0b03e8     	mov	x8, x11
+  a08da0: b5ffff49     	cbnz	x9, 0xa08d88 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x95c>
+  a08da4: b400044a     	cbz	x10, 0xa08e2c <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xa00>
+  a08da8: f9401949     	ldr	x9, [x10, #0x30]
+  a08dac: f9401928     	ldr	x8, [x9, #0x30]
+  a08db0: 91010129     	add	x9, x9, #0x40
+  a08db4: eb09011f     	cmp	x8, x9
+  a08db8: 9a8803e9     	csel	x9, xzr, x8, eq
+  a08dbc: b940112a     	ldr	w10, [x9, #0x10]
+  a08dc0: 3400044a     	cbz	w10, 0xa08e48 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xa1c>
+  a08dc4: f9400528     	ldr	x8, [x9, #0x8]
+  a08dc8: f9400509     	ldr	x9, [x8, #0x8]
+  a08dcc: f100013f     	cmp	x9, #0x0
+  a08dd0: 52800029     	mov	w9, #0x1                // =1
+  a08dd4: 9a8803e8     	csel	x8, xzr, x8, eq
+  a08dd8: 1400001d     	b	0xa08e4c <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xa20>
+  a08ddc: 7100111f     	cmp	w8, #0x4
+  a08de0: 54ffd2a0     	b.eq	0xa08834 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x408>
+  a08de4: b9400288     	ldr	w8, [x20]
+  a08de8: 35ffd268     	cbnz	w8, 0xa08834 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x408>
+  a08dec: 79401688     	ldrh	w8, [x20, #0xa]
+  a08df0: 3617d228     	tbz	w8, #0x2, 0xa08834 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x408>
+  a08df4: f940ee68     	ldr	x8, [x19, #0x1d8]
+  a08df8: f9400109     	ldr	x9, [x8]
+  a08dfc: b4001409     	cbz	x9, 0xa0907c <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xc50>
+  a08e00: aa1f03ea     	mov	x10, xzr
+  a08e04: 3940f10c     	ldrb	w12, [x8, #0x3c]
+  a08e08: aa0903eb     	mov	x11, x9
+  a08e0c: f9400129     	ldr	x9, [x9]
+  a08e10: 7100019f     	cmp	w12, #0x0
+  a08e14: 9a8a110a     	csel	x10, x8, x10, ne
+  a08e18: aa0b03e8     	mov	x8, x11
+  a08e1c: b5ffff49     	cbnz	x9, 0xa08e04 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x9d8>
+  a08e20: b40012ea     	cbz	x10, 0xa0907c <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xc50>
+  a08e24: f9401958     	ldr	x24, [x10, #0x30]
+  a08e28: 14000096     	b	0xa09080 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xc54>
+  a08e2c: aa1f03e9     	mov	x9, xzr
+  a08e30: f9401928     	ldr	x8, [x9, #0x30]
+  a08e34: 91010129     	add	x9, x9, #0x40
+  a08e38: eb09011f     	cmp	x8, x9
+  a08e3c: 9a8803e9     	csel	x9, xzr, x8, eq
+  a08e40: b940112a     	ldr	w10, [x9, #0x10]
+  a08e44: 35fffc0a     	cbnz	w10, 0xa08dc4 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x998>
+  a08e48: aa1f03e9     	mov	x9, xzr
+  a08e4c: 528023e1     	mov	w1, #0x11f              // =287
+  a08e50: a93d23a9     	stp	x9, x8, [x29, #-0x30]
+  a08e54: 94052764     	bl	0xb52be4 <nir_intrinsic_instr_create>
+  a08e58: 91008001     	add	x1, x0, #0x20
+  a08e5c: 52800022     	mov	w2, #0x1                // =1
+  a08e60: 52800403     	mov	w3, #0x20               // =32
+  a08e64: aa0003f4     	mov	x20, x0
+  a08e68: 9405274c     	bl	0xb52b98 <nir_def_init>
+  a08e6c: d100c3a0     	sub	x0, x29, #0x30
+  a08e70: aa1403e1     	mov	x1, x20
+  a08e74: 94053cc6     	bl	0xb5818c <nir_builder_instr_insert>
+  a08e78: 3940d682     	ldrb	w2, [x20, #0x35]
+  a08e7c: f85e83a0     	ldur	x0, [x29, #-0x18]
+  a08e80: 52800021     	mov	w1, #0x1                // =1
+  a08e84: 94052721     	bl	0xb52b08 <nir_load_const_instr_create>
+  a08e88: b4000120     	cbz	x0, 0xa08eac <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xa80>
+  a08e8c: aa0003f5     	mov	x21, x0
+  a08e90: f9001c1f     	str	xzr, [x0, #0x38]
+  a08e94: d100c3a0     	sub	x0, x29, #0x30
+  a08e98: aa1503e1     	mov	x1, x21
+  a08e9c: 94053cbc     	bl	0xb5818c <nir_builder_instr_insert>
+  a08ea0: 910082a3     	add	x3, x21, #0x20
+  a08ea4: f94017f5     	ldr	x21, [sp, #0x28]
+  a08ea8: 14000002     	b	0xa08eb0 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xa84>
+  a08eac: aa1f03e3     	mov	x3, xzr
+  a08eb0: d100c3a0     	sub	x0, x29, #0x30
+  a08eb4: 91008282     	add	x2, x20, #0x20
+  a08eb8: 52802481     	mov	w1, #0x124              // =292
+  a08ebc: 94053d1e     	bl	0xb58334 <nir_build_alu2>
+  a08ec0: aa0003e2     	mov	x2, x0
+  a08ec4: aa1503e0     	mov	x0, x21
+  a08ec8: 2a1f03e1     	mov	w1, wzr
+  a08ecc: 9405b20e     	bl	0xb75704 <nir_lower_alpha_to_coverage>
+  a08ed0: aa1503e0     	mov	x0, x21
+  a08ed4: 97fe7b56     	bl	0x9a7c2c <_Z27tu_nir_lower_demote_samplesP10nir_shader>
+  a08ed8: a94c4ff4     	ldp	x20, x19, [sp, #0xc0]
+  a08edc: a94b57f6     	ldp	x22, x21, [sp, #0xb0]
+  a08ee0: a94a5ff8     	ldp	x24, x23, [sp, #0xa0]
+  a08ee4: a94967fa     	ldp	x26, x25, [sp, #0x90]
+  a08ee8: a9486ffc     	ldp	x28, x27, [sp, #0x80]
+  a08eec: a9477bfd     	ldp	x29, x30, [sp, #0x70]
+  a08ef0: 910343ff     	add	sp, sp, #0xd0
+  a08ef4: d65f03c0     	ret
+  a08ef8: d0001bb8     	adrp	x24, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  a08efc: 529ba699     	mov	w25, #0xdd34            // =56628
+  a08f00: 5280041a     	mov	w26, #0x20              // =32
+  a08f04: f9402718     	ldr	x24, [x24, #0x48]
+  a08f08: 72a00039     	movk	w25, #0x1, lsl #16
+  a08f0c: 2a1403f7     	mov	w23, w20
+  a08f10: f9000ff4     	str	x20, [sp, #0x18]
+  a08f14: f9401956     	ldr	x22, [x10, #0x30]
+  a08f18: aa0803e9     	mov	x9, x8
+  a08f1c: b5000256     	cbnz	x22, 0xa08f64 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xb38>
+  a08f20: 1400004a     	b	0xa09048 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xc1c>
+  a08f24: f940192a     	ldr	x10, [x9, #0x30]
+  a08f28: aa0b03e8     	mov	x8, x11
+  a08f2c: b50000aa     	cbnz	x10, 0xa08f40 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xb14>
+  a08f30: f940010b     	ldr	x11, [x8]
+  a08f34: aa0803e9     	mov	x9, x8
+  a08f38: b5ffff6b     	cbnz	x11, 0xa08f24 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xaf8>
+  a08f3c: 14000045     	b	0xa09050 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xc24>
+  a08f40: aa0903fb     	mov	x27, x9
+  a08f44: f9401956     	ldr	x22, [x10, #0x30]
+  a08f48: aa0803e9     	mov	x9, x8
+  a08f4c: b50000d6     	cbnz	x22, 0xa08f64 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xb38>
+  a08f50: 1400003e     	b	0xa09048 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xc1c>
+  a08f54: aa1603e0     	mov	x0, x22
+  a08f58: 940530e2     	bl	0xb552e0 <nir_block_cf_tree_next>
+  a08f5c: aa0003f6     	mov	x22, x0
+  a08f60: b4000720     	cbz	x0, 0xa09044 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xc18>
+  a08f64: f94012dc     	ldr	x28, [x22, #0x20]
+  a08f68: f9400388     	ldr	x8, [x28]
+  a08f6c: b5000308     	cbnz	x8, 0xa08fcc <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xba0>
+  a08f70: 17fffff9     	b	0xa08f54 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xb28>
+  a08f74: 3940d388     	ldrb	w8, [x28, #0x34]
+  a08f78: 3940d789     	ldrb	w9, [x28, #0x35]
+  a08f7c: 5280030a     	mov	w10, #0x18              // =24
+  a08f80: 1b087d28     	mul	w8, w9, w8
+  a08f84: 53037d14     	lsr	w20, w8, #3
+  a08f88: 8b0a0388     	add	x8, x28, x10
+  a08f8c: f94017e0     	ldr	x0, [sp, #0x28]
+  a08f90: aa1503e1     	mov	x1, x21
+  a08f94: f9403902     	ldr	x2, [x8, #0x70]
+  a08f98: aa1f03e3     	mov	x3, xzr
+  a08f9c: 94091df1     	bl	0xc50760 <nir_unsigned_upper_bound>
+  a08fa0: 2a0003e9     	mov	w9, w0
+  a08fa4: f9400388     	ldr	x8, [x28]
+  a08fa8: 8b344129     	add	x9, x9, w20, uxtw
+  a08fac: 6b0902ff     	cmp	w23, w9
+  a08fb0: 1a8982ea     	csel	w10, w23, w9, hi
+  a08fb4: eb13013f     	cmp	x9, x19
+  a08fb8: 3a419804     	ccmn	w0, #0x1, #0x4, ls
+  a08fbc: 1a8a02f7     	csel	w23, w23, w10, eq
+  a08fc0: aa0803fc     	mov	x28, x8
+  a08fc4: f9400108     	ldr	x8, [x8]
+  a08fc8: b4fffc68     	cbz	x8, 0xa08f54 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xb28>
+  a08fcc: 39406389     	ldrb	w9, [x28, #0x18]
+  a08fd0: 7100113f     	cmp	w9, #0x4
+  a08fd4: 54ffff61     	b.ne	0xa08fc0 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xb94>
+  a08fd8: b9403b89     	ldr	w9, [x28, #0x38]
+  a08fdc: 52800094     	mov	w20, #0x4               // =4
+  a08fe0: 710cfd3f     	cmp	w9, #0x33f
+  a08fe4: 540000ec     	b.gt	0xa09000 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xbd4>
+  a08fe8: 7109cd3f     	cmp	w9, #0x273
+  a08fec: 54fffc40     	b.eq	0xa08f74 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xb48>
+  a08ff0: 710cf93f     	cmp	w9, #0x33e
+  a08ff4: 5280030a     	mov	w10, #0x18              // =24
+  a08ff8: 54fffc80     	b.eq	0xa08f88 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xb5c>
+  a08ffc: 17fffff1     	b	0xa08fc0 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xb94>
+  a09000: 710d013f     	cmp	w9, #0x340
+  a09004: 5280030a     	mov	w10, #0x18              // =24
+  a09008: 54fffc00     	b.eq	0xa08f88 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xb5c>
+  a0900c: 710e093f     	cmp	w9, #0x382
+  a09010: 54fffd81     	b.ne	0xa08fc0 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xb94>
+  a09014: 38796b09     	ldrb	w9, [x24, x25]
+  a09018: f9404788     	ldr	x8, [x28, #0x88]
+  a0901c: b40000c9     	cbz	x9, 0xa09034 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xc08>
+  a09020: 8b090b89     	add	x9, x28, x9, lsl #2
+  a09024: b9403d29     	ldr	w9, [x9, #0x3c]
+  a09028: 5ac01129     	clz	w9, w9
+  a0902c: 4b090349     	sub	w9, w26, w9
+  a09030: 14000002     	b	0xa09038 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xc0c>
+  a09034: 39405109     	ldrb	w9, [x8, #0x14]
+  a09038: 39405508     	ldrb	w8, [x8, #0x15]
+  a0903c: 5280070a     	mov	w10, #0x38              // =56
+  a09040: 17ffffd0     	b	0xa08f80 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xb54>
+  a09044: f9400369     	ldr	x9, [x27]
+  a09048: f940012b     	ldr	x11, [x9]
+  a0904c: b5fff6cb     	cbnz	x11, 0xa08f24 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xaf8>
+  a09050: aa1503e0     	mov	x0, x21
+  a09054: aa1f03e1     	mov	x1, xzr
+  a09058: 9404857a     	bl	0xb2a640 <_mesa_hash_table_destroy>
+  a0905c: f9400fe8     	ldr	x8, [sp, #0x18]
+  a09060: f94017f5     	ldr	x21, [sp, #0x28]
+  a09064: 6b0802ff     	cmp	w23, w8
+  a09068: 54ffe109     	b.ls	0xa08c88 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x85c>
+  a0906c: 11003ee8     	add	w8, w23, #0xf
+  a09070: 121c6d08     	and	w8, w8, #0xfffffff0
+  a09074: b9016ea8     	str	w8, [x21, #0x16c]
+  a09078: 17ffff04     	b	0xa08c88 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x85c>
+  a0907c: aa1f03f8     	mov	x24, xzr
+  a09080: 39424a68     	ldrb	w8, [x19, #0x92]
+  a09084: 373802c8     	tbnz	w8, #0x7, 0xa090dc <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xcb0>
+  a09088: 52800028     	mov	w8, #0x1                // =1
+  a0908c: aa1303e0     	mov	x0, x19
+  a09090: 52800101     	mov	w1, #0x8                // =8
+  a09094: 528002c2     	mov	w2, #0x16               // =22
+  a09098: 390002e8     	strb	w8, [x23]
+  a0909c: 94052435     	bl	0xb52170 <nir_find_variable_with_location>
+  a090a0: f81d03a0     	stur	x0, [x29, #-0x30]
+  a090a4: b4000200     	cbz	x0, 0xa090e4 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0xcb8>
+  a090a8: aa1303e0     	mov	x0, x19
+  a090ac: 52800101     	mov	w1, #0x8                // =8
+  a090b0: 528002e2     	mov	w2, #0x17               // =23
+  a090b4: 9405242f     	bl	0xb52170 <nir_find_variable_with_location>
+  a090b8: f940ee68     	ldr	x8, [x19, #0x1d8]
+  a090bc: f81d83a0     	stur	x0, [x29, #-0x28]
+  a090c0: d503201f     	nop
+  a090c4: 10029d61     	adr	x1, 0xa0e470 <_ZL23lower_layered_fdm_instrP11nir_builderP19nir_intrinsic_instrPv>
+  a090c8: d100c3a3     	sub	x3, x29, #0x30
+  a090cc: 52801062     	mov	w2, #0x83               // =131
+  a090d0: aa0803e0     	mov	x0, x8
+  a090d4: 94000008     	bl	0xa090f4 <_ZL26nir_shader_intrinsics_passP10nir_shaderPFbP11nir_builderP19nir_intrinsic_instrPvE12nir_metadataS5_>
+  a090d8: 17fffdd7     	b	0xa08834 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x408>
+  a090dc: 2a1f03e0     	mov	w0, wzr
+  a090e0: 390002ff     	strb	wzr, [x23]
+  a090e4: aa1803e1     	mov	x1, x24
+  a090e8: 2a1f03e2     	mov	w2, wzr
+  a090ec: 9406d9a5     	bl	0xbbf780 <nir_progress>
+  a090f0: 17fffdd1     	b	0xa08834 <_Z12tu_lower_nirP9tu_deviceP10nir_shaderPK13tu_shader_keyPK14ir3_shader_keyP14tu_shader_info+0x408>

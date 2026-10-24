@@ -1,0 +1,56 @@
+  a7c2d8: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+  a7c2dc: 7940e009     	ldrh	w9, [x0, #0x70]
+  a7c2e0: 52801f68     	mov	w8, #0xfb               // =251
+  a7c2e4: f9000bf3     	str	x19, [sp, #0x10]
+  a7c2e8: aa0003f3     	mov	x19, x0
+  a7c2ec: 910003fd     	mov	x29, sp
+  a7c2f0: 12001d2a     	and	w10, w9, #0xff
+  a7c2f4: 0a080128     	and	w8, w9, w8
+  a7c2f8: 7100055f     	cmp	w10, #0x1
+  a7c2fc: 7a471944     	ccmp	w10, #0x7, #0x4, ne
+  a7c300: 54000101     	b.ne	0xa7c320 <ir3_nir_lower_io_vars_to_temporaries+0x48>
+  a7c304: 340001e8     	cbz	w8, 0xa7c340 <ir3_nir_lower_io_vars_to_temporaries+0x68>
+  a7c308: aa1303e0     	mov	x0, x19
+  a7c30c: f9400bf3     	ldr	x19, [sp, #0x10]
+  a7c310: 2a1f03e1     	mov	w1, wzr
+  a7c314: 12800002     	mov	w2, #-0x1               // =-1
+  a7c318: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+  a7c31c: 140441db     	b	0xb8ca88 <nir_lower_indirect_derefs_to_if_else_trees>
+  a7c320: 7100011f     	cmp	w8, #0x0
+  a7c324: 52800108     	mov	w8, #0x8                // =8
+  a7c328: 52800189     	mov	w9, #0xc                // =12
+  a7c32c: 1a880122     	csel	w2, w9, w8, eq
+  a7c330: f940ee68     	ldr	x8, [x19, #0x1d8]
+  a7c334: f9400109     	ldr	x9, [x8]
+  a7c338: b50000c9     	cbnz	x9, 0xa7c350 <ir3_nir_lower_io_vars_to_temporaries+0x78>
+  a7c33c: 14000010     	b	0xa7c37c <ir3_nir_lower_io_vars_to_temporaries+0xa4>
+  a7c340: 52800082     	mov	w2, #0x4                // =4
+  a7c344: f940ee68     	ldr	x8, [x19, #0x1d8]
+  a7c348: f9400109     	ldr	x9, [x8]
+  a7c34c: b4000189     	cbz	x9, 0xa7c37c <ir3_nir_lower_io_vars_to_temporaries+0xa4>
+  a7c350: aa1f03ea     	mov	x10, xzr
+  a7c354: 3940f10c     	ldrb	w12, [x8, #0x3c]
+  a7c358: aa0903eb     	mov	x11, x9
+  a7c35c: f9400129     	ldr	x9, [x9]
+  a7c360: 7100019f     	cmp	w12, #0x0
+  a7c364: 9a8a110a     	csel	x10, x8, x10, ne
+  a7c368: aa0b03e8     	mov	x8, x11
+  a7c36c: b5ffff49     	cbnz	x9, 0xa7c354 <ir3_nir_lower_io_vars_to_temporaries+0x7c>
+  a7c370: b400006a     	cbz	x10, 0xa7c37c <ir3_nir_lower_io_vars_to_temporaries+0xa4>
+  a7c374: f9401941     	ldr	x1, [x10, #0x30]
+  a7c378: 14000002     	b	0xa7c380 <ir3_nir_lower_io_vars_to_temporaries+0xa8>
+  a7c37c: aa1f03e1     	mov	x1, xzr
+  a7c380: aa1303e0     	mov	x0, x19
+  a7c384: 94046f5f     	bl	0xb98100 <nir_lower_io_vars_to_temporaries>
+  a7c388: aa1303e0     	mov	x0, x19
+  a7c38c: 940779ca     	bl	0xc5aab4 <nir_split_var_copies>
+  a7c390: aa1303e0     	mov	x0, x19
+  a7c394: 9404ff51     	bl	0xbbc0d8 <nir_lower_var_copies>
+  a7c398: aa1303e0     	mov	x0, x19
+  a7c39c: 940438d9     	bl	0xb8a700 <nir_lower_global_vars_to_local>
+  a7c3a0: aa1303e0     	mov	x0, x19
+  a7c3a4: f9400bf3     	ldr	x19, [sp, #0x10]
+  a7c3a8: 2a1f03e1     	mov	w1, wzr
+  a7c3ac: 12800002     	mov	w2, #-0x1               // =-1
+  a7c3b0: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+  a7c3b4: 140441b5     	b	0xb8ca88 <nir_lower_indirect_derefs_to_if_else_trees>

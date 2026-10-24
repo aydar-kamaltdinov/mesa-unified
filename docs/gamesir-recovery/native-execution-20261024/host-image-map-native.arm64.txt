@@ -1,0 +1,206 @@
+  8fd9a8: d103c3ff     	sub	sp, sp, #0xf0
+  8fd9ac: a90d57f6     	stp	x22, x21, [sp, #0xd0]
+  8fd9b0: f9400c36     	ldr	x22, [x1, #0x18]
+  8fd9b4: a9097bfd     	stp	x29, x30, [sp, #0x90]
+  8fd9b8: 910243fd     	add	x29, sp, #0x90
+  8fd9bc: f9426ac8     	ldr	x8, [x22, #0x4d0]
+  8fd9c0: a90a6ffc     	stp	x28, x27, [sp, #0xa0]
+  8fd9c4: a90b67fa     	stp	x26, x25, [sp, #0xb0]
+  8fd9c8: a90c5ff8     	stp	x24, x23, [sp, #0xc0]
+  8fd9cc: a90e4ff4     	stp	x20, x19, [sp, #0xe0]
+  8fd9d0: b4001be8     	cbz	x8, 0x8fdd4c <_Z23tu_CopyMemoryToImageEXTP10VkDevice_TPK23VkCopyMemoryToImageInfo+0x3a4>
+  8fd9d4: b9402428     	ldr	w8, [x1, #0x24]
+  8fd9d8: 34001d48     	cbz	w8, 0x8fdd80 <_Z23tu_CopyMemoryToImageEXTP10VkDevice_TPK23VkCopyMemoryToImageInfo+0x3d8>
+  8fd9dc: aa1f03f3     	mov	x19, xzr
+  8fd9e0: 910302c8     	add	x8, x22, #0xc0
+  8fd9e4: f81c83a0     	stur	x0, [x29, #-0x38]
+  8fd9e8: a90107e8     	stp	x8, x1, [sp, #0x10]
+  8fd9ec: f90017f6     	str	x22, [sp, #0x28]
+  8fd9f0: 14000006     	b	0x8fda08 <_Z23tu_CopyMemoryToImageEXTP10VkDevice_TPK23VkCopyMemoryToImageInfo+0x60>
+  8fd9f4: a941cfe1     	ldp	x1, x19, [sp, #0x18]
+  8fd9f8: b9402428     	ldr	w8, [x1, #0x24]
+  8fd9fc: 91000673     	add	x19, x19, #0x1
+  8fda00: eb08027f     	cmp	x19, x8
+  8fda04: 54001be2     	b.hs	0x8fdd80 <_Z23tu_CopyMemoryToImageEXTP10VkDevice_TPK23VkCopyMemoryToImageInfo+0x3d8>
+  8fda08: 52800909     	mov	w9, #0x48               // =72
+  8fda0c: f9401428     	ldr	x8, [x1, #0x28]
+  8fda10: b940103a     	ldr	w26, [x1, #0x10]
+  8fda14: d503201f     	nop
+  8fda18: 9b09227c     	madd	x28, x19, x9, x8
+  8fda1c: b9404ec0     	ldr	w0, [x22, #0x4c]
+  8fda20: b9402381     	ldr	w1, [x28, #0x20]
+  8fda24: 94027009     	bl	0x999a48 <_Z15tu6_plane_index8VkFormatj>
+  8fda28: b9404788     	ldr	w8, [x28, #0x44]
+  8fda2c: f843c389     	ldur	x9, [x28, #0x3c]
+  8fda30: 2a0003f5     	mov	w21, w0
+  8fda34: f9401b8a     	ldr	x10, [x28, #0x30]
+  8fda38: b9403b8b     	ldr	w11, [x28, #0x38]
+  8fda3c: d10043a1     	sub	x1, x29, #0x10
+  8fda40: b81e83a8     	stur	w8, [x29, #-0x18]
+  8fda44: b9404ec0     	ldr	w0, [x22, #0x4c]
+  8fda48: d10083a2     	sub	x2, x29, #0x20
+  8fda4c: f81e03a9     	stur	x9, [x29, #-0x20]
+  8fda50: d10093a3     	sub	x3, x29, #0x24
+  8fda54: d100a3a4     	sub	x4, x29, #0x28
+  8fda58: b9401b88     	ldr	w8, [x28, #0x18]
+  8fda5c: f81f03aa     	stur	x10, [x29, #-0x10]
+  8fda60: b81f83ab     	stur	w11, [x29, #-0x8]
+  8fda64: 7100011f     	cmp	w8, #0x0
+  8fda68: 1a880128     	csel	w8, w9, w8, eq
+  8fda6c: d360fd29     	lsr	x9, x9, #32
+  8fda70: b81dc3a8     	stur	w8, [x29, #-0x24]
+  8fda74: b9401f88     	ldr	w8, [x28, #0x1c]
+  8fda78: 7100011f     	cmp	w8, #0x0
+  8fda7c: 1a880128     	csel	w8, w9, w8, eq
+  8fda80: b81d83a8     	stur	w8, [x29, #-0x28]
+  8fda84: 9400459e     	bl	0x90f0fc <_ZL15copy_compressed8VkFormatP10VkOffset3DP10VkExtent3DPjS4_>
+  8fda88: b9404ac8     	ldr	w8, [x22, #0x48]
+  90117c: d103c3ff     	sub	sp, sp, #0xf0
+  901180: a90d57f6     	stp	x22, x21, [sp, #0xd0]
+  901184: f9400c36     	ldr	x22, [x1, #0x18]
+  901188: a90b67fa     	stp	x26, x25, [sp, #0xb0]
+  90118c: aa0003f9     	mov	x25, x0
+  901190: f9426ac8     	ldr	x8, [x22, #0x4d0]
+  901194: a9097bfd     	stp	x29, x30, [sp, #0x90]
+  901198: 910243fd     	add	x29, sp, #0x90
+  90119c: a90a6ffc     	stp	x28, x27, [sp, #0xa0]
+  9011a0: a90c5ff8     	stp	x24, x23, [sp, #0xc0]
+  9011a4: a90e4ff4     	stp	x20, x19, [sp, #0xe0]
+  9011a8: b4001b88     	cbz	x8, 0x901518 <_Z23tu_CopyImageToMemoryEXTP10VkDevice_TPK23VkCopyImageToMemoryInfo+0x39c>
+  9011ac: b9402428     	ldr	w8, [x1, #0x24]
+  9011b0: 34001ce8     	cbz	w8, 0x90154c <_Z23tu_CopyImageToMemoryEXTP10VkDevice_TPK23VkCopyImageToMemoryInfo+0x3d0>
+  9011b4: aa1f03f3     	mov	x19, xzr
+  9011b8: 910302c8     	add	x8, x22, #0xc0
+  9011bc: a902dbf9     	stp	x25, x22, [sp, #0x28]
+  9011c0: a90107e8     	stp	x8, x1, [sp, #0x10]
+  9011c4: 14000006     	b	0x9011dc <_Z23tu_CopyImageToMemoryEXTP10VkDevice_TPK23VkCopyImageToMemoryInfo+0x60>
+  9011c8: a941cfe1     	ldp	x1, x19, [sp, #0x18]
+  9011cc: b9402428     	ldr	w8, [x1, #0x24]
+  9011d0: 91000673     	add	x19, x19, #0x1
+  9011d4: eb08027f     	cmp	x19, x8
+  9011d8: 54001ba2     	b.hs	0x90154c <_Z23tu_CopyImageToMemoryEXTP10VkDevice_TPK23VkCopyImageToMemoryInfo+0x3d0>
+  9011dc: 52800909     	mov	w9, #0x48               // =72
+  9011e0: f9401428     	ldr	x8, [x1, #0x28]
+  9011e4: b940103a     	ldr	w26, [x1, #0x10]
+  9011e8: d503201f     	nop
+  9011ec: 9b09227c     	madd	x28, x19, x9, x8
+  9011f0: b9404ec0     	ldr	w0, [x22, #0x4c]
+  9011f4: b9402381     	ldr	w1, [x28, #0x20]
+  9011f8: 94026214     	bl	0x999a48 <_Z15tu6_plane_index8VkFormatj>
+  9011fc: b9404788     	ldr	w8, [x28, #0x44]
+  901200: f843c389     	ldur	x9, [x28, #0x3c]
+  901204: 2a0003f5     	mov	w21, w0
+  901208: f9401b8a     	ldr	x10, [x28, #0x30]
+  90120c: b9403b8b     	ldr	w11, [x28, #0x38]
+  901210: d10043a1     	sub	x1, x29, #0x10
+  901214: b81e83a8     	stur	w8, [x29, #-0x18]
+  901218: b9404ec0     	ldr	w0, [x22, #0x4c]
+  90121c: d10083a2     	sub	x2, x29, #0x20
+  901220: f81e03a9     	stur	x9, [x29, #-0x20]
+  901224: d10093a3     	sub	x3, x29, #0x24
+  901228: d100a3a4     	sub	x4, x29, #0x28
+  90122c: b9401b88     	ldr	w8, [x28, #0x18]
+  901230: f81f03aa     	stur	x10, [x29, #-0x10]
+  901234: b81f83ab     	stur	w11, [x29, #-0x8]
+  901238: 7100011f     	cmp	w8, #0x0
+  90123c: 1a880128     	csel	w8, w9, w8, eq
+  901240: d360fd29     	lsr	x9, x9, #32
+  901244: b81dc3a8     	stur	w8, [x29, #-0x24]
+  901248: b9401f88     	ldr	w8, [x28, #0x1c]
+  90124c: 7100011f     	cmp	w8, #0x0
+  901250: 1a880128     	csel	w8, w9, w8, eq
+  901254: b81d83a8     	stur	w8, [x29, #-0x28]
+  901258: 940037a9     	bl	0x90f0fc <_ZL15copy_compressed8VkFormatP10VkOffset3DP10VkExtent3DPjS4_>
+  90125c: b9404ac8     	ldr	w8, [x22, #0x48]
+  901a9c: d102c3ff     	sub	sp, sp, #0xb0
+  901aa0: a90a4ff4     	stp	x20, x19, [sp, #0xa0]
+  901aa4: f9400c34     	ldr	x20, [x1, #0x18]
+  901aa8: aa0103f3     	mov	x19, x1
+  901aac: a9085ff8     	stp	x24, x23, [sp, #0x80]
+  901ab0: b9401037     	ldr	w23, [x1, #0x10]
+  901ab4: a90957f6     	stp	x22, x21, [sp, #0x90]
+  901ab8: f9426a88     	ldr	x8, [x20, #0x4d0]
+  901abc: f9401435     	ldr	x21, [x1, #0x28]
+  901ac0: aa0003f6     	mov	x22, x0
+  901ac4: a9067bfd     	stp	x29, x30, [sp, #0x60]
+  901ac8: 910183fd     	add	x29, sp, #0x60
+  901acc: a90767fa     	stp	x26, x25, [sp, #0x70]
+  901ad0: b4000648     	cbz	x8, 0x901b98 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0xfc>
+  901ad4: f9426aa8     	ldr	x8, [x21, #0x4d0]
+  901ad8: b4000768     	cbz	x8, 0x901bc4 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x128>
+  901adc: b9403668     	ldr	w8, [x19, #0x34]
+  901ae0: 34000888     	cbz	w8, 0x901bf0 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x154>
+  901ae4: aa1f03f8     	mov	x24, xzr
+  901ae8: 52800b19     	mov	w25, #0x58              // =88
+  901aec: 1400000d     	b	0x901b20 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x84>
+  901af0: f9401e68     	ldr	x8, [x19, #0x38]
+  901af4: d503201f     	nop
+  901af8: 9b192303     	madd	x3, x24, x25, x8
+  901afc: 120002e4     	and	w4, w23, #0x1
+  901b00: aa1603e0     	mov	x0, x22
+  901b04: aa1403e1     	mov	x1, x20
+  901b08: aa1503e2     	mov	x2, x21
+  901b0c: 9400005d     	bl	0x901c80 <_ZL26tu_copy_image_to_image_cpuP9tu_deviceP8tu_imageS2_PK12VkImageCopy2b>
+  901b10: b9403668     	ldr	w8, [x19, #0x34]
+  901b14: 91000718     	add	x24, x24, #0x1
+  901b18: eb08031f     	cmp	x24, x8
+  901b1c: 540006a2     	b.hs	0x901bf0 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x154>
+  901b20: b9404e88     	ldr	w8, [x20, #0x4c]
+  901b24: 7102091f     	cmp	w8, #0x82
+  901b28: 54fffe41     	b.ne	0x901af0 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x54>
+  901b2c: f9401e68     	ldr	x8, [x19, #0x38]
+  901b30: d503201f     	nop
+  901b34: 9b192308     	madd	x8, x24, x25, x8
+  901b38: ad410500     	ldp	q0, q1, [x8, #0x20]
+  901b3c: 3dc01102     	ldr	q2, [x8, #0x40]
+  901b40: f9402909     	ldr	x9, [x8, #0x50]
+  901b44: 3d8013e2     	str	q2, [sp, #0x40]
+  901b48: ad0107e0     	stp	q0, q1, [sp, #0x20]
+  901b4c: ad400500     	ldp	q0, q1, [x8]
+  901b50: b9402ffa     	ldr	w26, [sp, #0x2c]
+  901b54: f9002be9     	str	x9, [sp, #0x50]
+  901b58: ad0007e0     	stp	q0, q1, [sp]
+  901b5c: 34fffdba     	cbz	w26, 0x901b10 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x74>
+  901b60: 4b1a03e8     	neg	w8, w26
+  901b64: 910003e3     	mov	x3, sp
+  901b68: 120002e4     	and	w4, w23, #0x1
+  901b6c: 0a080348     	and	w8, w26, w8
+  901b70: aa1603e0     	mov	x0, x22
+  901b74: aa1403e1     	mov	x1, x20
+  901b78: aa1503e2     	mov	x2, x21
+  901b7c: b90013e8     	str	w8, [sp, #0x10]
+  901b80: b9002fe8     	str	w8, [sp, #0x2c]
+  901b84: 9400003f     	bl	0x901c80 <_ZL26tu_copy_image_to_image_cpuP9tu_deviceP8tu_imageS2_PK12VkImageCopy2b>
+  901b88: 51000748     	sub	w8, w26, #0x1
+  901b8c: 6a1a011a     	ands	w26, w8, w26
+  901b90: 54fffe81     	b.ne	0x901b60 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0xc4>
+  901b94: 17ffffdf     	b	0x901b10 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x74>
+  901b98: f9425a88     	ldr	x8, [x20, #0x4b0]
+  901b9c: b40002e8     	cbz	x8, 0x901bf8 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x15c>
+  901ba0: f9406901     	ldr	x1, [x8, #0xd0]
+  901ba4: b40002a1     	cbz	x1, 0x901bf8 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x15c>
+  901ba8: f9400c28     	ldr	x8, [x1, #0x18]
+  901bac: b4000368     	cbz	x8, 0x901c18 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x17c>
+  901bb0: f9425e89     	ldr	x9, [x20, #0x4b8]
+  901bb4: 8b090108     	add	x8, x8, x9
+  901bb8: f9026a88     	str	x8, [x20, #0x4d0]
+  901bbc: f9426aa8     	ldr	x8, [x21, #0x4d0]
+  901bc0: b5fff8e8     	cbnz	x8, 0x901adc <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x40>
+  901bc4: f9425aa8     	ldr	x8, [x21, #0x4b0]
+  901bc8: b4000188     	cbz	x8, 0x901bf8 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x15c>
+  901bcc: f9406901     	ldr	x1, [x8, #0xd0]
+  901bd0: b4000141     	cbz	x1, 0x901bf8 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x15c>
+  901bd4: f9400c28     	ldr	x8, [x1, #0x18]
+  901bd8: b40003a8     	cbz	x8, 0x901c4c <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x1b0>
+  901bdc: f9425ea9     	ldr	x9, [x21, #0x4b8]
+  901be0: 8b090108     	add	x8, x8, x9
+  901be4: f9026aa8     	str	x8, [x21, #0x4d0]
+  901be8: b9403668     	ldr	w8, [x19, #0x34]
+  901bec: 35fff7c8     	cbnz	w8, 0x901ae4 <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x48>
+  901bf0: 2a1f03e0     	mov	w0, wzr
+  901bf4: 14000002     	b	0x901bfc <_Z22tu_CopyImageToImageEXTP10VkDevice_TPK22VkCopyImageToImageInfo+0x160>
+  901bf8: 12800080     	mov	w0, #-0x5               // =-5
+  901bfc: a94a4ff4     	ldp	x20, x19, [sp, #0xa0]
+  901c00: a94957f6     	ldp	x22, x21, [sp, #0x90]
+  901c04: a9485ff8     	ldp	x24, x23, [sp, #0x80]
+  901c08: a94767fa     	ldp	x26, x25, [sp, #0x70]

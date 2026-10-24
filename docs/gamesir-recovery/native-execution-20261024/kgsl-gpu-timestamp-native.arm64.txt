@@ -1,0 +1,43 @@
+  a1effc: d10143ff     	sub	sp, sp, #0x50
+  a1f000: a9037bfd     	stp	x29, x30, [sp, #0x30]
+  a1f004: 9100c3fd     	add	x29, sp, #0x30
+  a1f008: 90ffb489     	adrp	x9, 0xaf000 <_ZZL14tu6_blit_imageIL4chip8EEvP13tu_cmd_bufferP8tu_imageS4_PK12VkImageBlit28VkFilterE6rotate+0x850>
+  a1f00c: a9044ff4     	stp	x20, x19, [sp, #0x40]
+  a1f010: d10013a8     	sub	x8, x29, #0x4
+  a1f014: b95a8c13     	ldr	w19, [x0, #0x1a8c]
+  a1f018: a90087e8     	stp	x8, x1, [sp, #0x8]
+  a1f01c: fd464920     	ldr	d0, [x9, #0xc90]
+  a1f020: 52812c01     	mov	w1, #0x960              // =2400
+  a1f024: 910023e2     	add	x2, sp, #0x8
+  a1f028: 2a1303e0     	mov	w0, w19
+  a1f02c: 72b80401     	movk	w1, #0xc020, lsl #16
+  a1f030: b81fc3bf     	stur	wzr, [x29, #-0x4]
+  a1f034: f9000fff     	str	xzr, [sp, #0x18]
+  a1f038: fd0013e0     	str	d0, [sp, #0x20]
+  a1f03c: 940b1991     	bl	0xce5680 <ioctl@plt>
+  a1f040: 3100041f     	cmn	w0, #0x1
+  a1f044: 540000a0     	b.eq	0xa1f058 <_ZL29kgsl_device_get_gpu_timestampP9tu_devicePm+0x5c>
+  a1f048: a9444ff4     	ldp	x20, x19, [sp, #0x40]
+  a1f04c: a9437bfd     	ldp	x29, x30, [sp, #0x30]
+  a1f050: 910143ff     	add	sp, sp, #0x50
+  a1f054: d65f03c0     	ret
+  a1f058: 940b196e     	bl	0xce5610 <__errno@plt>
+  a1f05c: aa0003f4     	mov	x20, x0
+  a1f060: 14000008     	b	0xa1f080 <_ZL29kgsl_device_get_gpu_timestampP9tu_devicePm+0x84>
+  a1f064: 52812c01     	mov	w1, #0x960              // =2400
+  a1f068: 910023e2     	add	x2, sp, #0x8
+  a1f06c: 2a1303e0     	mov	w0, w19
+  a1f070: 72b80401     	movk	w1, #0xc020, lsl #16
+  a1f074: 940b1983     	bl	0xce5680 <ioctl@plt>
+  a1f078: 3100041f     	cmn	w0, #0x1
+  a1f07c: 54fffe61     	b.ne	0xa1f048 <_ZL29kgsl_device_get_gpu_timestampP9tu_devicePm+0x4c>
+  a1f080: b9400288     	ldr	w8, [x20]
+  a1f084: 71002d1f     	cmp	w8, #0xb
+  a1f088: 54fffee0     	b.eq	0xa1f064 <_ZL29kgsl_device_get_gpu_timestampP9tu_devicePm+0x68>
+  a1f08c: 7100111f     	cmp	w8, #0x4
+  a1f090: 54fffea0     	b.eq	0xa1f064 <_ZL29kgsl_device_get_gpu_timestampP9tu_devicePm+0x68>
+  a1f094: 12800000     	mov	w0, #-0x1               // =-1
+  a1f098: a9444ff4     	ldp	x20, x19, [sp, #0x40]
+  a1f09c: a9437bfd     	ldp	x29, x30, [sp, #0x30]
+  a1f0a0: 910143ff     	add	sp, sp, #0x50
+  a1f0a4: d65f03c0     	ret

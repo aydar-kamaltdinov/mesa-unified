@@ -1,0 +1,37 @@
+{
+  "scope": "Bounded compiler policy comparisons; not full function or generated-ISA validation",
+  "rows": [
+    {
+      "area": "A8 GETINFO mask/register-index preparation",
+      "native": "emit_tex_info ELF0xab9208 size1148",
+      "source": "src/freedreno/ir3/ir3_compiler_nir.c:emit_tex_info",
+      "observed": "A8 forces half query result with .x included and COV for S2EN first collected index; existing transfer already present",
+      "status": "inspected-policy-present-no-new-patch"
+    },
+    {
+      "area": "A8 memory/execution barrier emission",
+      "native": "emit_intrinsic_barrier ELF0xac1950 size1216",
+      "source": "src/freedreno/ir3/ir3_compiler_nir.c:emit_intrinsic_barrier",
+      "observed": "A8 workgroup execution-fence JP, post-CCINV read/write fence and full fence before BAR already present; the separate legalization BAR/split-barrier gaps were fixed this hour",
+      "status": "inspected-policy-present-no-new-patch"
+    },
+    {
+      "area": "A8 address-write consumer delay",
+      "native": "ir3_required_delay ELF0xad76a4 size1128",
+      "source": "src/freedreno/ir3/ir3_legalize.c:ir3_required_delay",
+      "observed": "Nonzero source readiness +1 when A8 instruction writes a0/a1 already present; no second delay added",
+      "status": "inspected-policy-present-no-new-patch"
+    },
+    {
+      "area": "A8 alias.tex stage exclusion",
+      "native": "ir3_insert_alias_tex ELF0xad09d8 size408",
+      "source": "src/freedreno/ir3/ir3_alias.c:alias_tex_allowed",
+      "observed": "Native A8 rejection mask selects CS/TASK/MESH/KERNEL; existing shared predicate covers all four stages",
+      "status": "inspected-policy-present-no-new-patch"
+    }
+  ],
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true
+}

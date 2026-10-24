@@ -1,0 +1,54 @@
+{
+  "original_binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "address_space": "ELF virtual addresses; C excerpt Ghidra addresses are ELF+0x100000",
+  "purpose": "Small native evidence for this hour source transfers, retained in Git after earlier local recovery loss. Machine listing is not semantic proof. C is decompiler output, not original source.",
+  "files": [
+    {
+      "path": "a8-mesh-global-store-native.arm64.txt",
+      "bytes": 13929,
+      "sha256": "02b99721b3813f7707f3fe69af8ea28c5fcd09be1c101c4303e67a7065858652"
+    },
+    {
+      "path": "fs-input-hoist-native.arm64.txt",
+      "bytes": 25263,
+      "sha256": "ca2bce7c38b7418f861b8b7087dd350e79a1d7e8f149e4840a39f7680925b300"
+    },
+    {
+      "path": "host-image-map-native.arm64.txt",
+      "bytes": 11182,
+      "sha256": "1a4a09c45890e077afd5a958e3a47ea9efd93f4bbbebbad2a1f23efae59f89fc"
+    },
+    {
+      "path": "kgsl-gpu-timestamp-native.arm64.txt",
+      "bytes": 2250,
+      "sha256": "e86cb3d1508eed8b3a781190aab2bf5327a52927d8f73429a9a59c3caa0e5f1f"
+    },
+    {
+      "path": "mesh-output-temporaries-native.arm64.txt",
+      "bytes": 2904,
+      "sha256": "4577917da684c51052a442c0ee1d7958960fe7c1283a97e4952911c67b7135fb"
+    },
+    {
+      "path": "shared-input-precolor-native.arm64.txt",
+      "bytes": 2976,
+      "sha256": "097df0f93e29dd04e5b565197bb4a4e080487ba93b05f1a7c41641b6e3341d22"
+    },
+    {
+      "path": "split-barrier-sync-native.arm64.txt",
+      "bytes": 12598,
+      "sha256": "b1dead4485b7e0bc69289cd942b02171522e800ee312c2ea20279307528c6228"
+    },
+    {
+      "path": "tu-preprocess-native.arm64.txt",
+      "bytes": 49895,
+      "sha256": "9dbdd767908046640443ae1669553af4091dbabda46e49801ea9d56022d04204"
+    },
+    {
+      "path": "global-preamble-carry-native.c-excerpt.txt",
+      "bytes": 1732,
+      "sha256": "15d59542095b16800113676ab309c21ab27379fe10a64612ad55747ea35f66fd"
+    }
+  ],
+  "build": false,
+  "full_validation_deferred": true
+}

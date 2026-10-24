@@ -1,0 +1,47 @@
+      lStack_a8 = plStack_c0[8];
+      uStack_b8 = 0;
+      uStack_b0 = *(undefined8 *)(*(long *)(plStack_c0[8] + 0x20) + 0x18);
+      do {
+        lVar18 = uVar22 * 0x20;
+        lVar10 = ir3_rematerialize_def_for_preamble(&uStack_c8,auStack_4d0[uVar22 * 4],0,0);
+        uVar25 = auStack_4c0[uVar22 * 8 + 1];
+        if (uVar25 < 0x401) {
+          uVar6 = *(int *)(acStack_4b4 + lVar18 + -4) - uVar25;
+          uVar24 = uVar25;
+        }
+        else {
+          lVar11 = nir_load_const_instr_create(uStack_b0,1,0x20);
+          if (lVar11 == 0) {
+            lVar11 = 0;
+          }
+          else {
+            *(ulong *)(lVar11 + 0x38) = (ulong)uVar25;
+            nir_builder_instr_insert(&uStack_c8,lVar11);
+            lVar11 = lVar11 + 0x20;
+          }
+          uStack_90 = 0;
+          uStack_78 = 0;
+          lStack_80 = 0;
+          uStack_98 = 0;
+          uStack_a0 = 0;
+          lVar12 = lVar10;
+          if (*(char *)(lVar10 + 0x14) != '\x01') {
+            lStack_88 = lVar10;
+            lVar12 = nir_mov_alu(&uStack_c8,&uStack_a0,1);
+          }
+          uStack_90 = 0;
+          uStack_78 = 0;
+          uStack_98 = 0;
+          uStack_a0 = 0;
+          lStack_80 = 1;
+          lStack_88 = lVar10;
+          uVar13 = nir_mov_alu(&uStack_c8,&uStack_a0,1);
+          uVar14 = nir_build_alu2(&uStack_c8,0x191,lVar12,lVar11);
+          uVar14 = nir_build_alu1(&uStack_c8,0xd,uVar14);
+          uVar15 = nir_build_alu2(&uStack_c8,0x100,lVar12,lVar11);
+          uVar13 = nir_build_alu2(&uStack_c8,0x100,uVar13,uVar14);
+          lVar10 = nir_build_alu2(&uStack_c8,0x1bd,uVar15,uVar13);
+          uVar24 = 0;
+          uVar6 = *(int *)(acStack_4b4 + lVar18 + -4) - uVar25;
+        }
+        if (uVar6 != 0) {
