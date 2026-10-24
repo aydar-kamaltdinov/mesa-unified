@@ -129,7 +129,7 @@ tu_device_get_cache_uuid(struct tu_physical_device *device, void *uuid)
     * This schema must track the graphics/compute and IR3 cache schemas.
     */
    static const char cache_abi[] = "AK-Turnip GameSir reconstruction";
-   const uint32_t cache_schema = 0x47533819;
+   const uint32_t cache_schema = 0x4753381a;
    _mesa_blake3_update(&ctx, cache_abi, sizeof(cache_abi));
    _mesa_blake3_update(&ctx, &cache_schema, sizeof(cache_schema));
 

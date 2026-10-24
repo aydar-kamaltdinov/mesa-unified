@@ -3500,6 +3500,65 @@ fail:
    return NULL;
 }
 
+static void
+tu_update_shared_size(struct tu_device *dev, nir_shader *nir)
+{
+   const uint32_t initial_size = nir->info.shared_size;
+   if (!initial_size)
+      return;
+
+   /* GameSir tu_lower_nir ELF0xa08c24..0xa09078 extends the reservation
+    * for bounded shared accesses, up to four times the original size and
+    * never beyond the device limit. Unknown bounds do not grow it.
+    */
+   const uint64_t limit =
+      MIN2((uint64_t)initial_size * 4,
+           dev->physical_device->info->cs_shared_mem_size);
+   uint32_t required_size = initial_size;
+   struct hash_table *range_ht = _mesa_pointer_hash_table_create(NULL);
+
+   nir_foreach_function_impl(impl, nir) {
+      nir_foreach_block(block, impl) {
+         nir_foreach_instr(instr, block) {
+            if (instr->type != nir_instr_type_intrinsic)
+               continue;
+            nir_intrinsic_instr *intr = nir_instr_as_intrinsic(instr);
+            unsigned offset_src = 0;
+            unsigned bytes;
+            switch (intr->intrinsic) {
+            case nir_intrinsic_load_shared:
+               bytes = intr->def.num_components * intr->def.bit_size / 8;
+               break;
+            case nir_intrinsic_store_shared: {
+               unsigned components = nir_intrinsic_has_write_mask(intr) ?
+                  util_last_bit(nir_intrinsic_write_mask(intr)) :
+                  intr->src[0].ssa->num_components;
+               bytes = components * intr->src[0].ssa->bit_size / 8;
+               offset_src = 1;
+               break;
+            }
+            case nir_intrinsic_shared_atomic:
+            case nir_intrinsic_shared_atomic_swap:
+               bytes = 4;
+               break;
+            default:
+               continue;
+            }
+
+            uint32_t upper = nir_unsigned_upper_bound(
+               nir, range_ht, nir_scalar{intr->src[offset_src].ssa, 0});
+            uint64_t end = (uint64_t)upper + bytes;
+            if (upper != UINT32_MAX && end <= limit)
+               required_size = MAX2(required_size, (uint32_t)end);
+         }
+      }
+   }
+   _mesa_hash_table_destroy(range_ht, NULL);
+
+   if (required_size > initial_size)
+      nir->info.shared_size = align(required_size, 16);
+}
+
 void
 tu_lower_nir(struct tu_device *dev,
              nir_shader *nir,
@@ -3563,7 +3622,7 @@ tu_lower_nir(struct tu_device *dev,
    NIR_PASS(_, nir, tu_nir_lower_fdm, &fdm_options);
 
    if (nir->info.stage != MESA_SHADER_FRAGMENT &&
-       nir->info.stage != MESA_SHADER_COMPUTE &&
+       !mesa_shader_stage_uses_workgroup(nir->info.stage) &&
        !key->multiview_mask &&
        key->fdm_per_layer) {
       NIR_PASS(_, nir, tu_nir_lower_layered_fdm, &info->per_layer_viewport);
@@ -3622,13 +3681,13 @@ tu_lower_nir(struct tu_device *dev,
                nir_address_format_32bit_offset);
    }
 
-   if (nir->info.stage == MESA_SHADER_COMPUTE ||
-       nir->info.stage == MESA_SHADER_TASK ||
-       nir->info.stage == MESA_SHADER_MESH) {
+   if (mesa_shader_stage_uses_workgroup(nir->info.stage)) {
       NIR_PASS(_, nir, nir_lower_vars_to_explicit_types,
                nir_var_mem_shared, shared_type_info);
       NIR_PASS(_, nir, nir_lower_explicit_io, nir_var_mem_shared,
                nir_address_format_32bit_offset);
+
+      tu_update_shared_size(dev, nir);
 
       if (nir->info.zero_initialize_shared_memory && nir->info.shared_size > 0) {
          const unsigned chunk_size = 16; /* max single store size */
@@ -3642,13 +3701,11 @@ tu_lower_nir(struct tu_device *dev,
                   chunk_size);
       }
 
-      if (nir->info.stage == MESA_SHADER_COMPUTE) {
-         const struct nir_lower_compute_system_values_options compute_sysval_options = {
-            .has_base_workgroup_id = true,
-         };
-         NIR_PASS(_, nir, nir_lower_compute_system_values,
-                  &compute_sysval_options);
-      }
+      const struct nir_lower_compute_system_values_options compute_sysval_options = {
+         .has_base_workgroup_id = nir->info.stage != MESA_SHADER_MESH,
+      };
+      NIR_PASS(_, nir, nir_lower_compute_system_values,
+               &compute_sysval_options);
    }
 
    nir_assign_io_var_locations(nir, nir_var_shader_in);

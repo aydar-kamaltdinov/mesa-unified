@@ -1,0 +1,52 @@
+{
+  "area": "TU workgroup preprocessing and shared allocation footprint",
+  "binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "native_function": "tu_lower_nir ELF0xa0842c size3272",
+  "native_anchors": {
+    "layered_fdm": "0xa087b4..0xa08834: skip FS4 and workgroup mask0x40e0(CS5/TASK6/MESH7/KERNEL14)",
+    "shared_size": "0xa08c24..0xa08c88 and out-of-line loop0xa08e58..0xa09078; initial shared_size at shader+0x16c, limit min(initial*4, info+0x20)",
+    "sysvals": "0xa08cac..0xa08cd0: compute-system-values options byte bit1 = stage!=MESH7; called for all workgroup stages after zero initialization"
+  },
+  "original_intrinsic_names": {
+    "0x273": "load_shared",
+    "0x33e": "shared_atomic",
+    "0x340": "shared_atomic_swap",
+    "0x382": "store_shared"
+  },
+  "native_shared_policy": {
+    "load": "offset src0, dest.num_components*dest.bit_size/8 bytes",
+    "store": "offset src1, last set writemask component (otherwise src0.num_components)*src0.bit_size/8 bytes",
+    "atomic": "src0 offset and4 bytes for both shared atomic forms",
+    "bound": "nir_unsigned_upper_bound(offset,component0), UINT32_MAX ignored; uint64 end=upper+bytes; consider end only when <=min(initial*4,device.cs_shared_mem_size)",
+    "allocation": "Only grow, align new size to16; zero initial size remains0; no base-index expansion beyond the observed native source operand"
+  },
+  "source_transfer": [
+    "Use workgroup-stage helper to exclude TASK/MESH/KERNEL from layered FDM",
+    "Restore bounded shared-size reconciliation after explicit shared IO and before zero initialization",
+    "Run compute-system-values for all workgroup stages with has_base_workgroup_id false only for MESH"
+  ],
+  "cache_policy_before": "0x47533819",
+  "cache_policy_after": "0x4753381a",
+  "cache_sites": [
+    "TU device UUID",
+    "TU graphics key",
+    "TU compute key",
+    "IR3 variant key"
+  ],
+  "source_files": [
+    "src/freedreno/vulkan/tu_shader.cc"
+  ],
+  "final_cases": [
+    "MESH/TASK/CS and ordinary geometry with layered FDM/multiview",
+    "Shared initial size0, no growth, aligned/unaligned growth, sparse store masks, dynamic/unknown bounds and exact fourfold/device caps",
+    "Shared load/store/32-bit atomics, nonzero intrinsic base, 8/16/64-bit lowered forms; no unadvertised shared64 feature activation",
+    "Preparation pass versus post-zero-init sysvals; MESH base_workgroup_id must be zero while compute/task use original option",
+    "Late mesh/AQE shared layout additions, zero-init ranges, occupancy and API/GPU memory behavior"
+  ],
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "feature_gates_changed": false,
+  "full_validation_deferred": true,
+  "evidence_sha256": "9dbdd767908046640443ae1669553af4091dbabda46e49801ea9d56022d04204"
+}
