@@ -1,0 +1,88 @@
+{
+  "area": "Remaining C-export failures",
+  "generated_format_helpers": [
+    {
+      "name": "util_format_r16g16b16a16_snorm_unpack_rgba_8unorm",
+      "elf": "0xb0e5ec",
+      "size": 940,
+      "source_file": "u_format_table.c",
+      "observed_math": "clamp negative signed16 lanes to0; (lane*255+16383)/32767",
+      "source_route": "u_format_pack.py conversion_expr \u2192 clamp_expr / format_utils.h _mesa_snorm_to_unorm",
+      "channel_order": "RGBA16 converts all4 channels; RGB/BGR8 converts3 with the declared swizzle and fills alpha255.",
+      "classification": "Existing generated utility family; scalar/vector lane arithmetic traced, no new TU/GPU feature port identified.",
+      "remaining": "Full row/alias/tail/length and exhaustive arithmetic equivalence not validated; do not count this manual analysis as a successful decompiler C export."
+    },
+    {
+      "name": "util_format_r8g8b8_uscaled_unpack_rgba_8unorm",
+      "elf": "0xb10b1c",
+      "size": 320,
+      "source_file": "u_format_table.c",
+      "observed_math": "unsigned8 lane!=0 ?255:0",
+      "source_route": "u_format_pack.py conversion_expr \u2192 clamp_expr / format_utils.h _mesa_snorm_to_unorm",
+      "channel_order": "RGBA16 converts all4 channels; RGB/BGR8 converts3 with the declared swizzle and fills alpha255.",
+      "classification": "Existing generated utility family; scalar/vector lane arithmetic traced, no new TU/GPU feature port identified.",
+      "remaining": "Full row/alias/tail/length and exhaustive arithmetic equivalence not validated; do not count this manual analysis as a successful decompiler C export."
+    },
+    {
+      "name": "util_format_b8g8r8_uscaled_unpack_rgba_8unorm",
+      "elf": "0xb10e60",
+      "size": 316,
+      "source_file": "u_format_table.c",
+      "observed_math": "unsigned8 lane!=0 ?255:0",
+      "source_route": "u_format_pack.py conversion_expr \u2192 clamp_expr / format_utils.h _mesa_snorm_to_unorm",
+      "channel_order": "RGBA16 converts all4 channels; RGB/BGR8 converts3 with the declared swizzle and fills alpha255.",
+      "classification": "Existing generated utility family; scalar/vector lane arithmetic traced, no new TU/GPU feature port identified.",
+      "remaining": "Full row/alias/tail/length and exhaustive arithmetic equivalence not validated; do not count this manual analysis as a successful decompiler C export."
+    },
+    {
+      "name": "util_format_r8g8b8_snorm_unpack_rgba_8unorm",
+      "elf": "0xb12420",
+      "size": 380,
+      "source_file": "u_format_table.c",
+      "observed_math": "clamp signed8 lane to0; (lane<<1)|(lane>>6)",
+      "source_route": "u_format_pack.py conversion_expr \u2192 clamp_expr / format_utils.h _mesa_snorm_to_unorm",
+      "channel_order": "RGBA16 converts all4 channels; RGB/BGR8 converts3 with the declared swizzle and fills alpha255.",
+      "classification": "Existing generated utility family; scalar/vector lane arithmetic traced, no new TU/GPU feature port identified.",
+      "remaining": "Full row/alias/tail/length and exhaustive arithmetic equivalence not validated; do not count this manual analysis as a successful decompiler C export."
+    },
+    {
+      "name": "util_format_b8g8r8_snorm_unpack_rgba_8unorm",
+      "elf": "0xb12920",
+      "size": 380,
+      "source_file": "u_format_table.c",
+      "observed_math": "clamp signed8 lane to0; (lane<<1)|(lane>>6)",
+      "source_route": "u_format_pack.py conversion_expr \u2192 clamp_expr / format_utils.h _mesa_snorm_to_unorm",
+      "channel_order": "RGBA16 converts all4 channels; RGB/BGR8 converts3 with the declared swizzle and fills alpha255.",
+      "classification": "Existing generated utility family; scalar/vector lane arithmetic traced, no new TU/GPU feature port identified.",
+      "remaining": "Full row/alias/tail/length and exhaustive arithmetic equivalence not validated; do not count this manual analysis as a successful decompiler C export."
+    },
+    {
+      "name": "util_format_r8g8b8_sscaled_unpack_rgba_8unorm",
+      "elf": "0xb13de4",
+      "size": 320,
+      "source_file": "u_format_table.c",
+      "observed_math": "signed8 lane>0 ?255:0",
+      "source_route": "u_format_pack.py conversion_expr \u2192 clamp_expr / format_utils.h _mesa_snorm_to_unorm",
+      "channel_order": "RGBA16 converts all4 channels; RGB/BGR8 converts3 with the declared swizzle and fills alpha255.",
+      "classification": "Existing generated utility family; scalar/vector lane arithmetic traced, no new TU/GPU feature port identified.",
+      "remaining": "Full row/alias/tail/length and exhaustive arithmetic equivalence not validated; do not count this manual analysis as a successful decompiler C export."
+    },
+    {
+      "name": "util_format_b8g8r8_sscaled_unpack_rgba_8unorm",
+      "elf": "0xb14128",
+      "size": 320,
+      "source_file": "u_format_table.c",
+      "observed_math": "signed8 lane>0 ?255:0",
+      "source_route": "u_format_pack.py conversion_expr \u2192 clamp_expr / format_utils.h _mesa_snorm_to_unorm",
+      "channel_order": "RGBA16 converts all4 channels; RGB/BGR8 converts3 with the declared swizzle and fills alpha255.",
+      "classification": "Existing generated utility family; scalar/vector lane arithmetic traced, no new TU/GPU feature port identified.",
+      "remaining": "Full row/alias/tail/length and exhaustive arithmetic equivalence not validated; do not count this manual analysis as a successful decompiler C export."
+    }
+  ],
+  "feature_checker": "vk_physical_device_check_device_features is generated from current vk_physical_device_features_gen.py / vk.xml; positive original structure refs indexed separately. Full C export/completeness not claimed.",
+  "decompiler_limits": "Seven NEON utilities: unique hash for varnode; generated checker: initial unique-hash failure and low-transform retry timeouts.32 targeted retries did not recover C.",
+  "driver_source_changed": false,
+  "build": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true
+}

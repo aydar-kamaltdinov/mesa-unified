@@ -33,9 +33,10 @@ struct tu_a8_mesh_program_inputs {
 };
 
 struct tu_a8_mesh_program_plan {
-   /* SP_VS output and destination maps currently describe at most32 entries
-    * in our register XML. Larger layouts fail the detached builder until
-    * their hardware range is recovered; no feature is advertised from this.
+   /* Original ELF0x9ea3d0..9ea488 uses 32 uint16_t output records and
+    * 32 byte destinations in fixed stack scratch. Retain our checked bound;
+    * the native unchecked loop is not evidence for larger supported maps.
+    * API-valid layout reachability still belongs to the final validation.
     */
    struct tu_reg_value regs[80];
    unsigned reg_count;

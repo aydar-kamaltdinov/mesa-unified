@@ -30,7 +30,8 @@
     {
       "area": "native raw stencil slot13",
       "native": "tu6_emit_fs_outputs A6/A7/A8; setup_output0xac1e10",
-      "finding": "Fallback raw slot13 is visible after stencil1, but original named frag table covers0..12 and a legitimate producer/meaning13 has not been established. setup_output copies io.location+offset(+dual index). Kept unresolved, no invented enum/back-end feature."
+      "finding": "Fallback raw slot13 is visible after stencil1, but original named frag table covers0..12 and a legitimate producer/meaning13 has not been established. setup_output copies io.location+offset(+dual index). Kept unresolved, no invented enum/back-end feature.",
+      "followup": "Reader fallback restored in503ca36a6db; see stencil-fallback-reader.json. Legitimate producer/name of raw13 remains unresolved; no new enum or advertised feature inferred."
     }
   ],
   "new_source_changes_in_this_record": false,

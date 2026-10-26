@@ -1,0 +1,224 @@
+  963c18: a9bb7bfd     	stp	x29, x30, [sp, #-0x50]!
+  963c1c: a90167fa     	stp	x26, x25, [sp, #0x10]
+  963c20: 910003fd     	mov	x29, sp
+  963c24: a9025ff8     	stp	x24, x23, [sp, #0x20]
+  963c28: a90357f6     	stp	x22, x21, [sp, #0x30]
+  963c2c: a9044ff4     	stp	x20, x19, [sp, #0x40]
+  963c30: f00020d4     	adrp	x20, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>
+  963c34: aa0003f3     	mov	x19, x0
+  963c38: f9401294     	ldr	x20, [x20, #0x20]
+  963c3c: c8dffe88     	ldar	x8, [x20]
+  963c40: 37182a08     	tbnz	w8, #0x3, 0x964180 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x568>
+  963c44: f94bce68     	ldr	x8, [x19, #0x1798]
+  963c48: f94d4108     	ldr	x8, [x8, #0x1a80]
+  963c4c: f9505d09     	ldr	x9, [x8, #0x20b8]
+  963c50: 39400128     	ldrb	w8, [x9]
+  963c54: 7100211f     	cmp	w8, #0x8
+  963c58: 54000543     	b.lo	0x963d00 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0xe8>
+  963c5c: f96ade68     	ldr	x8, [x19, #0x55b8]
+  963c60: b940410a     	ldr	w10, [x8, #0x40]
+  963c64: 340004ea     	cbz	w10, 0x963d00 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0xe8>
+  963c68: aa0103f5     	mov	x21, x1
+  963c6c: aa0203f6     	mov	x22, x2
+  963c70: aa0303f7     	mov	x23, x3
+  963c74: aa1f03f8     	mov	x24, xzr
+  963c78: aa1f03f9     	mov	x25, xzr
+  963c7c: 14000007     	b	0x963c98 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x80>
+  963c80: f96ade68     	ldr	x8, [x19, #0x55b8]
+  963c84: 91000739     	add	x25, x25, #0x1
+  963c88: 91011318     	add	x24, x24, #0x44
+  963c8c: b9404109     	ldr	w9, [x8, #0x40]
+  963c90: eb09033f     	cmp	x25, x9
+  963c94: 540002a2     	b.hs	0x963ce8 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0xd0>
+  963c98: f940451a     	ldr	x26, [x8, #0x88]
+  963c9c: 8b180348     	add	x8, x26, x24
+  963ca0: b9400508     	ldr	w8, [x8, #0x4]
+  963ca4: 7100211f     	cmp	w8, #0x8
+  963ca8: 54fffec1     	b.ne	0x963c80 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x68>
+  963cac: b8786b40     	ldr	w0, [x26, x24]
+  963cb0: 940c7c57     	bl	0xc82e0c <vk_format_aspects>
+  963cb4: 721f041f     	tst	w0, #0x6
+  963cb8: 54000121     	b.ne	0x963cdc <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0xc4>
+  963cbc: b8786b40     	ldr	w0, [x26, x24]
+  963cc0: 940c7c53     	bl	0xc82e0c <vk_format_aspects>
+  963cc4: 7100041f     	cmp	w0, #0x1
+  963cc8: 54fffdc1     	b.ne	0x963c80 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x68>
+  963ccc: b8786b40     	ldr	w0, [x26, x24]
+  963cd0: 940c7baa     	bl	0xc82b78 <vk_format_to_pipe_format>
+  963cd4: 940754f3     	bl	0xb390a0 <util_format_is_pure_integer>
+  963cd8: 3707fd40     	tbnz	w0, #0x0, 0x963c80 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x68>
+  963cdc: f0ffb888     	adrp	x8, 0x76000 <wsi_WriteSamplerDescriptorsEXT+0x76000>
+  963ce0: 91306508     	add	x8, x8, #0xc19
+  963ce4: 14000089     	b	0x963f08 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x2f0>
+  963ce8: f94bce68     	ldr	x8, [x19, #0x1798]
+  963cec: aa1703e3     	mov	x3, x23
+  963cf0: aa1603e2     	mov	x2, x22
+  963cf4: aa1503e1     	mov	x1, x21
+  963cf8: f94d4108     	ldr	x8, [x8, #0x1a80]
+  963cfc: f9505d09     	ldr	x9, [x8, #0x20b8]
+  963d00: 394c2928     	ldrb	w8, [x9, #0x30a]
+  963d04: 7100051f     	cmp	w8, #0x1
+  963d08: 540009a1     	b.ne	0x963e3c <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x224>
+  963d0c: f96ade68     	ldr	x8, [x19, #0x55b8]
+  963d10: b9404909     	ldr	w9, [x8, #0x48]
+  963d14: 7100093f     	cmp	w9, #0x2
+  963d18: 54000923     	b.lo	0x963e3c <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x224>
+  963d1c: b940410a     	ldr	w10, [x8, #0x40]
+  963d20: 340000ea     	cbz	w10, 0x963d3c <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x124>
+  963d24: f940450b     	ldr	x11, [x8, #0x88]
+  963d28: 7100055f     	cmp	w10, #0x1
+  963d2c: 540000c1     	b.ne	0x963d44 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x12c>
+  963d30: aa1f03ec     	mov	x12, xzr
+  963d34: 2a1f03ed     	mov	w13, wzr
+  963d38: 14000015     	b	0x963d8c <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x174>
+  963d3c: 5280002a     	mov	w10, #0x1               // =1
+  963d40: 1400001e     	b	0x963db8 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x1a0>
+  963d44: 927f794c     	and	x12, x10, #0xfffffffe
+  963d48: 2a1f03ed     	mov	w13, wzr
+  963d4c: 2a1f03ee     	mov	w14, wzr
+  963d50: 9101216f     	add	x15, x11, #0x48
+  963d54: aa0c03f0     	mov	x16, x12
+  963d58: b85bc1f1     	ldur	w17, [x15, #-0x44]
+  963d5c: b84885e0     	ldr	w0, [x15], #0x88
+  963d60: 7100063f     	cmp	w17, #0x1
+  963d64: 1a9fd7f1     	cset	w17, gt
+  963d68: 7100041f     	cmp	w0, #0x1
+  963d6c: 1a9fd7e0     	cset	w0, gt
+  963d70: f1000a10     	subs	x16, x16, #0x2
+  963d74: 2a1101ad     	orr	w13, w13, w17
+  963d78: 2a0001ce     	orr	w14, w14, w0
+  963d7c: 54fffee1     	b.ne	0x963d58 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x140>
+  963d80: eb0a019f     	cmp	x12, x10
+  963d84: 2a0d01cd     	orr	w13, w14, w13
+  963d88: 54000160     	b.eq	0x963db4 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x19c>
+  963d8c: 5280088e     	mov	w14, #0x44              // =68
+  963d90: cb0c014a     	sub	x10, x10, x12
+  963d94: 9bae2d8b     	umaddl	x11, w12, w14, x11
+  963d98: 9100116b     	add	x11, x11, #0x4
+  963d9c: b844456c     	ldr	w12, [x11], #0x44
+  963da0: 7100059f     	cmp	w12, #0x1
+  963da4: 1a9fd7ec     	cset	w12, gt
+  963da8: f100054a     	subs	x10, x10, #0x1
+  963dac: 2a0c01ad     	orr	w13, w13, w12
+  963db0: 54ffff61     	b.ne	0x963d9c <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x184>
+  963db4: 520001aa     	eor	w10, w13, #0x1
+  963db8: 7100053f     	cmp	w9, #0x1
+  963dbc: 2a1f03eb     	mov	w11, wzr
+  963dc0: 2a1f03ec     	mov	w12, wzr
+  963dc4: 1a9f8529     	csinc	w9, w9, wzr, hi
+  963dc8: 9105e10e     	add	x14, x8, #0x178
+  963dcc: 927f792d     	and	x13, x9, #0xfffffffe
+  963dd0: aa0d03ef     	mov	x15, x13
+  963dd4: b85581d0     	ldur	w16, [x14, #-0xa8]
+  963dd8: b94001d1     	ldr	w17, [x14]
+  963ddc: 910541ce     	add	x14, x14, #0x150
+  963de0: 7100021f     	cmp	w16, #0x0
+  963de4: 1a9f07f0     	cset	w16, ne
+  963de8: 7100023f     	cmp	w17, #0x0
+  963dec: 1a9f07f1     	cset	w17, ne
+  963df0: f10009ef     	subs	x15, x15, #0x2
+  963df4: 2a10016b     	orr	w11, w11, w16
+  963df8: 2a11018c     	orr	w12, w12, w17
+  963dfc: 54fffec1     	b.ne	0x963dd4 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x1bc>
+  963e00: eb0d012d     	subs	x13, x9, x13
+  963e04: 2a0b018b     	orr	w11, w12, w11
+  963e08: 54000160     	b.eq	0x963e34 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x21c>
+  963e0c: d341fd29     	lsr	x9, x9, #1
+  963e10: 52802a0c     	mov	w12, #0x150             // =336
+  963e14: 9bac2128     	umaddl	x8, w9, w12, x8
+  963e18: 91034108     	add	x8, x8, #0xd0
+  963e1c: b84a8509     	ldr	w9, [x8], #0xa8
+  963e20: 7100013f     	cmp	w9, #0x0
+  963e24: 1a9f07e9     	cset	w9, ne
+  963e28: f10005ad     	subs	x13, x13, #0x1
+  963e2c: 2a09016b     	orr	w11, w11, w9
+  963e30: 54ffff61     	b.ne	0x963e1c <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x204>
+  963e34: 2a0b0148     	orr	w8, w10, w11
+  963e38: 36000308     	tbz	w8, #0x0, 0x963e98 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x280>
+  963e3c: f96aea68     	ldr	x8, [x19, #0x55d0]
+  963fcc: c8dffe89     	ldar	x9, [x20]
+  963fd0: 37600de9     	tbnz	w9, #0xc, 0x96418c <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x574>
+  963fd4: f94bce69     	ldr	x9, [x19, #0x1798]
+  963fd8: f94d412a     	ldr	x10, [x9, #0x1a80]
+  963fdc: f9505d4a     	ldr	x10, [x10, #0x20b8]
+  963fe0: 394c2d4a     	ldrb	w10, [x10, #0x30b]
+  963fe4: 7100055f     	cmp	w10, #0x1
+  963fe8: 540009c1     	b.ne	0x964120 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x508>
+  963fec: f96ade6a     	ldr	x10, [x19, #0x55b8]
+  963ff0: b940494c     	ldr	w12, [x10, #0x48]
+  963ff4: 3400018c     	cbz	w12, 0x964024 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x40c>
+  963ff8: 7100059f     	cmp	w12, #0x1
+  963ffc: 54000181     	b.ne	0x96402c <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x414>
+  964000: aa1f03ed     	mov	x13, xzr
+  964004: 2a1f03eb     	mov	w11, wzr
+  964008: 1400001c     	b	0x964078 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x460>
+  96400c: d0ffba28     	adrp	x8, 0xaa000 <mesa_bytes_to_hex.hex_digits+0xb710>
+  964010: 913ca108     	add	x8, x8, #0xf28
+  964014: 17ffffbd     	b	0x963f08 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x2f0>
+  964018: f0ffb7a8     	adrp	x8, 0x5b000 <wsi_WriteSamplerDescriptorsEXT+0x5b000>
+  96401c: 910fbd08     	add	x8, x8, #0x3ef
+  964020: 17ffffba     	b	0x963f08 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x2f0>
+  964024: 2a1f03eb     	mov	w11, wzr
+  964028: 1400001e     	b	0x9640a0 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x488>
+  96402c: 927f798d     	and	x13, x12, #0xfffffffe
+  964030: 2a1f03eb     	mov	w11, wzr
+  964034: 2a1f03ee     	mov	w14, wzr
+  964038: 9105e14f     	add	x15, x10, #0x178
+  96403c: aa0d03f0     	mov	x16, x13
+  964040: b85581f1     	ldur	w17, [x15, #-0xa8]
+  964044: b94001e0     	ldr	w0, [x15]
+  964048: 910541ef     	add	x15, x15, #0x150
+  96404c: 7100023f     	cmp	w17, #0x0
+  964050: 1a9f07f1     	cset	w17, ne
+  964054: 7100001f     	cmp	w0, #0x0
+  964058: 1a9f07e0     	cset	w0, ne
+  96405c: f1000a10     	subs	x16, x16, #0x2
+  964060: 2a11016b     	orr	w11, w11, w17
+  964064: 2a0001ce     	orr	w14, w14, w0
+  964068: 54fffec1     	b.ne	0x964040 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x428>
+  96406c: eb0c01bf     	cmp	x13, x12
+  964070: 2a0b01cb     	orr	w11, w14, w11
+  964074: 54000160     	b.eq	0x9640a0 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x488>
+  964078: 5280150e     	mov	w14, #0xa8              // =168
+  96407c: cb0d018c     	sub	x12, x12, x13
+  964080: 9bae29ae     	umaddl	x14, w13, w14, x10
+  964084: 910341ce     	add	x14, x14, #0xd0
+  964088: b84a85cd     	ldr	w13, [x14], #0xa8
+  96408c: 710001bf     	cmp	w13, #0x0
+  964090: 1a9f07ed     	cset	w13, ne
+  964094: f100058c     	subs	x12, x12, #0x1
+  964098: 2a0d016b     	orr	w11, w11, w13
+  96409c: 54ffff61     	b.ne	0x964088 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x470>
+  9640a0: b940414c     	ldr	w12, [x10, #0x40]
+  9640a4: 340003ec     	cbz	w12, 0x964120 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x508>
+  9640a8: f940454a     	ldr	x10, [x10, #0x88]
+  9640ac: 2a1f03ed     	mov	w13, wzr
+  9640b0: 9100114a     	add	x10, x10, #0x4
+  9640b4: 14000008     	b	0x9640d4 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x4bc>
+  9640b8: b844454e     	ldr	w14, [x10], #0x44
+  9640bc: 710005df     	cmp	w14, #0x1
+  9640c0: 1a9fd7ee     	cset	w14, gt
+  9640c4: 120001ad     	and	w13, w13, #0x1
+  9640c8: f100058c     	subs	x12, x12, #0x1
+  9640cc: 2a0d01cd     	orr	w13, w14, w13
+  9640d0: 54000120     	b.eq	0x9640f4 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x4dc>
+  9640d4: b85fc14e     	ldur	w14, [x10, #-0x4]
+  9640d8: 710209df     	cmp	w14, #0x82
+  9640dc: 54fffee0     	b.eq	0x9640b8 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x4a0>
+  9640e0: 120001ad     	and	w13, w13, #0x1
+  9640e4: f100058c     	subs	x12, x12, #0x1
+  9640e8: 9101114a     	add	x10, x10, #0x44
+  9640ec: 2a0d03ed     	mov	w13, w13
+  9640f0: 54ffff21     	b.ne	0x9640d4 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x4bc>
+  9640f4: 710001bf     	cmp	w13, #0x0
+  9640f8: 1a9f07ea     	cset	w10, ne
+  9640fc: 0a0a016a     	and	w10, w11, w10
+  964100: 3600010a     	tbz	w10, #0x0, 0x964120 <_ZL20use_sysmem_renderingP13tu_cmd_bufferPPN11tu_autotune8rp_entryENS1_10rp_key_optE+0x508>
+  964104: 2a1f03e0     	mov	w0, wzr
+  964108: a9444ff4     	ldp	x20, x19, [sp, #0x40]
+  96410c: a94357f6     	ldp	x22, x21, [sp, #0x30]
+  964110: a9425ff8     	ldp	x24, x23, [sp, #0x20]
+  964114: a94167fa     	ldp	x26, x25, [sp, #0x10]
+  964118: a8c57bfd     	ldp	x29, x30, [sp], #0x50
+  96411c: d65f03c0     	ret
+  964120: 3940610a     	ldrb	w10, [x8, #0x18]

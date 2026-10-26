@@ -1400,6 +1400,9 @@ add_gpus([
 a8xx_base = GPUProps(
         # Original A8 profile byte0x309, consumed by tu_calc_frag_area.
         fdm_requires_full_density = True,
+        # Original A8 profile bytes0x30a/0x30b; false on older profiles.
+        multi_subpass_msaa_no_input_requires_sysmem = True,
+        msaa_input_d32s8_requires_gmem = True,
         # Recovered later-device policies; enable only with its complete
         # draw-parameter profile, not on existing A8xx records.
         has_native_64b_image_umax = False,

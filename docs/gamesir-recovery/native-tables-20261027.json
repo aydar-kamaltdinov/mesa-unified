@@ -1,0 +1,714 @@
+{
+  "scope": "2026-10-27 two-hour native reconstruction; static evidence, not final driver validation",
+  "original_binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "start_utc": "2026-10-26T19:03:09Z",
+  "earliest_commit_utc": "2026-10-26T21:03:09Z",
+  "source_policy": "0x4753381d",
+  "source_bundles": [
+    "mesh output low-byte/nonzero then low-nibble record packing",
+    "independent per-device MSAA render-mode properties",
+    "eight native debug property aliases after QCTDD migration"
+  ],
+  "device_data": {
+    "records": 79,
+    "unique_infos": 35,
+    "bytes_per_info": 804,
+    "named_properties": 121,
+    "common_A6_A8_profiles_equal": 55,
+    "A8_raw_magic_order_equal": 9,
+    "classified_bytes": 793,
+    "unclassified_bytes_all_zero": 11
+  },
+  "features": {
+    "getter_elf": "0xa3c164",
+    "getter_size": 11444,
+    "selector_values": 274,
+    "extension_member_records": 605,
+    "core_records": 55,
+    "named_physical_bytes": 571,
+    "all_2861_instruction_sites_accounted_under_stated_static_model": true,
+    "unnamed_byte": "0x3cc"
+  },
+  "properties": {
+    "getter_elf": "0xa42cc0",
+    "getter_size": 8980,
+    "strict_structures_with_positive_routes": 122,
+    "strict_member_records": 659,
+    "core_member_records": 118,
+    "positive_contiguous_physical_fields": 649,
+    "physical_field_bytes": 3852,
+    "unconstrained_caller_input_cases_remaining": 4,
+    "null_query_only_cases": 4,
+    "visited_sites_including_null_query_cases": 2025,
+    "total_sites": 2245,
+    "analysis_correction": "SIMD s/d lane insertion explicitly modeled; prior646field count superseded. Unrecognized MOV register forms now fail closed.",
+    "host_copy_layout_entries_already_equal": 20,
+    "generic_array_source_present": "vk_physical_device_properties_gen.py OUT_ARRAYS/ARRAY_COPY_TEMPLATE, min(capacity,available) and null-array count query"
+  },
+  "C_exports": {
+    "expected": 7691,
+    "completed": 7683,
+    "failures": 8,
+    "outside_label_exports": 3
+  },
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "feature_activation_changed": false,
+  "full_validation_deferred": true,
+  "limits": [
+    "Machine listing is complete; successful C export is not source equivalence.",
+    "The eight C failures are retained and classified; no fake replacement C.",
+    "Three outside-label cases retained; no invented global no-return helper contract.",
+    "Feature byte0/1 model and property null-query assumptions are explicit in full records.",
+    "Initializer last-lexical stores are not full branch/path feasibility proofs.",
+    "Known source gates and existing newer Mesa fixes remain."
+  ],
+  "evidence": [
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/barrier-dispatch-jobs.tsv",
+      "bytes": 363,
+      "sha256": "1a7dae7d55cc61e210cc05308fe2c384879a2e2a2a2977c19599b8376a5ce0f9"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/barrier-dispatch-output/prepare.tsv",
+      "bytes": 428,
+      "sha256": "a7e04bf04cf766e999eba1d7794942d75884b3f8dbb15ce844b1c8265b253081"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/barrier-dispatch-output/results.tsv",
+      "bytes": 779,
+      "sha256": "373f1aa1c4ec1c84665024215ff0b5a08b2a2aa7c2b27c326aa17d4543c841bb"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/barrier-dispatch-refresh.json",
+      "bytes": 2492,
+      "sha256": "c805c2ebcf39bfe1b531b6d7eac516434e20f5a600c130c187938969505055ef"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/barrier-dispatch.log",
+      "bytes": 8678,
+      "sha256": "def2f352324d52dba18e53597f31600a963dfde9ebae4f3038a120734382011b"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/barrier-flow-info.log",
+      "bytes": 9048,
+      "sha256": "835697f84fd977003f6d377b2e5b69918fee97dd4c2f0014389db63b4b40ef2e"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/bounded-tailcall-comparison.json",
+      "bytes": 85418,
+      "sha256": "87eea73f75447359609294ff67e225272d4b989a7871c5f596145ce75c3d8e77"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/bounded-tailcall-contracts.json",
+      "bytes": 194971,
+      "sha256": "693fcedbff8b8b0fc4b165dfed05a5ba62a98d8beaf50e2b3eef4bfb409a8598"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/bounded-tailcall-contracts.tsv",
+      "bytes": 17728,
+      "sha256": "dd5bf3744771a2f0b74cdc47e1bc0cd7239b331d5fb11b5a2589705821ebafea"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/bounded-tailcall-jobs.tsv",
+      "bytes": 11938,
+      "sha256": "e700cbe61a9b0350115491ce8483c2424b71dcb9e400afd71d00ae999e077986"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/bounded-tailcall-output/prepare.tsv",
+      "bytes": 14787,
+      "sha256": "488cc3382b5091b4ed654e6fc8152ba03cea255d991c70039a73f95f35bef398"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/bounded-tailcall-output/results.tsv",
+      "bytes": 25665,
+      "sha256": "11b3331cd8624d44edce311034e1a091f6ce7aa4a6c98b5f9a47ef5d95a588d5"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/bounded-tailcall-refresh.json",
+      "bytes": 138542,
+      "sha256": "dcc302caf2a2b89ee53f1c29b17ce2b0696e568ce186835e17997c2db67ccff5"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/bounded-tailcall.log",
+      "bytes": 8606,
+      "sha256": "35ada4dd2a5d27f9a3323ee3541f035e3bdf93b6b588e2fc78192c280af9831b"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/c-only-retry-output/results.tsv",
+      "bytes": 1243,
+      "sha256": "9ec27b455642f276b636b65adeb45d995434aca9b77571380faa06bfc51d8e04"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/c-only-retry.log",
+      "bytes": 7555,
+      "sha256": "6ab0a50dd0b7826433ae379f8196336dbc6f4cf5ddbf749f67ba3deaad095178"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/combined-final-jobs.tsv",
+      "bytes": 35,
+      "sha256": "7110972bf44431f4f62bbb5339b7f42ad8943c341616a3bf5259e7ad18c421b0"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/combined-final-output/prepare.tsv",
+      "bytes": 68,
+      "sha256": "5503ad0d55116b4246009fd2763df45304edbbbbbf8f85d3e0697a92e2dc9e62"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/combined-final-output/results.tsv",
+      "bytes": 101,
+      "sha256": "4b4090cc419625fc3722050c1c57d389acde8c38e2c0565bb7e948b35fed4278"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/combined-final-refresh.json",
+      "bytes": 734,
+      "sha256": "634c2977b65970665c152ab8281b5907bba3adb4d5c554e36e5c979a81492f48"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/combined-final.log",
+      "bytes": 12126,
+      "sha256": "40ed02a332f044a864a7a4fabb0336f0a7c982b11fa66f29d48d0c8c7de291cc"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/combined-tailcalls.tsv",
+      "bytes": 22165,
+      "sha256": "d4ed02daa91bcc47dcf998065dcfedd1ba5fe8aa1947da688f63c79cbf2337ee"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/current-register-constants.json",
+      "bytes": 83815,
+      "sha256": "c947c86e3398a8830a930092794c9d3df0e35025d5ade00bb285ddce7058b6a0"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/device-named-final-output/prepare.tsv",
+      "bytes": 172,
+      "sha256": "1196564ef1292531ea64c6e487e7912e89cd840b8d6266d0b42c7067a90add05"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/device-named-final-output/results.tsv",
+      "bytes": 285,
+      "sha256": "dc36e3077bdd8993220c6addd457a37d90bc98920ff7d91ef0de683b1aa963bb"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/device-named-final-refresh.json",
+      "bytes": 1545,
+      "sha256": "1e5c40780514488edd4892cf15a7d71838974c8bfc495611e1f4140f577ebfd6"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/device-named-final.log",
+      "bytes": 7149,
+      "sha256": "0a62a9e3abb001f39385ab8cbb39c2638f340e7589462cdd29e24a0cf8daba60"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/device-named-output/prepare.tsv",
+      "bytes": 172,
+      "sha256": "1196564ef1292531ea64c6e487e7912e89cd840b8d6266d0b42c7067a90add05"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/device-named-output/results.tsv",
+      "bytes": 285,
+      "sha256": "dc36e3077bdd8993220c6addd457a37d90bc98920ff7d91ef0de683b1aa963bb"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/device-named-refresh.json",
+      "bytes": 1539,
+      "sha256": "10c0fbf35adfc0c9b4ac643d1c4dc9ea78be1e21d4fdeae93f6b2ef83da01ddf"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/device-named.log",
+      "bytes": 7404,
+      "sha256": "7af0e8ba2fc29edb75b1bec31556eb2404be92722e0950df3d34876269c3d2c6"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/extension-direct-stores.json",
+      "bytes": 255404,
+      "sha256": "79292ac9fd9899be10f0f4c660ade2cadaebe4926671a004ab23d2f4264b2f4e"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/extension-source-declaration-comparison.json",
+      "bytes": 102290,
+      "sha256": "3f979510462241966bca2f280e6e15bc72b84fdd2e95e0e616e156d0a7810b50"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/extension-ssa/control-blocks.tsv",
+      "bytes": 8953,
+      "sha256": "8ab1699323ebc23b1a3ba60249ab086db5b945d7890d7952cbd323f7c35fff9e"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/extension-ssa/extension-memory-calls.tsv",
+      "bytes": 104,
+      "sha256": "ef58df6772372bd4879ea786ad48fb12f1f33dd2f380a750c4891af01160b9fe"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/extension-ssa/extension-stores.tsv",
+      "bytes": 3045,
+      "sha256": "704d7881e398588b65e5ce2ecf627af4b7eb5852368a5de0af58c4e28fa31af9"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/extension-ssa/value-nodes.tsv",
+      "bytes": 177613,
+      "sha256": "5b3b9b45f5311dc731a2b02c0db2ddd02da3fd216b1e1dce3bde5cbc440f5b63"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/extension-ssa-data-only.log",
+      "bytes": 7781,
+      "sha256": "d7355803bdcb63b5917f85b6ed97b0da8827bd747e5e7177db1aee670c8dba0e"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/extension-ssa.log",
+      "bytes": 7781,
+      "sha256": "9d0707f74f50db41cc70ab7a2c1c923e5a9b5a18724f270ddd68a694fc827ad7"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/feature-checker-rostrings.json",
+      "bytes": 501757,
+      "sha256": "4717c66c4a07e14d11d83f27efc5a0669da0aca5480d2afbcf8dbd1df1bc4dd7"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/feature-named-output/prepare.tsv",
+      "bytes": 172,
+      "sha256": "1196564ef1292531ea64c6e487e7912e89cd840b8d6266d0b42c7067a90add05"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/feature-named-output/results.tsv",
+      "bytes": 285,
+      "sha256": "dc36e3077bdd8993220c6addd457a37d90bc98920ff7d91ef0de683b1aa963bb"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/feature-named-refresh.json",
+      "bytes": 1540,
+      "sha256": "69586ba41d2235f45f060c7f42f215ebc4ab546ebccef342b42ea256b71baa4d"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/feature-named.log",
+      "bytes": 7218,
+      "sha256": "b8c28bb5d735b5914a6f7a8af06259f19570bfac5ae4c00df8c5db8213ef2de5"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/feature-ssa/control-blocks.tsv",
+      "bytes": 8948,
+      "sha256": "8d903f714b4ec3fc47d3282bd1cdd765fe9645ac1ab5862641d4b6d1168264d5"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/feature-ssa/extension-memory-calls.tsv",
+      "bytes": 98,
+      "sha256": "210310e8904e0d1d348d84d840a4c093705c0c953767bf8b44825f318375c8a5"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/feature-ssa/extension-stores.tsv",
+      "bytes": 4152,
+      "sha256": "eb908b8cf1042f1a720665b7ed90c90a9a4e150c58e336bf6b31060d4d703e34"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/feature-ssa/value-nodes.tsv",
+      "bytes": 141171,
+      "sha256": "db86035c27140fc9b3ffb1e234ae298727986e4ede4c1202abe2ce24fcbf0dbb"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/feature-ssa.log",
+      "bytes": 6260,
+      "sha256": "79c669b69cbefa7425e1a62bdc6d6a8aea0263cb6a57d9c856b9a1c52305fa96"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/final-native-prefix-output/prepare.tsv",
+      "bytes": 172,
+      "sha256": "1196564ef1292531ea64c6e487e7912e89cd840b8d6266d0b42c7067a90add05"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/final-native-prefix-output/results.tsv",
+      "bytes": 285,
+      "sha256": "dc36e3077bdd8993220c6addd457a37d90bc98920ff7d91ef0de683b1aa963bb"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/final-native-prefix-refresh.json",
+      "bytes": 1546,
+      "sha256": "b1512014d6217e48d86915f4c7399130f97df7d12ba632f605af769f99ddd456"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/final-native-prefix.log",
+      "bytes": 7299,
+      "sha256": "23f9199825eff4dc8cb04a0089ef954dafe68438f229bca625a6b9f6efd633a1"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/fp-epilogue-jobs.tsv",
+      "bytes": 171,
+      "sha256": "f3d642f466e03646f2362abcd737e00cee98bf046dfdb11f0e609148a2b87c7b"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/fp-epilogue-output/prepare.tsv",
+      "bytes": 228,
+      "sha256": "e34e018b22e1e6beb7b073b87fdb1767104e63d63aa7b8fce2ecc2cfbb9c6806"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/fp-epilogue-output/results.tsv",
+      "bytes": 383,
+      "sha256": "7f5deec7fb21e67fdb716df299d77272db51fd6dbbe9e88df423431749a98e21"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/fp-epilogue-refresh.json",
+      "bytes": 1940,
+      "sha256": "446c37f2eed015adc72db9b6376ad503761671ded2a7c35c44318d9e875fe18c"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/fp-epilogue-tailcalls.json",
+      "bytes": 4919,
+      "sha256": "9c7dac8acb522e5d10b2b2115d0bcbaad51502ebe2b1d94dc37eba420b2da213"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/fp-epilogue-tailcalls.tsv",
+      "bytes": 141,
+      "sha256": "2df89bab987bedf6676bc22f6338c812047fb8e5412bf5fd8055b2c875a2f0ac"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/fp-epilogue.log",
+      "bytes": 12122,
+      "sha256": "76d3a5d9955b48f8d6bef2752d318e133615370c285322f7a9d69322301474f3"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/host-copy-layout-table.json",
+      "bytes": 4113,
+      "sha256": "878f9726cca59fb5875eec9f6522e58fe06ca6a08c18b1cb12a9aefffa14bc5d"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/leaf-path-jobs.tsv",
+      "bytes": 204,
+      "sha256": "707add35dcf3525fb9bc86134cd6344475b7de262f49ff0e39ecf75de9406ac5"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/leaf-path-output/prepare.tsv",
+      "bytes": 253,
+      "sha256": "5de06e966b4be8d8d28dfc08212d3c6e861b08bc73b7af7d6f3f27eb4cd9f822"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/leaf-path-output/results.tsv",
+      "bytes": 449,
+      "sha256": "13d7852933988f30a569652ab59f18808923afc482e7a4163ee845b23a1b09f7"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/leaf-path-refresh.json",
+      "bytes": 1461,
+      "sha256": "76cbef33013d5d34874ba8a569c08a92a718016a651b3017ad5809ddfeb5d2bc"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/leaf-path-tailcalls.json",
+      "bytes": 3100,
+      "sha256": "2f1dac3b7e2d36bd32dc383ff00a5f2bec97093e51ed0fa039e006941a95e1ca"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/leaf-path-tailcalls.tsv",
+      "bytes": 347,
+      "sha256": "6a645cbf45ed8b7c1e38a12e0e11e675e04668942b90335af6bb8cfad8c22ecd"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/leaf-path.log",
+      "bytes": 12116,
+      "sha256": "81195d42fdca9d2680c096d3b54259881dc8bce10bcba12c2c177d8f005d2d1f"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/low-transform-output/attempts.tsv",
+      "bytes": 2803,
+      "sha256": "d459dbda15d5c5f65ab1eae23d779a5a071f4e3aba2fcc14d14d5be63bfd603c"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/low-transform-output/results.tsv",
+      "bytes": 1404,
+      "sha256": "b9f3f8af07a9c2e5f6e2164d7b1b3befedbbba71ebee7be9ae3ae85d91f95758"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/low-transform.log",
+      "bytes": 8737,
+      "sha256": "615d45b7f5f9d2f3773f7a1280fd7d5b4a2517e2180f66646b678a350fc15834"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/native-device-byte-coverage.json",
+      "bytes": 469,
+      "sha256": "8addd8bcc33e15d577ce16ab96c1f9de556762091f9269b9ab65b3d368c9fe98"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/native-device-property-names.json",
+      "bytes": 21358,
+      "sha256": "ead6923d08d49d733bc8874ddaa3871ca46bb3541213972fcd010bba2ea4fcad"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/native-device-records.json",
+      "bytes": 511822,
+      "sha256": "c1d9adce61fa3663c276249dbea461dbbade1ae3d3db13e5bba27aa828e7d2ac"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/native-profile-declaration-comparison.json",
+      "bytes": 139708,
+      "sha256": "79c5d52eaa0764261d62754c5f9b7f192fc0cb22cf554c482bc4309f7cf801fc"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/original-device-info-fields.tsv",
+      "bytes": 4205,
+      "sha256": "f961abae6f65299128501d96dcaff81b2769ec34bf4fca6e867113675153eb66"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/original-extension-fields.tsv",
+      "bytes": 12612,
+      "sha256": "471863e6cd6b92bafa5cdcd67b122d98e5386b14a5c25f1e9002fb9cadce9b47"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/original-extension-store-inventory.json",
+      "bytes": 314233,
+      "sha256": "ff9e6d53e1935b281750de9c2d564819224fad50fc421a3dbc0596a9b0879c7c"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/original-extension-table.json",
+      "bytes": 82811,
+      "sha256": "1cbb36b271fcd881885d190467165e2d7a64d771b549ec057444192fa507daf3"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/original-feature-fields.tsv",
+      "bytes": 16858,
+      "sha256": "509e5d8864e34aab17bf00b8d9e5171877ebfcc14b56704a3c3e0d16535bdf1f"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/original-property-fields.tsv",
+      "bytes": 31827,
+      "sha256": "082cc800b6d9895347832ce005ea8ee2c8a22e2953d6b1b6bdcbf90d1b8229dd"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/original-property-physical-fields.json",
+      "bytes": 145554,
+      "sha256": "d2677ec5ea984e6d1f0d77690775e9d89ed426b79bab3c087fcb33db8775148a"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/packed-format-jobs.tsv",
+      "bytes": 448,
+      "sha256": "04d6a8748a125339e6f88508a0e485e268d986e8c429011db942d59922dafefe"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/packed-format-output/prepare.tsv",
+      "bytes": 537,
+      "sha256": "698a64478975908c1c8546ac4fa49a4a2fd9db6d0cfb63f44a14dcce7dbd2795"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/packed-format-output/results.tsv",
+      "bytes": 1345,
+      "sha256": "c7426956fb55c30c3740287f0251bcb1496f6cfef7c643bfe73ecf86d08a555b"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/packed-format-refresh.json",
+      "bytes": 2119,
+      "sha256": "0cab5e8a47d8d5bb674ea838d57e99e3cfa61723ef5ac9962f472ff23daee4aa"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/packed-format.log",
+      "bytes": 8431,
+      "sha256": "e5a20613d027c689b29a17946bfc85cde2e536962de029266017822d923dd075"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/physical-typed-initial-error.log",
+      "bytes": 9768,
+      "sha256": "93173dc5c0a864a04dc10e408f90134d401b3866d9edb54dffdce99431994262"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/physical-typed-jobs.tsv",
+      "bytes": 123,
+      "sha256": "07659e423b7eaaafe4281a23aa12270e5f456da1f0990681b8801ac68167239d"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/physical-typed-output/prepare.tsv",
+      "bytes": 172,
+      "sha256": "1196564ef1292531ea64c6e487e7912e89cd840b8d6266d0b42c7067a90add05"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/physical-typed-output/results.tsv",
+      "bytes": 285,
+      "sha256": "dc36e3077bdd8993220c6addd457a37d90bc98920ff7d91ef0de683b1aa963bb"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/physical-typed-refresh.json",
+      "bytes": 1540,
+      "sha256": "61905f2e8358f65b953e6ac33ab859de109f125a2bd2ca043ded022a20cbb0f4"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/physical-typed-short-prefix.log",
+      "bytes": 8763,
+      "sha256": "1a480670cb6a1200dcd522841de3e17022645d328921e2464f57dc80f0ffee21"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/physical-typed.log",
+      "bytes": 8763,
+      "sha256": "66459bb32e9f67c0e6a4796aa1a541d5ee7bc390eb5d6e83441e99001cebe16d"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/profile-declaration-summary.txt",
+      "bytes": 8353,
+      "sha256": "fe2742c9f6e78b1a091ed07efb9860a20cdea09566f1f19987c5991b3199dd7f"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/progress.json",
+      "bytes": 777,
+      "sha256": "aad67caa68c0887d14eb4503fe282fe7832f1f5a9de1d7d9df828f6d318d3aee"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/properties-named-output/prepare.tsv",
+      "bytes": 172,
+      "sha256": "1196564ef1292531ea64c6e487e7912e89cd840b8d6266d0b42c7067a90add05"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/properties-named-output/results.tsv",
+      "bytes": 285,
+      "sha256": "dc36e3077bdd8993220c6addd457a37d90bc98920ff7d91ef0de683b1aa963bb"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/properties-named-refresh.json",
+      "bytes": 1543,
+      "sha256": "4115213dc4b43a2627a02b15de8ab40d713689a993f3ae9f3e1e229331514e63"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/properties-named.log",
+      "bytes": 7296,
+      "sha256": "3dd8b648d84acf5f91701ef5e920a522406eb170944bafae422c73368b9b07b5"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/recovered-feature-getter-fields.json",
+      "bytes": 163952,
+      "sha256": "5af02e2fd1868b9b2840404fb1ba6cd3afefa62f11028723b126de64163cfd2d"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/recovered-feature-initializer-stores.json",
+      "bytes": 355648,
+      "sha256": "4d4e1921dc66c36237c3eb6dc1f3acc67373de3cbb2dd879caff1a07440448c9"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/recovered-property-getter-fields.json",
+      "bytes": 411857,
+      "sha256": "295c8774f40ea0918b705b54a9776231c6de90dcd8169cd515d6b3a228269b3c"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/remaining-C-export-boundaries.json",
+      "bytes": 5989,
+      "sha256": "bd4e44d6243745c372980c603c6c3a87b807ba49866e7542d2b9edd3c5342582"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/remaining-direct-tailcalls-jobs.tsv",
+      "bytes": 2762,
+      "sha256": "fad7a6f4766a19d9fcfee6516545c747f350c7e9dc715ef710483411796ad3d0"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/remaining-direct-tailcalls.json",
+      "bytes": 19476,
+      "sha256": "d9c42b4076db1d7dee6af20299283b3c95f430ab5ab36a30d9a6b904fb895a2d"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/remaining-direct-tailcalls.tsv",
+      "bytes": 4026,
+      "sha256": "eb3e4c76f4ed7bd8c07a25edfddac57c35cb0a8ec1effdfb7f8f0d9ececf4bc9"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/remaining-eight-jobs.tsv",
+      "bytes": 453,
+      "sha256": "37db15415b0b7458fd6b55cd583277421032cc0a270471293c9ef78ab86ef354"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/remaining-tail-output/prepare.tsv",
+      "bytes": 3195,
+      "sha256": "b8ae2742a2565b09ec721000bc4d3c5a9e300421a4392704670bda921727c901"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/remaining-tail-output/results.tsv",
+      "bytes": 5835,
+      "sha256": "48800fa333fe90f96b04de960f37e0df3c2220fc91b9c9bf3feb422887e04af3"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/remaining-tail-refresh.json",
+      "bytes": 21351,
+      "sha256": "42a4d0f8bb5182bd06269d1717e0d01ef8dbc0b630fc786d1fb550dc37ee000b"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/remaining-tail.log",
+      "bytes": 12006,
+      "sha256": "fc7d0c637ba4a191c253058f212788324cd3ceaf304addaecfa18cd4442b33da"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/remaining-ten-boundary-sites.json",
+      "bytes": 45478,
+      "sha256": "b3d20c1ecfbcac04cd6875026a7191137043a90a4ae12baf0958863891d75538"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/session-start.json",
+      "bytes": 254,
+      "sha256": "3c678a9059218ef3ec4d38da8a21382a501c5b6fc41189da7dcffb286e71dcc7"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/termination-parent-jobs.tsv",
+      "bytes": 23129,
+      "sha256": "8428d2ad9f772e066c36e3886d7cca8838bc4152970d11e2e33cdd245b8ecaae"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/termination-parent-output/prepare.tsv",
+      "bytes": 24754,
+      "sha256": "d7ef456ceb7567747a3b3403ec27dc9f3768af472f8ce436b84a1fd143af7538"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/termination-parent-output/results.tsv",
+      "bytes": 46722,
+      "sha256": "899575f2946ed03a1d1009a1faf4bea43de9251093ac9127a7f7101a58551679"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/termination-parent-refresh.json",
+      "bytes": 94547,
+      "sha256": "99efe357e782c3e6665350e8a919b528dc85ac3eaa6da21ddc23ea1673d515a8"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/termination-parent.log",
+      "bytes": 12040,
+      "sha256": "2d4926154c9469b54feaa95789a79bfd8e22fa8eb9e576703996b016ec5cd431"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/vtn-failure-jobs.tsv",
+      "bytes": 156,
+      "sha256": "8f31779beb19a928d9a2ec27cc1aa474c46483b13a5ee4f2bb1882bed5fbf9a2"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/vtn-failure-output/prepare.tsv",
+      "bytes": 221,
+      "sha256": "0cfe9024f86c32a0f7f4bb94980ac884ab626dd9cd89ff163fbcd1034e684d06"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/vtn-failure-output/results.tsv",
+      "bytes": 367,
+      "sha256": "2c8db2ebbabf4498502c1e885aa911bf6a719263bebea9e3169ee742229e6781"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/vtn-failure-refresh.json",
+      "bytes": 2285,
+      "sha256": "ab72f9c5a4f2e7a9ae72761c949dea7c6a853d6edacc67ec33aa8551b90c323c"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/vtn-failure.log",
+      "bytes": 9089,
+      "sha256": "f7b87141a7978435b8f6d73d0176f5a7d88610d623756559e844fcca99b00413"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/vtn-parent-jobs.tsv",
+      "bytes": 2561,
+      "sha256": "a4e28352adceb6eacc36c9a6ca50a9977d9f641a5720d7865c718c75542c2fb4"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/vtn-parent-output/prepare.tsv",
+      "bytes": 3210,
+      "sha256": "85632d771ebe602858e77844560e52506ea853315ccad7c9a11eef732fd8c199"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/vtn-parent-output/results.tsv",
+      "bytes": 5507,
+      "sha256": "a202e74959bd638c5dab3dd00857e0a15d9047ca7fb3b6f5b77a347e9fd3bbc0"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/vtn-parent-refresh.json",
+      "bytes": 30853,
+      "sha256": "9d130020c3a6b12c42d203deab7856862de5a653584b5f94e8ae7bc840ed4bb1"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/vtn-parent.log",
+      "bytes": 9089,
+      "sha256": "8d771863e231b82cd889e299772df7d5a8566e2a0f5a4ccf4e7a406ab3c0049f"
+    }
+  ]
+}

@@ -1,0 +1,5277 @@
+{
+  "original_binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "getter_elf": "0xa3c164",
+  "getter_size": 11444,
+  "source_registry_sha256": "cf31c965cf6e788697139601da0c7e02a75a9b6c7ac764e7641f5521ffd9da06",
+  "mapped_structures": 274,
+  "mapped_selector_values": 274,
+  "member_records": 605,
+  "core_records": 55,
+  "distinct_physical_offsets": 571,
+  "executed_symbolic_instructions": 2861,
+  "instruction_count": 2861,
+  "unvisited_instruction_addresses": [],
+  "core": [
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "robustBufferAccess",
+      "api_member_offset": 0,
+      "native_physical_offset": "0x207",
+      "store_elf": "0xa3c234"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "fullDrawIndexUint32",
+      "api_member_offset": 4,
+      "native_physical_offset": "0x208",
+      "store_elf": "0xa3c234"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "imageCubeArray",
+      "api_member_offset": 8,
+      "native_physical_offset": "0x209",
+      "store_elf": "0xa3c234"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "independentBlend",
+      "api_member_offset": 12,
+      "native_physical_offset": "0x20a",
+      "store_elf": "0xa3c234"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "geometryShader",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x20b",
+      "store_elf": "0xa3c260"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "tessellationShader",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x20c",
+      "store_elf": "0xa3c260"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "sampleRateShading",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x20d",
+      "store_elf": "0xa3c260"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "dualSrcBlend",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x20e",
+      "store_elf": "0xa3c260"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "logicOp",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x20f",
+      "store_elf": "0xa3c274"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "multiDrawIndirect",
+      "api_member_offset": 36,
+      "native_physical_offset": "0x210",
+      "store_elf": "0xa3c274"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "drawIndirectFirstInstance",
+      "api_member_offset": 40,
+      "native_physical_offset": "0x211",
+      "store_elf": "0xa3c274"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "depthClamp",
+      "api_member_offset": 44,
+      "native_physical_offset": "0x212",
+      "store_elf": "0xa3c274"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "depthBiasClamp",
+      "api_member_offset": 48,
+      "native_physical_offset": "0x213",
+      "store_elf": "0xa3c288"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "fillModeNonSolid",
+      "api_member_offset": 52,
+      "native_physical_offset": "0x214",
+      "store_elf": "0xa3c288"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "depthBounds",
+      "api_member_offset": 56,
+      "native_physical_offset": "0x215",
+      "store_elf": "0xa3c288"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "wideLines",
+      "api_member_offset": 60,
+      "native_physical_offset": "0x216",
+      "store_elf": "0xa3c288"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "largePoints",
+      "api_member_offset": 64,
+      "native_physical_offset": "0x217",
+      "store_elf": "0xa3c29c"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "alphaToOne",
+      "api_member_offset": 68,
+      "native_physical_offset": "0x218",
+      "store_elf": "0xa3c29c"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "multiViewport",
+      "api_member_offset": 72,
+      "native_physical_offset": "0x219",
+      "store_elf": "0xa3c29c"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "samplerAnisotropy",
+      "api_member_offset": 76,
+      "native_physical_offset": "0x21a",
+      "store_elf": "0xa3c29c"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "textureCompressionETC2",
+      "api_member_offset": 80,
+      "native_physical_offset": "0x21b",
+      "store_elf": "0xa3c2b0"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "textureCompressionASTC_LDR",
+      "api_member_offset": 84,
+      "native_physical_offset": "0x21c",
+      "store_elf": "0xa3c2b0"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "textureCompressionBC",
+      "api_member_offset": 88,
+      "native_physical_offset": "0x21d",
+      "store_elf": "0xa3c2b0"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "occlusionQueryPrecise",
+      "api_member_offset": 92,
+      "native_physical_offset": "0x21e",
+      "store_elf": "0xa3c2b0"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "pipelineStatisticsQuery",
+      "api_member_offset": 96,
+      "native_physical_offset": "0x21f",
+      "store_elf": "0xa3c2c4"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "vertexPipelineStoresAndAtomics",
+      "api_member_offset": 100,
+      "native_physical_offset": "0x220",
+      "store_elf": "0xa3c2c4"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "fragmentStoresAndAtomics",
+      "api_member_offset": 104,
+      "native_physical_offset": "0x221",
+      "store_elf": "0xa3c2c4"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderTessellationAndGeometryPointSize",
+      "api_member_offset": 108,
+      "native_physical_offset": "0x222",
+      "store_elf": "0xa3c2c4"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderImageGatherExtended",
+      "api_member_offset": 112,
+      "native_physical_offset": "0x223",
+      "store_elf": "0xa3c2d8"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderStorageImageExtendedFormats",
+      "api_member_offset": 116,
+      "native_physical_offset": "0x224",
+      "store_elf": "0xa3c2d8"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderStorageImageMultisample",
+      "api_member_offset": 120,
+      "native_physical_offset": "0x225",
+      "store_elf": "0xa3c2d8"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderStorageImageReadWithoutFormat",
+      "api_member_offset": 124,
+      "native_physical_offset": "0x226",
+      "store_elf": "0xa3c2d8"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderStorageImageWriteWithoutFormat",
+      "api_member_offset": 128,
+      "native_physical_offset": "0x227",
+      "store_elf": "0xa3c2ec"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderUniformBufferArrayDynamicIndexing",
+      "api_member_offset": 132,
+      "native_physical_offset": "0x228",
+      "store_elf": "0xa3c2ec"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderSampledImageArrayDynamicIndexing",
+      "api_member_offset": 136,
+      "native_physical_offset": "0x229",
+      "store_elf": "0xa3c2ec"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderStorageBufferArrayDynamicIndexing",
+      "api_member_offset": 140,
+      "native_physical_offset": "0x22a",
+      "store_elf": "0xa3c2ec"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderStorageImageArrayDynamicIndexing",
+      "api_member_offset": 144,
+      "native_physical_offset": "0x22b",
+      "store_elf": "0xa3c300"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderClipDistance",
+      "api_member_offset": 148,
+      "native_physical_offset": "0x22c",
+      "store_elf": "0xa3c300"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderCullDistance",
+      "api_member_offset": 152,
+      "native_physical_offset": "0x22d",
+      "store_elf": "0xa3c300"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderFloat64",
+      "api_member_offset": 156,
+      "native_physical_offset": "0x22e",
+      "store_elf": "0xa3c300"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderInt64",
+      "api_member_offset": 160,
+      "native_physical_offset": "0x22f",
+      "store_elf": "0xa3c314"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderInt16",
+      "api_member_offset": 164,
+      "native_physical_offset": "0x230",
+      "store_elf": "0xa3c314"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderResourceResidency",
+      "api_member_offset": 168,
+      "native_physical_offset": "0x231",
+      "store_elf": "0xa3c314"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "shaderResourceMinLod",
+      "api_member_offset": 172,
+      "native_physical_offset": "0x232",
+      "store_elf": "0xa3c314"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "sparseBinding",
+      "api_member_offset": 176,
+      "native_physical_offset": "0x233",
+      "store_elf": "0xa3c328"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "sparseResidencyBuffer",
+      "api_member_offset": 180,
+      "native_physical_offset": "0x234",
+      "store_elf": "0xa3c328"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "sparseResidencyImage2D",
+      "api_member_offset": 184,
+      "native_physical_offset": "0x235",
+      "store_elf": "0xa3c328"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "sparseResidencyImage3D",
+      "api_member_offset": 188,
+      "native_physical_offset": "0x236",
+      "store_elf": "0xa3c328"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "sparseResidency2Samples",
+      "api_member_offset": 192,
+      "native_physical_offset": "0x237",
+      "store_elf": "0xa3c3cc"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "sparseResidency4Samples",
+      "api_member_offset": 196,
+      "native_physical_offset": "0x238",
+      "store_elf": "0xa3c3cc"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "sparseResidency8Samples",
+      "api_member_offset": 200,
+      "native_physical_offset": "0x239",
+      "store_elf": "0xa3c3cc"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "sparseResidency16Samples",
+      "api_member_offset": 204,
+      "native_physical_offset": "0x23a",
+      "store_elf": "0xa3c3cc"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "sparseResidencyAliased",
+      "api_member_offset": 208,
+      "native_physical_offset": "0x23b",
+      "store_elf": "0xa3c39c"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "variableMultisampleRate",
+      "api_member_offset": 212,
+      "native_physical_offset": "0x23c",
+      "store_elf": "0xa3c39c"
+    },
+    {
+      "struct": "VkPhysicalDeviceFeatures",
+      "member": "inheritedQueries",
+      "api_member_offset": 216,
+      "native_physical_offset": "0x23d",
+      "store_elf": "0xa3c3a8"
+    }
+  ],
+  "rows": [
+    {
+      "struct": "VkPhysicalDeviceDeviceGeneratedCommandsFeaturesNV",
+      "stype": 1000277007,
+      "member": "deviceGeneratedCommands",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x23e",
+      "store_elf": "0xa3c730"
+    },
+    {
+      "struct": "VkPhysicalDevicePushConstantBankFeaturesNV",
+      "stype": 1000580001,
+      "member": "pushConstantBank",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x23f",
+      "store_elf": "0xa3ec84"
+    },
+    {
+      "struct": "VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV",
+      "stype": 1000428000,
+      "member": "deviceGeneratedCompute",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x240",
+      "store_elf": "0xa3e0c0"
+    },
+    {
+      "struct": "VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV",
+      "stype": 1000428000,
+      "member": "deviceGeneratedComputePipelines",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x241",
+      "store_elf": "0xa3e0c0"
+    },
+    {
+      "struct": "VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV",
+      "stype": 1000428000,
+      "member": "deviceGeneratedComputeCaptureReplay",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x242",
+      "store_elf": "0xa3e0c4"
+    },
+    {
+      "struct": "VkPhysicalDevicePrivateDataFeatures",
+      "stype": 1000295000,
+      "member": "privateData",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x243",
+      "store_elf": "0xa3ed08"
+    },
+    {
+      "struct": "VkPhysicalDeviceClusterAccelerationStructureFeaturesNV",
+      "stype": 1000569000,
+      "member": "clusterAccelerationStructure",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x244",
+      "store_elf": "0xa3e3fc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVariablePointersFeatures",
+      "stype": 1000120000,
+      "member": "variablePointersStorageBuffer",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x245",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVariablePointersFeatures",
+      "stype": 1000120000,
+      "member": "variablePointers",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x246",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceMultiviewFeatures",
+      "stype": 1000053001,
+      "member": "multiview",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x247",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceMultiviewFeatures",
+      "stype": 1000053001,
+      "member": "multiviewGeometryShader",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x248",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceMultiviewFeatures",
+      "stype": 1000053001,
+      "member": "multiviewTessellationShader",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x249",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDevicePresentIdFeaturesKHR",
+      "stype": 1000294001,
+      "member": "presentId",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x24a",
+      "store_elf": "0xa3d834"
+    },
+    {
+      "struct": "VkPhysicalDevicePresentId2FeaturesKHR",
+      "stype": 1000479002,
+      "member": "presentId2",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x24b",
+      "store_elf": "0xa3da14"
+    },
+    {
+      "struct": "VkPhysicalDevicePresentWaitFeaturesKHR",
+      "stype": 1000248000,
+      "member": "presentWait",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x24c",
+      "store_elf": "0xa3e97c"
+    },
+    {
+      "struct": "VkPhysicalDevicePresentWait2FeaturesKHR",
+      "stype": 1000480001,
+      "member": "presentWait2",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x24d",
+      "store_elf": "0xa3e910"
+    },
+    {
+      "struct": "VkPhysicalDevicePresentTimingFeaturesEXT",
+      "stype": 1000208000,
+      "member": "presentTiming",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x24e",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDevicePresentTimingFeaturesEXT",
+      "stype": 1000208000,
+      "member": "presentAtAbsoluteTime",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x24f",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDevicePresentTimingFeaturesEXT",
+      "stype": 1000208000,
+      "member": "presentAtRelativeTime",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x250",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDevice16BitStorageFeatures",
+      "stype": 1000083000,
+      "member": "storageBuffer16BitAccess",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x251",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDevice16BitStorageFeatures",
+      "stype": 1000083000,
+      "member": "uniformAndStorageBuffer16BitAccess",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x252",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDevice16BitStorageFeatures",
+      "stype": 1000083000,
+      "member": "storagePushConstant16",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x253",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDevice16BitStorageFeatures",
+      "stype": 1000083000,
+      "member": "storageInputOutput16",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x254",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderSubgroupExtendedTypesFeatures",
+      "stype": 1000175000,
+      "member": "shaderSubgroupExtendedTypes",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x255",
+      "store_elf": "0xa3e848"
+    },
+    {
+      "struct": "VkPhysicalDeviceSamplerYcbcrConversionFeatures",
+      "stype": 1000156004,
+      "member": "samplerYcbcrConversion",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x256",
+      "store_elf": "0xa3e5f8"
+    },
+    {
+      "struct": "VkPhysicalDeviceProtectedMemoryFeatures",
+      "stype": 1000145001,
+      "member": "protectedMemory",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x257",
+      "store_elf": "0xa3e9c8"
+    },
+    {
+      "struct": "VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT",
+      "stype": 1000148000,
+      "member": "advancedBlendCoherentOperations",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x258",
+      "store_elf": "0xa3d4cc"
+    },
+    {
+      "struct": "VkPhysicalDeviceMultiDrawFeaturesEXT",
+      "stype": 1000392000,
+      "member": "multiDraw",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x259",
+      "store_elf": "0xa3d418"
+    },
+    {
+      "struct": "VkPhysicalDeviceInlineUniformBlockFeatures",
+      "stype": 1000138000,
+      "member": "inlineUniformBlock",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x25a",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceInlineUniformBlockFeatures",
+      "stype": 1000138000,
+      "member": "descriptorBindingInlineUniformBlockUpdateAfterBind",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x25b",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceMaintenance4Features",
+      "stype": 1000413000,
+      "member": "maintenance4",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x25c",
+      "store_elf": "0xa3e750"
+    },
+    {
+      "struct": "VkPhysicalDeviceMaintenance5Features",
+      "stype": 1000470000,
+      "member": "maintenance5",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x25d",
+      "store_elf": "0xa3ea1c"
+    },
+    {
+      "struct": "VkPhysicalDeviceMaintenance6Features",
+      "stype": 1000545000,
+      "member": "maintenance6",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x25e",
+      "store_elf": "0xa3ecfc"
+    },
+    {
+      "struct": "VkPhysicalDeviceMaintenance7FeaturesKHR",
+      "stype": 1000562000,
+      "member": "maintenance7",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x25f",
+      "store_elf": "0xa3ebcc"
+    },
+    {
+      "struct": "VkPhysicalDeviceMaintenance8FeaturesKHR",
+      "stype": 1000574000,
+      "member": "maintenance8",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x260",
+      "store_elf": "0xa3e504"
+    },
+    {
+      "struct": "VkPhysicalDeviceMaintenance9FeaturesKHR",
+      "stype": 1000584000,
+      "member": "maintenance9",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x261",
+      "store_elf": "0xa3eaec"
+    },
+    {
+      "struct": "VkPhysicalDeviceMaintenance11FeaturesKHR",
+      "stype": 1000657000,
+      "member": "maintenance11",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x262",
+      "store_elf": "0xa3ed38"
+    },
+    {
+      "struct": "VkPhysicalDeviceMaintenance10FeaturesKHR",
+      "stype": 1000630000,
+      "member": "maintenance10",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x263",
+      "store_elf": "0xa3d8e8"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderDrawParametersFeatures",
+      "stype": 1000063000,
+      "member": "shaderDrawParameters",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x264",
+      "store_elf": "0xa3e994"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderFloat16Int8Features",
+      "stype": 1000082000,
+      "member": "shaderFloat16",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x265",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderFloat16Int8Features",
+      "stype": 1000082000,
+      "member": "shaderInt8",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x266",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceHostQueryResetFeatures",
+      "stype": 1000261000,
+      "member": "hostQueryReset",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x267",
+      "store_elf": "0xa3e378"
+    },
+    {
+      "struct": "VkPhysicalDeviceElapsedTimerQueryFeaturesQCOM",
+      "stype": 1000173000,
+      "member": "elapsedTimerQuery",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x268",
+      "store_elf": "0xa3cd84"
+    },
+    {
+      "struct": "VkPhysicalDeviceGlobalPriorityQueryFeatures",
+      "stype": 1000388000,
+      "member": "globalPriorityQuery",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x269",
+      "store_elf": "0xa3e89c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDeviceMemoryReportFeaturesEXT",
+      "stype": 1000284000,
+      "member": "deviceMemoryReport",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x26a",
+      "store_elf": "0xa3eb90"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "shaderInputAttachmentArrayDynamicIndexing",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x26b",
+      "store_elf": "0xa3da4c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "shaderUniformTexelBufferArrayDynamicIndexing",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x26c",
+      "store_elf": "0xa3da4c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "shaderStorageTexelBufferArrayDynamicIndexing",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x26d",
+      "store_elf": "0xa3da4c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "shaderUniformBufferArrayNonUniformIndexing",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x26e",
+      "store_elf": "0xa3da4c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "shaderSampledImageArrayNonUniformIndexing",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x26f",
+      "store_elf": "0xa3da60"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "shaderStorageBufferArrayNonUniformIndexing",
+      "api_member_offset": 36,
+      "native_physical_offset": "0x270",
+      "store_elf": "0xa3da60"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "shaderStorageImageArrayNonUniformIndexing",
+      "api_member_offset": 40,
+      "native_physical_offset": "0x271",
+      "store_elf": "0xa3da60"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "shaderInputAttachmentArrayNonUniformIndexing",
+      "api_member_offset": 44,
+      "native_physical_offset": "0x272",
+      "store_elf": "0xa3da60"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "shaderUniformTexelBufferArrayNonUniformIndexing",
+      "api_member_offset": 48,
+      "native_physical_offset": "0x273",
+      "store_elf": "0xa3da74"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "shaderStorageTexelBufferArrayNonUniformIndexing",
+      "api_member_offset": 52,
+      "native_physical_offset": "0x274",
+      "store_elf": "0xa3da74"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "descriptorBindingUniformBufferUpdateAfterBind",
+      "api_member_offset": 56,
+      "native_physical_offset": "0x275",
+      "store_elf": "0xa3da74"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "descriptorBindingSampledImageUpdateAfterBind",
+      "api_member_offset": 60,
+      "native_physical_offset": "0x276",
+      "store_elf": "0xa3da74"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "descriptorBindingStorageImageUpdateAfterBind",
+      "api_member_offset": 64,
+      "native_physical_offset": "0x277",
+      "store_elf": "0xa3da88"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "descriptorBindingStorageBufferUpdateAfterBind",
+      "api_member_offset": 68,
+      "native_physical_offset": "0x278",
+      "store_elf": "0xa3da88"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "descriptorBindingUniformTexelBufferUpdateAfterBind",
+      "api_member_offset": 72,
+      "native_physical_offset": "0x279",
+      "store_elf": "0xa3da88"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "descriptorBindingStorageTexelBufferUpdateAfterBind",
+      "api_member_offset": 76,
+      "native_physical_offset": "0x27a",
+      "store_elf": "0xa3da88"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "descriptorBindingUpdateUnusedWhilePending",
+      "api_member_offset": 80,
+      "native_physical_offset": "0x27b",
+      "store_elf": "0xa3da9c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "descriptorBindingPartiallyBound",
+      "api_member_offset": 84,
+      "native_physical_offset": "0x27c",
+      "store_elf": "0xa3da9c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "descriptorBindingVariableDescriptorCount",
+      "api_member_offset": 88,
+      "native_physical_offset": "0x27d",
+      "store_elf": "0xa3da9c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "stype": 1000161001,
+      "member": "runtimeDescriptorArray",
+      "api_member_offset": 92,
+      "native_physical_offset": "0x27e",
+      "store_elf": "0xa3da9c"
+    },
+    {
+      "struct": "VkPhysicalDeviceTimelineSemaphoreFeatures",
+      "stype": 1000207000,
+      "member": "timelineSemaphore",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x27f",
+      "store_elf": "0xa3e5e0"
+    },
+    {
+      "struct": "VkPhysicalDevice8BitStorageFeatures",
+      "stype": 1000177000,
+      "member": "storageBuffer8BitAccess",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x280",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDevice8BitStorageFeatures",
+      "stype": 1000177000,
+      "member": "uniformAndStorageBuffer8BitAccess",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x281",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDevice8BitStorageFeatures",
+      "stype": 1000177000,
+      "member": "storagePushConstant8",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x282",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceConditionalRenderingFeaturesEXT",
+      "stype": 1000081001,
+      "member": "conditionalRendering",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x283",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceConditionalRenderingFeaturesEXT",
+      "stype": 1000081001,
+      "member": "inheritedConditionalRendering",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x284",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkanMemoryModelFeatures",
+      "stype": 1000211000,
+      "member": "vulkanMemoryModel",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x285",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkanMemoryModelFeatures",
+      "stype": 1000211000,
+      "member": "vulkanMemoryModelDeviceScope",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x286",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkanMemoryModelFeatures",
+      "stype": 1000211000,
+      "member": "vulkanMemoryModelAvailabilityVisibilityChains",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x287",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicInt64Features",
+      "stype": 1000180000,
+      "member": "shaderBufferInt64Atomics",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x288",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicInt64Features",
+      "stype": 1000180000,
+      "member": "shaderSharedInt64Atomics",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x289",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloatFeaturesEXT",
+      "stype": 1000260000,
+      "member": "shaderBufferFloat32Atomics",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x28a",
+      "store_elf": "0xa3ebe4"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloatFeaturesEXT",
+      "stype": 1000260000,
+      "member": "shaderBufferFloat32AtomicAdd",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x28b",
+      "store_elf": "0xa3ebe4"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloatFeaturesEXT",
+      "stype": 1000260000,
+      "member": "shaderBufferFloat64Atomics",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x28c",
+      "store_elf": "0xa3ebe4"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloatFeaturesEXT",
+      "stype": 1000260000,
+      "member": "shaderBufferFloat64AtomicAdd",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x28d",
+      "store_elf": "0xa3ebe4"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloatFeaturesEXT",
+      "stype": 1000260000,
+      "member": "shaderSharedFloat32Atomics",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x28e",
+      "store_elf": "0xa3ebf8"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloatFeaturesEXT",
+      "stype": 1000260000,
+      "member": "shaderSharedFloat32AtomicAdd",
+      "api_member_offset": 36,
+      "native_physical_offset": "0x28f",
+      "store_elf": "0xa3ebf8"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloatFeaturesEXT",
+      "stype": 1000260000,
+      "member": "shaderSharedFloat64Atomics",
+      "api_member_offset": 40,
+      "native_physical_offset": "0x290",
+      "store_elf": "0xa3ebf8"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloatFeaturesEXT",
+      "stype": 1000260000,
+      "member": "shaderSharedFloat64AtomicAdd",
+      "api_member_offset": 44,
+      "native_physical_offset": "0x291",
+      "store_elf": "0xa3ebf8"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloatFeaturesEXT",
+      "stype": 1000260000,
+      "member": "shaderImageFloat32Atomics",
+      "api_member_offset": 48,
+      "native_physical_offset": "0x292",
+      "store_elf": "0xa3ec0c"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloatFeaturesEXT",
+      "stype": 1000260000,
+      "member": "shaderImageFloat32AtomicAdd",
+      "api_member_offset": 52,
+      "native_physical_offset": "0x293",
+      "store_elf": "0xa3ec0c"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloatFeaturesEXT",
+      "stype": 1000260000,
+      "member": "sparseImageFloat32Atomics",
+      "api_member_offset": 56,
+      "native_physical_offset": "0x294",
+      "store_elf": "0xa3ec0c"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloatFeaturesEXT",
+      "stype": 1000260000,
+      "member": "sparseImageFloat32AtomicAdd",
+      "api_member_offset": 60,
+      "native_physical_offset": "0x295",
+      "store_elf": "0xa3ec0c"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT",
+      "stype": 1000273000,
+      "member": "shaderBufferFloat16Atomics",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x296",
+      "store_elf": "0xa3dbb8"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT",
+      "stype": 1000273000,
+      "member": "shaderBufferFloat16AtomicAdd",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x297",
+      "store_elf": "0xa3dbb8"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT",
+      "stype": 1000273000,
+      "member": "shaderBufferFloat16AtomicMinMax",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x298",
+      "store_elf": "0xa3dbb8"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT",
+      "stype": 1000273000,
+      "member": "shaderBufferFloat32AtomicMinMax",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x299",
+      "store_elf": "0xa3dbb8"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT",
+      "stype": 1000273000,
+      "member": "shaderBufferFloat64AtomicMinMax",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x29a",
+      "store_elf": "0xa3dbcc"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT",
+      "stype": 1000273000,
+      "member": "shaderSharedFloat16Atomics",
+      "api_member_offset": 36,
+      "native_physical_offset": "0x29b",
+      "store_elf": "0xa3dbcc"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT",
+      "stype": 1000273000,
+      "member": "shaderSharedFloat16AtomicAdd",
+      "api_member_offset": 40,
+      "native_physical_offset": "0x29c",
+      "store_elf": "0xa3dbcc"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT",
+      "stype": 1000273000,
+      "member": "shaderSharedFloat16AtomicMinMax",
+      "api_member_offset": 44,
+      "native_physical_offset": "0x29d",
+      "store_elf": "0xa3dbcc"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT",
+      "stype": 1000273000,
+      "member": "shaderSharedFloat32AtomicMinMax",
+      "api_member_offset": 48,
+      "native_physical_offset": "0x29e",
+      "store_elf": "0xa3ec0c"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT",
+      "stype": 1000273000,
+      "member": "shaderSharedFloat64AtomicMinMax",
+      "api_member_offset": 52,
+      "native_physical_offset": "0x29f",
+      "store_elf": "0xa3ec0c"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT",
+      "stype": 1000273000,
+      "member": "shaderImageFloat32AtomicMinMax",
+      "api_member_offset": 56,
+      "native_physical_offset": "0x2a0",
+      "store_elf": "0xa3ec0c"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT",
+      "stype": 1000273000,
+      "member": "sparseImageFloat32AtomicMinMax",
+      "api_member_offset": 60,
+      "native_physical_offset": "0x2a1",
+      "store_elf": "0xa3ec0c"
+    },
+    {
+      "struct": "VkPhysicalDeviceVertexAttributeDivisorFeatures",
+      "stype": 1000190002,
+      "member": "vertexAttributeInstanceRateDivisor",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2a2",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVertexAttributeDivisorFeatures",
+      "stype": 1000190002,
+      "member": "vertexAttributeInstanceRateZeroDivisor",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2a3",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceASTCDecodeFeaturesEXT",
+      "stype": 1000067001,
+      "member": "decodeModeSharedExponent",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2a4",
+      "store_elf": "0xa3e9f8"
+    },
+    {
+      "struct": "VkPhysicalDeviceTransformFeedbackFeaturesEXT",
+      "stype": 1000028000,
+      "member": "transformFeedback",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2a5",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceTransformFeedbackFeaturesEXT",
+      "stype": 1000028000,
+      "member": "geometryStreams",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2a6",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceRepresentativeFragmentTestFeaturesNV",
+      "stype": 1000166000,
+      "member": "representativeFragmentTest",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2a7",
+      "store_elf": "0xa3c808"
+    },
+    {
+      "struct": "VkPhysicalDeviceExclusiveScissorFeaturesNV",
+      "stype": 1000205002,
+      "member": "exclusiveScissor",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2a8",
+      "store_elf": "0xa3e034"
+    },
+    {
+      "struct": "VkPhysicalDeviceCornerSampledImageFeaturesNV",
+      "stype": 1000050000,
+      "member": "cornerSampledImage",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2a9",
+      "store_elf": "0xa3e890"
+    },
+    {
+      "struct": "VkPhysicalDeviceComputeShaderDerivativesFeaturesKHR",
+      "stype": 1000201000,
+      "member": "computeDerivativeGroupQuads",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2aa",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceComputeShaderDerivativesFeaturesKHR",
+      "stype": 1000201000,
+      "member": "computeDerivativeGroupLinear",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2ab",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderImageFootprintFeaturesNV",
+      "stype": 1000204000,
+      "member": "imageFootprint",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2ac",
+      "store_elf": "0xa3ea10"
+    },
+    {
+      "struct": "VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV",
+      "stype": 1000240000,
+      "member": "dedicatedAllocationImageAliasing",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2ad",
+      "store_elf": "0xa3e0f0"
+    },
+    {
+      "struct": "VkPhysicalDeviceCopyMemoryIndirectFeaturesKHR",
+      "stype": 1000549000,
+      "member": "indirectMemoryCopy",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2ae",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceCopyMemoryIndirectFeaturesKHR",
+      "stype": 1000549000,
+      "member": "indirectMemoryToImageCopy",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2af",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceCopyMemoryIndirectFeaturesNV",
+      "stype": 1000426000,
+      "member": "indirectCopy",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2b0",
+      "store_elf": "0xa3d508"
+    },
+    {
+      "struct": "VkPhysicalDeviceMemoryDecompressionFeaturesEXT",
+      "stype": 1000427000,
+      "member": "memoryDecompression",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2b1",
+      "store_elf": "0xa3ea48"
+    },
+    {
+      "struct": "VkPhysicalDeviceShadingRateImageFeaturesNV",
+      "stype": 1000164001,
+      "member": "shadingRateImage",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2b2",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShadingRateImageFeaturesNV",
+      "stype": 1000164001,
+      "member": "shadingRateCoarseSampleOrder",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2b3",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceInvocationMaskFeaturesHUAWEI",
+      "stype": 1000370000,
+      "member": "invocationMask",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2b4",
+      "store_elf": "0xa3e1a0"
+    },
+    {
+      "struct": "VkPhysicalDeviceMeshShaderFeaturesNV",
+      "stype": 1000202000,
+      "member": "taskShader",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2b5",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceMeshShaderFeaturesNV",
+      "stype": 1000202000,
+      "member": "meshShader",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2b6",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceMeshShaderFeaturesEXT",
+      "stype": 1000328000,
+      "member": "taskShader",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2b7",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceMeshShaderFeaturesEXT",
+      "stype": 1000328000,
+      "member": "meshShader",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2b8",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceMeshShaderFeaturesEXT",
+      "stype": 1000328000,
+      "member": "multiviewMeshShader",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x2b9",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceMeshShaderFeaturesEXT",
+      "stype": 1000328000,
+      "member": "primitiveFragmentShadingRateMeshShader",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x2ba",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceMeshShaderFeaturesEXT",
+      "stype": 1000328000,
+      "member": "meshShaderQueries",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x2bb",
+      "store_elf": "0xa3ea3c"
+    },
+    {
+      "struct": "VkPhysicalDeviceAccelerationStructureFeaturesKHR",
+      "stype": 1000150013,
+      "member": "accelerationStructure",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2bc",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceAccelerationStructureFeaturesKHR",
+      "stype": 1000150013,
+      "member": "accelerationStructureCaptureReplay",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2bd",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceAccelerationStructureFeaturesKHR",
+      "stype": 1000150013,
+      "member": "accelerationStructureIndirectBuild",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x2be",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceAccelerationStructureFeaturesKHR",
+      "stype": 1000150013,
+      "member": "accelerationStructureHostCommands",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x2bf",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceAccelerationStructureFeaturesKHR",
+      "stype": 1000150013,
+      "member": "descriptorBindingAccelerationStructureUpdateAfterBind",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x2c0",
+      "store_elf": "0xa3ea3c"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingPipelineFeaturesKHR",
+      "stype": 1000347000,
+      "member": "rayTracingPipeline",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2c1",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingPipelineFeaturesKHR",
+      "stype": 1000347000,
+      "member": "rayTracingPipelineShaderGroupHandleCaptureReplay",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2c2",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingPipelineFeaturesKHR",
+      "stype": 1000347000,
+      "member": "rayTracingPipelineShaderGroupHandleCaptureReplayMixed",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x2c3",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingPipelineFeaturesKHR",
+      "stype": 1000347000,
+      "member": "rayTracingPipelineTraceRaysIndirect",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x2c4",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingPipelineFeaturesKHR",
+      "stype": 1000347000,
+      "member": "rayTraversalPrimitiveCulling",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x2c5",
+      "store_elf": "0xa3ea3c"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayQueryFeaturesKHR",
+      "stype": 1000348013,
+      "member": "rayQuery",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2c6",
+      "store_elf": "0xa3ed5c"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingMaintenance1FeaturesKHR",
+      "stype": 1000386000,
+      "member": "rayTracingMaintenance1",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2c7",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingMaintenance1FeaturesKHR",
+      "stype": 1000386000,
+      "member": "rayTracingPipelineTraceRaysIndirect2",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2c8",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentDensityMapFeaturesEXT",
+      "stype": 1000218000,
+      "member": "fragmentDensityMap",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2c9",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentDensityMapFeaturesEXT",
+      "stype": 1000218000,
+      "member": "fragmentDensityMapDynamic",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2ca",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentDensityMapFeaturesEXT",
+      "stype": 1000218000,
+      "member": "fragmentDensityMapNonSubsampledImages",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x2cb",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentDensityMap2FeaturesEXT",
+      "stype": 1000332000,
+      "member": "fragmentDensityMapDeferred",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2cc",
+      "store_elf": "0xa3db54"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentDensityMapOffsetFeaturesEXT",
+      "stype": 1000425000,
+      "member": "fragmentDensityMapOffset",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2cd",
+      "store_elf": "0xa3e9d4"
+    },
+    {
+      "struct": "VkPhysicalDeviceScalarBlockLayoutFeatures",
+      "stype": 1000221000,
+      "member": "scalarBlockLayout",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2ce",
+      "store_elf": "0xa3cf68"
+    },
+    {
+      "struct": "VkPhysicalDeviceUniformBufferStandardLayoutFeatures",
+      "stype": 1000253000,
+      "member": "uniformBufferStandardLayout",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2cf",
+      "store_elf": "0xa3eba8"
+    },
+    {
+      "struct": "VkPhysicalDeviceDepthClipEnableFeaturesEXT",
+      "stype": 1000102000,
+      "member": "depthClipEnable",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2d0",
+      "store_elf": "0xa3e61c"
+    },
+    {
+      "struct": "VkPhysicalDeviceMemoryPriorityFeaturesEXT",
+      "stype": 1000238000,
+      "member": "memoryPriority",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2d1",
+      "store_elf": "0xa3ea54"
+    },
+    {
+      "struct": "VkPhysicalDevicePageableDeviceLocalMemoryFeaturesEXT",
+      "stype": 1000412000,
+      "member": "pageableDeviceLocalMemory",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2d2",
+      "store_elf": "0xa3c5dc"
+    },
+    {
+      "struct": "VkPhysicalDeviceBufferDeviceAddressFeatures",
+      "stype": 1000257000,
+      "member": "bufferDeviceAddress",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2d3",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceBufferDeviceAddressFeatures",
+      "stype": 1000257000,
+      "member": "bufferDeviceAddressCaptureReplay",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2d4",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceBufferDeviceAddressFeatures",
+      "stype": 1000257000,
+      "member": "bufferDeviceAddressMultiDevice",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x2d5",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceBufferDeviceAddressFeaturesEXT",
+      "stype": 1000244000,
+      "member": "bufferDeviceAddress",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2d3",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceBufferDeviceAddressFeaturesEXT",
+      "stype": 1000244000,
+      "member": "bufferDeviceAddressCaptureReplay",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2d6",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceBufferDeviceAddressFeaturesEXT",
+      "stype": 1000244000,
+      "member": "bufferDeviceAddressMultiDevice",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x2d5",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceImagelessFramebufferFeatures",
+      "stype": 1000108000,
+      "member": "imagelessFramebuffer",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2d7",
+      "store_elf": "0xa3c568"
+    },
+    {
+      "struct": "VkPhysicalDeviceTextureCompressionASTCHDRFeatures",
+      "stype": 1000066000,
+      "member": "textureCompressionASTC_HDR",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2d8",
+      "store_elf": "0xa3d3dc"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrixFeaturesNV",
+      "stype": 1000249000,
+      "member": "cooperativeMatrix",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2d9",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrixFeaturesNV",
+      "stype": 1000249000,
+      "member": "cooperativeMatrixRobustBufferAccess",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2da",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceYcbcrImageArraysFeaturesEXT",
+      "stype": 1000252000,
+      "member": "ycbcrImageArrays",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2db",
+      "store_elf": "0xa3d0d8"
+    },
+    {
+      "struct": "VkPhysicalDevicePresentBarrierFeaturesNV",
+      "stype": 1000292000,
+      "member": "presentBarrier",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2dc",
+      "store_elf": "0xa3ecd8"
+    },
+    {
+      "struct": "VkPhysicalDevicePerformanceQueryFeaturesKHR",
+      "stype": 1000116000,
+      "member": "performanceCounterQueryPools",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2dd",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDevicePerformanceQueryFeaturesKHR",
+      "stype": 1000116000,
+      "member": "performanceCounterMultipleQueryPools",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2de",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceCoverageReductionModeFeaturesNV",
+      "stype": 1000250000,
+      "member": "coverageReductionMode",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2df",
+      "store_elf": "0xa3c8dc"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL",
+      "stype": 1000209000,
+      "member": "shaderIntegerFunctions2",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2e0",
+      "store_elf": "0xa3e904"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderClockFeaturesKHR",
+      "stype": 1000181000,
+      "member": "shaderSubgroupClock",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2e1",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderClockFeaturesKHR",
+      "stype": 1000181000,
+      "member": "shaderDeviceClock",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2e2",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceIndexTypeUint8Features",
+      "stype": 1000265000,
+      "member": "indexTypeUint8",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2e3",
+      "store_elf": "0xa3ecc0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderSMBuiltinsFeaturesNV",
+      "stype": 1000154000,
+      "member": "shaderSMBuiltins",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2e4",
+      "store_elf": "0xa3e08c"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT",
+      "stype": 1000251000,
+      "member": "fragmentShaderSampleInterlock",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2e5",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT",
+      "stype": 1000251000,
+      "member": "fragmentShaderPixelInterlock",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2e6",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT",
+      "stype": 1000251000,
+      "member": "fragmentShaderShadingRateInterlock",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x2e7",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceSeparateDepthStencilLayoutsFeatures",
+      "stype": 1000241000,
+      "member": "separateDepthStencilLayouts",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2e8",
+      "store_elf": "0xa3e610"
+    },
+    {
+      "struct": "VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT",
+      "stype": 1000356000,
+      "member": "primitiveTopologyListRestart",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2e9",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT",
+      "stype": 1000356000,
+      "member": "primitiveTopologyPatchListRestart",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2ea",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR",
+      "stype": 1000269000,
+      "member": "pipelineExecutableInfo",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2eb",
+      "store_elf": "0xa3ecf0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderDemoteToHelperInvocationFeatures",
+      "stype": 1000276000,
+      "member": "shaderDemoteToHelperInvocation",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2ec",
+      "store_elf": "0xa3eab0"
+    },
+    {
+      "struct": "VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT",
+      "stype": 1000281000,
+      "member": "texelBufferAlignment",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2ed",
+      "store_elf": "0xa3ebc0"
+    },
+    {
+      "struct": "VkPhysicalDeviceSubgroupSizeControlFeatures",
+      "stype": 1000225002,
+      "member": "subgroupSizeControl",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2ee",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceSubgroupSizeControlFeatures",
+      "stype": 1000225002,
+      "member": "computeFullSubgroups",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2ef",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceLineRasterizationFeatures",
+      "stype": 1000259000,
+      "member": "rectangularLines",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2f0",
+      "store_elf": "0xa3d64c"
+    },
+    {
+      "struct": "VkPhysicalDeviceLineRasterizationFeatures",
+      "stype": 1000259000,
+      "member": "bresenhamLines",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2f1",
+      "store_elf": "0xa3d64c"
+    },
+    {
+      "struct": "VkPhysicalDeviceLineRasterizationFeatures",
+      "stype": 1000259000,
+      "member": "smoothLines",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x2f2",
+      "store_elf": "0xa3d64c"
+    },
+    {
+      "struct": "VkPhysicalDeviceLineRasterizationFeatures",
+      "stype": 1000259000,
+      "member": "stippledRectangularLines",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x2f3",
+      "store_elf": "0xa3d64c"
+    },
+    {
+      "struct": "VkPhysicalDeviceLineRasterizationFeatures",
+      "stype": 1000259000,
+      "member": "stippledBresenhamLines",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x2f4",
+      "store_elf": "0xa3d640"
+    },
+    {
+      "struct": "VkPhysicalDeviceLineRasterizationFeatures",
+      "stype": 1000259000,
+      "member": "stippledSmoothLines",
+      "api_member_offset": 36,
+      "native_physical_offset": "0x2f5",
+      "store_elf": "0xa3d640"
+    },
+    {
+      "struct": "VkPhysicalDevicePipelineCreationCacheControlFeatures",
+      "stype": 1000297000,
+      "member": "pipelineCreationCacheControl",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2f6",
+      "store_elf": "0xa3e4d8"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan11Features",
+      "stype": 49,
+      "member": "storageBuffer16BitAccess",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x251",
+      "store_elf": "0xa3e710"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan11Features",
+      "stype": 49,
+      "member": "uniformAndStorageBuffer16BitAccess",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x252",
+      "store_elf": "0xa3e710"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan11Features",
+      "stype": 49,
+      "member": "storagePushConstant16",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x253",
+      "store_elf": "0xa3e710"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan11Features",
+      "stype": 49,
+      "member": "storageInputOutput16",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x254",
+      "store_elf": "0xa3e710"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan11Features",
+      "stype": 49,
+      "member": "multiview",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x247",
+      "store_elf": "0xa3e6dc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan11Features",
+      "stype": 49,
+      "member": "multiviewGeometryShader",
+      "api_member_offset": 36,
+      "native_physical_offset": "0x248",
+      "store_elf": "0xa3e6e4"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan11Features",
+      "stype": 49,
+      "member": "multiviewTessellationShader",
+      "api_member_offset": 40,
+      "native_physical_offset": "0x249",
+      "store_elf": "0xa3e6ec"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan11Features",
+      "stype": 49,
+      "member": "variablePointersStorageBuffer",
+      "api_member_offset": 44,
+      "native_physical_offset": "0x245",
+      "store_elf": "0xa3e6ec"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan11Features",
+      "stype": 49,
+      "member": "variablePointers",
+      "api_member_offset": 48,
+      "native_physical_offset": "0x246",
+      "store_elf": "0xa3e6f8"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan11Features",
+      "stype": 49,
+      "member": "protectedMemory",
+      "api_member_offset": 52,
+      "native_physical_offset": "0x257",
+      "store_elf": "0xa3e700"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan11Features",
+      "stype": 49,
+      "member": "samplerYcbcrConversion",
+      "api_member_offset": 56,
+      "native_physical_offset": "0x256",
+      "store_elf": "0xa3e70c"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan11Features",
+      "stype": 49,
+      "member": "shaderDrawParameters",
+      "api_member_offset": 60,
+      "native_physical_offset": "0x264",
+      "store_elf": "0xa3e70c"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "samplerMirrorClampToEdge",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2f7",
+      "store_elf": "0xa3cbd4"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "drawIndirectCount",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x2f8",
+      "store_elf": "0xa3cbdc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "storageBuffer8BitAccess",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x280",
+      "store_elf": "0xa3cbe4"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "uniformAndStorageBuffer8BitAccess",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x281",
+      "store_elf": "0xa3cbe4"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "storagePushConstant8",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x282",
+      "store_elf": "0xa3cbf0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderBufferInt64Atomics",
+      "api_member_offset": 36,
+      "native_physical_offset": "0x288",
+      "store_elf": "0xa3cbf0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderSharedInt64Atomics",
+      "api_member_offset": 40,
+      "native_physical_offset": "0x289",
+      "store_elf": "0xa3cbfc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderFloat16",
+      "api_member_offset": 44,
+      "native_physical_offset": "0x265",
+      "store_elf": "0xa3cbfc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderInt8",
+      "api_member_offset": 48,
+      "native_physical_offset": "0x266",
+      "store_elf": "0xa3cc08"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "descriptorIndexing",
+      "api_member_offset": 52,
+      "native_physical_offset": "0x2f9",
+      "store_elf": "0xa3cc08"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderInputAttachmentArrayDynamicIndexing",
+      "api_member_offset": 56,
+      "native_physical_offset": "0x26b",
+      "store_elf": "0xa3cc24"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderUniformTexelBufferArrayDynamicIndexing",
+      "api_member_offset": 60,
+      "native_physical_offset": "0x26c",
+      "store_elf": "0xa3cc24"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderStorageTexelBufferArrayDynamicIndexing",
+      "api_member_offset": 64,
+      "native_physical_offset": "0x26d",
+      "store_elf": "0xa3cc24"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderUniformBufferArrayNonUniformIndexing",
+      "api_member_offset": 68,
+      "native_physical_offset": "0x26e",
+      "store_elf": "0xa3cc24"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderSampledImageArrayNonUniformIndexing",
+      "api_member_offset": 72,
+      "native_physical_offset": "0x26f",
+      "store_elf": "0xa3cc38"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderStorageBufferArrayNonUniformIndexing",
+      "api_member_offset": 76,
+      "native_physical_offset": "0x270",
+      "store_elf": "0xa3cc38"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderStorageImageArrayNonUniformIndexing",
+      "api_member_offset": 80,
+      "native_physical_offset": "0x271",
+      "store_elf": "0xa3cc38"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderInputAttachmentArrayNonUniformIndexing",
+      "api_member_offset": 84,
+      "native_physical_offset": "0x272",
+      "store_elf": "0xa3cc38"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderUniformTexelBufferArrayNonUniformIndexing",
+      "api_member_offset": 88,
+      "native_physical_offset": "0x273",
+      "store_elf": "0xa3cc4c"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderStorageTexelBufferArrayNonUniformIndexing",
+      "api_member_offset": 92,
+      "native_physical_offset": "0x274",
+      "store_elf": "0xa3cc4c"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "descriptorBindingUniformBufferUpdateAfterBind",
+      "api_member_offset": 96,
+      "native_physical_offset": "0x275",
+      "store_elf": "0xa3cc4c"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "descriptorBindingSampledImageUpdateAfterBind",
+      "api_member_offset": 100,
+      "native_physical_offset": "0x276",
+      "store_elf": "0xa3cc4c"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "descriptorBindingStorageImageUpdateAfterBind",
+      "api_member_offset": 104,
+      "native_physical_offset": "0x277",
+      "store_elf": "0xa3cc60"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "descriptorBindingStorageBufferUpdateAfterBind",
+      "api_member_offset": 108,
+      "native_physical_offset": "0x278",
+      "store_elf": "0xa3cc60"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "descriptorBindingUniformTexelBufferUpdateAfterBind",
+      "api_member_offset": 112,
+      "native_physical_offset": "0x279",
+      "store_elf": "0xa3cc60"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "descriptorBindingStorageTexelBufferUpdateAfterBind",
+      "api_member_offset": 116,
+      "native_physical_offset": "0x27a",
+      "store_elf": "0xa3cc60"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "descriptorBindingUpdateUnusedWhilePending",
+      "api_member_offset": 120,
+      "native_physical_offset": "0x27b",
+      "store_elf": "0xa3ccdc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "descriptorBindingPartiallyBound",
+      "api_member_offset": 124,
+      "native_physical_offset": "0x27c",
+      "store_elf": "0xa3ccdc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "descriptorBindingVariableDescriptorCount",
+      "api_member_offset": 128,
+      "native_physical_offset": "0x27d",
+      "store_elf": "0xa3ccdc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "runtimeDescriptorArray",
+      "api_member_offset": 132,
+      "native_physical_offset": "0x27e",
+      "store_elf": "0xa3ccdc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "samplerFilterMinmax",
+      "api_member_offset": 136,
+      "native_physical_offset": "0x2fa",
+      "store_elf": "0xa3cc68"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "scalarBlockLayout",
+      "api_member_offset": 140,
+      "native_physical_offset": "0x2ce",
+      "store_elf": "0xa3cc70"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "imagelessFramebuffer",
+      "api_member_offset": 144,
+      "native_physical_offset": "0x2d7",
+      "store_elf": "0xa3cc78"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "uniformBufferStandardLayout",
+      "api_member_offset": 148,
+      "native_physical_offset": "0x2cf",
+      "store_elf": "0xa3cc84"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderSubgroupExtendedTypes",
+      "api_member_offset": 152,
+      "native_physical_offset": "0x255",
+      "store_elf": "0xa3cc8c"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "separateDepthStencilLayouts",
+      "api_member_offset": 156,
+      "native_physical_offset": "0x2e8",
+      "store_elf": "0xa3cc94"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "hostQueryReset",
+      "api_member_offset": 160,
+      "native_physical_offset": "0x267",
+      "store_elf": "0xa3cca0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "timelineSemaphore",
+      "api_member_offset": 164,
+      "native_physical_offset": "0x27f",
+      "store_elf": "0xa3cca8"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "bufferDeviceAddress",
+      "api_member_offset": 168,
+      "native_physical_offset": "0x2d3",
+      "store_elf": "0xa3ccb0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "bufferDeviceAddressCaptureReplay",
+      "api_member_offset": 172,
+      "native_physical_offset": "0x2d4",
+      "store_elf": "0xa3ccbc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "bufferDeviceAddressMultiDevice",
+      "api_member_offset": 176,
+      "native_physical_offset": "0x2d5",
+      "store_elf": "0xa3ccc4"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "vulkanMemoryModel",
+      "api_member_offset": 180,
+      "native_physical_offset": "0x285",
+      "store_elf": "0xa3cccc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "vulkanMemoryModelDeviceScope",
+      "api_member_offset": 184,
+      "native_physical_offset": "0x286",
+      "store_elf": "0xa3ccd4"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "vulkanMemoryModelAvailabilityVisibilityChains",
+      "api_member_offset": 188,
+      "native_physical_offset": "0x287",
+      "store_elf": "0xa3ccd4"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderOutputViewportIndex",
+      "api_member_offset": 192,
+      "native_physical_offset": "0x2fb",
+      "store_elf": "0xa3cce0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "shaderOutputLayer",
+      "api_member_offset": 196,
+      "native_physical_offset": "0x2fc",
+      "store_elf": "0xa3cce0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan12Features",
+      "stype": 51,
+      "member": "subgroupBroadcastDynamicId",
+      "api_member_offset": 200,
+      "native_physical_offset": "0x2fd",
+      "store_elf": "0xa3cce8"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "robustImageAccess",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2fe",
+      "store_elf": "0xa3e7e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "inlineUniformBlock",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x25a",
+      "store_elf": "0xa3e7e8"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "descriptorBindingInlineUniformBlockUpdateAfterBind",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x25b",
+      "store_elf": "0xa3e7f0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "pipelineCreationCacheControl",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x2f6",
+      "store_elf": "0xa3e7f0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "privateData",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x243",
+      "store_elf": "0xa3e7fc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "shaderDemoteToHelperInvocation",
+      "api_member_offset": 36,
+      "native_physical_offset": "0x2ec",
+      "store_elf": "0xa3e7fc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "shaderTerminateInvocation",
+      "api_member_offset": 40,
+      "native_physical_offset": "0x2ff",
+      "store_elf": "0xa3e808"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "subgroupSizeControl",
+      "api_member_offset": 44,
+      "native_physical_offset": "0x2ee",
+      "store_elf": "0xa3e808"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "computeFullSubgroups",
+      "api_member_offset": 48,
+      "native_physical_offset": "0x2ef",
+      "store_elf": "0xa3e814"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "synchronization2",
+      "api_member_offset": 52,
+      "native_physical_offset": "0x300",
+      "store_elf": "0xa3e814"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "textureCompressionASTC_HDR",
+      "api_member_offset": 56,
+      "native_physical_offset": "0x2d8",
+      "store_elf": "0xa3e820"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "shaderZeroInitializeWorkgroupMemory",
+      "api_member_offset": 60,
+      "native_physical_offset": "0x301",
+      "store_elf": "0xa3e820"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "dynamicRendering",
+      "api_member_offset": 64,
+      "native_physical_offset": "0x302",
+      "store_elf": "0xa3e82c"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "shaderIntegerDotProduct",
+      "api_member_offset": 68,
+      "native_physical_offset": "0x303",
+      "store_elf": "0xa3e82c"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan13Features",
+      "stype": 53,
+      "member": "maintenance4",
+      "api_member_offset": 72,
+      "native_physical_offset": "0x25c",
+      "store_elf": "0xa3e830"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "globalPriorityQuery",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x269",
+      "store_elf": "0xa3dc7c"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "shaderSubgroupRotate",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x304",
+      "store_elf": "0xa3dc94"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "shaderSubgroupRotateClustered",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x305",
+      "store_elf": "0xa3dc94"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "shaderFloatControls2",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x306",
+      "store_elf": "0xa3dc94"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "shaderExpectAssume",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x307",
+      "store_elf": "0xa3dc94"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "rectangularLines",
+      "api_member_offset": 36,
+      "native_physical_offset": "0x2f0",
+      "store_elf": "0xa3dcd8"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "bresenhamLines",
+      "api_member_offset": 40,
+      "native_physical_offset": "0x2f1",
+      "store_elf": "0xa3dcd8"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "smoothLines",
+      "api_member_offset": 44,
+      "native_physical_offset": "0x2f2",
+      "store_elf": "0xa3dcd8"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "stippledRectangularLines",
+      "api_member_offset": 48,
+      "native_physical_offset": "0x2f3",
+      "store_elf": "0xa3dcd8"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "stippledBresenhamLines",
+      "api_member_offset": 52,
+      "native_physical_offset": "0x2f4",
+      "store_elf": "0xa3dc9c"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "stippledSmoothLines",
+      "api_member_offset": 56,
+      "native_physical_offset": "0x2f5",
+      "store_elf": "0xa3dca4"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "vertexAttributeInstanceRateDivisor",
+      "api_member_offset": 60,
+      "native_physical_offset": "0x2a2",
+      "store_elf": "0xa3dcb0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "vertexAttributeInstanceRateZeroDivisor",
+      "api_member_offset": 64,
+      "native_physical_offset": "0x2a3",
+      "store_elf": "0xa3dcb0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "indexTypeUint8",
+      "api_member_offset": 68,
+      "native_physical_offset": "0x2e3",
+      "store_elf": "0xa3dcb8"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "dynamicRenderingLocalRead",
+      "api_member_offset": 72,
+      "native_physical_offset": "0x308",
+      "store_elf": "0xa3dcc0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "maintenance5",
+      "api_member_offset": 76,
+      "native_physical_offset": "0x25d",
+      "store_elf": "0xa3dccc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "maintenance6",
+      "api_member_offset": 80,
+      "native_physical_offset": "0x25e",
+      "store_elf": "0xa3dccc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "pipelineProtectedAccess",
+      "api_member_offset": 84,
+      "native_physical_offset": "0x309",
+      "store_elf": "0xa3dcec"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "pipelineRobustness",
+      "api_member_offset": 88,
+      "native_physical_offset": "0x30a",
+      "store_elf": "0xa3dcec"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "hostImageCopy",
+      "api_member_offset": 92,
+      "native_physical_offset": "0x30b",
+      "store_elf": "0xa3dcec"
+    },
+    {
+      "struct": "VkPhysicalDeviceVulkan14Features",
+      "stype": 55,
+      "member": "pushDescriptor",
+      "api_member_offset": 96,
+      "native_physical_offset": "0x30c",
+      "store_elf": "0xa3dcec"
+    },
+    {
+      "struct": "VkPhysicalDeviceCoherentMemoryFeaturesAMD",
+      "stype": 1000229000,
+      "member": "deviceCoherentMemory",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x30d",
+      "store_elf": "0xa3e7c0"
+    },
+    {
+      "struct": "VkPhysicalDeviceGpaFeaturesAMD",
+      "stype": 1000133000,
+      "member": "perfCounters",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x30e",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceGpaFeaturesAMD",
+      "stype": 1000133000,
+      "member": "streamingPerfCounters",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x30f",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceGpaFeaturesAMD",
+      "stype": 1000133000,
+      "member": "sqThreadTracing",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x310",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceGpaFeaturesAMD",
+      "stype": 1000133000,
+      "member": "clockModes",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x311",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceCustomBorderColorFeaturesEXT",
+      "stype": 1000287002,
+      "member": "customBorderColors",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x312",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceCustomBorderColorFeaturesEXT",
+      "stype": 1000287002,
+      "member": "customBorderColorWithoutFormat",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x313",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceBorderColorSwizzleFeaturesEXT",
+      "stype": 1000411000,
+      "member": "borderColorSwizzle",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x314",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceBorderColorSwizzleFeaturesEXT",
+      "stype": 1000411000,
+      "member": "borderColorSwizzleFromImage",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x315",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicStateFeaturesEXT",
+      "stype": 1000267000,
+      "member": "extendedDynamicState",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x316",
+      "store_elf": "0xa3d7bc"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState2FeaturesEXT",
+      "stype": 1000377000,
+      "member": "extendedDynamicState2",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x317",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState2FeaturesEXT",
+      "stype": 1000377000,
+      "member": "extendedDynamicState2LogicOp",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x318",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState2FeaturesEXT",
+      "stype": 1000377000,
+      "member": "extendedDynamicState2PatchControlPoints",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x319",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3TessellationDomainOrigin",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x31a",
+      "store_elf": "0xa3cde8"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3DepthClampEnable",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x31b",
+      "store_elf": "0xa3cde8"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3PolygonMode",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x31c",
+      "store_elf": "0xa3cde8"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3RasterizationSamples",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x31d",
+      "store_elf": "0xa3cde8"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3SampleMask",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x31e",
+      "store_elf": "0xa3ce00"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3AlphaToCoverageEnable",
+      "api_member_offset": 36,
+      "native_physical_offset": "0x31f",
+      "store_elf": "0xa3ce00"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3AlphaToOneEnable",
+      "api_member_offset": 40,
+      "native_physical_offset": "0x320",
+      "store_elf": "0xa3ce00"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3LogicOpEnable",
+      "api_member_offset": 44,
+      "native_physical_offset": "0x321",
+      "store_elf": "0xa3ce00"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3ColorBlendEnable",
+      "api_member_offset": 48,
+      "native_physical_offset": "0x322",
+      "store_elf": "0xa3ce18"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3ColorBlendEquation",
+      "api_member_offset": 52,
+      "native_physical_offset": "0x323",
+      "store_elf": "0xa3ce18"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3ColorWriteMask",
+      "api_member_offset": 56,
+      "native_physical_offset": "0x324",
+      "store_elf": "0xa3ce18"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3RasterizationStream",
+      "api_member_offset": 60,
+      "native_physical_offset": "0x325",
+      "store_elf": "0xa3ce18"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3ConservativeRasterizationMode",
+      "api_member_offset": 64,
+      "native_physical_offset": "0x326",
+      "store_elf": "0xa3ce30"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3ExtraPrimitiveOverestimationSize",
+      "api_member_offset": 68,
+      "native_physical_offset": "0x327",
+      "store_elf": "0xa3ce30"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3DepthClipEnable",
+      "api_member_offset": 72,
+      "native_physical_offset": "0x328",
+      "store_elf": "0xa3ce30"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3SampleLocationsEnable",
+      "api_member_offset": 76,
+      "native_physical_offset": "0x329",
+      "store_elf": "0xa3ce30"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3ColorBlendAdvanced",
+      "api_member_offset": 80,
+      "native_physical_offset": "0x32a",
+      "store_elf": "0xa3ce48"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3ProvokingVertexMode",
+      "api_member_offset": 84,
+      "native_physical_offset": "0x32b",
+      "store_elf": "0xa3ce48"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3LineRasterizationMode",
+      "api_member_offset": 88,
+      "native_physical_offset": "0x32c",
+      "store_elf": "0xa3ce48"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3LineStippleEnable",
+      "api_member_offset": 92,
+      "native_physical_offset": "0x32d",
+      "store_elf": "0xa3ce48"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3DepthClipNegativeOneToOne",
+      "api_member_offset": 96,
+      "native_physical_offset": "0x32e",
+      "store_elf": "0xa3ce60"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3ViewportWScalingEnable",
+      "api_member_offset": 100,
+      "native_physical_offset": "0x32f",
+      "store_elf": "0xa3ce60"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3ViewportSwizzle",
+      "api_member_offset": 104,
+      "native_physical_offset": "0x330",
+      "store_elf": "0xa3ce60"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3CoverageToColorEnable",
+      "api_member_offset": 108,
+      "native_physical_offset": "0x331",
+      "store_elf": "0xa3ce60"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3CoverageToColorLocation",
+      "api_member_offset": 112,
+      "native_physical_offset": "0x332",
+      "store_elf": "0xa3ce84"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3CoverageModulationMode",
+      "api_member_offset": 116,
+      "native_physical_offset": "0x333",
+      "store_elf": "0xa3ce84"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3CoverageModulationTableEnable",
+      "api_member_offset": 120,
+      "native_physical_offset": "0x334",
+      "store_elf": "0xa3ce84"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3CoverageModulationTable",
+      "api_member_offset": 124,
+      "native_physical_offset": "0x335",
+      "store_elf": "0xa3ce84"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3CoverageReductionMode",
+      "api_member_offset": 128,
+      "native_physical_offset": "0x336",
+      "store_elf": "0xa3ce70"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3RepresentativeFragmentTestEnable",
+      "api_member_offset": 132,
+      "native_physical_offset": "0x337",
+      "store_elf": "0xa3ce70"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "stype": 1000455000,
+      "member": "extendedDynamicState3ShadingRateImageEnable",
+      "api_member_offset": 136,
+      "native_physical_offset": "0x338",
+      "store_elf": "0xa3ce78"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedFlagsFeaturesKHR",
+      "stype": 1000668004,
+      "member": "extendedFlags",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x339",
+      "store_elf": "0xa3d960"
+    },
+    {
+      "struct": "VkPhysicalDevicePartitionedAccelerationStructureFeaturesNV",
+      "stype": 1000570000,
+      "member": "partitionedAccelerationStructure",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x33a",
+      "store_elf": "0xa3ece4"
+    },
+    {
+      "struct": "VkPhysicalDeviceDiagnosticsConfigFeaturesNV",
+      "stype": 1000300000,
+      "member": "diagnosticsConfig",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x33b",
+      "store_elf": "0xa3e6b4"
+    },
+    {
+      "struct": "VkPhysicalDeviceZeroInitializeWorkgroupMemoryFeatures",
+      "stype": 1000325000,
+      "member": "shaderZeroInitializeWorkgroupMemory",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x301",
+      "store_elf": "0xa3ec90"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR",
+      "stype": 1000323000,
+      "member": "shaderSubgroupUniformControlFlow",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x33c",
+      "store_elf": "0xa3e270"
+    },
+    {
+      "struct": "VkPhysicalDeviceRobustness2FeaturesKHR",
+      "stype": 1000286000,
+      "member": "robustBufferAccess2",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x33d",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceRobustness2FeaturesKHR",
+      "stype": 1000286000,
+      "member": "robustImageAccess2",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x33e",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceRobustness2FeaturesKHR",
+      "stype": 1000286000,
+      "member": "nullDescriptor",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x33f",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceImageRobustnessFeatures",
+      "stype": 1000335000,
+      "member": "robustImageAccess",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2fe",
+      "store_elf": "0xa3ec3c"
+    },
+    {
+      "struct": "VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR",
+      "stype": 1000336000,
+      "member": "workgroupMemoryExplicitLayout",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x340",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR",
+      "stype": 1000336000,
+      "member": "workgroupMemoryExplicitLayoutScalarBlockLayout",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x341",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR",
+      "stype": 1000336000,
+      "member": "workgroupMemoryExplicitLayout8BitAccess",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x342",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR",
+      "stype": 1000336000,
+      "member": "workgroupMemoryExplicitLayout16BitAccess",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x343",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "constantAlphaColorBlendFactors",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x344",
+      "store_elf": "0xa3e930"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "events",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x345",
+      "store_elf": "0xa3e930"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "imageViewFormatReinterpretation",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x346",
+      "store_elf": "0xa3e930"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "imageViewFormatSwizzle",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x347",
+      "store_elf": "0xa3e930"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "imageView2DOn3DImage",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x348",
+      "store_elf": "0xa3e944"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "multisampleArrayImage",
+      "api_member_offset": 36,
+      "native_physical_offset": "0x349",
+      "store_elf": "0xa3e944"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "mutableComparisonSamplers",
+      "api_member_offset": 40,
+      "native_physical_offset": "0x34a",
+      "store_elf": "0xa3e944"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "pointPolygons",
+      "api_member_offset": 44,
+      "native_physical_offset": "0x34b",
+      "store_elf": "0xa3e944"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "samplerMipLodBias",
+      "api_member_offset": 48,
+      "native_physical_offset": "0x34c",
+      "store_elf": "0xa3e964"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "separateStencilMaskRef",
+      "api_member_offset": 52,
+      "native_physical_offset": "0x34d",
+      "store_elf": "0xa3e964"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "shaderSampleRateInterpolationFunctions",
+      "api_member_offset": 56,
+      "native_physical_offset": "0x34e",
+      "store_elf": "0xa3e964"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "tessellationIsolines",
+      "api_member_offset": 60,
+      "native_physical_offset": "0x34f",
+      "store_elf": "0xa3e964"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "tessellationPointMode",
+      "api_member_offset": 64,
+      "native_physical_offset": "0x350",
+      "store_elf": "0xa3e94c"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "triangleFans",
+      "api_member_offset": 68,
+      "native_physical_offset": "0x351",
+      "store_elf": "0xa3e94c"
+    },
+    {
+      "struct": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "stype": 1000163000,
+      "member": "vertexAttributeAccessBeyondStride",
+      "api_member_offset": 72,
+      "native_physical_offset": "0x352",
+      "store_elf": "0xa3e958"
+    },
+    {
+      "struct": "VkPhysicalDevice4444FormatsFeaturesEXT",
+      "stype": 1000340000,
+      "member": "formatA4R4G4B4",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x353",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDevice4444FormatsFeaturesEXT",
+      "stype": 1000340000,
+      "member": "formatA4B4G4R4",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x354",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceSubpassShadingFeaturesHUAWEI",
+      "stype": 1000369001,
+      "member": "subpassShading",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x355",
+      "store_elf": "0xa3ea98"
+    },
+    {
+      "struct": "VkPhysicalDeviceClusterCullingShaderFeaturesHUAWEI",
+      "stype": 1000404000,
+      "member": "clustercullingShader",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x356",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceClusterCullingShaderFeaturesHUAWEI",
+      "stype": 1000404000,
+      "member": "multiviewClusterCullingShader",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x357",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderImageAtomicInt64FeaturesEXT",
+      "stype": 1000234000,
+      "member": "shaderImageInt64Atomics",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x358",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderImageAtomicInt64FeaturesEXT",
+      "stype": 1000234000,
+      "member": "sparseImageInt64Atomics",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x359",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentShadingRateFeaturesKHR",
+      "stype": 1000226003,
+      "member": "pipelineFragmentShadingRate",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x35a",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentShadingRateFeaturesKHR",
+      "stype": 1000226003,
+      "member": "primitiveFragmentShadingRate",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x35b",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentShadingRateFeaturesKHR",
+      "stype": 1000226003,
+      "member": "attachmentFragmentShadingRate",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x35c",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderTerminateInvocationFeatures",
+      "stype": 1000215000,
+      "member": "shaderTerminateInvocation",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x2ff",
+      "store_elf": "0xa3c650"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentShadingRateEnumsFeaturesNV",
+      "stype": 1000326001,
+      "member": "fragmentShadingRateEnums",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x35d",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentShadingRateEnumsFeaturesNV",
+      "stype": 1000326001,
+      "member": "supersampleFragmentShadingRates",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x35e",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentShadingRateEnumsFeaturesNV",
+      "stype": 1000326001,
+      "member": "noInvocationFragmentShadingRates",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x35f",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceImage2DViewOf3DFeaturesEXT",
+      "stype": 1000393000,
+      "member": "image2DViewOf3D",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x360",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceImage2DViewOf3DFeaturesEXT",
+      "stype": 1000393000,
+      "member": "sampler2DViewOf3D",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x361",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceImageSlicedViewOf3DFeaturesEXT",
+      "stype": 1000418000,
+      "member": "imageSlicedViewOf3D",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x362",
+      "store_elf": "0xa3dde8"
+    },
+    {
+      "struct": "VkPhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT",
+      "stype": 1000524000,
+      "member": "attachmentFeedbackLoopDynamicState",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x363",
+      "store_elf": "0xa3ec18"
+    },
+    {
+      "struct": "VkPhysicalDeviceLegacyVertexAttributesFeaturesEXT",
+      "stype": 1000495000,
+      "member": "legacyVertexAttributes",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x364",
+      "store_elf": "0xa3dfac"
+    },
+    {
+      "struct": "VkPhysicalDeviceMutableDescriptorTypeFeaturesEXT",
+      "stype": 1000351000,
+      "member": "mutableDescriptorType",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x365",
+      "store_elf": "0xa3ed2c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDepthClipControlFeaturesEXT",
+      "stype": 1000355000,
+      "member": "depthClipControl",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x366",
+      "store_elf": "0xa3d924"
+    },
+    {
+      "struct": "VkPhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT",
+      "stype": 1000620000,
+      "member": "zeroInitializeDeviceMemory",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x367",
+      "store_elf": "0xa3db80"
+    },
+    {
+      "struct": "VkPhysicalDeviceCustomResolveFeaturesEXT",
+      "stype": 1000628000,
+      "member": "customResolve",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x368",
+      "store_elf": "0xa3ca10"
+    },
+    {
+      "struct": "VkPhysicalDeviceDeviceGeneratedCommandsFeaturesEXT",
+      "stype": 1000572000,
+      "member": "deviceGeneratedCommands",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x369",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceDeviceGeneratedCommandsFeaturesEXT",
+      "stype": 1000572000,
+      "member": "dynamicGeneratedPipelineLayout",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x36a",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceDepthClampControlFeaturesEXT",
+      "stype": 1000582000,
+      "member": "depthClampControl",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x36b",
+      "store_elf": "0xa3cae0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVertexInputDynamicStateFeaturesEXT",
+      "stype": 1000352000,
+      "member": "vertexInputDynamicState",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x36c",
+      "store_elf": "0xa3c46c"
+    },
+    {
+      "struct": "VkPhysicalDeviceExternalMemoryRDMAFeaturesNV",
+      "stype": 1000371001,
+      "member": "externalMemoryRDMA",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x36d",
+      "store_elf": "0xa3ed74"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR",
+      "stype": 1000558000,
+      "member": "shaderRelaxedExtendedInstruction",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x36e",
+      "store_elf": "0xa3eb68"
+    },
+    {
+      "struct": "VkPhysicalDeviceColorWriteEnableFeaturesEXT",
+      "stype": 1000381000,
+      "member": "colorWriteEnable",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x36f",
+      "store_elf": "0xa3e83c"
+    },
+    {
+      "struct": "VkPhysicalDeviceSynchronization2Features",
+      "stype": 1000314007,
+      "member": "synchronization2",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x300",
+      "store_elf": "0xa3eb10"
+    },
+    {
+      "struct": "VkPhysicalDeviceUnifiedImageLayoutsFeaturesKHR",
+      "stype": 1000527000,
+      "member": "unifiedImageLayouts",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x370",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceUnifiedImageLayoutsFeaturesKHR",
+      "stype": 1000527000,
+      "member": "unifiedImageLayoutsVideo",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x371",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceHostImageCopyFeatures",
+      "stype": 1000270000,
+      "member": "hostImageCopy",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x30b",
+      "store_elf": "0xa3e480"
+    },
+    {
+      "struct": "VkPhysicalDevicePrimitivesGeneratedQueryFeaturesEXT",
+      "stype": 1000382000,
+      "member": "primitivesGeneratedQuery",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x372",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDevicePrimitivesGeneratedQueryFeaturesEXT",
+      "stype": 1000382000,
+      "member": "primitivesGeneratedQueryWithRasterizerDiscard",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x373",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDevicePrimitivesGeneratedQueryFeaturesEXT",
+      "stype": 1000382000,
+      "member": "primitivesGeneratedQueryWithNonZeroStreams",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x374",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceLegacyDitheringFeaturesEXT",
+      "stype": 1000465000,
+      "member": "legacyDithering",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x375",
+      "store_elf": "0xa3def8"
+    },
+    {
+      "struct": "VkPhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT",
+      "stype": 1000376000,
+      "member": "multisampledRenderToSingleSampled",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x376",
+      "store_elf": "0xa3e71c"
+    },
+    {
+      "struct": "VkPhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT",
+      "stype": 1000616000,
+      "member": "multisampledRenderToSwapchain",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x377",
+      "store_elf": "0xa3e68c"
+    },
+    {
+      "struct": "VkPhysicalDevicePipelineProtectedAccessFeatures",
+      "stype": 1000466000,
+      "member": "pipelineProtectedAccess",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x309",
+      "store_elf": "0xa3e9bc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVideoMaintenance1FeaturesKHR",
+      "stype": 1000515000,
+      "member": "videoMaintenance1",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x378",
+      "store_elf": "0xa3eb50"
+    },
+    {
+      "struct": "VkPhysicalDeviceVideoMaintenance2FeaturesKHR",
+      "stype": 1000586000,
+      "member": "videoMaintenance2",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x379",
+      "store_elf": "0xa3d08c"
+    },
+    {
+      "struct": "VkPhysicalDeviceVideoDecodeVP9FeaturesKHR",
+      "stype": 1000514000,
+      "member": "videoDecodeVP9",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x37a",
+      "store_elf": "0xa3c940"
+    },
+    {
+      "struct": "VkPhysicalDeviceVideoEncodeQuantizationMapFeaturesKHR",
+      "stype": 1000553009,
+      "member": "videoEncodeQuantizationMap",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x37b",
+      "store_elf": "0xa3eabc"
+    },
+    {
+      "struct": "VkPhysicalDeviceVideoEncodeFeedback2FeaturesKHR",
+      "stype": 1000598000,
+      "member": "videoEncodeFeedback2",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x37c",
+      "store_elf": "0xa3d5f8"
+    },
+    {
+      "struct": "VkPhysicalDeviceVideoEncodeAV1FeaturesKHR",
+      "stype": 1000513004,
+      "member": "videoEncodeAV1",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x37d",
+      "store_elf": "0xa3e674"
+    },
+    {
+      "struct": "VkPhysicalDeviceInheritedViewportScissorFeaturesNV",
+      "stype": 1000278000,
+      "member": "inheritedViewportScissor2D",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x37e",
+      "store_elf": "0xa3eb5c"
+    },
+    {
+      "struct": "VkPhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT",
+      "stype": 1000330000,
+      "member": "ycbcr2plane444Formats",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x37f",
+      "store_elf": "0xa3e680"
+    },
+    {
+      "struct": "VkPhysicalDeviceProvokingVertexFeaturesEXT",
+      "stype": 1000254000,
+      "member": "provokingVertexLast",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x380",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceProvokingVertexFeaturesEXT",
+      "stype": 1000254000,
+      "member": "transformFeedbackPreservesProvokingVertex",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x381",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceVideoEncodeIntraRefreshFeaturesKHR",
+      "stype": 1000552004,
+      "member": "videoEncodeIntraRefresh",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x382",
+      "store_elf": "0xa3ec60"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorBufferFeaturesEXT",
+      "stype": 1000316002,
+      "member": "descriptorBuffer",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x383",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorBufferFeaturesEXT",
+      "stype": 1000316002,
+      "member": "descriptorBufferCaptureReplay",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x384",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorBufferFeaturesEXT",
+      "stype": 1000316002,
+      "member": "descriptorBufferImageLayoutIgnored",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x385",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorBufferFeaturesEXT",
+      "stype": 1000316002,
+      "member": "descriptorBufferPushDescriptors",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x386",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderIntegerDotProductFeatures",
+      "stype": 1000280000,
+      "member": "shaderIntegerDotProduct",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x303",
+      "store_elf": "0xa3d170"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentShaderBarycentricFeaturesKHR",
+      "stype": 1000203000,
+      "member": "fragmentShaderBarycentric",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x387",
+      "store_elf": "0xa3d454"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderFmaFeaturesKHR",
+      "stype": 1000579000,
+      "member": "shaderFmaFloat16",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x388",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderFmaFeaturesKHR",
+      "stype": 1000579000,
+      "member": "shaderFmaFloat32",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x389",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderFmaFeaturesKHR",
+      "stype": 1000579000,
+      "member": "shaderFmaFloat64",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x38a",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingMotionBlurFeaturesNV",
+      "stype": 1000327001,
+      "member": "rayTracingMotionBlur",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x38b",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingMotionBlurFeaturesNV",
+      "stype": 1000327001,
+      "member": "rayTracingMotionBlurPipelineTraceRaysIndirect",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x38c",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingValidationFeaturesNV",
+      "stype": 1000568000,
+      "member": "rayTracingValidation",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x38d",
+      "store_elf": "0xa3ec30"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV",
+      "stype": 1000429008,
+      "member": "spheres",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x38e",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV",
+      "stype": 1000429008,
+      "member": "linearSweptSpheres",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x38f",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT",
+      "stype": 1000344000,
+      "member": "formatRgba10x6WithoutYCbCrSampler",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x390",
+      "store_elf": "0xa3ea80"
+    },
+    {
+      "struct": "VkPhysicalDeviceDynamicRenderingFeatures",
+      "stype": 1000044003,
+      "member": "dynamicRendering",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x302",
+      "store_elf": "0xa3d1f8"
+    },
+    {
+      "struct": "VkPhysicalDeviceImageViewMinLodFeaturesEXT",
+      "stype": 1000391000,
+      "member": "minLod",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x391",
+      "store_elf": "0xa3e9a0"
+    },
+    {
+      "struct": "VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT",
+      "stype": 1000342000,
+      "member": "rasterizationOrderColorAttachmentAccess",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x392",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT",
+      "stype": 1000342000,
+      "member": "rasterizationOrderDepthAttachmentAccess",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x393",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT",
+      "stype": 1000342000,
+      "member": "rasterizationOrderStencilAttachmentAccess",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x394",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceLinearColorAttachmentFeaturesNV",
+      "stype": 1000430000,
+      "member": "linearColorAttachment",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x395",
+      "store_elf": "0xa3dac8"
+    },
+    {
+      "struct": "VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT",
+      "stype": 1000320000,
+      "member": "graphicsPipelineLibrary",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x396",
+      "store_elf": "0xa3d5bc"
+    },
+    {
+      "struct": "VkPhysicalDevicePipelineBinaryFeaturesKHR",
+      "stype": 1000483000,
+      "member": "pipelineBinaries",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x397",
+      "store_elf": "0xa3e76c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM",
+      "stype": 1000676002,
+      "member": "dataGraphNeuralAcceleratorStatistics",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x398",
+      "store_elf": "0xa3e1cc"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorSetHostMappingFeaturesVALVE",
+      "stype": 1000420000,
+      "member": "descriptorSetHostMapping",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x399",
+      "store_elf": "0xa3e7b4"
+    },
+    {
+      "struct": "VkPhysicalDeviceNestedCommandBufferFeaturesEXT",
+      "stype": 1000451000,
+      "member": "nestedCommandBuffer",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x39a",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceNestedCommandBufferFeaturesEXT",
+      "stype": 1000451000,
+      "member": "nestedCommandBufferRendering",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x39b",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceNestedCommandBufferFeaturesEXT",
+      "stype": 1000451000,
+      "member": "nestedCommandBufferSimultaneousUse",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x39c",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderModuleIdentifierFeaturesEXT",
+      "stype": 1000462000,
+      "member": "shaderModuleIdentifier",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x39d",
+      "store_elf": "0xa3d2ac"
+    },
+    {
+      "struct": "VkPhysicalDeviceImageCompressionControlFeaturesEXT",
+      "stype": 1000338000,
+      "member": "imageCompressionControl",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x39e",
+      "store_elf": "0xa3c9ac"
+    },
+    {
+      "struct": "VkPhysicalDeviceImageCompressionControlSwapchainFeaturesEXT",
+      "stype": 1000437000,
+      "member": "imageCompressionControlSwapchain",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x39f",
+      "store_elf": "0xa3e65c"
+    },
+    {
+      "struct": "VkPhysicalDeviceSubpassMergeFeedbackFeaturesEXT",
+      "stype": 1000458000,
+      "member": "subpassMergeFeedback",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3a0",
+      "store_elf": "0xa3e854"
+    },
+    {
+      "struct": "VkPhysicalDeviceOpacityMicromapFeaturesKHR",
+      "stype": 1000623000,
+      "member": "micromap",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3a1",
+      "store_elf": "0xa3ec48"
+    },
+    {
+      "struct": "VkPhysicalDeviceOpacityMicromapFeaturesEXT",
+      "stype": 1000396005,
+      "member": "micromap",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3a2",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceOpacityMicromapFeaturesEXT",
+      "stype": 1000396005,
+      "member": "micromapCaptureReplay",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x3a3",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceOpacityMicromapFeaturesEXT",
+      "stype": 1000396005,
+      "member": "micromapHostCommands",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x3a4",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceDisplacementMicromapFeaturesNV",
+      "stype": 1000397000,
+      "member": "displacementMicromap",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3a5",
+      "store_elf": "0xa3d9b8"
+    },
+    {
+      "struct": "VkPhysicalDevicePipelinePropertiesFeaturesEXT",
+      "stype": 1000372001,
+      "member": "pipelinePropertiesIdentifier",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3a6",
+      "store_elf": "0xa3ed44"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD",
+      "stype": 1000321000,
+      "member": "shaderEarlyAndLateFragmentTests",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3a7",
+      "store_elf": "0xa3eb28"
+    },
+    {
+      "struct": "VkPhysicalDeviceNonSeamlessCubeMapFeaturesEXT",
+      "stype": 1000422000,
+      "member": "nonSeamlessCubeMap",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3a8",
+      "store_elf": "0xa3e8cc"
+    },
+    {
+      "struct": "VkPhysicalDevicePipelineRobustnessFeatures",
+      "stype": 1000068001,
+      "member": "pipelineRobustness",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x30a",
+      "store_elf": "0xa3dfd8"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM",
+      "stype": 1000304000,
+      "member": "shaderMultipleWaitQueues",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3a9",
+      "store_elf": "0xa3eac8"
+    },
+    {
+      "struct": "VkPhysicalDeviceImageProcessingFeaturesQCOM",
+      "stype": 1000440000,
+      "member": "textureSampleWeighted",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3aa",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceImageProcessingFeaturesQCOM",
+      "stype": 1000440000,
+      "member": "textureBoxFilter",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x3ab",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceImageProcessingFeaturesQCOM",
+      "stype": 1000440000,
+      "member": "textureBlockMatch",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x3ac",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceTilePropertiesFeaturesQCOM",
+      "stype": 1000484000,
+      "member": "tileProperties",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3ad",
+      "store_elf": "0xa3cfb4"
+    },
+    {
+      "struct": "VkPhysicalDeviceAmigoProfilingFeaturesSEC",
+      "stype": 1000485000,
+      "member": "amigoProfiling",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3ae",
+      "store_elf": "0xa3e884"
+    },
+    {
+      "struct": "VkPhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT",
+      "stype": 1000339000,
+      "member": "attachmentFeedbackLoopLayout",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3af",
+      "store_elf": "0xa3ed8c"
+    },
+    {
+      "struct": "VkPhysicalDeviceAddressBindingReportFeaturesEXT",
+      "stype": 1000354000,
+      "member": "reportAddressBinding",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3b0",
+      "store_elf": "0xa3eda4"
+    },
+    {
+      "struct": "VkPhysicalDeviceOpticalFlowFeaturesNV",
+      "stype": 1000464000,
+      "member": "opticalFlow",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3b1",
+      "store_elf": "0xa3e8b4"
+    },
+    {
+      "struct": "VkPhysicalDeviceFaultFeaturesEXT",
+      "stype": 1000341000,
+      "member": "deviceFault",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3b2",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceFaultFeaturesEXT",
+      "stype": 1000341000,
+      "member": "deviceFaultVendorBinary",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x3b3",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceFaultFeaturesKHR",
+      "stype": 1000573000,
+      "member": "deviceFault",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3b4",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceFaultFeaturesKHR",
+      "stype": 1000573000,
+      "member": "deviceFaultVendorBinary",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x3b5",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceFaultFeaturesKHR",
+      "stype": 1000573000,
+      "member": "deviceFaultReportMasked",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x3b6",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceFaultFeaturesKHR",
+      "stype": 1000573000,
+      "member": "deviceFaultDeviceLostOnMasked",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x3b7",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR",
+      "stype": 1000498000,
+      "member": "pipelineLibraryGroupHandles",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3b8",
+      "store_elf": "0xa3d580"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderCoreBuiltinsFeaturesARM",
+      "stype": 1000497000,
+      "member": "shaderCoreBuiltins",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3b9",
+      "store_elf": "0xa3e9ec"
+    },
+    {
+      "struct": "VkPhysicalDeviceFrameBoundaryFeaturesEXT",
+      "stype": 1000375000,
+      "member": "frameBoundary",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3ba",
+      "store_elf": "0xa3cb3c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT",
+      "stype": 1000499000,
+      "member": "dynamicRenderingUnusedAttachments",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3bb",
+      "store_elf": "0xa3ea60"
+    },
+    {
+      "struct": "VkPhysicalDeviceInternallySynchronizedQueuesFeaturesKHR",
+      "stype": 1000504000,
+      "member": "internallySynchronizedQueues",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3bc",
+      "store_elf": "0xa3e11c"
+    },
+    {
+      "struct": "VkPhysicalDeviceSwapchainMaintenance1FeaturesKHR",
+      "stype": 1000275000,
+      "member": "swapchainMaintenance1",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3bd",
+      "store_elf": "0xa3ec54"
+    },
+    {
+      "struct": "VkPhysicalDeviceDepthBiasControlFeaturesEXT",
+      "stype": 1000283000,
+      "member": "depthBiasControl",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3be",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceDepthBiasControlFeaturesEXT",
+      "stype": 1000283000,
+      "member": "leastRepresentableValueForceUnormRepresentation",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x3bf",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceDepthBiasControlFeaturesEXT",
+      "stype": 1000283000,
+      "member": "floatRepresentation",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x3c0",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceDepthBiasControlFeaturesEXT",
+      "stype": 1000283000,
+      "member": "depthBiasExact",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x3c1",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingInvocationReorderFeaturesEXT",
+      "stype": 1000581000,
+      "member": "rayTracingInvocationReorder",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3c2",
+      "store_elf": "0xa3ead4"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingInvocationReorderFeaturesNV",
+      "stype": 1000490000,
+      "member": "rayTracingInvocationReorder",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3c3",
+      "store_elf": "0xa3e7cc"
+    },
+    {
+      "struct": "VkPhysicalDeviceExtendedSparseAddressSpaceFeaturesNV",
+      "stype": 1000492000,
+      "member": "extendedSparseAddressSpace",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3c4",
+      "store_elf": "0xa3e8e4"
+    },
+    {
+      "struct": "VkPhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM",
+      "stype": 1000488000,
+      "member": "multiviewPerViewViewports",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3c5",
+      "store_elf": "0xa3de44"
+    },
+    {
+      "struct": "VkPhysicalDeviceRayTracingPositionFetchFeaturesKHR",
+      "stype": 1000481000,
+      "member": "rayTracingPositionFetch",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3c6",
+      "store_elf": "0xa3e644"
+    },
+    {
+      "struct": "VkPhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM",
+      "stype": 1000510000,
+      "member": "multiviewPerViewRenderAreas",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3c7",
+      "store_elf": "0xa3e988"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderObjectFeaturesEXT",
+      "stype": 1000482000,
+      "member": "shaderObject",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3c8",
+      "store_elf": "0xa3c6bc"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderTileImageFeaturesEXT",
+      "stype": 1000395000,
+      "member": "shaderTileImageColorReadAccess",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3c9",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderTileImageFeaturesEXT",
+      "stype": 1000395000,
+      "member": "shaderTileImageDepthReadAccess",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x3ca",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderTileImageFeaturesEXT",
+      "stype": 1000395000,
+      "member": "shaderTileImageStencilReadAccess",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x3cb",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrixFeaturesKHR",
+      "stype": 1000506000,
+      "member": "cooperativeMatrix",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3cd",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrixFeaturesKHR",
+      "stype": 1000506000,
+      "member": "cooperativeMatrixRobustBufferAccess",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x3ce",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrixConversionFeaturesQCOM",
+      "stype": 1000172000,
+      "member": "cooperativeMatrixConversion",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3cf",
+      "store_elf": "0xa3e728"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderEnqueueFeaturesAMDX",
+      "stype": 1000134000,
+      "member": "shaderEnqueue",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3d0",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderEnqueueFeaturesAMDX",
+      "stype": 1000134000,
+      "member": "shaderMeshEnqueue",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x3d1",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceAntiLagFeaturesAMD",
+      "stype": 1000476000,
+      "member": "antiLag",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3d2",
+      "store_elf": "0xa3e060"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileMemoryHeapFeaturesQCOM",
+      "stype": 1000547000,
+      "member": "tileMemoryHeap",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3d3",
+      "store_elf": "0xa3e6a8"
+    },
+    {
+      "struct": "VkPhysicalDeviceCubicClampFeaturesQCOM",
+      "stype": 1000521000,
+      "member": "cubicRangeClamp",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3d4",
+      "store_elf": "0xa3d688"
+    },
+    {
+      "struct": "VkPhysicalDeviceYcbcrDegammaFeaturesQCOM",
+      "stype": 1000520000,
+      "member": "ycbcrDegamma",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3d5",
+      "store_elf": "0xa3eb84"
+    },
+    {
+      "struct": "VkPhysicalDeviceCubicWeightsFeaturesQCOM",
+      "stype": 1000519001,
+      "member": "selectableCubicWeights",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3d6",
+      "store_elf": "0xa3e2f4"
+    },
+    {
+      "struct": "VkPhysicalDeviceImageProcessing2FeaturesQCOM",
+      "stype": 1000518000,
+      "member": "textureBlockMatch2",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3d7",
+      "store_elf": "0xa3ebb4"
+    },
+    {
+      "struct": "VkPhysicalDeviceImageProcessing3FeaturesQCOM",
+      "stype": 1000303000,
+      "member": "imageGatherLinear",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3d8",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceImageProcessing3FeaturesQCOM",
+      "stype": 1000303000,
+      "member": "imageGatherExtendedModes",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x3d9",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceImageProcessing3FeaturesQCOM",
+      "stype": 1000303000,
+      "member": "blockMatchExtendedClampToEdge",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x3da",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorPoolOverallocationFeaturesNV",
+      "stype": 1000546000,
+      "member": "descriptorPoolOverallocation",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3db",
+      "store_elf": "0xa3e4ac"
+    },
+    {
+      "struct": "VkPhysicalDevicePerStageDescriptorSetFeaturesNV",
+      "stype": 1000516000,
+      "member": "perStageDescriptorSet",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3dc",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDevicePerStageDescriptorSetFeaturesNV",
+      "stype": 1000516000,
+      "member": "dynamicPipelineLayout",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x3dd",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceExternalFormatResolveFeaturesANDROID",
+      "stype": 1000468000,
+      "member": "externalFormatResolve",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3de",
+      "store_elf": "0xa3d490"
+    },
+    {
+      "struct": "VkPhysicalDeviceCudaKernelLaunchFeaturesNV",
+      "stype": 1000307003,
+      "member": "cudaKernelLaunchFeatures",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3df",
+      "store_elf": "0xa3eae0"
+    },
+    {
+      "struct": "VkPhysicalDeviceSchedulingControlsFeaturesARM",
+      "stype": 1000417001,
+      "member": "schedulingControls",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3e0",
+      "store_elf": "0xa3e86c"
+    },
+    {
+      "struct": "VkPhysicalDeviceRelaxedLineRasterizationFeaturesIMG",
+      "stype": 1000110000,
+      "member": "relaxedLineRasterization",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3e1",
+      "store_elf": "0xa3e744"
+    },
+    {
+      "struct": "VkPhysicalDeviceRenderPassStripedFeaturesARM",
+      "stype": 1000424000,
+      "member": "renderPassStriped",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3e2",
+      "store_elf": "0xa3df54"
+    },
+    {
+      "struct": "VkPhysicalDevicePipelineOpacityMicromapFeaturesARM",
+      "stype": 1000596000,
+      "member": "pipelineOpacityMicromap",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3e3",
+      "store_elf": "0xa3eb04"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderMaximalReconvergenceFeaturesKHR",
+      "stype": 1000434000,
+      "member": "shaderMaximalReconvergence",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3e4",
+      "store_elf": "0xa3e970"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderSubgroupRotateFeatures",
+      "stype": 1000416000,
+      "member": "shaderSubgroupRotate",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x304",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderSubgroupRotateFeatures",
+      "stype": 1000416000,
+      "member": "shaderSubgroupRotateClustered",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x305",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderExpectAssumeFeatures",
+      "stype": 1000544000,
+      "member": "shaderExpectAssume",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x307",
+      "store_elf": "0xa3d7f8"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderFloatControls2Features",
+      "stype": 1000528000,
+      "member": "shaderFloatControls2",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x306",
+      "store_elf": "0xa3eccc"
+    },
+    {
+      "struct": "VkPhysicalDeviceDynamicRenderingLocalReadFeatures",
+      "stype": 1000232000,
+      "member": "dynamicRenderingLocalRead",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x308",
+      "store_elf": "0xa3e8d8"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderQuadControlFeaturesKHR",
+      "stype": 1000235000,
+      "member": "shaderQuadControl",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3e5",
+      "store_elf": "0xa3d544"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAtomicFloat16VectorFeaturesNV",
+      "stype": 1000563000,
+      "member": "shaderFloat16VectorAtomics",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3e6",
+      "store_elf": "0xa3e34c"
+    },
+    {
+      "struct": "VkPhysicalDeviceMapMemoryPlacedFeaturesEXT",
+      "stype": 1000272000,
+      "member": "memoryMapPlaced",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3e7",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceMapMemoryPlacedFeaturesEXT",
+      "stype": 1000272000,
+      "member": "memoryMapRangePlaced",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x3e8",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceMapMemoryPlacedFeaturesEXT",
+      "stype": 1000272000,
+      "member": "memoryUnmapReserve",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x3e9",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderBfloat16FeaturesKHR",
+      "stype": 1000141000,
+      "member": "shaderBFloat16Type",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3ea",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderBfloat16FeaturesKHR",
+      "stype": 1000141000,
+      "member": "shaderBFloat16DotProduct",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x3eb",
+      "store_elf": "0xa3ec74"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderBfloat16FeaturesKHR",
+      "stype": 1000141000,
+      "member": "shaderBFloat16CooperativeMatrix",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x3ec",
+      "store_elf": "0xa3ec78"
+    },
+    {
+      "struct": "VkPhysicalDeviceRawAccessChainsFeaturesNV",
+      "stype": 1000555000,
+      "member": "shaderRawAccessChains",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3ed",
+      "store_elf": "0xa3c79c"
+    },
+    {
+      "struct": "VkPhysicalDeviceCommandBufferInheritanceFeaturesNV",
+      "stype": 1000559000,
+      "member": "commandBufferInheritance",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3ee",
+      "store_elf": "0xa3d1bc"
+    },
+    {
+      "struct": "VkPhysicalDeviceImageAlignmentControlFeaturesMESA",
+      "stype": 1000575000,
+      "member": "imageAlignmentControl",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3ef",
+      "store_elf": "0xa3e6c0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderReplicatedCompositesFeaturesEXT",
+      "stype": 1000564000,
+      "member": "shaderReplicatedComposites",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3f0",
+      "store_elf": "0xa3eb9c"
+    },
+    {
+      "struct": "VkPhysicalDevicePresentModeFifoLatestReadyFeaturesKHR",
+      "stype": 1000361000,
+      "member": "presentModeFifoLatestReady",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3f1",
+      "store_elf": "0xa3e58c"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrix2FeaturesNV",
+      "stype": 1000593000,
+      "member": "cooperativeMatrixWorkgroupScope",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3f2",
+      "store_elf": "0xa3e244"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrix2FeaturesNV",
+      "stype": 1000593000,
+      "member": "cooperativeMatrixFlexibleDimensions",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x3f3",
+      "store_elf": "0xa3e244"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrix2FeaturesNV",
+      "stype": 1000593000,
+      "member": "cooperativeMatrixReductions",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x3f4",
+      "store_elf": "0xa3e244"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrix2FeaturesNV",
+      "stype": 1000593000,
+      "member": "cooperativeMatrixConversions",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x3f5",
+      "store_elf": "0xa3e244"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrix2FeaturesNV",
+      "stype": 1000593000,
+      "member": "cooperativeMatrixPerElementOperations",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x3f6",
+      "store_elf": "0xa3e230"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrix2FeaturesNV",
+      "stype": 1000593000,
+      "member": "cooperativeMatrixTensorAddressing",
+      "api_member_offset": 36,
+      "native_physical_offset": "0x3f7",
+      "store_elf": "0xa3e238"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrix2FeaturesNV",
+      "stype": 1000593000,
+      "member": "cooperativeMatrixBlockLoads",
+      "api_member_offset": 40,
+      "native_physical_offset": "0x3f8",
+      "store_elf": "0xa3e238"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV",
+      "stype": 1000689000,
+      "member": "cooperativeMatrixDecodeVector",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3f9",
+      "store_elf": "0xa3cb98"
+    },
+    {
+      "struct": "VkPhysicalDeviceHdrVividFeaturesHUAWEI",
+      "stype": 1000590000,
+      "member": "hdrVivid",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3fa",
+      "store_elf": "0xa3eb1c"
+    },
+    {
+      "struct": "VkPhysicalDeviceVertexAttributeRobustnessFeaturesEXT",
+      "stype": 1000608000,
+      "member": "vertexAttributeRobustness",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3fb",
+      "store_elf": "0xa3ec9c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDenseGeometryFormatFeaturesAMDX",
+      "stype": 1000478000,
+      "member": "denseGeometryFormat",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3fc",
+      "store_elf": "0xa3e5ec"
+    },
+    {
+      "struct": "VkPhysicalDeviceDepthClampZeroOneFeaturesKHR",
+      "stype": 1000421000,
+      "member": "depthClampZeroOne",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3fd",
+      "store_elf": "0xa3d328"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeVectorFeaturesNV",
+      "stype": 1000491000,
+      "member": "cooperativeVector",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x3fe",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeVectorFeaturesNV",
+      "stype": 1000491000,
+      "member": "cooperativeVectorTraining",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x3ff",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "stype": 1000309000,
+      "member": "tileShading",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x400",
+      "store_elf": "0xa3d014"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "stype": 1000309000,
+      "member": "tileShadingFragmentStage",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x401",
+      "store_elf": "0xa3d014"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "stype": 1000309000,
+      "member": "tileShadingColorAttachments",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x402",
+      "store_elf": "0xa3d014"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "stype": 1000309000,
+      "member": "tileShadingDepthAttachments",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x403",
+      "store_elf": "0xa3d014"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "stype": 1000309000,
+      "member": "tileShadingStencilAttachments",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x404",
+      "store_elf": "0xa3d028"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "stype": 1000309000,
+      "member": "tileShadingInputAttachments",
+      "api_member_offset": 36,
+      "native_physical_offset": "0x405",
+      "store_elf": "0xa3d028"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "stype": 1000309000,
+      "member": "tileShadingSampledAttachments",
+      "api_member_offset": 40,
+      "native_physical_offset": "0x406",
+      "store_elf": "0xa3d028"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "stype": 1000309000,
+      "member": "tileShadingPerTileDraw",
+      "api_member_offset": 44,
+      "native_physical_offset": "0x407",
+      "store_elf": "0xa3d028"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "stype": 1000309000,
+      "member": "tileShadingPerTileDispatch",
+      "api_member_offset": 48,
+      "native_physical_offset": "0x408",
+      "store_elf": "0xa3d040"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "stype": 1000309000,
+      "member": "tileShadingDispatchTile",
+      "api_member_offset": 52,
+      "native_physical_offset": "0x409",
+      "store_elf": "0xa3d040"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "stype": 1000309000,
+      "member": "tileShadingApron",
+      "api_member_offset": 56,
+      "native_physical_offset": "0x40a",
+      "store_elf": "0xa3d040"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "stype": 1000309000,
+      "member": "tileShadingAnisotropicApron",
+      "api_member_offset": 60,
+      "native_physical_offset": "0x40b",
+      "store_elf": "0xa3d040"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "stype": 1000309000,
+      "member": "tileShadingAtomicOps",
+      "api_member_offset": 64,
+      "native_physical_offset": "0x40c",
+      "store_elf": "0xa3d030"
+    },
+    {
+      "struct": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "stype": 1000309000,
+      "member": "tileShadingImageProcessing",
+      "api_member_offset": 68,
+      "native_physical_offset": "0x40d",
+      "store_elf": "0xa3d030"
+    },
+    {
+      "struct": "VkPhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE",
+      "stype": 1000611000,
+      "member": "fragmentDensityMapLayered",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x40e",
+      "store_elf": "0xa3ecb4"
+    },
+    {
+      "struct": "VkPhysicalDevicePresentMeteringFeaturesNV",
+      "stype": 1000613001,
+      "member": "presentMetering",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x40f",
+      "store_elf": "0xa3e454"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT",
+      "stype": 1000642000,
+      "member": "shaderUniformBufferUnsizedArray",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x410",
+      "store_elf": "0xa3e174"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE",
+      "stype": 1000673000,
+      "member": "shaderMixedFloatDotProductFloat16AccFloat32",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x411",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE",
+      "stype": 1000673000,
+      "member": "shaderMixedFloatDotProductFloat16AccFloat16",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x412",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE",
+      "stype": 1000673000,
+      "member": "shaderMixedFloatDotProductBFloat16Acc",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x413",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE",
+      "stype": 1000673000,
+      "member": "shaderMixedFloatDotProductFloat8AccFloat32",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x414",
+      "store_elf": "0xa3ed20"
+    },
+    {
+      "struct": "VkPhysicalDevicePrimitiveRestartIndexFeaturesEXT",
+      "stype": 1000678000,
+      "member": "primitiveRestartIndex",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x415",
+      "store_elf": "0xa3ed80"
+    },
+    {
+      "struct": "VkPhysicalDeviceFormatPackFeaturesARM",
+      "stype": 1000609000,
+      "member": "formatPack",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x416",
+      "store_elf": "0xa3d780"
+    },
+    {
+      "struct": "VkPhysicalDeviceThrottleHintFeaturesSEC",
+      "stype": 1000674000,
+      "member": "throttleHint",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x417",
+      "store_elf": "0xa3eaa4"
+    },
+    {
+      "struct": "VkPhysicalDeviceTensorFeaturesARM",
+      "stype": 1000460009,
+      "member": "tensorNonPacked",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x418",
+      "store_elf": "0xa3dd90"
+    },
+    {
+      "struct": "VkPhysicalDeviceTensorFeaturesARM",
+      "stype": 1000460009,
+      "member": "shaderTensorAccess",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x419",
+      "store_elf": "0xa3dd90"
+    },
+    {
+      "struct": "VkPhysicalDeviceTensorFeaturesARM",
+      "stype": 1000460009,
+      "member": "shaderStorageTensorArrayDynamicIndexing",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x41a",
+      "store_elf": "0xa3dd90"
+    },
+    {
+      "struct": "VkPhysicalDeviceTensorFeaturesARM",
+      "stype": 1000460009,
+      "member": "shaderStorageTensorArrayNonUniformIndexing",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x41b",
+      "store_elf": "0xa3dd90"
+    },
+    {
+      "struct": "VkPhysicalDeviceTensorFeaturesARM",
+      "stype": 1000460009,
+      "member": "descriptorBindingStorageTensorUpdateAfterBind",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x41c",
+      "store_elf": "0xa3dd84"
+    },
+    {
+      "struct": "VkPhysicalDeviceTensorFeaturesARM",
+      "stype": 1000460009,
+      "member": "tensors",
+      "api_member_offset": 36,
+      "native_physical_offset": "0x41d",
+      "store_elf": "0xa3dd84"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorBufferTensorFeaturesARM",
+      "stype": 1000460018,
+      "member": "descriptorBufferTensorDescriptors",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x41e",
+      "store_elf": "0xa3e79c"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderFloat8FeaturesEXT",
+      "stype": 1000567000,
+      "member": "shaderFloat8",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x41f",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderFloat8FeaturesEXT",
+      "stype": 1000567000,
+      "member": "shaderFloat8CooperativeMatrix",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x420",
+      "store_elf": "0xa3c3e0"
+    },
+    {
+      "struct": "VkPhysicalDeviceDataGraphFeaturesARM",
+      "stype": 1000507006,
+      "member": "dataGraph",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x421",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceDataGraphFeaturesARM",
+      "stype": 1000507006,
+      "member": "dataGraphUpdateAfterBind",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x422",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceDataGraphFeaturesARM",
+      "stype": 1000507006,
+      "member": "dataGraphSpecializationConstants",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x423",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceDataGraphFeaturesARM",
+      "stype": 1000507006,
+      "member": "dataGraphDescriptorBuffer",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x424",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceDataGraphFeaturesARM",
+      "stype": 1000507006,
+      "member": "dataGraphShaderModule",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x425",
+      "store_elf": "0xa3ea3c"
+    },
+    {
+      "struct": "VkPhysicalDevicePipelineCacheIncrementalModeFeaturesSEC",
+      "stype": 1000637000,
+      "member": "pipelineCacheIncrementalMode",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x426",
+      "store_elf": "0xa3ea8c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDataGraphModelFeaturesQCOM",
+      "stype": 1000629000,
+      "member": "dataGraphModel",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x427",
+      "store_elf": "0xa3ed98"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderUntypedPointersFeaturesKHR",
+      "stype": 1000387000,
+      "member": "shaderUntypedPointers",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x428",
+      "store_elf": "0xa3d234"
+    },
+    {
+      "struct": "VkPhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE",
+      "stype": 1000390000,
+      "member": "videoEncodeRgbConversion",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x429",
+      "store_elf": "0xa3dea0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShader64BitIndexingFeaturesEXT",
+      "stype": 1000627000,
+      "member": "shader64BitIndexing",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x42a",
+      "store_elf": "0xa3ea74"
+    },
+    {
+      "struct": "VkPhysicalDeviceQueuePerfHintFeaturesQCOM",
+      "stype": 1000302001,
+      "member": "queuePerfHint",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x42b",
+      "store_elf": "0xa3dc28"
+    },
+    {
+      "struct": "VkPhysicalDevicePerformanceCountersByRegionFeaturesARM",
+      "stype": 1000605000,
+      "member": "performanceCountersByRegion",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x42c",
+      "store_elf": "0xa3eb34"
+    },
+    {
+      "struct": "VkPhysicalDeviceComputeOccupancyPriorityFeaturesNV",
+      "stype": 1000645001,
+      "member": "computeOccupancyPriority",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x42d",
+      "store_elf": "0xa3ed68"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderLongVectorFeaturesEXT",
+      "stype": 1000635000,
+      "member": "longVector",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x42e",
+      "store_elf": "0xa3e560"
+    },
+    {
+      "struct": "VkPhysicalDeviceTextureCompressionASTC3DFeaturesEXT",
+      "stype": 1000288000,
+      "member": "textureCompressionASTC_3D",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x42f",
+      "store_elf": "0xa3e3d0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderSubgroupPartitionedFeaturesEXT",
+      "stype": 1000662000,
+      "member": "shaderSubgroupPartitioned",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x430",
+      "store_elf": "0xa3edb0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderSplitBarrierFeaturesEXT",
+      "stype": 1000305000,
+      "member": "shaderSplitBarrier",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x431",
+      "store_elf": "0xa3ca7c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorHeapFeaturesEXT",
+      "stype": 1000135009,
+      "member": "descriptorHeap",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x432",
+      "store_elf": "0xa3d2ec"
+    },
+    {
+      "struct": "VkPhysicalDeviceDescriptorHeapFeaturesEXT",
+      "stype": 1000135009,
+      "member": "descriptorHeapCaptureReplay",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x433",
+      "store_elf": "0xa3d2ec"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderInstrumentationFeaturesARM",
+      "stype": 1000607000,
+      "member": "shaderInstrumentation",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x434",
+      "store_elf": "0xa3e29c"
+    },
+    {
+      "struct": "VkPhysicalDeviceDeviceAddressCommandsFeaturesKHR",
+      "stype": 1000318006,
+      "member": "deviceAddressCommands",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x435",
+      "store_elf": "0xa3eaf8"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderConstantDataFeaturesKHR",
+      "stype": 1000231000,
+      "member": "shaderConstantData",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x436",
+      "store_elf": "0xa3d364"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderAbortFeaturesKHR",
+      "stype": 1000233000,
+      "member": "shaderAbort",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x437",
+      "store_elf": "0xa3df80"
+    },
+    {
+      "struct": "VkPhysicalDeviceDataGraphOpticalFlowFeaturesARM",
+      "stype": 1000631000,
+      "member": "dataGraphOpticalFlow",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x438",
+      "store_elf": "0xa3edc8"
+    },
+    {
+      "struct": "VkPhysicalDeviceImageTilingControlFeaturesEXT",
+      "stype": 1000687000,
+      "member": "imageTilingControl",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x439",
+      "store_elf": "0xa3ed50"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT",
+      "stype": 1000672000,
+      "member": "shaderFloat4",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x43a",
+      "store_elf": "0xa3edf0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT",
+      "stype": 1000672000,
+      "member": "shaderFloat6",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x43b",
+      "store_elf": "0xa3edf0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT",
+      "stype": 1000672000,
+      "member": "shaderFloat8UnsignedE8M0",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x43c",
+      "store_elf": "0xa3edf0"
+    },
+    {
+      "struct": "VkPhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT",
+      "stype": 1000672000,
+      "member": "shaderMXInt8",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x43d",
+      "store_elf": "0xa3edf0"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT",
+      "stype": 1000659000,
+      "member": "cooperativeMatrixProperties2",
+      "api_member_offset": 16,
+      "native_physical_offset": "0x43e",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT",
+      "stype": 1000659000,
+      "member": "cooperativeMatrixReductions",
+      "api_member_offset": 20,
+      "native_physical_offset": "0x43f",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT",
+      "stype": 1000659000,
+      "member": "cooperativeMatrixConversions",
+      "api_member_offset": 24,
+      "native_physical_offset": "0x440",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT",
+      "stype": 1000659000,
+      "member": "cooperativeMatrixPerElementOperations",
+      "api_member_offset": 28,
+      "native_physical_offset": "0x441",
+      "store_elf": "0xa3ea38"
+    },
+    {
+      "struct": "VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT",
+      "stype": 1000659000,
+      "member": "cooperativeMatrixGetCoordinate",
+      "api_member_offset": 32,
+      "native_physical_offset": "0x442",
+      "store_elf": "0xa3ea3c"
+    }
+  ],
+  "current_registry_structures_without_original_stores": [
+    "VkPhysicalDeviceExternalMemorySciBufFeaturesNV",
+    "VkPhysicalDevicePrivateDataBaseHandleFeaturesNV",
+    "VkPhysicalDeviceExternalSciSyncFeaturesNV",
+    "VkPhysicalDeviceExternalSciSync2FeaturesNV",
+    "VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX",
+    "VkPhysicalDeviceProtectedMemoryProperties",
+    "VkPhysicalDeviceSamplerFilterMinmaxProperties",
+    "VkPhysicalDeviceMaintenance5Properties",
+    "VkPhysicalDeviceMaintenance10PropertiesKHR",
+    "VkPhysicalDevicePresentationPropertiesANDROID",
+    "VkPhysicalDeviceComputeShaderDerivativesPropertiesKHR",
+    "VkPhysicalDevicePerformanceQueryPropertiesKHR",
+    "VkPhysicalDeviceExtendedDynamicState3PropertiesEXT",
+    "VkPhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEI",
+    "VkPhysicalDeviceLegacyVertexAttributesPropertiesEXT",
+    "VkPhysicalDeviceVulkanSC10Features",
+    "VkPhysicalDeviceProvokingVertexPropertiesEXT",
+    "VkPhysicalDeviceShaderIntegerDotProductProperties",
+    "VkPhysicalDeviceFragmentShaderBarycentricPropertiesKHR",
+    "VkPhysicalDevicePipelineBinaryPropertiesKHR",
+    "VkPhysicalDeviceGraphicsPipelineLibraryPropertiesEXT",
+    "VkPhysicalDeviceShaderTileImagePropertiesEXT",
+    "VkPhysicalDeviceExternalMemoryScreenBufferFeaturesQNX",
+    "VkPhysicalDeviceTileMemoryHeapPropertiesQCOM",
+    "VkPhysicalDevicePresentationPropertiesOHOS",
+    "VkPhysicalDeviceBufferDeviceAddressAllocationAlignmentFeaturesVALVE"
+  ],
+  "limits": [
+    "Bounded static symbolic routes for exact original getter only; original code never executed.",
+    "Feature-byte inputs modeled as boolean0/1; no arbitrary byte/undefined input semantics claimed.",
+    "Registry names/order/structure offsets used; offsets are original physical ABI, not current Mesa ABI.",
+    "Initialization values, platform filters, advertised support and actual GPU feature behavior remain separate."
+  ]
+}

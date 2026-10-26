@@ -1489,14 +1489,19 @@ tu_pass_is_depth_stencil_only(const struct tu_render_pass *pass)
 
 /* AK: a8xx MSAA render mode restrictions, as in GameHub's Turnip. */
 static const char *
-tu_a8xx_msaa_sysmem_reason(const struct tu_render_pass *pass)
+tu_msaa_sysmem_reason(const struct tu_render_pass *pass,
+                     const struct fd_dev_info *info)
 {
+   if (info->chip < 8 &&
+       !info->props.multi_subpass_msaa_no_input_requires_sysmem)
+      return NULL;
+
    bool any_msaa = false;
    for (uint32_t i = 0; i < pass->attachment_count; i++) {
       const struct tu_render_pass_attachment *att = &pass->attachments[i];
       if (att->samples > 1)
          any_msaa = true;
-      if (att->samples != 8)
+      if (info->chip < 8 || att->samples != 8)
          continue;
       VkImageAspectFlags aspects = vk_format_aspects(att->format);
       if (aspects & (VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT))
@@ -1506,7 +1511,8 @@ tu_a8xx_msaa_sysmem_reason(const struct tu_render_pass *pass)
          return "8x MSAA attachment format requires sysmem on A8xx";
    }
 
-   if (pass->subpass_count > 1 && any_msaa) {
+   if (info->props.multi_subpass_msaa_no_input_requires_sysmem &&
+       pass->subpass_count > 1 && any_msaa) {
       bool any_input = false;
       for (uint32_t i = 0; i < pass->subpass_count; i++)
          any_input |= pass->subpasses[i].input_count != 0;
@@ -1569,13 +1575,11 @@ use_sysmem_rendering(struct tu_cmd_buffer *cmd,
       }
    }
 
-   const bool a8xx = cmd->device->physical_device->info->chip >= 8;
-   if (a8xx) {
-      const char *reason = tu_a8xx_msaa_sysmem_reason(cmd->state.pass);
-      if (reason) {
-         cmd->state.rp.force_render_mode_reason = reason;
-         return true;
-      }
+   const struct fd_dev_info *info = cmd->device->physical_device->info;
+   const char *msaa_reason = tu_msaa_sysmem_reason(cmd->state.pass, info);
+   if (msaa_reason) {
+      cmd->state.rp.force_render_mode_reason = msaa_reason;
+      return true;
    }
 
    /* can't fit attachments into gmem */
@@ -1648,7 +1652,8 @@ use_sysmem_rendering(struct tu_cmd_buffer *cmd,
       return false;
    }
 
-   if (a8xx && tu_a8xx_msaa_d32s8_input_requires_gmem(cmd->state.pass)) {
+   if (info->props.msaa_input_d32s8_requires_gmem &&
+       tu_a8xx_msaa_d32s8_input_requires_gmem(cmd->state.pass)) {
       cmd->state.rp.force_render_mode_reason =
          "MSAA D32S8 with input attachments requires gmem on A8xx";
       return false;

@@ -26,5 +26,6 @@
     "A6/A7/A8 static/dynamic/GPL and rendering, normal MRT controls",
     "Resolve raw native stencil-slot13 producer before claiming full neighboring lookup parity"
   ],
-  "evidence_sha256": "dbe3f819fc3d4e97c13516fc93ad8010dc3730d05ef1f2d5d8499e332a5479f5"
+  "evidence_sha256": "dbe3f819fc3d4e97c13516fc93ad8010dc3730d05ef1f2d5d8499e332a5479f5",
+  "neighbor_followup": "The metadata reader fallback was separately restored in503ca36a6db, stencil-fallback-reader.json. Meaning/producer13 still unresolved."
 }

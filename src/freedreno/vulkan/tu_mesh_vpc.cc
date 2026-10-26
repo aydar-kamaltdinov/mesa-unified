@@ -238,7 +238,8 @@ tu_a8_build_mesh_vpc_maps(const tu_a8_mesh_vpc_link *links, unsigned count,
    /* Original tu6_emit_vpc A8 ELF0x9c6d74 merges every semantic output sharing
     * a physical vec4. In particular two packed scalar varyings must not become
     * two separate SP output records. Ascending physical-register order matters.
-    * Current staging accepts only the 32 records supported by our XML.
+    * Current staging retains the32-record/128-scalar checked envelope.
+    * Record capacity alone does not prove a native register-ID limit.
     */
    uint8_t mask[64] = {};
    for (unsigned i = 0; i < count; i++) {
@@ -246,11 +247,10 @@ tu_a8_build_mesh_vpc_maps(const tu_a8_mesh_vpc_link *links, unsigned count,
       if (link.slot < 64 && (skip_output_slots & (UINT64_C(1) << link.slot)))
          continue;
       unsigned shifted = unsigned(link.compmask) << (link.regid & 3);
-      /* Valid packed outputs stay within one vec4. Original truncates the
-       * emitted mask to four bits; reject overflow until the final audit.
+      /* Original ELF0x9c8438..9c845c tests the low byte of the merged
+       * mask before keeping its low nibble in the output record. Keep that
+       * order: a nonzero high nibble still produces a zero-compmask record.
        */
-      if (shifted & ~0xfu)
-         return false;
       mask[link.regid >> 2] |= shifted;
    }
    for (unsigned reg = 0; reg < ARRAY_SIZE(mask); reg++) {
@@ -259,7 +259,7 @@ tu_a8_build_mesh_vpc_maps(const tu_a8_mesh_vpc_link *links, unsigned count,
       if (reg >= 32 || out->count == 32)
          return false;
       unsigned i = out->count++;
-      out->output[i / 2] |= ((reg << 2) | (unsigned(mask[reg]) << 8)) <<
+      out->output[i / 2] |= ((reg << 2) | ((unsigned(mask[reg]) & 0xfu) << 8)) <<
                             ((i & 1) * 16);
       out->destination[i / 4] |= (reg << 2) << ((i & 3) * 8);
    }

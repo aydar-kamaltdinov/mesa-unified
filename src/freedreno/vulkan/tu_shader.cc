@@ -4066,9 +4066,10 @@ tu_compile_shaders(struct tu_device *device,
                    bool retain_mesh_interface_nir,
                    VkPipelineCreationFeedback *stage_feedbacks)
 {
-   /* All callers provide MESA_SHADER_MESH_STAGES slots. Keep the rejection
-    * until mesh FS input keys/remapping and AQE context integration are ready.
-    * Source wiring below is intentionally not an activation switch.
+   /* All callers provide MESA_SHADER_MESH_STAGES slots. The restored mesh
+    * FS keys/remapping and AQE paths below remain held for the final integrated
+    * compiler/API/GPU validation. Keep compilation and feature exposure gated
+    * together; source restoration alone is not an activation switch.
     */
    if (stage_infos[MESA_SHADER_TASK] || stage_infos[MESA_SHADER_MESH] ||
        nir[MESA_SHADER_TASK] || nir[MESA_SHADER_MESH])

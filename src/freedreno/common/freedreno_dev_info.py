@@ -53,6 +53,20 @@ quirk_names = {
     "QCTDD13523866": "dummy_alu",
 }
 
+# Preserve the original GameSir FD_DEV_FEATURES spellings after Mesa moved
+# these properties into the named QCTDD quirk bitfields. Values still go
+# through the normal boolean parser; profiles/defaults are not changed.
+legacy_quirk_aliases = {
+    "mov_half_shared_quirk": "QCTDD06363318_movs_half",
+    "cs_lock_unlock_quirk": "QCTDD08407086_cs_lock_unlock",
+    "fs_must_have_non_zero_constlen_quirk": "QCTDD08517960_fs_constlen",
+    "stsc_duplication_quirk": "QCTDD08901551_stsc_ss",
+    "cmdbuf_start_a725_quirk": "QCTDD09112208_cmdbuf_start_cs",
+    "alias_mova_quirk": "QCTDD11147232_alias_mova",
+    "alias_predication_quirk": "QCTDD11183148_alias_pred",
+    "r8g8_faulty_fast_clear_quirk": "QCTDD12766770_r8g8_fc_alignment",
+}
+
 class State(object):
     def __init__(self):
         # List of unique device-info structs, multiple different GPU ids
@@ -280,6 +294,13 @@ fd_dev_info_apply_dbg_options(struct fd_dev_info *info)
         }
 %endfor
 
+%for alias, quirk in legacy_quirk_aliases.items():
+        if (strcmp(name, "${alias}") == 0) {
+            info->quirks.${quirk} = debug_parse_bool_option(value, info->quirks.${quirk});
+            continue;
+        }
+%endfor
+
         mesa_loge("Invalid feature \\"%s\\" in FD_DEV_FEATURES", name);
         exit(1);
     }
@@ -328,4 +349,5 @@ def main():
     elif args.quirks:
         print_quirk_report()
     else:
-        print(Template(template).render(s=s, unique_props=GPUProps.unique_props))
+        print(Template(template).render(s=s, unique_props=GPUProps.unique_props,
+                                        legacy_quirk_aliases=legacy_quirk_aliases))

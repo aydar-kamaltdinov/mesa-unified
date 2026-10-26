@@ -1,0 +1,509 @@
+{
+  "area": "Original FD_DEV_FEATURES spellings across Mesa quirk migration",
+  "transfer": "Eight original boolean names now map to existing named QCTDD quirk members; new canonical names remain accepted; token order/default boolean parser unchanged.",
+  "aliases": [
+    {
+      "original_name": "mov_half_shared_quirk",
+      "native_info_offset": "0x272",
+      "current_quirk_member": "QCTDD06363318_movs_half",
+      "native_parser_string_elf": "0x566ea",
+      "load_candidates": [
+        {
+          "elf": "0x9df058",
+          "owners": [
+            "_ZL25tu_pipeline_builder_buildIL4chip6EE8VkResultP19tu_pipeline_builderPP11tu_pipeline"
+          ],
+          "assembly": "  9df058: 3949caec     \tldrb\tw12, [x23, #0x272]"
+        },
+        {
+          "elf": "0x9df214",
+          "owners": [
+            "_ZL25tu_pipeline_builder_buildIL4chip6EE8VkResultP19tu_pipeline_builderPP11tu_pipeline"
+          ],
+          "assembly": "  9df214: 3949caec     \tldrb\tw12, [x23, #0x272]"
+        },
+        {
+          "elf": "0x9e6848",
+          "owners": [
+            "_ZL25tu_pipeline_builder_buildIL4chip7EE8VkResultP19tu_pipeline_builderPP11tu_pipeline"
+          ],
+          "assembly": "  9e6848: 3949cb6c     \tldrb\tw12, [x27, #0x272]"
+        },
+        {
+          "elf": "0x9e6a00",
+          "owners": [
+            "_ZL25tu_pipeline_builder_buildIL4chip7EE8VkResultP19tu_pipeline_builderPP11tu_pipeline"
+          ],
+          "assembly": "  9e6a00: 3949cb6c     \tldrb\tw12, [x27, #0x272]"
+        },
+        {
+          "elf": "0x9ea594",
+          "owners": [
+            "_ZL21tu_emit_program_stateIL4chip8EEvP5tu_csP16tu_program_statePP9tu_shader"
+          ],
+          "assembly": "  9ea594: 3949cb28     \tldrb\tw8, [x25, #0x272]"
+        },
+        {
+          "elf": "0x9ec158",
+          "owners": [
+            "_ZL21tu_emit_program_stateIL4chip8EEvP5tu_csP16tu_program_statePP9tu_shader"
+          ],
+          "assembly": "  9ec158: 3949cb4c     \tldrb\tw12, [x26, #0x272]"
+        },
+        {
+          "elf": "0x9ec2c0",
+          "owners": [
+            "_ZL21tu_emit_program_stateIL4chip8EEvP5tu_csP16tu_program_statePP9tu_shader"
+          ],
+          "assembly": "  9ec2c0: 3949cb4c     \tldrb\tw12, [x26, #0x272]"
+        },
+        {
+          "elf": "0xaa5130",
+          "owners": [
+            "ir3_lower_copies"
+          ],
+          "assembly": "  aa5130: 3949c908     \tldrb\tw8, [x8, #0x272]"
+        },
+        {
+          "elf": "0xab7594",
+          "owners": [
+            "emit_intrinsic"
+          ],
+          "assembly": "  ab7594: 3949c908     \tldrb\tw8, [x8, #0x272]"
+        },
+        {
+          "elf": "0xac26c4",
+          "owners": [
+            "apply_mov_half_shared_quirk"
+          ],
+          "assembly": "  ac26c4: 3949c929     \tldrb\tw9, [x9, #0x272]"
+        },
+        {
+          "elf": "0xacfef8",
+          "owners": [
+            "ir3_cf"
+          ],
+          "assembly": "  acfef8: 3949c908     \tldrb\tw8, [x8, #0x272]"
+        },
+        {
+          "elf": "0xc694b4",
+          "owners": [
+            "fd_dev_info_apply_dbg_options"
+          ],
+          "assembly": "  c694b4: 3949ca61     \tldrb\tw1, [x19, #0x272]"
+        }
+      ],
+      "limits": "Offset-only load candidates need owner/base interpretation; no automatic source equivalence from this list."
+    },
+    {
+      "original_name": "cs_lock_unlock_quirk",
+      "native_info_offset": "0x301",
+      "current_quirk_member": "QCTDD08407086_cs_lock_unlock",
+      "native_parser_string_elf": "0x960b3",
+      "load_candidates": [
+        {
+          "elf": "0x9eafa4",
+          "owners": [
+            "_ZL21tu_emit_program_stateIL4chip8EEvP5tu_csP16tu_program_statePP9tu_shader"
+          ],
+          "assembly": "  9eafa4: 394c072d     \tldrb\tw13, [x25, #0x301]"
+        },
+        {
+          "elf": "0xa055e4",
+          "owners": [
+            "_Z11tu6_emit_vsIL4chip6EEvP5tu_csPK18ir3_shader_variantj"
+          ],
+          "assembly": "  a055e4: 394c0429     \tldrb\tw9, [x1, #0x301]"
+        },
+        {
+          "elf": "0xa05bd8",
+          "owners": [
+            "_Z11tu6_emit_vsIL4chip7EEvP5tu_csPK18ir3_shader_variantj"
+          ],
+          "assembly": "  a05bd8: 394c0429     \tldrb\tw9, [x1, #0x301]"
+        },
+        {
+          "elf": "0xa06284",
+          "owners": [
+            "_Z11tu6_emit_vsIL4chip8EEvP5tu_csPK18ir3_shader_variantj"
+          ],
+          "assembly": "  a06284: 394c0429     \tldrb\tw9, [x1, #0x301]"
+        },
+        {
+          "elf": "0xa3e818",
+          "owners": [
+            "vk_common_GetPhysicalDeviceFeatures2"
+          ],
+          "assembly": "  a3e818: 394c0407     \tldrb\tw7, [x0, #0x301]"
+        },
+        {
+          "elf": "0xa3ec8c",
+          "owners": [
+            "vk_common_GetPhysicalDeviceFeatures2"
+          ],
+          "assembly": "  a3ec8c: 394c0407     \tldrb\tw7, [x0, #0x301]"
+        },
+        {
+          "elf": "0xa786c8",
+          "owners": [
+            "wsi_CreateSwapchainKHR"
+          ],
+          "assembly": "  a786c8: 394c06e8     \tldrb\tw8, [x23, #0x301]"
+        },
+        {
+          "elf": "0xaad8c4",
+          "owners": [
+            "ir3_compile_shader_nir"
+          ],
+          "assembly": "  aad8c4: 394c0509     \tldrb\tw9, [x8, #0x301]"
+        },
+        {
+          "elf": "0xc699b0",
+          "owners": [
+            "fd_dev_info_apply_dbg_options"
+          ],
+          "assembly": "  c699b0: 394c0661     \tldrb\tw1, [x19, #0x301]"
+        }
+      ],
+      "limits": "Offset-only load candidates need owner/base interpretation; no automatic source equivalence from this list."
+    },
+    {
+      "original_name": "fs_must_have_non_zero_constlen_quirk",
+      "native_info_offset": "0x2f2",
+      "current_quirk_member": "QCTDD08517960_fs_constlen",
+      "native_parser_string_elf": "0x87758",
+      "load_candidates": [
+        {
+          "elf": "0xaadb58",
+          "owners": [
+            "ir3_compile_shader_nir"
+          ],
+          "assembly": "  aadb58: 394bc96b     \tldrb\tw11, [x11, #0x2f2]"
+        },
+        {
+          "elf": "0xc69968",
+          "owners": [
+            "fd_dev_info_apply_dbg_options"
+          ],
+          "assembly": "  c69968: 394bca61     \tldrb\tw1, [x19, #0x2f2]"
+        }
+      ],
+      "limits": "Offset-only load candidates need owner/base interpretation; no automatic source equivalence from this list."
+    },
+    {
+      "original_name": "stsc_duplication_quirk",
+      "native_info_offset": "0x2e6",
+      "current_quirk_member": "QCTDD08901551_stsc_ss",
+      "native_parser_string_elf": "0x846a4",
+      "load_candidates": [
+        {
+          "elf": "0x9d6a88",
+          "owners": [
+            "_ZL19fdm_apply_viewportsP13tu_cmd_bufferP5tu_csPv10VkOffset2DPKS4_jPK14tu_tile_configPK8VkRect2Db"
+          ],
+          "assembly": "  9d6a88: 394b9a87     \tldrb\tw7, [x20, #0x2e6]"
+        },
+        {
+          "elf": "0x9d7c74",
+          "owners": [
+            "_ZL18fdm_apply_scissorsP13tu_cmd_bufferP5tu_csPv10VkOffset2DPKS4_jPK14tu_tile_configPK8VkRect2Db"
+          ],
+          "assembly": "  9d7c74: 394b9b0c     \tldrb\tw12, [x24, #0x2e6]"
+        },
+        {
+          "elf": "0xa3eb40",
+          "owners": [
+            "vk_common_GetPhysicalDeviceFeatures2"
+          ],
+          "assembly": "  a3eb40: 394b9815     \tldrb\tw21, [x0, #0x2e6]"
+        },
+        {
+          "elf": "0xa456d4",
+          "owners": [
+            "vk_physical_device_get_spirv_capabilities"
+          ],
+          "assembly": "  a456d4: 394b980e     \tldrb\tw14, [x0, #0x2e6]"
+        },
+        {
+          "elf": "0xad9b64",
+          "owners": [
+            "ir3_legalize"
+          ],
+          "assembly": "  ad9b64: 394b9908     \tldrb\tw8, [x8, #0x2e6]"
+        },
+        {
+          "elf": "0xc699e0",
+          "owners": [
+            "fd_dev_info_apply_dbg_options"
+          ],
+          "assembly": "  c699e0: 394b9a61     \tldrb\tw1, [x19, #0x2e6]"
+        }
+      ],
+      "limits": "Offset-only load candidates need owner/base interpretation; no automatic source equivalence from this list."
+    },
+    {
+      "original_name": "cmdbuf_start_a725_quirk",
+      "native_info_offset": "0x2eb",
+      "current_quirk_member": "QCTDD09112208_cmdbuf_start_cs",
+      "native_parser_string_elf": "0x74c91",
+      "load_candidates": [
+        {
+          "elf": "0x937e64",
+          "owners": [
+            "_ZL10tu_init_hwIL4chip6EEvP13tu_cmd_bufferP5tu_cs"
+          ],
+          "assembly": "  937e64: 394bad4a     \tldrb\tw10, [x10, #0x2eb]"
+        },
+        {
+          "elf": "0x938a24",
+          "owners": [
+            "_ZL10tu_init_hwIL4chip7EEvP13tu_cmd_bufferP5tu_cs"
+          ],
+          "assembly": "  938a24: 394bad4a     \tldrb\tw10, [x10, #0x2eb]"
+        },
+        {
+          "elf": "0x939980",
+          "owners": [
+            "_ZL10tu_init_hwIL4chip8EEvP13tu_cmd_bufferP5tu_cs"
+          ],
+          "assembly": "  939980: 394bad4a     \tldrb\tw10, [x10, #0x2eb]"
+        },
+        {
+          "elf": "0x98c4d0",
+          "owners": [
+            "_Z15tu_CreateDeviceP18VkPhysicalDevice_TPK18VkDeviceCreateInfoPK21VkAllocationCallbacksPP10VkDevice_T"
+          ],
+          "assembly": "  98c4d0: 394bad08     \tldrb\tw8, [x8, #0x2eb]"
+        },
+        {
+          "elf": "0xa3ecec",
+          "owners": [
+            "vk_common_GetPhysicalDeviceFeatures2"
+          ],
+          "assembly": "  a3ecec: 394bac07     \tldrb\tw7, [x0, #0x2eb]"
+        },
+        {
+          "elf": "0xc699c8",
+          "owners": [
+            "fd_dev_info_apply_dbg_options"
+          ],
+          "assembly": "  c699c8: 394bae61     \tldrb\tw1, [x19, #0x2eb]"
+        }
+      ],
+      "limits": "Offset-only load candidates need owner/base interpretation; no automatic source equivalence from this list."
+    },
+    {
+      "original_name": "alias_mova_quirk",
+      "native_info_offset": "0x320",
+      "current_quirk_member": "QCTDD11147232_alias_mova",
+      "native_parser_string_elf": "0x77dee",
+      "load_candidates": [
+        {
+          "elf": "0x9d44c4",
+          "owners": [
+            "_ZL14tu6_emit_blendIL4chip6EEvP5tu_csPK20vk_color_blend_statePK34vk_color_attachment_location_statePK20vk_render_pass_statebbjb"
+          ],
+          "assembly": "  9d44c4: 394c814b     \tldrb\tw11, [x10, #0x320]"
+        },
+        {
+          "elf": "0x9d8a90",
+          "owners": [
+            "_ZL14tu6_emit_blendIL4chip7EEvP5tu_csPK20vk_color_blend_statePK34vk_color_attachment_location_statePK20vk_render_pass_statebbjb"
+          ],
+          "assembly": "  9d8a90: 394c814b     \tldrb\tw11, [x10, #0x320]"
+        },
+        {
+          "elf": "0x9daff0",
+          "owners": [
+            "_ZL14tu6_emit_blendIL4chip8EEvP5tu_csPK20vk_color_blend_statePK34vk_color_attachment_location_statePK20vk_render_pass_statebbjb"
+          ],
+          "assembly": "  9daff0: 394c814b     \tldrb\tw11, [x10, #0x320]"
+        },
+        {
+          "elf": "0x9e2684",
+          "owners": [
+            "_ZL35tu_pipeline_builder_compile_shadersP19tu_pipeline_builderP11tu_pipeline"
+          ],
+          "assembly": "  9e2684: 394c814a     \tldrb\tw10, [x10, #0x320]"
+        },
+        {
+          "elf": "0x9eb118",
+          "owners": [
+            "_ZL21tu_emit_program_stateIL4chip8EEvP5tu_csP16tu_program_statePP9tu_shader"
+          ],
+          "assembly": "  9eb118: 394c832d     \tldrb\tw13, [x25, #0x320]"
+        },
+        {
+          "elf": "0xad0950",
+          "owners": [
+            "ir3_create_alias_tex_regs"
+          ],
+          "assembly": "  ad0950: 394c8108     \tldrb\tw8, [x8, #0x320]"
+        },
+        {
+          "elf": "0xc69920",
+          "owners": [
+            "fd_dev_info_apply_dbg_options"
+          ],
+          "assembly": "  c69920: 394c8261     \tldrb\tw1, [x19, #0x320]"
+        }
+      ],
+      "limits": "Offset-only load candidates need owner/base interpretation; no automatic source equivalence from this list."
+    },
+    {
+      "original_name": "alias_predication_quirk",
+      "native_info_offset": "0x321",
+      "current_quirk_member": "QCTDD11183148_alias_pred",
+      "native_parser_string_elf": "0x96071",
+      "load_candidates": [
+        {
+          "elf": "0x988270",
+          "owners": [
+            "_Z23tu_physical_device_initP18tu_physical_deviceP11tu_instance"
+          ],
+          "assembly": "  988270: 394c8689     \tldrb\tw9, [x20, #0x321]"
+        },
+        {
+          "elf": "0x9eb124",
+          "owners": [
+            "_ZL21tu_emit_program_stateIL4chip8EEvP5tu_csP16tu_program_statePP9tu_shader"
+          ],
+          "assembly": "  9eb124: 394c872d     \tldrb\tw13, [x25, #0x321]"
+        },
+        {
+          "elf": "0xad04c4",
+          "owners": [
+            "ir3_create_alias_tex_regs"
+          ],
+          "assembly": "  ad04c4: 394c8508     \tldrb\tw8, [x8, #0x321]"
+        },
+        {
+          "elf": "0xc69938",
+          "owners": [
+            "fd_dev_info_apply_dbg_options"
+          ],
+          "assembly": "  c69938: 394c8661     \tldrb\tw1, [x19, #0x321]"
+        }
+      ],
+      "limits": "Offset-only load candidates need owner/base interpretation; no automatic source equivalence from this list."
+    },
+    {
+      "original_name": "r8g8_faulty_fast_clear_quirk",
+      "native_info_offset": "0x2f9",
+      "current_quirk_member": "QCTDD12766770_r8g8_fc_alignment",
+      "native_parser_string_elf": "0x9cac1",
+      "load_candidates": [
+        {
+          "elf": "0x905f54",
+          "owners": [
+            "_Z21tu_CmdClearColorImageIL4chip6EEvP17VkCommandBuffer_TP9VkImage_T13VkImageLayoutPK17VkClearColorValuejPK23VkImageSubresourceRange"
+          ],
+          "assembly": "  905f54: 394be508     \tldrb\tw8, [x8, #0x2f9]"
+        },
+        {
+          "elf": "0x9068dc",
+          "owners": [
+            "_Z21tu_CmdClearColorImageIL4chip7EEvP17VkCommandBuffer_TP9VkImage_T13VkImageLayoutPK17VkClearColorValuejPK23VkImageSubresourceRange"
+          ],
+          "assembly": "  9068dc: 394be508     \tldrb\tw8, [x8, #0x2f9]"
+        },
+        {
+          "elf": "0x9072ac",
+          "owners": [
+            "_Z21tu_CmdClearColorImageIL4chip8EEvP17VkCommandBuffer_TP9VkImage_T13VkImageLayoutPK17VkClearColorValuejPK23VkImageSubresourceRange"
+          ],
+          "assembly": "  9072ac: 394be508     \tldrb\tw8, [x8, #0x2f9]"
+        },
+        {
+          "elf": "0x9074a4",
+          "owners": [
+            "_Z28tu_CmdClearDepthStencilImageIL4chip6EEvP17VkCommandBuffer_TP9VkImage_T13VkImageLayoutPK24VkClearDepthStencilValuejPK23VkImageSubresourceRange"
+          ],
+          "assembly": "  9074a4: 394be508     \tldrb\tw8, [x8, #0x2f9]"
+        },
+        {
+          "elf": "0x9076d0",
+          "owners": [
+            "_Z28tu_CmdClearDepthStencilImageIL4chip7EEvP17VkCommandBuffer_TP9VkImage_T13VkImageLayoutPK24VkClearDepthStencilValuejPK23VkImageSubresourceRange"
+          ],
+          "assembly": "  9076d0: 394be508     \tldrb\tw8, [x8, #0x2f9]"
+        },
+        {
+          "elf": "0x9079f8",
+          "owners": [
+            "_Z28tu_CmdClearDepthStencilImageIL4chip8EEvP17VkCommandBuffer_TP9VkImage_T13VkImageLayoutPK24VkClearDepthStencilValuejPK23VkImageSubresourceRange"
+          ],
+          "assembly": "  9079f8: 394be508     \tldrb\tw8, [x8, #0x2f9]"
+        },
+        {
+          "elf": "0x924494",
+          "owners": [
+            "_ZL11clear_imageIL4chip6EEvP13tu_cmd_bufferP8tu_imagejPK12VkClearValuePK23VkImageSubresourceRangej"
+          ],
+          "assembly": "  924494: 394be508     \tldrb\tw8, [x8, #0x2f9]"
+        },
+        {
+          "elf": "0x924f28",
+          "owners": [
+            "_ZL11clear_imageIL4chip7EEvP13tu_cmd_bufferP8tu_imagejPK12VkClearValuePK23VkImageSubresourceRangej"
+          ],
+          "assembly": "  924f28: 394be508     \tldrb\tw8, [x8, #0x2f9]"
+        },
+        {
+          "elf": "0x925324",
+          "owners": [
+            "_ZL11clear_imageIL4chip8EEvP13tu_cmd_bufferP8tu_imagejPK12VkClearValuePK23VkImageSubresourceRangej"
+          ],
+          "assembly": "  925324: 394be508     \tldrb\tw8, [x8, #0x2f9]"
+        },
+        {
+          "elf": "0x92d1ec",
+          "owners": [
+            "_ZL12tu_emit_blitIL4chip6EEvP13tu_cmd_bufferP5tu_csP16tu_resolve_groupPK13tu_image_viewPK25tu_render_pass_attachmentPK12VkClearValue20a6xx_blit_event_typebbb"
+          ],
+          "assembly": "  92d1ec: 394be508     \tldrb\tw8, [x8, #0x2f9]"
+        },
+        {
+          "elf": "0x92e1c8",
+          "owners": [
+            "_ZL12tu_emit_blitIL4chip7EEvP13tu_cmd_bufferP5tu_csP16tu_resolve_groupPK13tu_image_viewPK25tu_render_pass_attachmentPK12VkClearValue20a6xx_blit_event_typebbb"
+          ],
+          "assembly": "  92e1c8: 394be508     \tldrb\tw8, [x8, #0x2f9]"
+        },
+        {
+          "elf": "0x92efb4",
+          "owners": [
+            "_ZL12tu_emit_blitIL4chip8EEvP13tu_cmd_bufferP5tu_csP16tu_resolve_groupPK13tu_image_viewPK25tu_render_pass_attachmentPK12VkClearValue20a6xx_blit_event_typebbb"
+          ],
+          "assembly": "  92efb4: 394be508     \tldrb\tw8, [x8, #0x2f9]"
+        },
+        {
+          "elf": "0xa3cc00",
+          "owners": [
+            "vk_common_GetPhysicalDeviceFeatures2"
+          ],
+          "assembly": "  a3cc00: 394be407     \tldrb\tw7, [x0, #0x2f9]"
+        },
+        {
+          "elf": "0xc69b58",
+          "owners": [
+            "fd_dev_info_apply_dbg_options"
+          ],
+          "assembly": "  c69b58: 394be661     \tldrb\tw1, [x19, #0x2f9]"
+        }
+      ],
+      "limits": "Offset-only load candidates need owner/base interpretation; no automatic source equivalence from this list."
+    }
+  ],
+  "defaults_changed": false,
+  "new_hardware_workaround": false,
+  "cache_policy": "0x4753381d retained: compatibility names for existing debug overrides, no new compiler transformation or binary format",
+  "build": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "final_cases": [
+    "Generate and compile device table; old/canonical names both set existing members",
+    "Multiple old/new tokens preserve last-token-wins ordering",
+    "Absent env retains profile defaults; malformed/unknown input keeps current error behavior"
+  ]
+}

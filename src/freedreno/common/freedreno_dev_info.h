@@ -506,6 +506,12 @@ struct fd_dev_info {
        * density for the GMEM tile configuration.
        */
       bool fdm_requires_full_density;
+
+      /* Original render-mode policy flags. Keeping these separate preserves
+       * FD_DEV_FEATURES overrides instead of treating them as chip predicates.
+       */
+      bool multi_subpass_msaa_no_input_requires_sysmem;
+      bool msaa_input_d32s8_requires_gmem;
    } props;
 
 #define FD_QUIRK(info, name) (info)->quirks.name

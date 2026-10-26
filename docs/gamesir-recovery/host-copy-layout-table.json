@@ -1,0 +1,138 @@
+{
+  "original_binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "native_object": "_ZZL17tu_get_propertiesP18tu_physical_deviceP13vk_propertiesE17supported_layouts",
+  "elf": "0xbedc8",
+  "bytes": 80,
+  "array_sha256": "3297681af61adaa3925e4b745553a6c5a853a6dcda98c960c37a089b14d14bff",
+  "rows": [
+    {
+      "name": "VK_IMAGE_LAYOUT_GENERAL",
+      "native_value": 1,
+      "current_value": 1,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL",
+      "native_value": 2,
+      "current_value": 2,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL",
+      "native_value": 3,
+      "current_value": 3,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL",
+      "native_value": 4,
+      "current_value": 4,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL",
+      "native_value": 5,
+      "current_value": 5,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL",
+      "native_value": 6,
+      "current_value": 6,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL",
+      "native_value": 7,
+      "current_value": 7,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_PREINITIALIZED",
+      "native_value": 8,
+      "current_value": 8,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL",
+      "native_value": 1000117000,
+      "current_value": 1000117000,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL",
+      "native_value": 1000117001,
+      "current_value": 1000117001,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL",
+      "native_value": 1000241000,
+      "current_value": 1000241000,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL",
+      "native_value": 1000241001,
+      "current_value": 1000241001,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_STENCIL_ATTACHMENT_OPTIMAL",
+      "native_value": 1000241002,
+      "current_value": 1000241002,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL",
+      "native_value": 1000241003,
+      "current_value": 1000241003,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL",
+      "native_value": 1000314000,
+      "current_value": 1000314000,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL",
+      "native_value": 1000314001,
+      "current_value": 1000314001,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_FRAGMENT_DENSITY_MAP_OPTIMAL_EXT",
+      "native_value": 1000218000,
+      "current_value": 1000218000,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR",
+      "native_value": 1000164003,
+      "current_value": 1000164003,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_ATTACHMENT_FEEDBACK_LOOP_OPTIMAL_EXT",
+      "native_value": 1000339000,
+      "current_value": 1000339000,
+      "equal": true
+    },
+    {
+      "name": "VK_IMAGE_LAYOUT_RENDERING_LOCAL_READ",
+      "native_value": 1000232000,
+      "current_value": 1000232000,
+      "equal": true
+    }
+  ],
+  "source": "src/freedreno/vulkan/tu_device.cc supported_layouts",
+  "finding": "Both20-entry arrays and order already match; no duplicate transfer.",
+  "generic_array_source": "src/vulkan/util/vk_physical_device_properties_gen.py OUT_ARRAYS/ARRAY_COPY_TEMPLATE",
+  "native_capacity_example": "ELF0xa43f84..0xa44020: null output returns available count; non-null takes unsigned min(requested,available), copies entries then publishes copied count.",
+  "limits": [
+    "Static table and inspected count/copy protocol only.",
+    "Caller alias/capacity/vector/tail and runtime API/GPU behavior remain unvalidated.",
+    "No feature exposure, driver build or device action."
+  ]
+}

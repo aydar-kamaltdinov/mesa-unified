@@ -73,7 +73,7 @@ tu_a8_build_mesh_program_plan(const tu_a8_mesh_program_inputs *in,
          return false;
       unsigned width = m->vertex_components[slot] + m->vertex_component[slot];
       if (width > 4)
-         return false; /* Wider hardware fetch formats remain unresolved. */
+         return false; /* The restored producer packs at most four components. */
       used[reg] = true;
       if (width > extent[reg])
          extent[reg] = width;

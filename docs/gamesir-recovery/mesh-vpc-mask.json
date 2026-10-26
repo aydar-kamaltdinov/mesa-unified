@@ -1,0 +1,26 @@
+{
+  "area": "Mesh VPC merged output mask",
+  "binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "native_function": "tu6_emit_vpc<A8> ELF0x9c6d74",
+  "native_contract": [
+    "Scan physical registers0..63 in ascending order; ignore skipped semantic slots.",
+    "OR compmask << (regid &3) for matching regid>>2; low byte nonzero selects an output record.",
+    "ELF0x9c8444 TST w13,#0xff precedes ELF0x9c8450 UBFIZ w13,w13,#8,#4. Thus mask0x10 produces a zero-compmask record; it is not skipped or rejected."
+  ],
+  "transfer": "Remove staging shifted-mask rejection; preserve byte accumulation and apply low-nibble mask only when packing output.",
+  "retained_local_constraints": [
+    "reg<32 is the existing local128-scalar staging guard, not a native register-ID limit inferred from32record scratch. output_count<=32 remains a separate capacity check; original scan covers64register indices. No unchecked native writes restored.",
+    "Native program builder also allocates32 uint16 output records and32 byte destinations, but has no explicit count guard. This does not prove every advertised API-valid layout fits."
+  ],
+  "cache_policy": "0x4753381d retained: linked command-map generation, no NIR/IR3 binary or serialized layout change",
+  "build": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "final_cases": [
+    "Merged high-only mask retains zero-compmask record",
+    "Packed multi-semantic OR and skip-slot ordering",
+    "Unwritten/absent varying reachability and observable rendering",
+    "Layout limits including fragmented vectors and builtins",
+    "Separate record count from register-ID range; determine whether API-valid layouts require physical register32..63 before removing local128-scalar gates."
+  ]
+}

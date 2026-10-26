@@ -1,0 +1,120 @@
+{
+  "area": "Original per-device MSAA render-mode switches",
+  "native_consumer": "use_sysmem_rendering ELF0x963c18/1436bytes",
+  "native_flags": {
+    "multi_subpass_msaa_no_input_requires_sysmem": "fd_dev_info+0x30a, reader ELF0x963d00",
+    "msaa_input_d32s8_requires_gmem": "fd_dev_info+0x30b, reader ELF0x963fe0"
+  },
+  "native_parser": "fd_dev_info_apply_dbg_options ELF0xc688d0/5540bytes; original named option strings recovered",
+  "transfer": "Replace reconstructed chip-only approximation with original device property predicates. A8 profiles retain both true; older profiles retain false. Generated FD_DEV_FEATURES parser exposes the two native boolean names.",
+  "ordering": "Retain the 8x sample format rejection as a separate chip>=8 restriction. Retain prior rejection/tiling/render-area/debug precedence; D32S8 input rule stays after explicit GMEM override.",
+  "cache_policy": "0x4753381d retained: render-mode/device policy, no compiler code or serialized shader payload change",
+  "default_change": "None intended for the original79 profiles: all9 A8 entries have both flags1, other70 entries0.",
+  "build": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "final_cases": [
+    "Device table generation and per-profile defaults",
+    "Each flag false/true via FD_DEV_FEATURES; only its own rule changes",
+    "Mixed single/multiple subpasses, inputs/non-inputs, MSAA formats incl D32S8 and8x integer color",
+    "Precedence of explicit sysmem/gmem, tiling impossibility and depth-only guards"
+  ],
+  "native_default_summary": {
+    "true_A8_records": [
+      {
+        "name": "Adreno (TM) 810",
+        "chip_id": "0xffff44010000",
+        "chip": 8,
+        "info_elf": "0x896778",
+        "properties": {
+          "multi_subpass_msaa_no_input_requires_sysmem": 1,
+          "msaa_input_d32s8_requires_gmem": 1
+        }
+      },
+      {
+        "name": "Adreno (TM) 830",
+        "chip_id": "0xffff44050000",
+        "chip": 8,
+        "info_elf": "0x896a9c",
+        "properties": {
+          "multi_subpass_msaa_no_input_requires_sysmem": 1,
+          "msaa_input_d32s8_requires_gmem": 1
+        }
+      },
+      {
+        "name": "Adreno (TM) 830v1",
+        "chip_id": "0xffff44050001",
+        "chip": 8,
+        "info_elf": "0x896a9c",
+        "properties": {
+          "multi_subpass_msaa_no_input_requires_sysmem": 1,
+          "msaa_input_d32s8_requires_gmem": 1
+        }
+      },
+      {
+        "name": "Adreno (TM) 830",
+        "chip_id": "0x44050001",
+        "chip": 8,
+        "info_elf": "0x896a9c",
+        "properties": {
+          "multi_subpass_msaa_no_input_requires_sysmem": 1,
+          "msaa_input_d32s8_requires_gmem": 1
+        }
+      },
+      {
+        "name": "Adreno (TM) 829",
+        "chip_id": "0x44030a20",
+        "chip": 8,
+        "info_elf": "0x896dc0",
+        "properties": {
+          "multi_subpass_msaa_no_input_requires_sysmem": 1,
+          "msaa_input_d32s8_requires_gmem": 1
+        }
+      },
+      {
+        "name": "Adreno (TM) 840",
+        "chip_id": "0xffff44050a31",
+        "chip": 8,
+        "info_elf": "0x8970e4",
+        "properties": {
+          "multi_subpass_msaa_no_input_requires_sysmem": 1,
+          "msaa_input_d32s8_requires_gmem": 1
+        }
+      },
+      {
+        "name": "Adreno (TM) 850",
+        "chip_id": "0xffff440514ff",
+        "chip": 8,
+        "info_elf": "0x897408",
+        "properties": {
+          "multi_subpass_msaa_no_input_requires_sysmem": 1,
+          "msaa_input_d32s8_requires_gmem": 1
+        }
+      },
+      {
+        "name": "Adreno (TM) X2-85",
+        "chip_id": "0xffff44070031",
+        "chip": 8,
+        "info_elf": "0x89772c",
+        "properties": {
+          "multi_subpass_msaa_no_input_requires_sysmem": 1,
+          "msaa_input_d32s8_requires_gmem": 1
+        }
+      },
+      {
+        "name": "Adreno (TM) X2-90",
+        "chip_id": "0xffff44070041",
+        "chip": 8,
+        "info_elf": "0x897a50",
+        "properties": {
+          "multi_subpass_msaa_no_input_requires_sysmem": 1,
+          "msaa_input_d32s8_requires_gmem": 1
+        }
+      }
+    ],
+    "false_older_record_count": 70,
+    "source_all_records": "native-complete/rutabaga-two-hours-20261027/native-device-records.json",
+    "all_records_sha256": "c1d9adce61fa3663c276249dbea461dbbade1ae3d3db13e5bba27aa828e7d2ac"
+  },
+  "older_profile_fast_path": "Return before scanning attachments for chip<8 when the multi-subpass property is false; no new default A6/A7 attachment scan. Explicit overrides still take the flag-specific path."
+}
