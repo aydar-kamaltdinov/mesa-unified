@@ -1,0 +1,41 @@
+{
+  "area": "Native C export flow boundaries and name reconciliation",
+  "original_so_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "counts": {
+    "tu": {
+      "canonical_exports": 348,
+      "old_lines": 86993,
+      "new_lines": 41779,
+      "refresh_manifest_sha256": "6f5c61846951c34cdeef3ce73a957ade8579eb1ad570d29db0be63a10d900b98"
+    },
+    "ir3": {
+      "canonical_exports": 118,
+      "old_lines": 21117,
+      "new_lines": 11700,
+      "refresh_manifest_sha256": "9f7926a3f0397a371972cf22b561b34917d6244cda4b1bae4f020a05180c6e46"
+    }
+  },
+  "direct_tailcall_contracts": "Named exact ELF entry outside bounded function and positive stack restore in preceding six instructions; direct B only. Ghidra readOnly/noanalysis flow override, no native bytes changed.",
+  "canonical_replacement": "Existing C filenames updated in place. Temporary duplicate C trees removed.",
+  "decompilation": {
+    "expected": 7691,
+    "successful_C": 7682,
+    "failed_C": 9,
+    "outside_labels_preferred_exports": 618,
+    "outside_labels_hour_start": 734
+  },
+  "normalized_ssa": {
+    "remaining_C_failures_with_SSA": 9,
+    "additional_successful_C": 0,
+    "utility_SSA_files_retained": 8,
+    "large_generated_feature_SSA": "58MB transient expansion compacted to summary/hash; original byte listing and reproducible generator retained"
+  },
+  "reproducibility": "NativeSymbolExport.java accepts jobs/out/threads/timeout/conservative/noreturn.tsv/tailcall.tsv/[normalize]. Python snapshots use TURNIP_RECOVERY_ROOT to point to original recovery root with originals/native-complete/mesa-gamesir-recovered. Do not run against another ELF. No full C/native binary trees committed here.",
+  "name_reconciliation": "34 entries in tu-helper-name-reconciliation.json, each semantic_equivalence_proved=false. Existence/location is not semantic closure.",
+  "build": false,
+  "shader_execution": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "fs_output_partial_type_exports": 4,
+  "partial_types": "Record stride5/output array34/dual flag302/count30c named from original instructions and setup_output producer; struct extents are partial views, not ABI sizeof assertions."
+}

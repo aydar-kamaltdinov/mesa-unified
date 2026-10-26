@@ -1,0 +1,17 @@
+{
+  "area": "Original secondary stencil metadata lookup",
+  "native_functions": "tu6_emit_fs_outputs A6/A7/A8; same original bounded ARM in dual-source-output-native.arm64.txt",
+  "native_contract": "Scan original outputs for slot1; only when record absent, scan slot13. Use found regid or0xfc. A present slot1 with invalid regid does NOT select slot13.",
+  "source_transfer": "Preserve raw metadata lookup with a local constexpr13, without changing NIR/SPIR-V frontend enum, API features or writes_stencilref flag.",
+  "semantic_limit": "Original gl_frag_result_name names0..12, and legitimate source/meaning of raw13 remains unestablished. This ports the observed reader; it does not invent a new stencil output semantic or prove a reachable application case.",
+  "why_now": "Field-typed original exports and setup_output producer distinguish absent record from invalid regid; the lookup itself no longer needs to remain an unported reader branch.",
+  "cache_policy": "0x4753381d unchanged; command register lookup only",
+  "build": false,
+  "gpu_tests": false,
+  "full_validation_deferred": true,
+  "final_cases": [
+    "slot1 present valid/invalid vs absent; slot13 present/absent; first matching record priority",
+    "No changes to ordinary stencil output and RB writes_stencilref flag",
+    "Reachability/provenance of raw13 before exposing or assigning any new API meaning"
+  ]
+}

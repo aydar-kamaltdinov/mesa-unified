@@ -2764,7 +2764,18 @@ tu6_emit_fs_outputs(struct tu_cs *cs,
 
    posz_regid      = ir3_find_output_regid(fs, FRAG_RESULT_DEPTH);
    smask_regid     = ir3_find_output_regid(fs, FRAG_RESULT_SAMPLE_MASK);
-   stencilref_regid = ir3_find_output_regid(fs, FRAG_RESULT_STENCIL);
+   int stencil_output = ir3_find_output(fs, (gl_varying_slot) FRAG_RESULT_STENCIL);
+   if (stencil_output < 0) {
+      /* Original GameSir also scans metadata slot 13 after STENCIL.  Preserve
+       * the raw record lookup without assigning it a new frontend/API meaning.
+       * A present STENCIL record takes priority even if its regid is invalid.
+       */
+      constexpr unsigned gamesir_stencil_fallback_slot = 13;
+      stencil_output = ir3_find_output(
+         fs, (gl_varying_slot) gamesir_stencil_fallback_slot);
+   }
+   stencilref_regid = stencil_output < 0 ? INVALID_REG :
+      ir3_get_output_regid(&fs->outputs[stencil_output]);
 
    int output_reg_count = 0;
    uint32_t fragdata_regid[8];

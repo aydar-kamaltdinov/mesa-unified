@@ -1,0 +1,176 @@
+{
+  "scope": "Literal local-name search misses vs supplied original comparison only; not automatic semantic gaps",
+  "rows": [
+    {
+      "name": "decode_atomic_b_add_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3dec",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat6.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode_atomic_b_sub_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3df4",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat6.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode_atomic_b_xchg_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3dfc",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat6.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode_atomic_b_cmpxchg_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3e04",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat6.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode_atomic_b_min_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3e0c",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat6.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode_atomic_b_max_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3e14",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat6.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode_atomic_b_and_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3e1c",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat6.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode_atomic_b_or_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3e24",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat6.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode_atomic_b_xor_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3e2c",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat6.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode___instruction_cat7_barrier_a7_gen_0",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3e38",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat7.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode_bar_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3e44",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat7.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode___instruction_cat7_barrier_a8_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3e48",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat7.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode_fence_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3e50",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat7.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode_bar_set_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3e54",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat7.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode_bar_sync_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3e58",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat7.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode___instruction_cat7_alias_gen_0",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa3e84",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat7.xml",
+      "semantic_equivalence_proved": false
+    },
+    {
+      "name": "decode_alias_gen_800",
+      "source_file": "ir3-isa.c",
+      "address": "0xaa4410",
+      "size": 4,
+      "instruction": "ret",
+      "classification": "generated-decoder-leaf; XML description already source-present",
+      "local_description": "src/freedreno/isa/ir3-cat7.xml",
+      "semantic_equivalence_proved": false
+    }
+  ],
+  "conclusion": "All17 literal name misses are generated RET-only decoder callbacks. Do not add handwritten stubs; the opcode masks/fields live in XML and are covered by the earlier399-descriptor/669-field reconstruction. This name inventory does not prove all matching backend bodies equivalent."
+}

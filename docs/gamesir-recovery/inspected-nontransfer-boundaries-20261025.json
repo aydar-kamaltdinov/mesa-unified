@@ -1,0 +1,39 @@
+{
+  "scope": "Bounded inspected source/non-transfer boundaries; no whole-function equivalence asserted",
+  "rows": [
+    {
+      "area": "pack_inlocs mesh map",
+      "native": "ir3_compile_shader_nir canonical C near call; ELF pack_inlocs0xaaddc8",
+      "finding": "Original caller runs old pack_inlocs only FS && gen<6. Native mesh-map branches there do not establish a missing A8 pass. Local gen>=6 per-vertex and bary fixups remain separate.",
+      "already_recorded": "sparse-aqe-hour-20261024/prefetch-recovery-chain.json"
+    },
+    {
+      "area": "tu6_const_size",
+      "native": "ELF0x97fbb4",
+      "finding": "Native scans8 stage pointers; local already includes TS/MS, excludes separately bound CS from graphics, uses selected program linkage for coupled sizing/emission. This deliberate local ownership adaptation is not changed."
+    },
+    {
+      "area": "subgroup scan/reduce",
+      "native": "lower_scan_reduce ELF0xa81d74",
+      "finding": "Identity, subgroup/max fallback, brcst2/4/8 and cluster read_last/reduce routes are already present in ir3_lower_subgroups.c. Large binary size difference alone was not a missing implementation."
+    },
+    {
+      "area": "CSE/scheduler",
+      "native": "hash_instr0xaceeac,cmp_func0xacf0ec,sched_dag_max_delay_cb0xad2f34",
+      "finding": "Reviewed field comparisons/XXH and max-child-delay rule present locally. Inlining/vectorization/layout changes can explain size differences; no new transfer justified."
+    },
+    {
+      "area": "sparse LDIB output",
+      "native": "emit_intrinsic_load_image0xac7e9c",
+      "finding": "Original/local both append RCK and call split_dest with intrinsic components. split_dest writes only source wrmask lanes; it does not overwrite residency slot. No speculative off-by-one patch."
+    },
+    {
+      "area": "native raw stencil slot13",
+      "native": "tu6_emit_fs_outputs A6/A7/A8; setup_output0xac1e10",
+      "finding": "Fallback raw slot13 is visible after stencil1, but original named frag table covers0..12 and a legitimate producer/meaning13 has not been established. setup_output copies io.location+offset(+dual index). Kept unresolved, no invented enum/back-end feature."
+    }
+  ],
+  "new_source_changes_in_this_record": false,
+  "build": false,
+  "full_validation_deferred": true
+}

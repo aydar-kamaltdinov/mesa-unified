@@ -1,0 +1,41 @@
+{
+  "scope": "Original output records/flags named from instruction offsets; partial structures are not original sizeof/ABI. Read-only analysis only.",
+  "functions": [
+    {
+      "file": "b15830-_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant.c",
+      "address": "b15830",
+      "name": "_ZL19tu6_emit_fs_outputsIL4chip7EEvP5tu_csPK18ir3_shader_variant",
+      "old_sha256": "8be6cc121adae395c2b243da0aa2a6b89dc6d4f69a72e9c973a96b4e7b6362cd",
+      "new_sha256": "fda7871eb08776dc464f2f627571bd102e9cad9b4918a69c601278c6cde7d868",
+      "old_lines": 739,
+      "new_lines": 635
+    },
+    {
+      "file": "b13dbc-_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant.c",
+      "address": "b13dbc",
+      "name": "_ZL19tu6_emit_fs_outputsIL4chip6EEvP5tu_csPK18ir3_shader_variant",
+      "old_sha256": "55c639438322ecff505faf7083daa50de9ddfe3aa19d162d5f540cae296dac0d",
+      "new_sha256": "f037ea783113598b76a5ec021fd2ad6a6eabedf82acbb426910e1177b2c0f9b9",
+      "old_lines": 706,
+      "new_lines": 606
+    },
+    {
+      "file": "bc1e10-setup_output.c",
+      "address": "bc1e10",
+      "name": "setup_output",
+      "old_sha256": "8818c4e3748e584890cbe9b48c743aabfe751888a8f20526bd87f967f1fac3b5",
+      "new_sha256": "22156748559fb7c05e9acb3f9435e91d482c4843bdb316f494bdda742fb46615",
+      "old_lines": 261,
+      "new_lines": 261
+    },
+    {
+      "file": "b173f8-_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant.c",
+      "address": "b173f8",
+      "name": "_ZL19tu6_emit_fs_outputsIL4chip8EEvP5tu_csPK18ir3_shader_variant",
+      "old_sha256": "1f3bde55f1b35f61e34e05c6997ee6b33acce86e945f7841d545075da417d95f",
+      "new_sha256": "564c901799cc79eba2b5b507adfa580aa5f006f6961cc869dab9e03f79b58bec",
+      "old_lines": 739,
+      "new_lines": 635
+    }
+  ]
+}
