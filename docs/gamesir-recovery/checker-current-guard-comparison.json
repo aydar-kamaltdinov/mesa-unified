@@ -1,0 +1,5475 @@
+{
+  "original_binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "current_registry_sha256": "cf31c965cf6e788697139601da0c7e02a75a9b6c7ac764e7641f5521ffd9da06",
+  "resolver_sha256": "4861258a863fb7d8af4c1778755cf3fbe005f2452ad8bba828dfee4003a32043",
+  "generator_sha256": "2de46d9130dad89d025db258d4dd5584ed03160059a8fa636dcf8f7a27e0c799",
+  "rows": [
+    {
+      "name": "VkPhysicalDeviceDeviceGeneratedCommandsFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_device_generated_commands"
+      ],
+      "current_extensions": [
+        "VK_NV_device_generated_commands"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePushConstantBankFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_push_constant_bank"
+      ],
+      "current_extensions": [
+        "VK_NV_push_constant_bank"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_device_generated_commands_compute"
+      ],
+      "current_extensions": [
+        "VK_NV_device_generated_commands_compute"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePrivateDataFeatures",
+      "original_core_min": "0x403000",
+      "current_core_min": "0x403000",
+      "original_extensions": [
+        "VK_EXT_private_data"
+      ],
+      "current_extensions": [
+        "VK_EXT_private_data"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2b5d4",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2b5d8",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa305b4",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa305b8",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceClusterAccelerationStructureFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_cluster_acceleration_structure"
+      ],
+      "current_extensions": [
+        "VK_NV_cluster_acceleration_structure"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVariablePointersFeatures",
+      "original_core_min": "0x401000",
+      "current_core_min": "0x401000",
+      "original_extensions": [
+        "VK_KHR_variable_pointers"
+      ],
+      "current_extensions": [
+        "VK_KHR_variable_pointers"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa29c5c",
+          "api_left": true,
+          "other_value": 4198399,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa29c60",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa3033c",
+          "api_left": true,
+          "other_value": 4198399,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa30340",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMultiviewFeatures",
+      "original_core_min": "0x401000",
+      "current_core_min": "0x401000",
+      "original_extensions": [
+        "VK_KHR_multiview"
+      ],
+      "current_extensions": [
+        "VK_KHR_multiview"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa27eec",
+          "api_left": true,
+          "other_value": 4198399,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa27ef0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa303ec",
+          "api_left": true,
+          "other_value": 4198399,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa303f0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePresentIdFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_present_id"
+      ],
+      "current_extensions": [
+        "VK_KHR_present_id"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePresentId2FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_present_id2"
+      ],
+      "current_extensions": [
+        "VK_KHR_present_id2"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePresentWaitFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_present_wait"
+      ],
+      "current_extensions": [
+        "VK_KHR_present_wait"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePresentWait2FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_present_wait2"
+      ],
+      "current_extensions": [
+        "VK_KHR_present_wait2"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePresentTimingFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_present_timing"
+      ],
+      "current_extensions": [
+        "VK_EXT_present_timing"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevice16BitStorageFeatures",
+      "original_core_min": "0x401000",
+      "current_core_min": "0x401000",
+      "original_extensions": [
+        "VK_KHR_16bit_storage"
+      ],
+      "current_extensions": [
+        "VK_KHR_16bit_storage"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2a018",
+          "api_left": true,
+          "other_value": 4198399,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2a01c",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa31988",
+          "api_left": true,
+          "other_value": 4198399,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa3198c",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderSubgroupExtendedTypesFeatures",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [
+        "VK_KHR_shader_subgroup_extended_types"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_subgroup_extended_types"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa29bb8",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa29bbc",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa302ec",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa302f0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceSamplerYcbcrConversionFeatures",
+      "original_core_min": "0x401000",
+      "current_core_min": "0x401000",
+      "original_extensions": [
+        "VK_KHR_sampler_ycbcr_conversion"
+      ],
+      "current_extensions": [
+        "VK_KHR_sampler_ycbcr_conversion"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2915c",
+          "api_left": true,
+          "other_value": 4198399,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa29160",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa306a0",
+          "api_left": true,
+          "other_value": 4198399,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa306a4",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceProtectedMemoryFeatures",
+      "original_core_min": "0x401000",
+      "current_core_min": "0x401000",
+      "original_extensions": [],
+      "current_extensions": [],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2a3a0",
+          "api_left": true,
+          "other_value": 4198399,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2a3a4",
+              "condition": "ls",
+              "taken": true
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa2f420",
+          "api_left": true,
+          "other_value": 4198399,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa2f424",
+              "condition": "ls",
+              "taken": true
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_blend_operation_advanced"
+      ],
+      "current_extensions": [
+        "VK_EXT_blend_operation_advanced"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMultiDrawFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_multi_draw"
+      ],
+      "current_extensions": [
+        "VK_EXT_multi_draw"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceInlineUniformBlockFeatures",
+      "original_core_min": "0x403000",
+      "current_core_min": "0x403000",
+      "original_extensions": [
+        "VK_EXT_inline_uniform_block"
+      ],
+      "current_extensions": [
+        "VK_EXT_inline_uniform_block"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa29ecc",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa29ed0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa304c4",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa304c8",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMaintenance4Features",
+      "original_core_min": "0x403000",
+      "current_core_min": "0x403000",
+      "original_extensions": [
+        "VK_KHR_maintenance4"
+      ],
+      "current_extensions": [
+        "VK_KHR_maintenance4"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa297f0",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa297f4",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa2f184",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa2f188",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMaintenance5Features",
+      "original_core_min": "0x404000",
+      "current_core_min": "0x404000",
+      "original_extensions": [
+        "VK_KHR_maintenance5"
+      ],
+      "current_extensions": [
+        "VK_KHR_maintenance5"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2a5a8",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2a5ac",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa2ff84",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa2ff88",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMaintenance6Features",
+      "original_core_min": "0x404000",
+      "current_core_min": "0x404000",
+      "original_extensions": [
+        "VK_KHR_maintenance6"
+      ],
+      "current_extensions": [
+        "VK_KHR_maintenance6"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2b574",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2b578",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa315b0",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa315b4",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMaintenance7FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_maintenance7"
+      ],
+      "current_extensions": [
+        "VK_KHR_maintenance7"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMaintenance8FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_maintenance8"
+      ],
+      "current_extensions": [
+        "VK_KHR_maintenance8"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMaintenance9FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_maintenance9"
+      ],
+      "current_extensions": [
+        "VK_KHR_maintenance9"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMaintenance11FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_maintenance11"
+      ],
+      "current_extensions": [
+        "VK_KHR_maintenance11"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMaintenance10FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_maintenance10"
+      ],
+      "current_extensions": [
+        "VK_KHR_maintenance10"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderDrawParametersFeatures",
+      "original_core_min": "0x401000",
+      "current_core_min": "0x401000",
+      "original_extensions": [],
+      "current_extensions": [],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2a264",
+          "api_left": true,
+          "other_value": 4198399,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2a268",
+              "condition": "ls",
+              "taken": true
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa2f36c",
+          "api_left": true,
+          "other_value": 4198399,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa2f370",
+              "condition": "ls",
+              "taken": true
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderFloat16Int8Features",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [
+        "VK_KHR_shader_float16_int8"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_float16_int8"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa275e8",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa275ec",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa3164c",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa31650",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceHostQueryResetFeatures",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [
+        "VK_EXT_host_query_reset"
+      ],
+      "current_extensions": [
+        "VK_EXT_host_query_reset"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa28a64",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa28a68",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa31d7c",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa31d80",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceElapsedTimerQueryFeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_elapsed_timer_query"
+      ],
+      "current_extensions": [
+        "VK_QCOM_elapsed_timer_query"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceGlobalPriorityQueryFeatures",
+      "original_core_min": "0x404000",
+      "current_core_min": "0x404000",
+      "original_extensions": [
+        "VK_EXT_global_priority_query",
+        "VK_KHR_global_priority"
+      ],
+      "current_extensions": [
+        "VK_EXT_global_priority_query",
+        "VK_KHR_global_priority"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa29df0",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa29df4",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa30b4c",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa30b50",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDeviceMemoryReportFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_device_memory_report"
+      ],
+      "current_extensions": [
+        "VK_EXT_device_memory_report"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDescriptorIndexingFeatures",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [
+        "VK_EXT_descriptor_indexing"
+      ],
+      "current_extensions": [
+        "VK_EXT_descriptor_indexing"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2779c",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa277a0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa316c8",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa316cc",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceTimelineSemaphoreFeatures",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [
+        "VK_KHR_timeline_semaphore"
+      ],
+      "current_extensions": [
+        "VK_KHR_timeline_semaphore"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa290b8",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa290bc",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa30650",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa30654",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevice8BitStorageFeatures",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [
+        "VK_KHR_8bit_storage"
+      ],
+      "current_extensions": [
+        "VK_KHR_8bit_storage"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa27c74",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa27c78",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa31ca0",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa31ca4",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceConditionalRenderingFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_conditional_rendering"
+      ],
+      "current_extensions": [
+        "VK_EXT_conditional_rendering"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVulkanMemoryModelFeatures",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [
+        "VK_KHR_vulkan_memory_model"
+      ],
+      "current_extensions": [
+        "VK_KHR_vulkan_memory_model"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa29328",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2932c",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa2e374",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa2e378",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderAtomicInt64Features",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [
+        "VK_KHR_shader_atomic_int64"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_atomic_int64"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa29964",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa29968",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa2f790",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa2f794",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderAtomicFloatFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_shader_atomic_float"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_atomic_float"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_shader_atomic_float2"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_atomic_float2"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVertexAttributeDivisorFeatures",
+      "original_core_min": "0x404000",
+      "current_core_min": "0x404000",
+      "original_extensions": [
+        "VK_EXT_vertex_attribute_divisor",
+        "VK_KHR_vertex_attribute_divisor"
+      ],
+      "current_extensions": [
+        "VK_EXT_vertex_attribute_divisor",
+        "VK_KHR_vertex_attribute_divisor"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa29e58",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa29e5c",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa3045c",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa30460",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceASTCDecodeFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_astc_decode_mode"
+      ],
+      "current_extensions": [
+        "VK_EXT_astc_decode_mode"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceTransformFeedbackFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_transform_feedback"
+      ],
+      "current_extensions": [
+        "VK_EXT_transform_feedback"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRepresentativeFragmentTestFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_representative_fragment_test"
+      ],
+      "current_extensions": [
+        "VK_NV_representative_fragment_test"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceExclusiveScissorFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_scissor_exclusive"
+      ],
+      "current_extensions": [
+        "VK_NV_scissor_exclusive"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCornerSampledImageFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_corner_sampled_image"
+      ],
+      "current_extensions": [
+        "VK_NV_corner_sampled_image"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceComputeShaderDerivativesFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_compute_shader_derivatives",
+        "VK_NV_compute_shader_derivatives"
+      ],
+      "current_extensions": [
+        "VK_KHR_compute_shader_derivatives",
+        "VK_NV_compute_shader_derivatives"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderImageFootprintFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_shader_image_footprint"
+      ],
+      "current_extensions": [
+        "VK_NV_shader_image_footprint"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_dedicated_allocation_image_aliasing"
+      ],
+      "current_extensions": [
+        "VK_NV_dedicated_allocation_image_aliasing"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCopyMemoryIndirectFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_copy_memory_indirect"
+      ],
+      "current_extensions": [
+        "VK_KHR_copy_memory_indirect"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCopyMemoryIndirectFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_copy_memory_indirect"
+      ],
+      "current_extensions": [
+        "VK_NV_copy_memory_indirect"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMemoryDecompressionFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_memory_decompression",
+        "VK_NV_memory_decompression"
+      ],
+      "current_extensions": [
+        "VK_EXT_memory_decompression",
+        "VK_NV_memory_decompression"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShadingRateImageFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_shading_rate_image"
+      ],
+      "current_extensions": [
+        "VK_NV_shading_rate_image"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceInvocationMaskFeaturesHUAWEI",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_HUAWEI_invocation_mask"
+      ],
+      "current_extensions": [
+        "VK_HUAWEI_invocation_mask"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMeshShaderFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_mesh_shader"
+      ],
+      "current_extensions": [
+        "VK_NV_mesh_shader"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMeshShaderFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_mesh_shader"
+      ],
+      "current_extensions": [
+        "VK_EXT_mesh_shader"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceAccelerationStructureFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_acceleration_structure"
+      ],
+      "current_extensions": [
+        "VK_KHR_acceleration_structure"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRayTracingPipelineFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_ray_tracing_pipeline"
+      ],
+      "current_extensions": [
+        "VK_KHR_ray_tracing_pipeline"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRayQueryFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_ray_query"
+      ],
+      "current_extensions": [
+        "VK_KHR_ray_query"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRayTracingMaintenance1FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_ray_tracing_maintenance1"
+      ],
+      "current_extensions": [
+        "VK_KHR_ray_tracing_maintenance1"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceFragmentDensityMapFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_fragment_density_map"
+      ],
+      "current_extensions": [
+        "VK_EXT_fragment_density_map"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceFragmentDensityMap2FeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_fragment_density_map2"
+      ],
+      "current_extensions": [
+        "VK_EXT_fragment_density_map2"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceFragmentDensityMapOffsetFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_fragment_density_map_offset",
+        "VK_QCOM_fragment_density_map_offset"
+      ],
+      "current_extensions": [
+        "VK_EXT_fragment_density_map_offset",
+        "VK_QCOM_fragment_density_map_offset"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceScalarBlockLayoutFeatures",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [
+        "VK_EXT_scalar_block_layout"
+      ],
+      "current_extensions": [
+        "VK_EXT_scalar_block_layout"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa26254",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa26258",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa31f1c",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa31f20",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceUniformBufferStandardLayoutFeatures",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [
+        "VK_KHR_uniform_buffer_standard_layout"
+      ],
+      "current_extensions": [
+        "VK_KHR_uniform_buffer_standard_layout"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2ae94",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2ae98",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa30f40",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa30f44",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDepthClipEnableFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_depth_clip_enable"
+      ],
+      "current_extensions": [
+        "VK_EXT_depth_clip_enable"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMemoryPriorityFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_memory_priority"
+      ],
+      "current_extensions": [
+        "VK_EXT_memory_priority"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePageableDeviceLocalMemoryFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_pageable_device_local_memory"
+      ],
+      "current_extensions": [
+        "VK_EXT_pageable_device_local_memory"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceBufferDeviceAddressFeatures",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [
+        "VK_KHR_buffer_device_address"
+      ],
+      "current_extensions": [
+        "VK_KHR_buffer_device_address"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2ad64",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2ad68",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa2fd94",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa2fd98",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceBufferDeviceAddressFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_buffer_device_address"
+      ],
+      "current_extensions": [
+        "VK_EXT_buffer_device_address"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceImagelessFramebufferFeatures",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [
+        "VK_KHR_imageless_framebuffer"
+      ],
+      "current_extensions": [
+        "VK_KHR_imageless_framebuffer"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa25484",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa25488",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa31c14",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa31c18",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceTextureCompressionASTCHDRFeatures",
+      "original_core_min": "0x403000",
+      "current_core_min": "0x403000",
+      "original_extensions": [
+        "VK_EXT_texture_compression_astc_hdr"
+      ],
+      "current_extensions": [
+        "VK_EXT_texture_compression_astc_hdr"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa26a80",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa26a84",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa313e8",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa313ec",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCooperativeMatrixFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_cooperative_matrix"
+      ],
+      "current_extensions": [
+        "VK_NV_cooperative_matrix"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceYcbcrImageArraysFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_ycbcr_image_arrays"
+      ],
+      "current_extensions": [
+        "VK_EXT_ycbcr_image_arrays"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePresentBarrierFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_present_barrier"
+      ],
+      "current_extensions": [
+        "VK_NV_present_barrier"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePerformanceQueryFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_performance_query"
+      ],
+      "current_extensions": [
+        "VK_KHR_performance_query"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCoverageReductionModeFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_coverage_reduction_mode"
+      ],
+      "current_extensions": [
+        "VK_NV_coverage_reduction_mode"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_INTEL_shader_integer_functions2"
+      ],
+      "current_extensions": [
+        "VK_INTEL_shader_integer_functions2"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderClockFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_shader_clock"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_clock"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceIndexTypeUint8Features",
+      "original_core_min": "0x404000",
+      "current_core_min": "0x404000",
+      "original_extensions": [
+        "VK_EXT_index_type_uint8",
+        "VK_KHR_index_type_uint8"
+      ],
+      "current_extensions": [
+        "VK_EXT_index_type_uint8",
+        "VK_KHR_index_type_uint8"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2b3dc",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2b3e0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa2f8b0",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa2f8b4",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderSMBuiltinsFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_shader_sm_builtins"
+      ],
+      "current_extensions": [
+        "VK_NV_shader_sm_builtins"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_fragment_shader_interlock"
+      ],
+      "current_extensions": [
+        "VK_EXT_fragment_shader_interlock"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceSeparateDepthStencilLayoutsFeatures",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [
+        "VK_KHR_separate_depth_stencil_layouts"
+      ],
+      "current_extensions": [
+        "VK_KHR_separate_depth_stencil_layouts"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa291fc",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa29200",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa306ec",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa306f0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_primitive_topology_list_restart"
+      ],
+      "current_extensions": [
+        "VK_EXT_primitive_topology_list_restart"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_pipeline_executable_properties"
+      ],
+      "current_extensions": [
+        "VK_KHR_pipeline_executable_properties"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderDemoteToHelperInvocationFeatures",
+      "original_core_min": "0x403000",
+      "current_core_min": "0x403000",
+      "original_extensions": [
+        "VK_EXT_shader_demote_to_helper_invocation"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_demote_to_helper_invocation"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2a8d0",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2a8d4",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa2e564",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa2e568",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_texel_buffer_alignment"
+      ],
+      "current_extensions": [
+        "VK_EXT_texel_buffer_alignment"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceSubgroupSizeControlFeatures",
+      "original_core_min": "0x403000",
+      "current_core_min": "0x403000",
+      "original_extensions": [
+        "VK_EXT_subgroup_size_control"
+      ],
+      "current_extensions": [
+        "VK_EXT_subgroup_size_control"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa29d04",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa29d08",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa3039c",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa303a0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceLineRasterizationFeatures",
+      "original_core_min": "0x404000",
+      "current_core_min": "0x404000",
+      "original_extensions": [
+        "VK_EXT_line_rasterization",
+        "VK_KHR_line_rasterization"
+      ],
+      "current_extensions": [
+        "VK_EXT_line_rasterization",
+        "VK_KHR_line_rasterization"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa26f48",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa26f4c",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa32f2c",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa32f30",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePipelineCreationCacheControlFeatures",
+      "original_core_min": "0x403000",
+      "current_core_min": "0x403000",
+      "original_extensions": [
+        "VK_EXT_pipeline_creation_cache_control"
+      ],
+      "current_extensions": [
+        "VK_EXT_pipeline_creation_cache_control"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa28dcc",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa28dd0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa3302c",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa33030",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVulkan11Features",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [],
+      "current_extensions": [],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2968c",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa29690",
+              "condition": "ls",
+              "taken": true
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa31b24",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa31b28",
+              "condition": "ls",
+              "taken": true
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVulkan12Features",
+      "original_core_min": "0x402000",
+      "current_core_min": "0x402000",
+      "original_extensions": [],
+      "current_extensions": [],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa25f14",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa25f18",
+              "condition": "ls",
+              "taken": true
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa2eb50",
+          "api_left": true,
+          "other_value": 4202495,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa2eb54",
+              "condition": "ls",
+              "taken": true
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVulkan13Features",
+      "original_core_min": "0x403000",
+      "current_core_min": "0x403000",
+      "original_extensions": [],
+      "current_extensions": [],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa29b2c",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa29b30",
+              "condition": "ls",
+              "taken": true
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa31dcc",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa31dd0",
+              "condition": "ls",
+              "taken": true
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVulkan14Features",
+      "original_core_min": "0x404000",
+      "current_core_min": "0x404000",
+      "original_extensions": [],
+      "current_extensions": [],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa27ba4",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa27ba8",
+              "condition": "ls",
+              "taken": true
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa3016c",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa30170",
+              "condition": "ls",
+              "taken": true
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCoherentMemoryFeaturesAMD",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_AMD_device_coherent_memory"
+      ],
+      "current_extensions": [
+        "VK_AMD_device_coherent_memory"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceGpaFeaturesAMD",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_AMD_gpa_interface"
+      ],
+      "current_extensions": [
+        "VK_AMD_gpa_interface"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCustomBorderColorFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_custom_border_color"
+      ],
+      "current_extensions": [
+        "VK_EXT_custom_border_color"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceBorderColorSwizzleFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_border_color_swizzle"
+      ],
+      "current_extensions": [
+        "VK_EXT_border_color_swizzle"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceExtendedDynamicStateFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_extended_dynamic_state"
+      ],
+      "current_extensions": [
+        "VK_EXT_extended_dynamic_state"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceExtendedDynamicState2FeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_extended_dynamic_state2"
+      ],
+      "current_extensions": [
+        "VK_EXT_extended_dynamic_state2"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_extended_dynamic_state3"
+      ],
+      "current_extensions": [
+        "VK_EXT_extended_dynamic_state3"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceExtendedFlagsFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_extended_flags"
+      ],
+      "current_extensions": [
+        "VK_KHR_extended_flags"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePartitionedAccelerationStructureFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_partitioned_acceleration_structure"
+      ],
+      "current_extensions": [
+        "VK_NV_partitioned_acceleration_structure"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDiagnosticsConfigFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_device_diagnostics_config"
+      ],
+      "current_extensions": [
+        "VK_NV_device_diagnostics_config"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceZeroInitializeWorkgroupMemoryFeatures",
+      "original_core_min": "0x403000",
+      "current_core_min": "0x403000",
+      "original_extensions": [
+        "VK_KHR_zero_initialize_workgroup_memory"
+      ],
+      "current_extensions": [
+        "VK_KHR_zero_initialize_workgroup_memory"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2b2ac",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2b2b0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa2f6ec",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa2f6f0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_shader_subgroup_uniform_control_flow"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_subgroup_uniform_control_flow"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRobustness2FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_robustness2",
+        "VK_KHR_robustness2"
+      ],
+      "current_extensions": [
+        "VK_EXT_robustness2",
+        "VK_KHR_robustness2"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceImageRobustnessFeatures",
+      "original_core_min": "0x403000",
+      "current_core_min": "0x403000",
+      "original_extensions": [
+        "VK_EXT_image_robustness"
+      ],
+      "current_extensions": [
+        "VK_EXT_image_robustness"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2b0e8",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2b0ec",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa32ba4",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa32ba8",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_workgroup_memory_explicit_layout"
+      ],
+      "current_extensions": [
+        "VK_KHR_workgroup_memory_explicit_layout"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_portability_subset"
+      ],
+      "current_extensions": [
+        "VK_KHR_portability_subset"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevice4444FormatsFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_4444_formats"
+      ],
+      "current_extensions": [
+        "VK_EXT_4444_formats"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceSubpassShadingFeaturesHUAWEI",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_HUAWEI_subpass_shading"
+      ],
+      "current_extensions": [
+        "VK_HUAWEI_subpass_shading"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceClusterCullingShaderFeaturesHUAWEI",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_HUAWEI_cluster_culling_shader"
+      ],
+      "current_extensions": [
+        "VK_HUAWEI_cluster_culling_shader"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderImageAtomicInt64FeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_shader_image_atomic_int64"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_image_atomic_int64"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceFragmentShadingRateFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_fragment_shading_rate"
+      ],
+      "current_extensions": [
+        "VK_KHR_fragment_shading_rate"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderTerminateInvocationFeatures",
+      "original_core_min": "0x403000",
+      "current_core_min": "0x403000",
+      "original_extensions": [
+        "VK_KHR_shader_terminate_invocation"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_terminate_invocation"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa25610",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa25614",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa31c44",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa31c48",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceFragmentShadingRateEnumsFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_fragment_shading_rate_enums"
+      ],
+      "current_extensions": [
+        "VK_NV_fragment_shading_rate_enums"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceImage2DViewOf3DFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_image_2d_view_of_3d"
+      ],
+      "current_extensions": [
+        "VK_EXT_image_2d_view_of_3d"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceImageSlicedViewOf3DFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_image_sliced_view_of_3d"
+      ],
+      "current_extensions": [
+        "VK_EXT_image_sliced_view_of_3d"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_attachment_feedback_loop_dynamic_state"
+      ],
+      "current_extensions": [
+        "VK_EXT_attachment_feedback_loop_dynamic_state"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceLegacyVertexAttributesFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_legacy_vertex_attributes"
+      ],
+      "current_extensions": [
+        "VK_EXT_legacy_vertex_attributes"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMutableDescriptorTypeFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_mutable_descriptor_type",
+        "VK_VALVE_mutable_descriptor_type"
+      ],
+      "current_extensions": [
+        "VK_EXT_mutable_descriptor_type",
+        "VK_VALVE_mutable_descriptor_type"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDepthClipControlFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_depth_clip_control"
+      ],
+      "current_extensions": [
+        "VK_EXT_depth_clip_control"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_zero_initialize_device_memory"
+      ],
+      "current_extensions": [
+        "VK_EXT_zero_initialize_device_memory"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCustomResolveFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_custom_resolve"
+      ],
+      "current_extensions": [
+        "VK_EXT_custom_resolve"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDeviceGeneratedCommandsFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_device_generated_commands"
+      ],
+      "current_extensions": [
+        "VK_EXT_device_generated_commands"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDepthClampControlFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_depth_clamp_control"
+      ],
+      "current_extensions": [
+        "VK_EXT_depth_clamp_control"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVertexInputDynamicStateFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_vertex_input_dynamic_state"
+      ],
+      "current_extensions": [
+        "VK_EXT_vertex_input_dynamic_state"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceExternalMemoryRDMAFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_external_memory_rdma"
+      ],
+      "current_extensions": [
+        "VK_NV_external_memory_rdma"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_shader_relaxed_extended_instruction"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_relaxed_extended_instruction"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceColorWriteEnableFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_color_write_enable"
+      ],
+      "current_extensions": [
+        "VK_EXT_color_write_enable"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceSynchronization2Features",
+      "original_core_min": "0x403000",
+      "current_core_min": "0x403000",
+      "original_extensions": [
+        "VK_KHR_synchronization2"
+      ],
+      "current_extensions": [
+        "VK_KHR_synchronization2"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2ab1c",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2ab20",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa30e74",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa30e78",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceUnifiedImageLayoutsFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_unified_image_layouts"
+      ],
+      "current_extensions": [
+        "VK_KHR_unified_image_layouts"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceHostImageCopyFeatures",
+      "original_core_min": "0x404000",
+      "current_core_min": "0x404000",
+      "original_extensions": [
+        "VK_EXT_host_image_copy"
+      ],
+      "current_extensions": [
+        "VK_EXT_host_image_copy"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa28ce8",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa28cec",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa32ffc",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa33000",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePrimitivesGeneratedQueryFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_primitives_generated_query"
+      ],
+      "current_extensions": [
+        "VK_EXT_primitives_generated_query"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceLegacyDitheringFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_legacy_dithering"
+      ],
+      "current_extensions": [
+        "VK_EXT_legacy_dithering"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_multisampled_render_to_single_sampled"
+      ],
+      "current_extensions": [
+        "VK_EXT_multisampled_render_to_single_sampled"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_multisampled_render_to_swapchain"
+      ],
+      "current_extensions": [
+        "VK_EXT_multisampled_render_to_swapchain"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePipelineProtectedAccessFeatures",
+      "original_core_min": "0x404000",
+      "current_core_min": "0x404000",
+      "original_extensions": [
+        "VK_EXT_pipeline_protected_access"
+      ],
+      "current_extensions": [
+        "VK_EXT_pipeline_protected_access"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2a340",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2a344",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa2f4d4",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa2f4d8",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVideoMaintenance1FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_video_maintenance1"
+      ],
+      "current_extensions": [
+        "VK_KHR_video_maintenance1"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVideoMaintenance2FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_video_maintenance2"
+      ],
+      "current_extensions": [
+        "VK_KHR_video_maintenance2"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVideoDecodeVP9FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_video_decode_vp9"
+      ],
+      "current_extensions": [
+        "VK_KHR_video_decode_vp9"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVideoEncodeQuantizationMapFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_video_encode_quantization_map"
+      ],
+      "current_extensions": [
+        "VK_KHR_video_encode_quantization_map"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVideoEncodeFeedback2FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_video_encode_feedback2"
+      ],
+      "current_extensions": [
+        "VK_KHR_video_encode_feedback2"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVideoEncodeAV1FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_video_encode_av1"
+      ],
+      "current_extensions": [
+        "VK_KHR_video_encode_av1"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceInheritedViewportScissorFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_inherited_viewport_scissor"
+      ],
+      "current_extensions": [
+        "VK_NV_inherited_viewport_scissor"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_ycbcr_2plane_444_formats"
+      ],
+      "current_extensions": [
+        "VK_EXT_ycbcr_2plane_444_formats"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceProvokingVertexFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_provoking_vertex"
+      ],
+      "current_extensions": [
+        "VK_EXT_provoking_vertex"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVideoEncodeIntraRefreshFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_video_encode_intra_refresh"
+      ],
+      "current_extensions": [
+        "VK_KHR_video_encode_intra_refresh"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDescriptorBufferFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_descriptor_buffer"
+      ],
+      "current_extensions": [
+        "VK_EXT_descriptor_buffer"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderIntegerDotProductFeatures",
+      "original_core_min": "0x403000",
+      "current_core_min": "0x403000",
+      "original_extensions": [
+        "VK_KHR_shader_integer_dot_product"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_integer_dot_product"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa26598",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2659c",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa32efc",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa32f00",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceFragmentShaderBarycentricFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_fragment_shader_barycentric",
+        "VK_NV_fragment_shader_barycentric"
+      ],
+      "current_extensions": [
+        "VK_KHR_fragment_shader_barycentric",
+        "VK_NV_fragment_shader_barycentric"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderFmaFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_shader_fma"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_fma"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRayTracingMotionBlurFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_ray_tracing_motion_blur"
+      ],
+      "current_extensions": [
+        "VK_NV_ray_tracing_motion_blur"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRayTracingValidationFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_ray_tracing_validation"
+      ],
+      "current_extensions": [
+        "VK_NV_ray_tracing_validation"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_ray_tracing_linear_swept_spheres"
+      ],
+      "current_extensions": [
+        "VK_NV_ray_tracing_linear_swept_spheres"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_rgba10x6_formats"
+      ],
+      "current_extensions": [
+        "VK_EXT_rgba10x6_formats"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDynamicRenderingFeatures",
+      "original_core_min": "0x403000",
+      "current_core_min": "0x403000",
+      "original_extensions": [
+        "VK_KHR_dynamic_rendering"
+      ],
+      "current_extensions": [
+        "VK_KHR_dynamic_rendering"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa266ac",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa266b0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa2f734",
+          "api_left": true,
+          "other_value": 4206591,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa2f738",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceImageViewMinLodFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_image_view_min_lod"
+      ],
+      "current_extensions": [
+        "VK_EXT_image_view_min_lod"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_ARM_rasterization_order_attachment_access",
+        "VK_EXT_rasterization_order_attachment_access"
+      ],
+      "current_extensions": [
+        "VK_ARM_rasterization_order_attachment_access",
+        "VK_EXT_rasterization_order_attachment_access"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceLinearColorAttachmentFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_linear_color_attachment"
+      ],
+      "current_extensions": [
+        "VK_NV_linear_color_attachment"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_graphics_pipeline_library"
+      ],
+      "current_extensions": [
+        "VK_EXT_graphics_pipeline_library"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePipelineBinaryFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_pipeline_binary"
+      ],
+      "current_extensions": [
+        "VK_KHR_pipeline_binary"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_ARM_data_graph_neural_accelerator_statistics"
+      ],
+      "current_extensions": [
+        "VK_ARM_data_graph_neural_accelerator_statistics"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDescriptorSetHostMappingFeaturesVALVE",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_VALVE_descriptor_set_host_mapping"
+      ],
+      "current_extensions": [
+        "VK_VALVE_descriptor_set_host_mapping"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceNestedCommandBufferFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_nested_command_buffer"
+      ],
+      "current_extensions": [
+        "VK_EXT_nested_command_buffer"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderModuleIdentifierFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_shader_module_identifier"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_module_identifier"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceImageCompressionControlFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_image_compression_control"
+      ],
+      "current_extensions": [
+        "VK_EXT_image_compression_control"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceImageCompressionControlSwapchainFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_image_compression_control_swapchain"
+      ],
+      "current_extensions": [
+        "VK_EXT_image_compression_control_swapchain"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceSubpassMergeFeedbackFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_subpass_merge_feedback"
+      ],
+      "current_extensions": [
+        "VK_EXT_subpass_merge_feedback"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceOpacityMicromapFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_opacity_micromap"
+      ],
+      "current_extensions": [
+        "VK_KHR_opacity_micromap"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceOpacityMicromapFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_opacity_micromap"
+      ],
+      "current_extensions": [
+        "VK_EXT_opacity_micromap"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDisplacementMicromapFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_displacement_micromap"
+      ],
+      "current_extensions": [
+        "VK_NV_displacement_micromap"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePipelinePropertiesFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_pipeline_properties"
+      ],
+      "current_extensions": [
+        "VK_EXT_pipeline_properties"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_AMD_shader_early_and_late_fragment_tests"
+      ],
+      "current_extensions": [
+        "VK_AMD_shader_early_and_late_fragment_tests"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceNonSeamlessCubeMapFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_non_seamless_cube_map"
+      ],
+      "current_extensions": [
+        "VK_EXT_non_seamless_cube_map"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePipelineRobustnessFeatures",
+      "original_core_min": "0x404000",
+      "current_core_min": "0x404000",
+      "original_extensions": [
+        "VK_EXT_pipeline_robustness"
+      ],
+      "current_extensions": [
+        "VK_EXT_pipeline_robustness"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa28244",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa28248",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa3202c",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa32030",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_shader_multiple_wait_queues"
+      ],
+      "current_extensions": [
+        "VK_QCOM_shader_multiple_wait_queues"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceImageProcessingFeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_image_processing"
+      ],
+      "current_extensions": [
+        "VK_QCOM_image_processing"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceTilePropertiesFeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_tile_properties"
+      ],
+      "current_extensions": [
+        "VK_QCOM_tile_properties"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceAmigoProfilingFeaturesSEC",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_SEC_amigo_profiling"
+      ],
+      "current_extensions": [
+        "VK_SEC_amigo_profiling"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_attachment_feedback_loop_layout"
+      ],
+      "current_extensions": [
+        "VK_EXT_attachment_feedback_loop_layout"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceAddressBindingReportFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_device_address_binding_report"
+      ],
+      "current_extensions": [
+        "VK_EXT_device_address_binding_report"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceOpticalFlowFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_optical_flow"
+      ],
+      "current_extensions": [
+        "VK_NV_optical_flow"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceFaultFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_device_fault"
+      ],
+      "current_extensions": [
+        "VK_EXT_device_fault"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceFaultFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_device_fault"
+      ],
+      "current_extensions": [
+        "VK_KHR_device_fault"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_pipeline_library_group_handles"
+      ],
+      "current_extensions": [
+        "VK_EXT_pipeline_library_group_handles",
+        "VK_KHR_pipeline_library_group_handles"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": false
+    },
+    {
+      "name": "VkPhysicalDeviceShaderCoreBuiltinsFeaturesARM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_ARM_shader_core_builtins"
+      ],
+      "current_extensions": [
+        "VK_ARM_shader_core_builtins"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceFrameBoundaryFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_frame_boundary"
+      ],
+      "current_extensions": [
+        "VK_EXT_frame_boundary"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_dynamic_rendering_unused_attachments"
+      ],
+      "current_extensions": [
+        "VK_EXT_dynamic_rendering_unused_attachments"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceInternallySynchronizedQueuesFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_internally_synchronized_queues"
+      ],
+      "current_extensions": [
+        "VK_KHR_internally_synchronized_queues"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceSwapchainMaintenance1FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_swapchain_maintenance1",
+        "VK_KHR_swapchain_maintenance1"
+      ],
+      "current_extensions": [
+        "VK_EXT_swapchain_maintenance1",
+        "VK_KHR_swapchain_maintenance1"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDepthBiasControlFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_depth_bias_control"
+      ],
+      "current_extensions": [
+        "VK_EXT_depth_bias_control"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRayTracingInvocationReorderFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_ray_tracing_invocation_reorder"
+      ],
+      "current_extensions": [
+        "VK_EXT_ray_tracing_invocation_reorder"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRayTracingInvocationReorderFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_ray_tracing_invocation_reorder"
+      ],
+      "current_extensions": [
+        "VK_NV_ray_tracing_invocation_reorder"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceExtendedSparseAddressSpaceFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_extended_sparse_address_space"
+      ],
+      "current_extensions": [
+        "VK_NV_extended_sparse_address_space"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_multiview_per_view_viewports"
+      ],
+      "current_extensions": [
+        "VK_QCOM_multiview_per_view_viewports"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRayTracingPositionFetchFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_ray_tracing_position_fetch"
+      ],
+      "current_extensions": [
+        "VK_KHR_ray_tracing_position_fetch"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_multiview_per_view_render_areas"
+      ],
+      "current_extensions": [
+        "VK_QCOM_multiview_per_view_render_areas"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderObjectFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_shader_object"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_object"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderTileImageFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_shader_tile_image"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_tile_image"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCooperativeMatrixFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_cooperative_matrix"
+      ],
+      "current_extensions": [
+        "VK_KHR_cooperative_matrix"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCooperativeMatrixConversionFeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_cooperative_matrix_conversion"
+      ],
+      "current_extensions": [
+        "VK_QCOM_cooperative_matrix_conversion"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderEnqueueFeaturesAMDX",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_AMDX_shader_enqueue"
+      ],
+      "current_extensions": [
+        "VK_AMDX_shader_enqueue"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceAntiLagFeaturesAMD",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_AMD_anti_lag"
+      ],
+      "current_extensions": [
+        "VK_AMD_anti_lag"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceTileMemoryHeapFeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_tile_memory_heap"
+      ],
+      "current_extensions": [
+        "VK_QCOM_tile_memory_heap"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCubicClampFeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_filter_cubic_clamp"
+      ],
+      "current_extensions": [
+        "VK_QCOM_filter_cubic_clamp"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceYcbcrDegammaFeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_ycbcr_degamma"
+      ],
+      "current_extensions": [
+        "VK_QCOM_ycbcr_degamma"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCubicWeightsFeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_filter_cubic_weights"
+      ],
+      "current_extensions": [
+        "VK_QCOM_filter_cubic_weights"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceImageProcessing2FeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_image_processing2"
+      ],
+      "current_extensions": [
+        "VK_QCOM_image_processing2"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceImageProcessing3FeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_image_processing3"
+      ],
+      "current_extensions": [
+        "VK_QCOM_image_processing3"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDescriptorPoolOverallocationFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_descriptor_pool_overallocation"
+      ],
+      "current_extensions": [
+        "VK_NV_descriptor_pool_overallocation"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePerStageDescriptorSetFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_per_stage_descriptor_set"
+      ],
+      "current_extensions": [
+        "VK_NV_per_stage_descriptor_set"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceExternalFormatResolveFeaturesANDROID",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_ANDROID_external_format_resolve"
+      ],
+      "current_extensions": [
+        "VK_ANDROID_external_format_resolve"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCudaKernelLaunchFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_cuda_kernel_launch"
+      ],
+      "current_extensions": [
+        "VK_NV_cuda_kernel_launch"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceSchedulingControlsFeaturesARM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_ARM_scheduling_controls"
+      ],
+      "current_extensions": [
+        "VK_ARM_scheduling_controls"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRelaxedLineRasterizationFeaturesIMG",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_IMG_relaxed_line_rasterization"
+      ],
+      "current_extensions": [
+        "VK_IMG_relaxed_line_rasterization"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRenderPassStripedFeaturesARM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_ARM_render_pass_striped"
+      ],
+      "current_extensions": [
+        "VK_ARM_render_pass_striped"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePipelineOpacityMicromapFeaturesARM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_ARM_pipeline_opacity_micromap"
+      ],
+      "current_extensions": [
+        "VK_ARM_pipeline_opacity_micromap"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderMaximalReconvergenceFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_shader_maximal_reconvergence"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_maximal_reconvergence"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderSubgroupRotateFeatures",
+      "original_core_min": "0x404000",
+      "current_core_min": "0x404000",
+      "original_extensions": [
+        "VK_KHR_shader_subgroup_rotate"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_subgroup_rotate"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa261bc",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa261c0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa327cc",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa327d0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderExpectAssumeFeatures",
+      "original_core_min": "0x404000",
+      "current_core_min": "0x404000",
+      "original_extensions": [
+        "VK_KHR_shader_expect_assume"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_expect_assume"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa272ac",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa272b0",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa2f5d4",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa2f5d8",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderFloatControls2Features",
+      "original_core_min": "0x404000",
+      "current_core_min": "0x404000",
+      "original_extensions": [
+        "VK_KHR_shader_float_controls2"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_float_controls2"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa2b440",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa2b444",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa31520",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa31524",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDynamicRenderingLocalReadFeatures",
+      "original_core_min": "0x404000",
+      "current_core_min": "0x404000",
+      "original_extensions": [
+        "VK_KHR_dynamic_rendering_local_read"
+      ],
+      "current_extensions": [
+        "VK_KHR_dynamic_rendering_local_read"
+      ],
+      "original_exact_threshold_sites": [
+        {
+          "cmp_elf": "0xa29f70",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": false,
+          "branches": [
+            {
+              "elf": "0xa29f74",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        },
+        {
+          "cmp_elf": "0xa30524",
+          "api_left": true,
+          "other_value": 4210687,
+          "after_query": true,
+          "branches": [
+            {
+              "elf": "0xa30528",
+              "condition": "hi",
+              "taken": false
+            }
+          ]
+        }
+      ],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderQuadControlFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_shader_quad_control"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_quad_control"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderAtomicFloat16VectorFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_shader_atomic_float16_vector"
+      ],
+      "current_extensions": [
+        "VK_NV_shader_atomic_float16_vector"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceMapMemoryPlacedFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_map_memory_placed"
+      ],
+      "current_extensions": [
+        "VK_EXT_map_memory_placed"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderBfloat16FeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_shader_bfloat16"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_bfloat16"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceRawAccessChainsFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_raw_access_chains"
+      ],
+      "current_extensions": [
+        "VK_NV_raw_access_chains"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCommandBufferInheritanceFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_command_buffer_inheritance"
+      ],
+      "current_extensions": [
+        "VK_NV_command_buffer_inheritance"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceImageAlignmentControlFeaturesMESA",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_MESA_image_alignment_control"
+      ],
+      "current_extensions": [
+        "VK_MESA_image_alignment_control"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderReplicatedCompositesFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_shader_replicated_composites"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_replicated_composites"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePresentModeFifoLatestReadyFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_present_mode_fifo_latest_ready",
+        "VK_KHR_present_mode_fifo_latest_ready"
+      ],
+      "current_extensions": [
+        "VK_EXT_present_mode_fifo_latest_ready",
+        "VK_KHR_present_mode_fifo_latest_ready"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCooperativeMatrix2FeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_cooperative_matrix2"
+      ],
+      "current_extensions": [
+        "VK_NV_cooperative_matrix2"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_cooperative_matrix_decode_vector"
+      ],
+      "current_extensions": [
+        "VK_NV_cooperative_matrix_decode_vector"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceHdrVividFeaturesHUAWEI",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_HUAWEI_hdr_vivid"
+      ],
+      "current_extensions": [
+        "VK_HUAWEI_hdr_vivid"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVertexAttributeRobustnessFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_vertex_attribute_robustness"
+      ],
+      "current_extensions": [
+        "VK_EXT_vertex_attribute_robustness"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDenseGeometryFormatFeaturesAMDX",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_AMDX_dense_geometry_format"
+      ],
+      "current_extensions": [
+        "VK_AMDX_dense_geometry_format"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDepthClampZeroOneFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_depth_clamp_zero_one",
+        "VK_KHR_depth_clamp_zero_one"
+      ],
+      "current_extensions": [
+        "VK_EXT_depth_clamp_zero_one",
+        "VK_KHR_depth_clamp_zero_one"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCooperativeVectorFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_cooperative_vector"
+      ],
+      "current_extensions": [
+        "VK_NV_cooperative_vector"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_tile_shading"
+      ],
+      "current_extensions": [
+        "VK_QCOM_tile_shading"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_VALVE_fragment_density_map_layered"
+      ],
+      "current_extensions": [
+        "VK_VALVE_fragment_density_map_layered"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePresentMeteringFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_present_metering"
+      ],
+      "current_extensions": [
+        "VK_NV_present_metering"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_shader_uniform_buffer_unsized_array"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_uniform_buffer_unsized_array"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_VALVE_shader_mixed_float_dot_product"
+      ],
+      "current_extensions": [
+        "VK_VALVE_shader_mixed_float_dot_product"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePrimitiveRestartIndexFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_primitive_restart_index"
+      ],
+      "current_extensions": [
+        "VK_EXT_primitive_restart_index"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceFormatPackFeaturesARM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_ARM_format_pack"
+      ],
+      "current_extensions": [
+        "VK_ARM_format_pack"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceThrottleHintFeaturesSEC",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_SEC_throttle_hint"
+      ],
+      "current_extensions": [
+        "VK_SEC_throttle_hint"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceTensorFeaturesARM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_ARM_tensors"
+      ],
+      "current_extensions": [
+        "VK_ARM_tensors"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDescriptorBufferTensorFeaturesARM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_ARM_tensors"
+      ],
+      "current_extensions": [
+        "VK_ARM_tensors"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderFloat8FeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_shader_float8"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_float8"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDataGraphFeaturesARM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_ARM_data_graph"
+      ],
+      "current_extensions": [
+        "VK_ARM_data_graph"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePipelineCacheIncrementalModeFeaturesSEC",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_SEC_pipeline_cache_incremental_mode"
+      ],
+      "current_extensions": [
+        "VK_SEC_pipeline_cache_incremental_mode"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDataGraphModelFeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_data_graph_model"
+      ],
+      "current_extensions": [
+        "VK_QCOM_data_graph_model"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderUntypedPointersFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_shader_untyped_pointers"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_untyped_pointers"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_VALVE_video_encode_rgb_conversion"
+      ],
+      "current_extensions": [
+        "VK_VALVE_video_encode_rgb_conversion"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShader64BitIndexingFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_shader_64bit_indexing"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_64bit_indexing"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceQueuePerfHintFeaturesQCOM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_QCOM_queue_perf_hint"
+      ],
+      "current_extensions": [
+        "VK_QCOM_queue_perf_hint"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDevicePerformanceCountersByRegionFeaturesARM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_ARM_performance_counters_by_region"
+      ],
+      "current_extensions": [
+        "VK_ARM_performance_counters_by_region"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceComputeOccupancyPriorityFeaturesNV",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_NV_compute_occupancy_priority"
+      ],
+      "current_extensions": [
+        "VK_NV_compute_occupancy_priority"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderLongVectorFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_shader_long_vector"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_long_vector"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceTextureCompressionASTC3DFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_texture_compression_astc_3d"
+      ],
+      "current_extensions": [
+        "VK_EXT_texture_compression_astc_3d"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderSubgroupPartitionedFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_shader_subgroup_partitioned"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_subgroup_partitioned"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderSplitBarrierFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_shader_split_barrier"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_split_barrier"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDescriptorHeapFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_descriptor_heap"
+      ],
+      "current_extensions": [
+        "VK_EXT_descriptor_heap"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderInstrumentationFeaturesARM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_ARM_shader_instrumentation"
+      ],
+      "current_extensions": [
+        "VK_ARM_shader_instrumentation"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDeviceAddressCommandsFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_device_address_commands"
+      ],
+      "current_extensions": [
+        "VK_KHR_device_address_commands"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderConstantDataFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_shader_constant_data"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_constant_data"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderAbortFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_KHR_shader_abort"
+      ],
+      "current_extensions": [
+        "VK_KHR_shader_abort"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceDataGraphOpticalFlowFeaturesARM",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_ARM_data_graph_optical_flow"
+      ],
+      "current_extensions": [
+        "VK_ARM_data_graph_optical_flow"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceImageTilingControlFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_image_tiling_control"
+      ],
+      "current_extensions": [
+        "VK_EXT_image_tiling_control"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_shader_ocp_microscaling_types"
+      ],
+      "current_extensions": [
+        "VK_EXT_shader_ocp_microscaling_types"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_cooperative_matrix_maintenance1"
+      ],
+      "current_extensions": [
+        "VK_EXT_cooperative_matrix_maintenance1"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": true
+    },
+    {
+      "name": "VkPhysicalDeviceFeatures2",
+      "classification": "explicit unconditional core-features2 validation case",
+      "matches": true
+    }
+  ],
+  "equal": 274,
+  "differences": [
+    {
+      "name": "VkPhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR",
+      "original_core_min": null,
+      "current_core_min": null,
+      "original_extensions": [
+        "VK_EXT_pipeline_library_group_handles"
+      ],
+      "current_extensions": [
+        "VK_EXT_pipeline_library_group_handles",
+        "VK_KHR_pipeline_library_group_handles"
+      ],
+      "original_exact_threshold_sites": [],
+      "thresholds_precise": true,
+      "phase_dependencies_equal": true,
+      "matches": false
+    }
+  ],
+  "limits": [
+    "Static original guard/metadata reconciliation, not live device support or extension activation.",
+    "Core-feature2 is the explicit generator case, separate from generic requirements.",
+    "One-bit/all-zero query routing and read-site thresholds are bounded original-code models, not final API/GPU validation."
+  ]
+}

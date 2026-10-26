@@ -1,0 +1,14 @@
+{
+  "rows": [
+    {
+      "stype": 1000498000,
+      "native_diagnostic_name": "VkPhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT",
+      "current_registry_layout_name": "VkPhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR"
+    }
+  ],
+  "limits": [
+    "Public registry aliases can rename a structure without changing sType/field layout.",
+    "Raw diagnostic names are preserved separately from current canonical layout names."
+  ],
+  "original_binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e"
+}

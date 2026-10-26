@@ -1,0 +1,118 @@
+{
+  "original_binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "getter_elf": "0xa42cc0",
+  "structures": 4,
+  "array_routes": [
+    {
+      "pointer": "pPerfBlocks",
+      "count": "perfBlockCount",
+      "count_offset": 36,
+      "pointer_offset": 40,
+      "source_count_offset": "0xf00",
+      "source_pointer_offset": "0xf08",
+      "stride": 28
+    },
+    {
+      "pointer": "pCopySrcLayouts",
+      "count": "copySrcLayoutCount",
+      "count_offset": 16,
+      "pointer_offset": 24,
+      "source_count_offset": "0xec4",
+      "source_pointer_offset": "0xec8",
+      "stride": 4
+    },
+    {
+      "pointer": "pCopyDstLayouts",
+      "count": "copyDstLayoutCount",
+      "count_offset": 32,
+      "pointer_offset": 40,
+      "source_count_offset": "0xed0",
+      "source_pointer_offset": "0xed8",
+      "stride": 4
+    },
+    {
+      "pointer": "pLayeredApis",
+      "count": "layeredApiCount",
+      "count_offset": 16,
+      "pointer_offset": 24,
+      "source_count_offset": "0xadc",
+      "source_pointer_offset": "0xae0",
+      "stride": 288
+    },
+    {
+      "pointer": "pCopySrcLayouts",
+      "count": "copySrcLayoutCount",
+      "count_offset": 92,
+      "pointer_offset": 96,
+      "source_count_offset": "0xec4",
+      "source_pointer_offset": "0xec8",
+      "stride": 4
+    },
+    {
+      "pointer": "pCopyDstLayouts",
+      "count": "copyDstLayoutCount",
+      "count_offset": 104,
+      "pointer_offset": 112,
+      "source_count_offset": "0xed0",
+      "source_pointer_offset": "0xed8",
+      "stride": 4
+    }
+  ],
+  "model_cases": 620,
+  "unique_instruction_sites": 680,
+  "source_template_sha256": "aa3f88d0dd3323598d7c712ddecb68d7f8a0aabe8542cd257832b5614d450d68",
+  "source_template_matches": true,
+  "production_driver_changed": false,
+  "limits": [
+    "Recover the four original caller-array property routes as bounded ARM dataflow.",
+    "",
+    "No SO/driver code is executed. Concrete counts/pointers select original branches;",
+    "array bytes remain independent symbolic inputs. Nonoverlapping valid little-endian",
+    "buffers only. memcpy is an explicit byte-copy abstraction. This does not validate",
+    "allocation/lifetime, arbitrary aliasing, GPU use or real property initialization."
+  ],
+  "case_domains": {
+    "total": [
+      0,
+      1,
+      7,
+      8,
+      9,
+      16,
+      17
+    ],
+    "capacity": [
+      0,
+      1,
+      3,
+      7,
+      8,
+      9,
+      16,
+      17,
+      19,
+      2147483648,
+      4294967295
+    ],
+    "pointers": [
+      "null",
+      "non-null",
+      "independent masks1/2 for paired source/destination arrays"
+    ]
+  },
+  "checks": [
+    "Result count total for null pointer; min(capacity,total) otherwise",
+    "Symbolic source byte identity for every copied byte",
+    "Destination canaries and bytes beyond copied count unchanged",
+    "Caller output array pointers preserved"
+  ],
+  "raw_cases": {
+    "path": "native-complete/rutabaga-remaining-two-hours-20261027/property-caller-array-routes.json",
+    "sha256": "a9ff5f4557ae7fd4917df1c3f6e51947c4bb222fdfc3f8dbfbd93c569140cc89",
+    "bytes": 439034
+  },
+  "reconstruction": "reconstructed/property-arrays.c",
+  "reconstruction_sha256": "c4cffbec7230f552f414fb899a823a9a497c9677cdc64c994bd9fbab8deeda45",
+  "remaining_unvisited_getter_sites": 0,
+  "instruction_site_followup": "property-getter-site-closure.json"
+}

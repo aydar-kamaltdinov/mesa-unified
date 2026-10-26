@@ -84,5 +84,6 @@
   "driver_source_changed": false,
   "build": false,
   "gpu_tests": false,
-  "full_validation_deferred": true
+  "full_validation_deferred": true,
+  "followup_20261027": "remaining-functions-source-handoff.json: readable7helper C,715field/275type feature checker and3boundary classifications; historical automatic-C failure counts unchanged."
 }

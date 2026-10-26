@@ -9,7 +9,7 @@ from pathlib import Path
 import re,json,hashlib,xml.etree.ElementTree as ET,collections
 from index_native_coverage import ROOT,elf
 E=ROOT/'native-complete/rutabaga-two-hours-20261027';F=ROOT/'native-complete';W=ROOT/'mesa-gamesir-recovered'
-raw,secs,funcs=elf(ROOT/'originals/gs_rutabaga_v3.so');fn=next(f for f in funcs if f['name']=='vk_common_GetPhysicalDeviceProperties2');lo=fn['address'];hi=lo+fn['size']
+raw,secs,funcs=elf(ROOT/'originals/gs_rutabaga_v3.so');assert hashlib.sha256(raw).hexdigest()=='90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e';fn=next(f for f in funcs if f['name']=='vk_common_GetPhysicalDeviceProperties2');lo=fn['address'];hi=lo+fn['size']
 code={}
 for line in (F/'gamesir.arm64.txt').read_text().splitlines():
  m=re.match(r'\s*([a-f0-9]+): ([a-f0-9]{8})\s+(\S+)\s*(.*)',line)
@@ -19,7 +19,7 @@ section=next(s for s in secs if s['type']!=8 and s['address']<=lo and hi<=s['add
 for pc,(_,_,word)in code.items():
  offset=section['offset']+pc-section['address']
  assert raw[offset:offset+4]==int(word,16).to_bytes(4,'little'),hex(pc)
-xml=W/'src/vulkan/registry/vk.xml';root=ET.parse(xml).getroot();enums={};aliases={}
+xml=W/'src/vulkan/registry/vk.xml';assert hashlib.sha256(xml.read_bytes()).hexdigest()=='cf31c965cf6e788697139601da0c7e02a75a9b6c7ac764e7641f5521ffd9da06', 'This ABI reconstruction is bound to its recorded registry';root=ET.parse(xml).getroot();enums={};aliases={}
 for parent in root.iter():
  if parent.tag not in ['enums','extension','require']:continue
  extnum=parent.get('number') if parent.tag=='extension' else None
@@ -81,7 +81,7 @@ def integer(v):
 def width(r):return 64 if r=='sp' else {'w':32,'x':64,'s':32,'d':64,'q':128,'v':128}.get(r[0],64)
 def regkey(r):return 'v'+re.search(r'\d+',r)[0] if re.fullmatch(r'[sdqv][0-9]+',r) else 'x'+r[1:] if r[0]=='w' else r
 
-def recover(stype,partial,null_query=False):
+def recover(stype,partial,null_query=False,inputs=None,output_ranges=()):
  regs={'x0':bits(P,64),'x1':bits(O,64),'sp':bits(S,64)};mem={};stores={};trace=[];comp=None
  def putmem(a,v):
   assert len(v)%8==0
@@ -89,6 +89,17 @@ def recover(stype,partial,null_query=False):
  if null_query:
   for at in range(C,C+0x1000):putmem(at,bits(0,8))
  putmem(O,bits(1000059001,32));putmem(O+8,bits(C,64));putmem(C,bits(stype,32));putmem(C+8,bits(0,64))
+ # Optional concrete count/pointer bytes and symbolic array cells for the bounded
+ # dynamic-output model. These never write original source/driver memory.
+ if inputs:
+  for at,cell in inputs.items():
+   assert len(cell)==8
+   mem[at]=cell
+ def condition(name):
+  assert comp is not None
+  av,bv,n=comp;mask=(1<<n)-1;av&=mask;bv&=mask
+  sa=av-(1<<n)if av>>(n-1)else av;sb=bv-(1<<n)if bv>>(n-1)else bv
+  return {'eq':av==bv,'ne':av!=bv,'lo':av<bv,'hs':av>=bv,'gt':sa>sb,'le':sa<=sb}[name]
  def get(r):
   if r in ['xzr','wzr']:return bits(0,width(r))
   k=regkey(r)
@@ -109,17 +120,18 @@ def recover(stype,partial,null_query=False):
   out=[]
   for offset in range(n//8):
    at=a+offset
-   if P<=at<P+0x10000:out.extend(f'physical:{at-P:x}:{i}'for i in range(8))
+   if at in mem:out.extend(mem[at])
+   elif P<=at<P+0x10000:out.extend(f'physical:{at-P:x}:{i}'for i in range(8))
    else:
     assert at in mem,('uninitialized memory',hex(at))
     out.extend(mem[at])
   return tuple(out)
  def store(a,v,pc):
-  assert S-0x300<=a<S+0x20 or O<=a<O+0x1000 or C<=a<C+0x1000,('unexpected store',hex(a))
+  assert S-0x300<=a<S+0x20 or O<=a<O+0x1000 or C<=a<C+0x1000 or any(lo<=a and a+len(v)//8<=hi for lo,hi in output_ranges),('unexpected store',hex(a))
   putmem(a,v)
-  if O<=a<O+0x1000 or C<=a<C+0x1000:
+  if O<=a<O+0x1000 or C<=a<C+0x1000 or any(lo<=a<hi for lo,hi in output_ranges):
    for off in range(0,len(v),8):stores[a+off//8]=dict(bits=v[off:off+8],store_elf=hex(pc))
- partial['stores']=stores;partial['trace']=trace
+ partial['stores']=stores;partial['trace']=trace;partial['memory']=mem
  pc=lo
  for count in range(10000):
   assert pc in code,('outside getter',hex(pc));op,args,word=code[pc];trace.append(pc);nxt=pc+4
@@ -136,7 +148,7 @@ def recover(stype,partial,null_query=False):
    else:store(at,get(r1),pc);store(at+n//8,get(r2),pc)
   elif op in ['add','sub','subs']:
    r,a,b=args.split(', ');av=value(a);bv=value(b);v=av+(1 if op=='add'else-1)*bv;setreg(r,bits(v,width(r)))
-   if op=='subs':comp=(av,bv)
+   if op=='subs':comp=(av,bv,width(r))
   elif op=='mov':
    r,v=args.split(', ')
    lane=re.fullmatch(r'v(\d+)\.([sd])\[([0-3])\]',r)
@@ -173,19 +185,16 @@ def recover(stype,partial,null_query=False):
    v=av&bv if op=='and'else av<<bv if op=='lsl'else av*bv
    setreg(r,bits(v,width(r)))
   elif op=='csel':
-   r,a,b,condition=args.split(', ');assert comp is not None;av,bv=comp
-   yes={'eq':av==bv,'ne':av!=bv,'lo':av<bv,'hs':av>=bv,'gt':av>bv,'le':av<=bv}[condition]
-   setreg(r,get(a if yes else b))
+   r,a,b,cc=args.split(', ');setreg(r,get(a if condition(cc)else b))
   elif op=='bl':
    assert args.startswith('0xce5370 '),args
    dest=integer(get('x0'));source=integer(get('x1'));length=integer(get('x2'));assert length<=4096
    for i in range(length):store(dest+i,load(source+i,8),pc)
   elif op=='cmp':
-   a,b=args.split(', ');size=width(a);av=value(a);bv=value(b);av=av-(1<<size)if av>>(size-1)else av;bv=bv-(1<<size)if bv>>(size-1)else bv;comp=(av,bv)
+   a,b=args.split(', ');comp=(value(a),value(b),width(a))
   elif op=='b':nxt=int(args.split()[0],16)
   elif op.startswith('b.'):
-   assert comp is not None;av,bv=comp;condition={'b.eq':av==bv,'b.ne':av!=bv,'b.gt':av>bv,'b.le':av<=bv,'b.lo':av<bv}[op]
-   if condition:nxt=int(args.split()[0],16)
+   if condition(op[2:]):nxt=int(args.split()[0],16)
   elif op in ['cbz','cbnz']:
    r,to=args.split(', ')
    if (integer(get(r))==0)==(op=='cbz'):nxt=int(to.split()[0],16)
@@ -195,7 +204,6 @@ def recover(stype,partial,null_query=False):
  raise AssertionError('step limit')
 
 
-rows=[];empty=[];partial_cases=[];visited=set();root_records={};handled=[]
 def routes(stores,base,fields):
  result=[]
  for field in fields:
@@ -218,50 +226,54 @@ def routes(stores,base,fields):
     chunks.append(entry)
   result.append(dict(member=field['name'],api_member_offset=field['offset'],size=field['size'],c_type=field['c_type'],array_count=field['array_count'],fully_written=all(copied),byte_routes=chunks))
  return result
-for st in structs:
- partial={};error=None
- try:stores,trace=recover(st['stype'],partial)
- except(Exception)as ex:stores=partial.get('stores',{});trace=partial.get('trace',[]);error=str(ex)
- visited.update(trace)
- for r in routes(stores,O,[dict(f,offset=f['offset']+16)for f in core]):root_records[r['member']]=r
- mapped=routes(stores,C,st['fields'])
- if mapped:
-  handled.append(st['name']);rows.extend(dict(struct=st['name'],stype=st['stype'],**r)for r in mapped)
- else:empty.append(st['name'])
- if error:partial_cases.append(dict(struct=st['name'],stype=st['stype'],reason=error,last_instruction=hex(trace[-1])if trace else None))
-null_query_cases=[]
-for case in partial_cases:
- st=next(t for t in structs if t['name']==case['struct']);partial={};error=None
- try:stores,trace=recover(st['stype'],partial,True)
- except(Exception)as ex:stores=partial.get('stores',{});trace=partial.get('trace',[]);error=str(ex)
- visited.update(trace)
- null_query_cases.append(dict(struct=st['name'],assumption='Caller property payload initially zero: null output arrays and zero capacities; not other valid callers',complete_path=error is None,error=error,rows=routes(stores,C,st['fields'])))
-result=dict(original_binary_sha256=hashlib.sha256(raw).hexdigest(),getter_elf=hex(lo),getter_size=fn['size'],source_registry_sha256=hashlib.sha256(xml.read_bytes()).hexdigest(),mapped_structures=len(handled),mapped_member_records=len(rows),core_member_records=len(root_records),instruction_count=len(code),visited_static_instructions=len(visited),unvisited_instruction_addresses=[hex(a)for a in code if a not in visited],core=list(root_records.values()),rows=rows,partial_cases=partial_cases,current_registry_structures_without_original_stores=empty,layout_errors=layout_errors,null_query_cases=null_query_cases,limits=['Positive static getter byte routes only; no driver execution.','AArch64 registry field layout, no assumption of current Mesa physical ABI.','Dynamic/user-pointer/copy/count paths fail closed and retain partial routes; see partial_cases.','Struct/member presence is not advertised support or a valid initializer/feature contract.','Initialization values, SDK/platform filters and API/GPU behavior remain deferred.'])
-(E/'recovered-property-getter-fields.json').write_text(json.dumps(result,indent=2)+'\n')
-print({k:v for k,v in result.items()if k not in ['core','rows','partial_cases','unvisited_instruction_addresses','current_registry_structures_without_original_stores','layout_errors','null_query_cases','limits']})
-print('partial',len(partial_cases),'empty',len(empty),'layout_errors',len(layout_errors))
-print(partial_cases[:3])
+def main():
+ rows=[];empty=[];partial_cases=[];visited=set();root_records={};handled=[]
+ for st in structs:
+  partial={};error=None
+  try:stores,trace=recover(st['stype'],partial)
+  except(Exception)as ex:stores=partial.get('stores',{});trace=partial.get('trace',[]);error=str(ex)
+  visited.update(trace)
+  for r in routes(stores,O,[dict(f,offset=f['offset']+16)for f in core]):root_records[r['member']]=r
+  mapped=routes(stores,C,st['fields'])
+  if mapped:
+   handled.append(st['name']);rows.extend(dict(struct=st['name'],stype=st['stype'],**r)for r in mapped)
+  else:empty.append(st['name'])
+  if error:partial_cases.append(dict(struct=st['name'],stype=st['stype'],reason=error,last_instruction=hex(trace[-1])if trace else None))
+ null_query_cases=[]
+ for case in partial_cases:
+  st=next(t for t in structs if t['name']==case['struct']);partial={};error=None
+  try:stores,trace=recover(st['stype'],partial,True)
+  except(Exception)as ex:stores=partial.get('stores',{});trace=partial.get('trace',[]);error=str(ex)
+  visited.update(trace)
+  null_query_cases.append(dict(struct=st['name'],assumption='Caller property payload initially zero: null output arrays and zero capacities; not other valid callers',complete_path=error is None,error=error,rows=routes(stores,C,st['fields'])))
+ result=dict(original_binary_sha256=hashlib.sha256(raw).hexdigest(),getter_elf=hex(lo),getter_size=fn['size'],source_registry_sha256=hashlib.sha256(xml.read_bytes()).hexdigest(),mapped_structures=len(handled),mapped_member_records=len(rows),core_member_records=len(root_records),instruction_count=len(code),visited_static_instructions=len(visited),unvisited_instruction_addresses=[hex(a)for a in code if a not in visited],core=list(root_records.values()),rows=rows,partial_cases=partial_cases,current_registry_structures_without_original_stores=empty,layout_errors=layout_errors,null_query_cases=null_query_cases,limits=['Positive static getter byte routes only; no driver execution.','AArch64 registry field layout, no assumption of current Mesa physical ABI.','Dynamic/user-pointer/copy/count paths fail closed and retain partial routes; see partial_cases.','Struct/member presence is not advertised support or a valid initializer/feature contract.','Initialization values, SDK/platform filters and API/GPU behavior remain deferred.'])
+ (E/'recovered-property-getter-fields.json').write_text(json.dumps(result,indent=2)+'\n')
+ print({k:v for k,v in result.items()if k not in ['core','rows','partial_cases','unvisited_instruction_addresses','current_registry_structures_without_original_stores','layout_errors','null_query_cases','limits']})
+ print('partial',len(partial_cases),'empty',len(empty),'layout_errors',len(layout_errors))
+ print(partial_cases[:3])
 
-# Positive, non-overlapping original physical fields for later typed analysis.
-# No caller-input scalar or pointer is renamed into a physical-device field.
-candidates={};conflicts=[]
-for row in list(root_records.values())+rows+[dict(r,struct=c['struct'])for c in null_query_cases for r in c['rows']]:
- segments=row['byte_routes']
- if not row['fully_written']or len(segments)!=1 or segments[0]['kind']!='copy' or segments[0]['api_byte']!=0 or segments[0]['bytes']!=row['size']:continue
- offset=segments[0]['physical_offset'];name=re.sub(r'[^A-Za-z0-9_]','_',row['member'].removeprefix('limits.').removeprefix('sparseProperties.'))
- if offset in candidates:
-  if candidates[offset]['size']!=row['size']:conflicts.append(dict(offset=hex(offset),old=candidates[offset]['name'],new=name));continue
-  candidates[offset]['aliases'].add(name);continue
- candidates[offset]=dict(name=name,size=row['size'],c_type=row['c_type'],array_count=row['array_count'],aliases={name})
-selected=[];used=set();overlaps=[]
-for offset,field in sorted(candidates.items()):
- region=set(range(offset,offset+field['size']))
- if region&used:overlaps.append(dict(offset=hex(offset),field=field['name']));continue
- assert offset>=0x444 and offset+field['size']<=0x1638
- used|=region;selected.append(dict(offset=hex(offset),**{k:sorted(v)if isinstance(v,set)else v for k,v in field.items()}))
-names=collections.Counter(f['name']for f in selected)
-for field in selected:
- if names[field['name']]>1:field['name']+='_'+field['offset'][2:]
-(E/'original-property-physical-fields.json').write_text(json.dumps(dict(fields=selected,source='recovered-property-getter-fields.json',size_conflicts=conflicts,partial_overlaps=overlaps,limits=['Positive full-field contiguous byte copies only.','Getter type/name routes, no initialization or feature support validation.','Opaque/unobserved bytes retain no inferred names.']),indent=2)+'\n')
-(E/'original-property-fields.tsv').write_text(''.join(f"{int(f['offset'],16):x}\t{f['size']}\t{f['c_type']}\t{f['array_count']}\t{f['name']}\n"for f in selected))
-print('Original non-overlapping physical property fields',len(selected),'bytes',len(used))
+ # Positive, non-overlapping original physical fields for later typed analysis.
+ # No caller-input scalar or pointer is renamed into a physical-device field.
+ candidates={};conflicts=[]
+ for row in list(root_records.values())+rows+[dict(r,struct=c['struct'])for c in null_query_cases for r in c['rows']]:
+  segments=row['byte_routes']
+  if not row['fully_written']or len(segments)!=1 or segments[0]['kind']!='copy' or segments[0]['api_byte']!=0 or segments[0]['bytes']!=row['size']:continue
+  offset=segments[0]['physical_offset'];name=re.sub(r'[^A-Za-z0-9_]','_',row['member'].removeprefix('limits.').removeprefix('sparseProperties.'))
+  if offset in candidates:
+   if candidates[offset]['size']!=row['size']:conflicts.append(dict(offset=hex(offset),old=candidates[offset]['name'],new=name));continue
+   candidates[offset]['aliases'].add(name);continue
+  candidates[offset]=dict(name=name,size=row['size'],c_type=row['c_type'],array_count=row['array_count'],aliases={name})
+ selected=[];used=set();overlaps=[]
+ for offset,field in sorted(candidates.items()):
+  region=set(range(offset,offset+field['size']))
+  if region&used:overlaps.append(dict(offset=hex(offset),field=field['name']));continue
+  assert offset>=0x444 and offset+field['size']<=0x1638
+  used|=region;selected.append(dict(offset=hex(offset),**{k:sorted(v)if isinstance(v,set)else v for k,v in field.items()}))
+ names=collections.Counter(f['name']for f in selected)
+ for field in selected:
+  if names[field['name']]>1:field['name']+='_'+field['offset'][2:]
+ (E/'original-property-physical-fields.json').write_text(json.dumps(dict(fields=selected,source='recovered-property-getter-fields.json',size_conflicts=conflicts,partial_overlaps=overlaps,limits=['Positive full-field contiguous byte copies only.','Getter type/name routes, no initialization or feature support validation.','Opaque/unobserved bytes retain no inferred names.']),indent=2)+'\n')
+ (E/'original-property-fields.tsv').write_text(''.join(f"{int(f['offset'],16):x}\t{f['size']}\t{f['c_type']}\t{f['array_count']}\t{f['name']}\n"for f in selected))
+ print('Original non-overlapping physical property fields',len(selected),'bytes',len(used))
+
+if __name__=='__main__':main()

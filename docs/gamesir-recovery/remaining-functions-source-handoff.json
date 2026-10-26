@@ -1,0 +1,131 @@
+{
+  "original_binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "scope": "Eight previous automatic-C failures and three symbol-boundary cases",
+  "source_accounting": {
+    "format_utilities": 7,
+    "feature_checker": 1,
+    "additional_missing_production_implementation_identified": false
+  },
+  "formats": {
+    "manual_C": "reconstructed/format-unpack.c",
+    "existing_generator": "src/util/format/u_format_pack.py",
+    "source_numeric_helpers": "src/util/format/format_utils.h",
+    "main_pixels": 16,
+    "narrow_RGB8_pixels": 8,
+    "narrow_RGBA16_pixels": 4,
+    "scalar_alias_path_preserved": true,
+    "reciprocal_bound_proved": true
+  },
+  "checker": {
+    "readable_data_kernel": "reconstructed/feature-checker.c",
+    "diagnostic_routes": 715,
+    "nonzero_supported_routes": 715,
+    "priority_groups": 276,
+    "eligibility_formulas": 275,
+    "exact_current_metadata_matches": 274,
+    "newer_SDK_KHR_alias_differences": 1,
+    "query_validation_dependencies_equal": true,
+    "disjoint_stack_structures": 275,
+    "unique_chain_model_nodes": 275,
+    "query_callback_calls_per_model_case": 1,
+    "model_only": true
+  },
+  "boundaries": {
+    "linker_displaced_load": 1,
+    "unsupported_NIR_input_domains": 2,
+    "false_no_return_or_byte_changes": false
+  },
+  "automatic_C_quality": {
+    "failed_exports_retained": 8,
+    "outside_label_cases_retained": 3,
+    "reason": "Counts measure tool output, not eight unread source gaps; do not rerun identical failed strategies."
+  },
+  "source_policy": "0x4753381d",
+  "production_driver_changed": false,
+  "driver_build": false,
+  "driver_or_GPU_execution": false,
+  "full_validation_deferred": true,
+  "remaining": [
+    "Compiler/API/cache/GPU/game and performance validation of the whole existing transfer package.",
+    "Arbitrary query-callback mutation, malformed pointers/cycles, complete lifetime and API conformance are not established by the static models.",
+    "Manual C has not been compiled or exercised; ordinary-buffer domain and timing limits are explicit."
+  ],
+  "cleanup": {
+    "applied": true,
+    "evidence": "cleanup-summary-20261027.json",
+    "logical_bytes_removed": 465559907,
+    "old_run_directories": 24,
+    "verbose_logs": 27,
+    "selected_exports_consolidated": 21,
+    "originals_and_unique_data_protected": true,
+    "C_quality_counts_preserved": true
+  },
+  "large_local_evidence": [
+    {
+      "path": "native-complete/rutabaga-remaining-two-hours-20261027/checker-field-priority.json",
+      "bytes": 350219,
+      "sha256": "af0985d3257f32dd8fd30e56b13d531a28f02f0e4c9443b4ac7594474303a63b"
+    },
+    {
+      "path": "native-complete/rutabaga-remaining-two-hours-20261027/checker-nonzero-supported-branches.json",
+      "bytes": 129643,
+      "sha256": "f203839ffdbf2a521a60055be5d71796a76cafb28ef0ab74ff8c8e8cbe68c84e"
+    },
+    {
+      "path": "native-complete/rutabaga-remaining-two-hours-20261027/checker-eligibility-guards.json",
+      "bytes": 291442,
+      "sha256": "b2d16913f68214fd0a504ad28c72d1c9cae041c1899a8f3b0cb8bdb12e004173"
+    },
+    {
+      "path": "native-complete/rutabaga-remaining-two-hours-20261027/property-caller-array-routes.json",
+      "bytes": 439034,
+      "sha256": "a9ff5f4557ae7fd4917df1c3f6e51947c4bb222fdfc3f8dbfbd93c569140cc89"
+    }
+  ],
+  "property_caller_arrays": {
+    "structures": 4,
+    "array_routes": 6,
+    "static_model_cases": 620,
+    "source_template_already_matches": true,
+    "previous_maps_byte_identical": true,
+    "evidence": "property-caller-array-contracts.json",
+    "reconstruction": "reconstructed/property-arrays.c",
+    "getter_instruction_sites": 2245,
+    "unclassified_sites": 0,
+    "instruction_site_coverage_is_not_whole_behavior_proof": true
+  },
+  "checker_instruction_accounting": {
+    "instruction_sites": 24385,
+    "observed_static_model_sites": 23232,
+    "statically_classified_not_exercised": 1153,
+    "unclassified_sites": 0,
+    "cycle_guards": 274,
+    "duplicate_warning_types": 274,
+    "evidence": "checker-residual-contracts.json"
+  },
+  "incremental_triage_fix": {
+    "tool": "tools/compare_native_versions.py",
+    "reason": "Identical relative branch bytes can resolve to different named targets after code layout changes; queue these for source review.",
+    "static_regression_cases": 5,
+    "temporary_reports_removed": true,
+    "uncovered_executable_ranges_now_explicit": true,
+    "data_section_address_changes_reported": true
+  },
+  "unsized_runtime": {
+    "independent_spans": 2,
+    "instructions": 79,
+    "readable_assembly": "reconstructed/libunwind-unsized.S",
+    "ELF_sizes_remain_zero": true,
+    "overlapping_zero_label_addresses": 8,
+    "semantic_aliases_not_assumed": true
+  },
+  "executable_gaps": {
+    "ranges": 9,
+    "unclassified": 0,
+    "padding_bytes": 56,
+    "unnamed_BTI_RET_stub_bytes": 8,
+    "PLT_slots": 234,
+    "source_evidence": "uncovered-linker-ranges.json",
+    "not_GPU_driver_features": true
+  }
+}

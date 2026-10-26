@@ -1,0 +1,1146 @@
+{
+  "original_binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "ranges": [
+    {
+      "native_name": "__libunwind_Registers_arm64_jumpto",
+      "elf": "0xce5094",
+      "end": "0xce5134",
+      "span_bytes": 160,
+      "instructions": 40,
+      "ELF_size": 0,
+      "range_is_inferred_not_ELF_size": true,
+      "restored_label": "gs_restored_unwind_jumpto",
+      "transfers": [
+        {
+          "register": "x2",
+          "context_byte": 16,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce5098"
+        },
+        {
+          "register": "x3",
+          "context_byte": 24,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce5098"
+        },
+        {
+          "register": "x4",
+          "context_byte": 32,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce509c"
+        },
+        {
+          "register": "x5",
+          "context_byte": 40,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce509c"
+        },
+        {
+          "register": "x6",
+          "context_byte": 48,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50a0"
+        },
+        {
+          "register": "x7",
+          "context_byte": 56,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50a0"
+        },
+        {
+          "register": "x8",
+          "context_byte": 64,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50a4"
+        },
+        {
+          "register": "x9",
+          "context_byte": 72,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50a4"
+        },
+        {
+          "register": "x10",
+          "context_byte": 80,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50a8"
+        },
+        {
+          "register": "x11",
+          "context_byte": 88,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50a8"
+        },
+        {
+          "register": "x12",
+          "context_byte": 96,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50ac"
+        },
+        {
+          "register": "x13",
+          "context_byte": 104,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50ac"
+        },
+        {
+          "register": "x14",
+          "context_byte": 112,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50b0"
+        },
+        {
+          "register": "x15",
+          "context_byte": 120,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50b0"
+        },
+        {
+          "register": "x18",
+          "context_byte": 144,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50b4"
+        },
+        {
+          "register": "x19",
+          "context_byte": 152,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50b4"
+        },
+        {
+          "register": "x20",
+          "context_byte": 160,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50b8"
+        },
+        {
+          "register": "x21",
+          "context_byte": 168,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50b8"
+        },
+        {
+          "register": "x22",
+          "context_byte": 176,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50bc"
+        },
+        {
+          "register": "x23",
+          "context_byte": 184,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50bc"
+        },
+        {
+          "register": "x24",
+          "context_byte": 192,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50c0"
+        },
+        {
+          "register": "x25",
+          "context_byte": 200,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50c0"
+        },
+        {
+          "register": "x26",
+          "context_byte": 208,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50c4"
+        },
+        {
+          "register": "x27",
+          "context_byte": 216,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50c4"
+        },
+        {
+          "register": "x28",
+          "context_byte": 224,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50c8"
+        },
+        {
+          "register": "x29",
+          "context_byte": 232,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50c8"
+        },
+        {
+          "register": "x30",
+          "context_byte": 256,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50cc"
+        },
+        {
+          "register": "d0",
+          "context_byte": 272,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50d0"
+        },
+        {
+          "register": "d1",
+          "context_byte": 280,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50d0"
+        },
+        {
+          "register": "d2",
+          "context_byte": 288,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50d4"
+        },
+        {
+          "register": "d3",
+          "context_byte": 296,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50d4"
+        },
+        {
+          "register": "d4",
+          "context_byte": 304,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50d8"
+        },
+        {
+          "register": "d5",
+          "context_byte": 312,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50d8"
+        },
+        {
+          "register": "d6",
+          "context_byte": 320,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50dc"
+        },
+        {
+          "register": "d7",
+          "context_byte": 328,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50dc"
+        },
+        {
+          "register": "d8",
+          "context_byte": 336,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50e0"
+        },
+        {
+          "register": "d9",
+          "context_byte": 344,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50e0"
+        },
+        {
+          "register": "d10",
+          "context_byte": 352,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50e4"
+        },
+        {
+          "register": "d11",
+          "context_byte": 360,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50e4"
+        },
+        {
+          "register": "d12",
+          "context_byte": 368,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50e8"
+        },
+        {
+          "register": "d13",
+          "context_byte": 376,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50e8"
+        },
+        {
+          "register": "d14",
+          "context_byte": 384,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50ec"
+        },
+        {
+          "register": "d15",
+          "context_byte": 392,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50ec"
+        },
+        {
+          "register": "d16",
+          "context_byte": 400,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50f0"
+        },
+        {
+          "register": "d17",
+          "context_byte": 408,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50f0"
+        },
+        {
+          "register": "d18",
+          "context_byte": 416,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50f4"
+        },
+        {
+          "register": "d19",
+          "context_byte": 424,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50f4"
+        },
+        {
+          "register": "d20",
+          "context_byte": 432,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50f8"
+        },
+        {
+          "register": "d21",
+          "context_byte": 440,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50f8"
+        },
+        {
+          "register": "d22",
+          "context_byte": 448,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50fc"
+        },
+        {
+          "register": "d23",
+          "context_byte": 456,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce50fc"
+        },
+        {
+          "register": "d24",
+          "context_byte": 464,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce5100"
+        },
+        {
+          "register": "d25",
+          "context_byte": 472,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce5100"
+        },
+        {
+          "register": "d26",
+          "context_byte": 480,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce5104"
+        },
+        {
+          "register": "d27",
+          "context_byte": 488,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce5104"
+        },
+        {
+          "register": "d28",
+          "context_byte": 496,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce5108"
+        },
+        {
+          "register": "d29",
+          "context_byte": 504,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce5108"
+        },
+        {
+          "register": "d30",
+          "context_byte": 512,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce510c"
+        },
+        {
+          "register": "d31",
+          "context_byte": 520,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce5110"
+        },
+        {
+          "register": "x16",
+          "context_byte": 248,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce5114"
+        },
+        {
+          "register": "x0",
+          "context_byte": 0,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce5118"
+        },
+        {
+          "register": "x1",
+          "context_byte": 8,
+          "bytes": 8,
+          "operation": "load",
+          "elf": "0xce5118"
+        }
+      ]
+    },
+    {
+      "native_name": "unw_getcontext",
+      "elf": "0xce5134",
+      "end": "0xce51d0",
+      "span_bytes": 156,
+      "instructions": 39,
+      "ELF_size": 0,
+      "range_is_inferred_not_ELF_size": true,
+      "restored_label": "gs_restored_unw_getcontext",
+      "transfers": [
+        {
+          "register": "x0",
+          "context_byte": 0,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5138"
+        },
+        {
+          "register": "x1",
+          "context_byte": 8,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5138"
+        },
+        {
+          "register": "x2",
+          "context_byte": 16,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce513c"
+        },
+        {
+          "register": "x3",
+          "context_byte": 24,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce513c"
+        },
+        {
+          "register": "x4",
+          "context_byte": 32,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5140"
+        },
+        {
+          "register": "x5",
+          "context_byte": 40,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5140"
+        },
+        {
+          "register": "x6",
+          "context_byte": 48,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5144"
+        },
+        {
+          "register": "x7",
+          "context_byte": 56,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5144"
+        },
+        {
+          "register": "x8",
+          "context_byte": 64,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5148"
+        },
+        {
+          "register": "x9",
+          "context_byte": 72,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5148"
+        },
+        {
+          "register": "x10",
+          "context_byte": 80,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce514c"
+        },
+        {
+          "register": "x11",
+          "context_byte": 88,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce514c"
+        },
+        {
+          "register": "x12",
+          "context_byte": 96,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5150"
+        },
+        {
+          "register": "x13",
+          "context_byte": 104,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5150"
+        },
+        {
+          "register": "x14",
+          "context_byte": 112,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5154"
+        },
+        {
+          "register": "x15",
+          "context_byte": 120,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5154"
+        },
+        {
+          "register": "x16",
+          "context_byte": 128,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5158"
+        },
+        {
+          "register": "x17",
+          "context_byte": 136,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5158"
+        },
+        {
+          "register": "x18",
+          "context_byte": 144,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce515c"
+        },
+        {
+          "register": "x19",
+          "context_byte": 152,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce515c"
+        },
+        {
+          "register": "x20",
+          "context_byte": 160,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5160"
+        },
+        {
+          "register": "x21",
+          "context_byte": 168,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5160"
+        },
+        {
+          "register": "x22",
+          "context_byte": 176,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5164"
+        },
+        {
+          "register": "x23",
+          "context_byte": 184,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5164"
+        },
+        {
+          "register": "x24",
+          "context_byte": 192,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5168"
+        },
+        {
+          "register": "x25",
+          "context_byte": 200,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5168"
+        },
+        {
+          "register": "x26",
+          "context_byte": 208,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce516c"
+        },
+        {
+          "register": "x27",
+          "context_byte": 216,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce516c"
+        },
+        {
+          "register": "x28",
+          "context_byte": 224,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5170"
+        },
+        {
+          "register": "x29",
+          "context_byte": 232,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5170"
+        },
+        {
+          "register": "x30",
+          "context_byte": 240,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5174"
+        },
+        {
+          "register": "x1",
+          "context_byte": 248,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce517c"
+        },
+        {
+          "register": "x30",
+          "context_byte": 256,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5180"
+        },
+        {
+          "register": "d0",
+          "context_byte": 272,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5184"
+        },
+        {
+          "register": "d1",
+          "context_byte": 280,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5184"
+        },
+        {
+          "register": "d2",
+          "context_byte": 288,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5188"
+        },
+        {
+          "register": "d3",
+          "context_byte": 296,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5188"
+        },
+        {
+          "register": "d4",
+          "context_byte": 304,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce518c"
+        },
+        {
+          "register": "d5",
+          "context_byte": 312,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce518c"
+        },
+        {
+          "register": "d6",
+          "context_byte": 320,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5190"
+        },
+        {
+          "register": "d7",
+          "context_byte": 328,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5190"
+        },
+        {
+          "register": "d8",
+          "context_byte": 336,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5194"
+        },
+        {
+          "register": "d9",
+          "context_byte": 344,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5194"
+        },
+        {
+          "register": "d10",
+          "context_byte": 352,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5198"
+        },
+        {
+          "register": "d11",
+          "context_byte": 360,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce5198"
+        },
+        {
+          "register": "d12",
+          "context_byte": 368,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce519c"
+        },
+        {
+          "register": "d13",
+          "context_byte": 376,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce519c"
+        },
+        {
+          "register": "d14",
+          "context_byte": 384,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51a0"
+        },
+        {
+          "register": "d15",
+          "context_byte": 392,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51a0"
+        },
+        {
+          "register": "d16",
+          "context_byte": 400,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51a4"
+        },
+        {
+          "register": "d17",
+          "context_byte": 408,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51a4"
+        },
+        {
+          "register": "d18",
+          "context_byte": 416,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51a8"
+        },
+        {
+          "register": "d19",
+          "context_byte": 424,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51a8"
+        },
+        {
+          "register": "d20",
+          "context_byte": 432,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51ac"
+        },
+        {
+          "register": "d21",
+          "context_byte": 440,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51ac"
+        },
+        {
+          "register": "d22",
+          "context_byte": 448,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51b0"
+        },
+        {
+          "register": "d23",
+          "context_byte": 456,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51b0"
+        },
+        {
+          "register": "d24",
+          "context_byte": 464,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51b4"
+        },
+        {
+          "register": "d25",
+          "context_byte": 472,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51b4"
+        },
+        {
+          "register": "d26",
+          "context_byte": 480,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51b8"
+        },
+        {
+          "register": "d27",
+          "context_byte": 488,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51b8"
+        },
+        {
+          "register": "d28",
+          "context_byte": 496,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51bc"
+        },
+        {
+          "register": "d29",
+          "context_byte": 504,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51bc"
+        },
+        {
+          "register": "d30",
+          "context_byte": 512,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51c0"
+        },
+        {
+          "register": "d31",
+          "context_byte": 520,
+          "bytes": 8,
+          "operation": "store",
+          "elf": "0xce51c4"
+        }
+      ]
+    }
+  ],
+  "zero_size_labels": [
+    {
+      "elf": "0x94a0a0",
+      "zero_size_labels": [
+        "_Z22tu_CmdDrawMeshTasksEXTIL4chip6EEvP17VkCommandBuffer_Tjjj",
+        "_Z22tu_CmdDrawMeshTasksEXTIL4chip7EEvP17VkCommandBuffer_Tjjj"
+      ],
+      "sized_starts": [
+        {
+          "name": "_Z22tu_CmdDrawMeshTasksEXTIL4chip8EEvP17VkCommandBuffer_Tjjj",
+          "bytes": 224
+        }
+      ],
+      "classification": "spatial overlap only; no semantic alias or feature claim"
+    },
+    {
+      "elf": "0x94a180",
+      "zero_size_labels": [
+        "_Z30tu_CmdDrawMeshTasksIndirectEXTIL4chip6EEvP17VkCommandBuffer_TP10VkBuffer_Tmjj",
+        "_Z30tu_CmdDrawMeshTasksIndirectEXTIL4chip7EEvP17VkCommandBuffer_TP10VkBuffer_Tmjj"
+      ],
+      "sized_starts": [
+        {
+          "name": "_Z30tu_CmdDrawMeshTasksIndirectEXTIL4chip8EEvP17VkCommandBuffer_TP10VkBuffer_Tmjj",
+          "bytes": 300
+        }
+      ],
+      "classification": "spatial overlap only; no semantic alias or feature claim"
+    },
+    {
+      "elf": "0x94a2ac",
+      "zero_size_labels": [
+        "_Z35tu_CmdDrawMeshTasksIndirectCountEXTIL4chip6EEvP17VkCommandBuffer_TP10VkBuffer_TmS4_mjj",
+        "_Z35tu_CmdDrawMeshTasksIndirectCountEXTIL4chip7EEvP17VkCommandBuffer_TP10VkBuffer_TmS4_mjj"
+      ],
+      "sized_starts": [
+        {
+          "name": "_Z35tu_CmdDrawMeshTasksIndirectCountEXTIL4chip8EEvP17VkCommandBuffer_TP10VkBuffer_TmS4_mjj",
+          "bytes": 760
+        }
+      ],
+      "classification": "spatial overlap only; no semantic alias or feature claim"
+    },
+    {
+      "elf": "0xa618e4",
+      "zero_size_labels": [
+        "vk_common_GetQueueCheckpointDataNV"
+      ],
+      "sized_starts": [
+        {
+          "name": "vk_common_QueueSubmit",
+          "bytes": 1384
+        }
+      ],
+      "classification": "spatial overlap only; no semantic alias or feature claim"
+    },
+    {
+      "elf": "0xa72344",
+      "zero_size_labels": [
+        "vk_rt_pipeline_get_shader"
+      ],
+      "sized_starts": [
+        {
+          "name": "cmp_vk_pipeline_stages",
+          "bytes": 12
+        }
+      ],
+      "classification": "spatial overlap only; no semantic alias or feature claim"
+    },
+    {
+      "elf": "0xa77154",
+      "zero_size_labels": [
+        "vk_common_CopyAccelerationStructureKHR",
+        "vk_common_CopyAccelerationStructureToMemoryKHR",
+        "vk_common_CopyMemoryToAccelerationStructureKHR",
+        "vk_common_WriteAccelerationStructuresPropertiesKHR",
+        "vk_common_CmdBuildAccelerationStructuresIndirectKHR",
+        "vk_common_BuildAccelerationStructuresKHR"
+      ],
+      "sized_starts": [
+        {
+          "name": "vk_instance_init",
+          "bytes": 1212
+        }
+      ],
+      "classification": "spatial overlap only; no semantic alias or feature claim"
+    },
+    {
+      "elf": "0xaca8d4",
+      "zero_size_labels": [
+        "emit_intrinsic_atomic_global"
+      ],
+      "sized_starts": [
+        {
+          "name": "byte_offset_to_address",
+          "bytes": 512
+        }
+      ],
+      "classification": "spatial overlap only; no semantic alias or feature claim"
+    },
+    {
+      "elf": "0xb47b20",
+      "zero_size_labels": [
+        "util_format_z16_unorm_s8_uint_unpack_z_32unorm",
+        "util_format_z16_unorm_s8_uint_unpack_z_float",
+        "util_format_z16_unorm_s8_uint_unpack_s_8uint"
+      ],
+      "sized_starts": [
+        {
+          "name": "util_format_z24_unorm_s8_uint_unpack_z_float",
+          "bytes": 284
+        }
+      ],
+      "classification": "spatial overlap only; no semantic alias or feature claim"
+    },
+    {
+      "elf": "0xce5094",
+      "zero_size_labels": [
+        "__libunwind_Registers_arm64_jumpto"
+      ],
+      "sized_starts": [],
+      "classification": "independent unsized runtime entry; explicit span recovered"
+    },
+    {
+      "elf": "0xce5134",
+      "zero_size_labels": [
+        "__unw_getcontext",
+        "unw_getcontext"
+      ],
+      "sized_starts": [],
+      "classification": "independent unsized runtime entry; explicit span recovered"
+    }
+  ],
+  "source": "docs/gamesir-recovery/reconstructed/libunwind-unsized.S",
+  "source_sha256": "ed34884ac8f31ac54edb39f01b4d049f6b3c58993a7b483b9c26e2944713aa4f",
+  "uncovered_executable_ranges": [
+    {
+      "section": ".text",
+      "address": "0x8e1050",
+      "bytes": 8,
+      "sha256": "d33fdb74881bcff46b1cf4fc3e20479b1882e0e683789e80e6d650554066a1aa",
+      "unsized_entries": []
+    },
+    {
+      "section": ".text",
+      "address": "0xce0d0c",
+      "bytes": 4,
+      "sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+      "unsized_entries": []
+    },
+    {
+      "section": ".text",
+      "address": "0xce1054",
+      "bytes": 12,
+      "sha256": "15ec7bf0b50732b49f8228e07d24365338f9e3ab994b00af08e5a3bffe55fd8b",
+      "unsized_entries": []
+    },
+    {
+      "section": ".text",
+      "address": "0xce1094",
+      "bytes": 12,
+      "sha256": "15ec7bf0b50732b49f8228e07d24365338f9e3ab994b00af08e5a3bffe55fd8b",
+      "unsized_entries": []
+    },
+    {
+      "section": ".text",
+      "address": "0xce10d4",
+      "bytes": 12,
+      "sha256": "15ec7bf0b50732b49f8228e07d24365338f9e3ab994b00af08e5a3bffe55fd8b",
+      "unsized_entries": []
+    },
+    {
+      "section": ".text",
+      "address": "0xce1114",
+      "bytes": 12,
+      "sha256": "15ec7bf0b50732b49f8228e07d24365338f9e3ab994b00af08e5a3bffe55fd8b",
+      "unsized_entries": []
+    },
+    {
+      "section": ".text",
+      "address": "0xce114c",
+      "bytes": 4,
+      "sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+      "unsized_entries": []
+    },
+    {
+      "section": ".text",
+      "address": "0xce5094",
+      "bytes": 316,
+      "sha256": "588c1450bdcc493e8504b6815f898869e83626eb4c7abebfacde6674664133a3",
+      "unsized_entries": [
+        {
+          "address": "0xce5094",
+          "name": "__libunwind_Registers_arm64_jumpto"
+        },
+        {
+          "address": "0xce5134",
+          "name": "__unw_getcontext"
+        },
+        {
+          "address": "0xce5134",
+          "name": "unw_getcontext"
+        }
+      ]
+    },
+    {
+      "section": ".plt",
+      "address": "0xce5300",
+      "bytes": 3776,
+      "sha256": "83ebc1ebb1e8053f85ad02356cda0dfa6bc6c60b056e1a3ceb2257194db1fbe9",
+      "unsized_entries": []
+    }
+  ],
+  "context_notes": [
+    "getcontext stores GPR x0..x30, SP at0xf8, PC(x30)at0x100; lower64 bits of d0..d31 at0x110..0x208.",
+    "jumpto restores x2..x15/x18..x29, x30 fromPC0x100, d0..d31, SP from0xf8, and x0/x1 last; x16/x17 are not restored as a pair.",
+    "Optional guarded-control-stack instruction sequence is byte-preserved; branch/architectural feature behavior is not executed or inferred here.",
+    "No new Mesa GPU/backend behavior or runtime replacement was added."
+  ],
+  "automatic_C_metrics_unchanged": true,
+  "driver_build": false,
+  "limits": [
+    "Preserve two unsized libunwind spans as readable ARM64, never execute them.",
+    "",
+    "Boundaries use consecutive independent entries plus terminal RET instructions,",
+    "not manufactured ELF sizes. Other zero-size labels overlap sized starts; this",
+    "is spatial evidence only, not callable aliases or an advertised capability."
+  ]
+}

@@ -1,0 +1,465 @@
+{
+  "original_binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "boundaries": [
+    {
+      "name": "CortexA53 erratum843419 veneer",
+      "elf": "0xce51d0",
+      "classification": "linker-generated displaced load; no missing driver feature",
+      "evidence": [
+        {
+          "elf": "0xce51d0",
+          "word": 4181724424,
+          "op": "ldr",
+          "args": "x8, [x8, #0x18]",
+          "line": "  ce51d0: f9400d08     \tldr\tx8, [x8, #0x18]"
+        },
+        {
+          "elf": "0xce51d4",
+          "word": 401741869,
+          "op": "b",
+          "args": "0x96b288 <_ZL21tu6_emit_binning_passIL4chip7EEvP13tu_cmd_bufferP5tu_csPK10VkOffset2DbPN11tu_autotune8rp_entryE+0xe88>",
+          "line": "  ce51d4: 17f2182d     \tb\t0x96b288 <_ZL21tu6_emit_binning_passIL4chip7EEvP13tu_cmd_bufferP5tu_csPK10VkOffset2DbPN11tu_autotune8rp_entryE+0xe88>"
+        },
+        {
+          "elf": "0x96b278",
+          "word": 2969549352,
+          "op": "adrp",
+          "args": "x8, 0xb0000 <_ZZL14tu6_blit_imageIL4chip8EEvP13tu_cmd_bufferP8tu_imageS4_PK12VkImageBlit28VkFilterE6rotate+0x1850>",
+          "line": "  96b278: b0ffba28     \tadrp\tx8, 0xb0000 <_ZZL14tu6_blit_imageIL4chip8EEvP13tu_cmd_bufferP8tu_imageS4_PK12VkImageBlit28VkFilterE6rotate+0x1850>"
+        },
+        {
+          "elf": "0x96b27c",
+          "word": 4249020672,
+          "op": "ldr",
+          "args": "d0, [x8, #0x5d0]",
+          "line": "  96b27c: fd42e900     \tldr\td0, [x8, #0x5d0]"
+        },
+        {
+          "elf": "0x96b280",
+          "word": 4026540168,
+          "op": "adrp",
+          "args": "x8, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>",
+          "line": "  96b280: f0002088     \tadrp\tx8, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>"
+        },
+        {
+          "elf": "0x96b284",
+          "word": 336455635,
+          "op": "b",
+          "args": "0xce51d0 <__CortexA53843419_969004>",
+          "line": "  96b284: 140de7d3     \tb\t0xce51d0 <__CortexA53843419_969004>"
+        },
+        {
+          "elf": "0x96b288",
+          "word": 4244635904,
+          "op": "str",
+          "args": "d0, [x8]",
+          "line": "  96b288: fd000100     \tstr\td0, [x8]"
+        },
+        {
+          "elf": "0x96b28c",
+          "word": 4026540169,
+          "op": "adrp",
+          "args": "x9, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>",
+          "line": "  96b28c: f0002089     \tadrp\tx9, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>"
+        },
+        {
+          "elf": "0x96b290",
+          "word": 4181724457,
+          "op": "ldr",
+          "args": "x9, [x9, #0x18]",
+          "line": "  96b290: f9400d29     \tldr\tx9, [x9, #0x18]"
+        },
+        {
+          "elf": "0x96b294",
+          "word": 2436907304,
+          "op": "add",
+          "args": "x8, x9, #0x10, lsl #12",
+          "line": "  96b294: 91404128     \tadd\tx8, x9, #0x10, lsl #12  // =0x10000"
+        }
+      ],
+      "contract": "Caller B\u2192veneer LDRx8[x8+24]\u2192caller+4; no call/stack change.",
+      "source_change": false
+    },
+    {
+      "name": "nir_lower_explicit_io terminal builder",
+      "elf": "0xb85f94",
+      "classification": "outside supported SSBO array-length address-format domain",
+      "original_constraints": [
+        "w21 initially receives format w2; copied to immutable SP+0x1c and restored around other loop uses.",
+        "Array-length conversion branches signed format>6 at0xb862d8, then!=7 at0xb86514; terminal path therefore format>=8.",
+        "Valid sized SSBO formats3/4 and index formats5/6/7 are handled earlier; address-to-index rejects other formats."
+      ],
+      "evidence": [
+        {
+          "elf": "0xb85fbc",
+          "word": 3019919048,
+          "op": "cbz",
+          "args": "x8, 0xb86994 <nir_lower_explicit_io+0xa00>",
+          "line": "  b85fbc: b4004ec8     \tcbz\tx8, 0xb86994 <nir_lower_explicit_io+0xa00>"
+        },
+        {
+          "elf": "0xb85fc0",
+          "word": 704775157,
+          "op": "mov",
+          "args": "w21, w2",
+          "line": "  b85fc0: 2a0203f5     \tmov\tw21, w2"
+        },
+        {
+          "elf": "0xb85fc4",
+          "word": 704709620,
+          "op": "mov",
+          "args": "w20, w1",
+          "line": "  b85fc4: 2a0103f4     \tmov\tw20, w1"
+        },
+        {
+          "elf": "0xb85fc8",
+          "word": 4181728138,
+          "op": "ldr",
+          "args": "x10, [x28, #0x30]",
+          "line": "  b85fc8: f9401b8a     \tldr\tx10, [x28, #0x30]"
+        },
+        {
+          "elf": "0xb85fcc",
+          "word": 3036676298,
+          "op": "cbnz",
+          "args": "x10, 0xb85fe4 <nir_lower_explicit_io+0x50>",
+          "line": "  b85fcc: b50000ca     \tcbnz\tx10, 0xb85fe4 <nir_lower_explicit_io+0x50>"
+        },
+        {
+          "elf": "0xb85fd0",
+          "word": 2852652009,
+          "op": "mov",
+          "args": "x9, x8",
+          "line": "  b85fd0: aa0803e9     \tmov\tx9, x8"
+        },
+        {
+          "elf": "0xb85fd4",
+          "word": 4181721352,
+          "op": "ldr",
+          "args": "x8, [x8]",
+          "line": "  b85fd4: f9400108     \tldr\tx8, [x8]"
+        },
+        {
+          "elf": "0xb85fd8",
+          "word": 2852717564,
+          "op": "mov",
+          "args": "x28, x9",
+          "line": "  b85fd8: aa0903fc     \tmov\tx28, x9"
+        },
+        {
+          "elf": "0xb85fdc",
+          "word": 3053453160,
+          "op": "cbnz",
+          "args": "x8, 0xb85fc8 <nir_lower_explicit_io+0x34>",
+          "line": "  b85fdc: b5ffff68     \tcbnz\tx8, 0xb85fc8 <nir_lower_explicit_io+0x34>"
+        },
+        {
+          "elf": "0xb85fe0",
+          "word": 335544941,
+          "op": "b",
+          "args": "0xb86994 <nir_lower_explicit_io+0xa00>",
+          "line": "  b85fe0: 1400026d     \tb\t0xb86994 <nir_lower_explicit_io+0xa00>"
+        },
+        {
+          "elf": "0xb85fe4",
+          "word": 4181728139,
+          "op": "ldr",
+          "args": "x11, [x28, #0x30]",
+          "line": "  b85fe4: f9401b8b     \tldr\tx11, [x28, #0x30]"
+        },
+        {
+          "elf": "0xb85fe8",
+          "word": 3019918699,
+          "op": "cbz",
+          "args": "x11, 0xb86994 <nir_lower_explicit_io+0xa00>",
+          "line": "  b85fe8: b4004d6b     \tcbz\tx11, 0xb86994 <nir_lower_explicit_io+0xa00>"
+        },
+        {
+          "elf": "0xb85fec",
+          "word": 706675690,
+          "op": "mov",
+          "args": "w10, wzr",
+          "line": "  b85fec: 2a1f03ea     \tmov\tw10, wzr"
+        },
+        {
+          "elf": "0xb85ff0",
+          "word": 1358958248,
+          "op": "sub",
+          "args": "w8, w21, #0x3",
+          "line": "  b85ff0: 51000ea8     \tsub\tw8, w21, #0x3"
+        },
+        {
+          "elf": "0xb85ff4",
+          "word": 1384120443,
+          "op": "mov",
+          "args": "w27, #0x3",
+          "line": "  b85ff4: 5280007b     \tmov\tw27, #0x3               // =3"
+        },
+        {
+          "elf": "0xb85ff8",
+          "word": 688084968,
+          "op": "stp",
+          "args": "w8, w21, [sp, #0x18]",
+          "line": "  b85ff8: 290357e8     \tstp\tw8, w21, [sp, #0x18]"
+        },
+        {
+          "elf": "0xb85ffc",
+          "word": 4181725544,
+          "op": "ldr",
+          "args": "x8, [x11, #0x20]",
+          "line": "  b85ffc: f9401168     \tldr\tx8, [x11, #0x20]"
+        },
+        {
+          "elf": "0xb862d0",
+          "word": 1895832255,
+          "op": "cmp",
+          "args": "w21, #0x6",
+          "line": "  b862d0: 71001abf     \tcmp\tw21, #0x6"
+        },
+        {
+          "elf": "0xb862d4",
+          "word": 1409289995,
+          "op": "b.lt",
+          "args": "0xb864b4 <nir_lower_explicit_io+0x520>",
+          "line": "  b862d4: 54000f0b     \tb.lt\t0xb864b4 <nir_lower_explicit_io+0x520>"
+        },
+        {
+          "elf": "0xb862d8",
+          "word": 1409290668,
+          "op": "b.gt",
+          "args": "0xb8650c <nir_lower_explicit_io+0x578>",
+          "line": "  b862d8: 540011ac     \tb.gt\t0xb8650c <nir_lower_explicit_io+0x578>"
+        },
+        {
+          "elf": "0xb862dc",
+          "word": 4181728245,
+          "op": "ldr",
+          "args": "x21, [sp, #0x30]",
+          "line": "  b862dc: f9401bf5     \tldr\tx21, [sp, #0x30]"
+        },
+        {
+          "elf": "0xb8650c",
+          "word": 4181728249,
+          "op": "ldr",
+          "args": "x25, [sp, #0x30]",
+          "line": "  b8650c: f9401bf9     \tldr\tx25, [sp, #0x30]"
+        },
+        {
+          "elf": "0xb86510",
+          "word": 1895833279,
+          "op": "cmp",
+          "args": "w21, #0x7",
+          "line": "  b86510: 71001ebf     \tcmp\tw21, #0x7"
+        },
+        {
+          "elf": "0xb86514",
+          "word": 1409295681,
+          "op": "b.ne",
+          "args": "0xb869bc <nir_lower_explicit_io+0xa28>",
+          "line": "  b86514: 54002541     \tb.ne\t0xb869bc <nir_lower_explicit_io+0xa28>"
+        },
+        {
+          "elf": "0xb869bc",
+          "word": 4181728226,
+          "op": "ldr",
+          "args": "x2, [sp, #0x30]",
+          "line": "  b869bc: f9401be2     \tldr\tx2, [sp, #0x30]"
+        },
+        {
+          "elf": "0xb869c0",
+          "word": 3506480032,
+          "op": "sub",
+          "args": "x0, x29, #0x28",
+          "line": "  b869c0: d100a3a0     \tsub\tx0, x29, #0x28"
+        },
+        {
+          "elf": "0xb869c4",
+          "word": 1384132385,
+          "op": "mov",
+          "args": "w1, #0x179",
+          "line": "  b869c4: 52802f21     \tmov\tw1, #0x179              // =377"
+        },
+        {
+          "elf": "0xb869c8",
+          "word": 2550089288,
+          "op": "bl",
+          "args": "0xb582e8 <nir_build_alu1>",
+          "line": "  b869c8: 97ff4648     \tbl\t0xb582e8 <nir_build_alu1>"
+        },
+        {
+          "elf": "0xb869cc",
+          "word": 2847570941,
+          "op": "stp",
+          "args": "x29, x30, [sp, #-0x60]!",
+          "line": "  b869cc: a9ba7bfd     \tstp\tx29, x30, [sp, #-0x60]!"
+        }
+      ],
+      "source": [
+        {
+          "path": "src/compiler/nir/nir_lower_explicit_io.c",
+          "sha256": "dcbbe5ad2a151eba07f7b728c15d5f010981f2866b3c98b358e2cf8bb7b4e3f6",
+          "line": 333
+        },
+        {
+          "path": "src/compiler/nir/nir_lower_explicit_io.c",
+          "sha256": "dcbbe5ad2a151eba07f7b728c15d5f010981f2866b3c98b358e2cf8bb7b4e3f6",
+          "line": 1738
+        }
+      ],
+      "limits": [
+        "Native bytes do fall into the following symbol on this invalid input path.",
+        "No site-specific fake RET, byte patch or global no-return builder contract applied.",
+        "This accounts for the boundary; it does not prove the entire NIR function equivalent or validate malformed NIR."
+      ],
+      "source_change": false
+    },
+    {
+      "name": "nir_lower_mediump_vars terminal diagnostic",
+      "elf": "0xb9c43c",
+      "classification": "unsupported dereference kind; diagnostic followed by source UNREACHABLE",
+      "evidence": [
+        {
+          "elf": "0xb9c7cc",
+          "word": 1779630367,
+          "op": "tst",
+          "args": "w8, w19",
+          "line": "  b9c7cc: 6a13011f     \ttst\tw8, w19"
+        },
+        {
+          "elf": "0xb9c7d0",
+          "word": 1409289408,
+          "op": "b.eq",
+          "args": "0xb9c968 <nir_lower_mediump_vars+0x52c>",
+          "line": "  b9c7d0: 54000cc0     \tb.eq\t0xb9c968 <nir_lower_mediump_vars+0x52c>"
+        },
+        {
+          "elf": "0xb9c7d4",
+          "word": 3107994312,
+          "op": "ldr",
+          "args": "w8, [x22, #0x38]",
+          "line": "  b9c7d4: b9403ac8     \tldr\tw8, [x22, #0x38]"
+        },
+        {
+          "elf": "0xb9c7d8",
+          "word": 1358955785,
+          "op": "sub",
+          "args": "w9, w8, #0x1",
+          "line": "  b9c7d8: 51000509     \tsub\tw9, w8, #0x1"
+        },
+        {
+          "elf": "0xb9c7dc",
+          "word": 1895827775,
+          "op": "cmp",
+          "args": "w9, #0x2",
+          "line": "  b9c7dc: 7100093f     \tcmp\tw9, #0x2"
+        },
+        {
+          "elf": "0xb9c7e0",
+          "word": 1409286978,
+          "op": "b.hs",
+          "args": "0xb9c848 <nir_lower_mediump_vars+0x40c>",
+          "line": "  b9c7e0: 54000342     \tb.hs\t0xb9c848 <nir_lower_mediump_vars+0x40c>"
+        },
+        {
+          "elf": "0xb9c848",
+          "word": 889192840,
+          "op": "cbnz",
+          "args": "w8, 0xb9c878 <nir_lower_mediump_vars+0x43c>",
+          "line": "  b9c848: 35000188     \tcbnz\tw8, 0xb9c878 <nir_lower_mediump_vars+0x43c>"
+        },
+        {
+          "elf": "0xb9c84c",
+          "word": 4181731016,
+          "op": "ldr",
+          "args": "x8, [x22, #0x48]",
+          "line": "  b9c84c: f94026c8     \tldr\tx8, [x22, #0x48]"
+        },
+        {
+          "elf": "0xb9c878",
+          "word": 1895829791,
+          "op": "cmp",
+          "args": "w8, #0x4",
+          "line": "  b9c878: 7100111f     \tcmp\tw8, #0x4"
+        },
+        {
+          "elf": "0xb9c87c",
+          "word": 1409292513,
+          "op": "b.ne",
+          "args": "0xb9cb98 <nir_lower_mediump_vars+0x75c>",
+          "line": "  b9c87c: 540018e1     \tb.ne\t0xb9cb98 <nir_lower_mediump_vars+0x75c>"
+        },
+        {
+          "elf": "0xb9c880",
+          "word": 4181734088,
+          "op": "ldr",
+          "args": "x8, [x22, #0x60]",
+          "line": "  b9c880: f94032c8     \tldr\tx8, [x22, #0x60]"
+        },
+        {
+          "elf": "0xb9cb98",
+          "word": 2853569530,
+          "op": "mov",
+          "args": "x26, x22",
+          "line": "  b9cb98: aa1603fa     \tmov\tx26, x22"
+        },
+        {
+          "elf": "0xb9cb9c",
+          "word": 3489664776,
+          "op": "adrp",
+          "args": "x8, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>",
+          "line": "  b9cb9c: d0000f08     \tadrp\tx8, 0xd7e000 <wsi_WriteSamplerDescriptorsEXT+0xd7e000>"
+        },
+        {
+          "elf": "0xb9cba0",
+          "word": 2853831648,
+          "op": "mov",
+          "args": "x0, x26",
+          "line": "  b9cba0: aa1a03e0     \tmov\tx0, x26"
+        },
+        {
+          "elf": "0xb9cba4",
+          "word": 4181726472,
+          "op": "ldr",
+          "args": "x8, [x8, #0x28]",
+          "line": "  b9cba4: f9401508     \tldr\tx8, [x8, #0x28]"
+        },
+        {
+          "elf": "0xb9cba8",
+          "word": 4181721345,
+          "op": "ldr",
+          "args": "x1, [x8]",
+          "line": "  b9cba8: f9400101     \tldr\tx1, [x8]"
+        },
+        {
+          "elf": "0xb9cbac",
+          "word": 2483203677,
+          "op": "bl",
+          "args": "0xc48520 <nir_print_instr>",
+          "line": "  b9cbac: 9402ae5d     \tbl\t0xc48520 <nir_print_instr>"
+        },
+        {
+          "elf": "0xb9cbb0",
+          "word": 3506570239,
+          "op": "sub",
+          "args": "sp, sp, #0x80",
+          "line": "  b9cbb0: d10203ff     \tsub\tsp, sp, #0x80"
+        }
+      ],
+      "source": {
+        "path": "src/compiler/nir/nir_lower_mediump.c",
+        "sha256": "11691062cfaf63ab40eedf0ca45486008efd23daf111b1f3a344b89285e94e9b",
+        "line": 243
+      },
+      "limits": [
+        "Native normal return is0xb9cb94, before the cold diagnostic block.",
+        "nir_print_instr itself returns for normal callers; it is not marked globally no-return.",
+        "Boundary matches the unsupported-input source route; whole-function/GPU equivalence unproved."
+      ],
+      "source_change": false
+    }
+  ],
+  "raw_boundary_label_count_retained": 3,
+  "flow_changes": false,
+  "build": false,
+  "full_validation_deferred": true
+}

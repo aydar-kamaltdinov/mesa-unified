@@ -9,7 +9,7 @@ from pathlib import Path
 import re,json,hashlib,xml.etree.ElementTree as ET,collections
 from index_native_coverage import ROOT,elf
 E=ROOT/'native-complete/rutabaga-two-hours-20261027';F=ROOT/'native-complete';W=ROOT/'mesa-gamesir-recovered'
-raw,secs,funcs=elf(ROOT/'originals/gs_rutabaga_v3.so');fn=next(f for f in funcs if f['name']=='vk_common_GetPhysicalDeviceFeatures2');lo=fn['address'];hi=lo+fn['size']
+raw,secs,funcs=elf(ROOT/'originals/gs_rutabaga_v3.so');assert hashlib.sha256(raw).hexdigest()=='90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e';fn=next(f for f in funcs if f['name']=='vk_common_GetPhysicalDeviceFeatures2');lo=fn['address'];hi=lo+fn['size']
 code={}
 for line in (F/'gamesir.arm64.txt').read_text().splitlines():
  m=re.match(r'\s*([a-f0-9]+): ([a-f0-9]{8})\s+(\S+)\s*(.*)',line)
@@ -19,7 +19,7 @@ section=next(s for s in secs if s['type']!=8 and s['address']<=lo and hi<=s['add
 for pc,(_,_,word)in code.items():
  offset=section['offset']+pc-section['address']
  assert raw[offset:offset+4]==int(word,16).to_bytes(4,'little'),hex(pc)
-xml=W/'src/vulkan/registry/vk.xml';root=ET.parse(xml).getroot();enums={};aliases={}
+xml=W/'src/vulkan/registry/vk.xml';assert hashlib.sha256(xml.read_bytes()).hexdigest()=='cf31c965cf6e788697139601da0c7e02a75a9b6c7ac764e7641f5521ffd9da06', 'This ABI reconstruction is bound to its recorded registry';root=ET.parse(xml).getroot();enums={};aliases={}
 for parent in root.iter():
  if parent.tag not in ['enums','extension','require']:continue
  extnum=parent.get('number') if parent.tag=='extension' else None

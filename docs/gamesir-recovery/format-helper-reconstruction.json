@@ -1,0 +1,138 @@
+{
+  "original_binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "functions": [
+    {
+      "name": "util_format_r16g16b16a16_snorm_unpack_rgba_8unorm",
+      "elf": "0xb0e5ec",
+      "bytes": 940,
+      "code_sha256": "8a093ea81109a94747c9f550916c909adea7c3e7e6b00b1e49a77a6c78349d23",
+      "source_pixel_bytes": 8,
+      "narrow_pixels": 4,
+      "main_pixels": 16,
+      "channel_order": "RGBA16all4signed channels"
+    },
+    {
+      "name": "util_format_r8g8b8_uscaled_unpack_rgba_8unorm",
+      "elf": "0xb10b1c",
+      "bytes": 320,
+      "code_sha256": "baeb3a244975100c2c9650fd8ee86a8f0af046c577ae7206ea42d7751d7e094d",
+      "source_pixel_bytes": 3,
+      "narrow_pixels": 8,
+      "main_pixels": 16,
+      "channel_order": "RGB toRGBA,alpha255"
+    },
+    {
+      "name": "util_format_b8g8r8_uscaled_unpack_rgba_8unorm",
+      "elf": "0xb10e60",
+      "bytes": 316,
+      "code_sha256": "b9260c865262287e055873ff0fcb61c4832ac45585d0dcd3a4e8e280ebd998d0",
+      "source_pixel_bytes": 3,
+      "narrow_pixels": 8,
+      "main_pixels": 16,
+      "channel_order": "BGR toRGBA,alpha255"
+    },
+    {
+      "name": "util_format_r8g8b8_snorm_unpack_rgba_8unorm",
+      "elf": "0xb12420",
+      "bytes": 380,
+      "code_sha256": "6a585771231371de8ff572c0422f708aa40ae8b3528ee51f9894b234c1c1eb2d",
+      "source_pixel_bytes": 3,
+      "narrow_pixels": 8,
+      "main_pixels": 16,
+      "channel_order": "RGB toRGBA,alpha255"
+    },
+    {
+      "name": "util_format_b8g8r8_snorm_unpack_rgba_8unorm",
+      "elf": "0xb12920",
+      "bytes": 380,
+      "code_sha256": "e1ce8b9e3602b904886dc85dfe2447cee0bc9e0507a006762ae23fc15128e6ed",
+      "source_pixel_bytes": 3,
+      "narrow_pixels": 8,
+      "main_pixels": 16,
+      "channel_order": "BGR toRGBA,alpha255"
+    },
+    {
+      "name": "util_format_r8g8b8_sscaled_unpack_rgba_8unorm",
+      "elf": "0xb13de4",
+      "bytes": 320,
+      "code_sha256": "6d32363d2141abe7f96f784325afa7ea38fb5689ef153f5353ccf5b7e18aab58",
+      "source_pixel_bytes": 3,
+      "narrow_pixels": 8,
+      "main_pixels": 16,
+      "channel_order": "RGB toRGBA,alpha255"
+    },
+    {
+      "name": "util_format_b8g8r8_sscaled_unpack_rgba_8unorm",
+      "elf": "0xb14128",
+      "bytes": 320,
+      "code_sha256": "7d0d48062d78690d02acab071432b922a44d499cd76cc264c6f95662bd1c1a25",
+      "source_pixel_bytes": 3,
+      "narrow_pixels": 8,
+      "main_pixels": 16,
+      "channel_order": "BGR toRGBA,alpha255"
+    }
+  ],
+  "reconstruction": "docs/gamesir-recovery/reconstructed/format-unpack.c",
+  "reconstruction_sha256": "c47d3fe1a8ad3f570ab83c07b8b5a6e009aeeafa9cf9ed3618fcdb9e7755a0e5",
+  "alias_contract": "Width0 returns before pointer access. Vector blocks require disjoint complete source/destination row ranges; scalar path loads all source channels for a pixel before writing it.",
+  "row_contract": "RGB8:16pixel main +8pixel remainder +scalar. RGBA16:16pixel main +4pixel repeated remainder +scalar.",
+  "table": {
+    "elf": "0xaef50",
+    "indices": [
+      0,
+      16,
+      32,
+      48,
+      4,
+      20,
+      36,
+      52,
+      8,
+      24,
+      40,
+      56,
+      12,
+      28,
+      44,
+      60
+    ],
+    "meaning": "Four4pixel results, channel-major u32 lanes toRGBA byte interleave"
+  },
+  "arithmetic": {
+    "USCALED8": "x!=0?255:0",
+    "SSCALED8": "signed x>0?255:0",
+    "SNORM8": "max(signed x,0);(x<<1)|(x>>6)",
+    "SNORM16": "max(signed x,0);y=x*255+16383;result=(uint64(y)*0x01000201)>>39"
+  },
+  "reciprocal_proof": {
+    "denominator": 32767,
+    "scale": 549755813888,
+    "reciprocal": 16777729,
+    "max_y": 8371968,
+    "error_numerator": 32255,
+    "bound_product": 270037827840,
+    "inequality": "max_y*(R*d-2^39)<2^39; overestimate is smaller than the minimum1/d distance to the next quotient boundary. Thus floor(y*R/2^39)==floor(y/d) over0<=y<=max_y.",
+    "narrowing": "Native high32 product<65536 before narrow-to16 then shift7."
+  },
+  "existing_source": [
+    {
+      "path": "src/util/format/u_format_pack.py",
+      "sha256": "a4a2510d443c84059d25f2346c521d28d503c1744b76b2aa3079198ecc33f2bc",
+      "route": "unpack_from_struct/conversion_expr"
+    },
+    {
+      "path": "src/util/format/format_utils.h",
+      "sha256": "4b55d9dbe173c014db4615c0510f7697a3f1ce7bd947bb2d42d84022c7d9203c",
+      "route": "_mesa_snorm_to_unorm and unorm rescale; EXTEND_NORMALIZED_INT(7,8)=2*x+(x>>6)"
+    }
+  ],
+  "build": false,
+  "driver_linked": false,
+  "automatic_C_failures_retained": 7,
+  "limits": [
+    "Manual readable reconstruction, not automatic C recovery.",
+    "Ordinary byte-buffer domain stated in C; instruction/fault/race timing not represented.",
+    "C compilation/exhaustive arithmetic/alias/tail/full row execution validation deferred.",
+    "No duplicate production utility/backend added."
+  ]
+}

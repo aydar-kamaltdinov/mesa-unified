@@ -1,0 +1,117 @@
+{
+  "original_binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "uncovered_ranges": [
+    {
+      "section": ".text",
+      "address": "0x8e1050",
+      "bytes": 8,
+      "sha256": "d33fdb74881bcff46b1cf4fc3e20479b1882e0e683789e80e6d650554066a1aa",
+      "unsized_entries": [],
+      "classification": "Unnamed BTI c / RET stub; no symbol identity inferred"
+    },
+    {
+      "section": ".text",
+      "address": "0xce0d0c",
+      "bytes": 4,
+      "sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+      "unsized_entries": [],
+      "classification": "All-zero inter-function padding/UDF words; no callable semantics inferred"
+    },
+    {
+      "section": ".text",
+      "address": "0xce1054",
+      "bytes": 12,
+      "sha256": "15ec7bf0b50732b49f8228e07d24365338f9e3ab994b00af08e5a3bffe55fd8b",
+      "unsized_entries": [],
+      "classification": "All-zero inter-function padding/UDF words; no callable semantics inferred"
+    },
+    {
+      "section": ".text",
+      "address": "0xce1094",
+      "bytes": 12,
+      "sha256": "15ec7bf0b50732b49f8228e07d24365338f9e3ab994b00af08e5a3bffe55fd8b",
+      "unsized_entries": [],
+      "classification": "All-zero inter-function padding/UDF words; no callable semantics inferred"
+    },
+    {
+      "section": ".text",
+      "address": "0xce10d4",
+      "bytes": 12,
+      "sha256": "15ec7bf0b50732b49f8228e07d24365338f9e3ab994b00af08e5a3bffe55fd8b",
+      "unsized_entries": [],
+      "classification": "All-zero inter-function padding/UDF words; no callable semantics inferred"
+    },
+    {
+      "section": ".text",
+      "address": "0xce1114",
+      "bytes": 12,
+      "sha256": "15ec7bf0b50732b49f8228e07d24365338f9e3ab994b00af08e5a3bffe55fd8b",
+      "unsized_entries": [],
+      "classification": "All-zero inter-function padding/UDF words; no callable semantics inferred"
+    },
+    {
+      "section": ".text",
+      "address": "0xce114c",
+      "bytes": 4,
+      "sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+      "unsized_entries": [],
+      "classification": "All-zero inter-function padding/UDF words; no callable semantics inferred"
+    },
+    {
+      "section": ".text",
+      "address": "0xce5094",
+      "bytes": 316,
+      "sha256": "588c1450bdcc493e8504b6815f898869e83626eb4c7abebfacde6674664133a3",
+      "unsized_entries": [
+        {
+          "address": "0xce5094",
+          "name": "__libunwind_Registers_arm64_jumpto"
+        },
+        {
+          "address": "0xce5134",
+          "name": "__unw_getcontext"
+        },
+        {
+          "address": "0xce5134",
+          "name": "unw_getcontext"
+        }
+      ],
+      "classification": "Two independent unsized libunwind entry spans; readable assembly saved"
+    },
+    {
+      "section": ".plt",
+      "address": "0xce5300",
+      "bytes": 3776,
+      "sha256": "83ebc1ebb1e8053f85ad02356cda0dfa6bc6c60b056e1a3ceb2257194db1fbe9",
+      "unsized_entries": [],
+      "classification": "ELF PLT resolver32bytes +234relocation-backed16byte entries"
+    }
+  ],
+  "unclassified_ranges": 0,
+  "PLT_entries": 234,
+  "relocation_type": "0x402",
+  "PLT_header_words": [
+    "0xa9bf7bf0",
+    "0xb00004d0",
+    "0xf944ea11",
+    "0x91274210",
+    "0xd61f0220",
+    "0xd503201f",
+    "0xd503201f",
+    "0xd503201f"
+  ],
+  "production_driver_changed": false,
+  "driver_build": false,
+  "limits": [
+    "Classify executable bytes outside sized functions, without target execution.",
+    "",
+    "Byte patterns and ELF relocation records identify PLT slots; zero padding and",
+    "an unnamed BTI/RET stub are preserved as data, not invented driver features.",
+    "The two unsized libunwind routines have a separate readable assembly record.",
+    "No dynamic linking/import resolution or library/runtime behavior was executed.",
+    "Zero-size labels sharing a sized start are spatial overlap only; not all are semantic aliases.",
+    "This accounts for executable byte ranges, not dataflow/source equivalence of every driver routine."
+  ],
+  "PLT_map": "original-PLT-slots.tsv",
+  "PLT_map_sha256": "4837e9d77f6fe7c25abae45394ca344fb6dae05c740de766cfef18ddeb7e86da"
+}

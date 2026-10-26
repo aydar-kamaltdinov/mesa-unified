@@ -710,5 +710,13 @@
       "bytes": 9089,
       "sha256": "8d771863e231b82cd889e299772df7d5a8566e2a0f5a4ccf4e7a406ab3c0049f"
     }
-  ]
+  ],
+  "followup_20261027": {
+    "evidence": "remaining-functions-source-handoff.json",
+    "getter_maps_byte_identical": true,
+    "caller_array_null_query_scope_supplemented_by": "property-caller-array-contracts.json",
+    "eight_failed_C_units_source_accounted_with_explicit_domains": true,
+    "automatic_C_counts_unchanged": true,
+    "historical_run_paths_may_be_condensed_by_verified_cleanup": true
+  }
 }

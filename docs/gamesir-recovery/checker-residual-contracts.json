@@ -1,0 +1,4139 @@
+{
+  "original_binary_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "instruction_sites": 24385,
+  "observed_model_sites": 23232,
+  "unobserved_classified_sites": 1153,
+  "unclassified_sites": 0,
+  "duplicate_types": 275,
+  "duplicate_warning_types": 274,
+  "cycle_guard_routes": [
+    {
+      "return_elf": "0xa332ec",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bb08",
+        "load_elf": "0xa2bb04",
+        "load": "x8, [sp, #0x2470]"
+      },
+      "stack_type": {
+        "stype": 1000388000,
+        "name": "VkPhysicalDeviceGlobalPriorityQueryFeatures",
+        "offset_from_entry_sp": -1160,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa332f4",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bb2c",
+        "load_elf": "0xa2bb28",
+        "load": "x8, [sp, #0x1db8]"
+      },
+      "stack_type": {
+        "stype": 1000259000,
+        "name": "VkPhysicalDeviceLineRasterizationFeatures",
+        "offset_from_entry_sp": -2880,
+        "size": 40
+      }
+    },
+    {
+      "return_elf": "0xa332fc",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bae8",
+        "load_elf": "0xa2bae4",
+        "load": "x8, [sp, #0x22c0]"
+      },
+      "stack_type": {
+        "stype": 1000190002,
+        "name": "VkPhysicalDeviceVertexAttributeDivisorFeatures",
+        "offset_from_entry_sp": -1592,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33304",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bb4c",
+        "load_elf": "0xa2bb48",
+        "load": "x8, [sp, #0x1eb8]"
+      },
+      "stack_type": {
+        "stype": 1000265000,
+        "name": "VkPhysicalDeviceIndexTypeUint8Features",
+        "offset_from_entry_sp": -2624,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3330c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2be28",
+        "load_elf": "0xa2be24",
+        "load": "x8, [sp, #0xe10]"
+      },
+      "stack_type": {
+        "stype": 1000232000,
+        "name": "VkPhysicalDeviceDynamicRenderingLocalReadFeatures",
+        "offset_from_entry_sp": -6888,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33314",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bcf0",
+        "load_elf": "0xa2bcec",
+        "load": "x8, [sp, #0x23b8]"
+      },
+      "stack_type": {
+        "stype": 1000177000,
+        "name": "VkPhysicalDevice8BitStorageFeatures",
+        "offset_from_entry_sp": -1344,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa3331c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c12c",
+        "load_elf": "0xa2c128",
+        "load": "x8, [sp, #0x2560]"
+      },
+      "stack_type": {
+        "stype": 1000545000,
+        "name": "VkPhysicalDeviceMaintenance6Features",
+        "offset_from_entry_sp": -920,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33324",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c1bc",
+        "load_elf": "0xa2c1b8",
+        "load": "x8, [sp, #0xd20]"
+      },
+      "stack_type": {
+        "stype": 1000361000,
+        "name": "VkPhysicalDevicePresentModeFifoLatestReadyFeaturesKHR",
+        "offset_from_entry_sp": -7128,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3332c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bdc0",
+        "load_elf": "0xa2bdbc",
+        "load": "x8, [sp, #0x2700]"
+      },
+      "stack_type": {
+        "stype": 1000120000,
+        "name": "VkPhysicalDeviceVariablePointersFeatures",
+        "offset_from_entry_sp": -504,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33334",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bde4",
+        "load_elf": "0xa2bde0",
+        "load": "x8, [sp, #0x1de8]"
+      },
+      "stack_type": {
+        "stype": 1000225002,
+        "name": "VkPhysicalDeviceSubgroupSizeControlFeatures",
+        "offset_from_entry_sp": -2832,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3333c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c0cc",
+        "load_elf": "0xa2c0c8",
+        "load": "x8, [sp, #0x1da0]"
+      },
+      "stack_type": {
+        "stype": 1000297000,
+        "name": "VkPhysicalDevicePipelineCreationCacheControlFeatures",
+        "offset_from_entry_sp": -2904,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33344",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bf60",
+        "load_elf": "0xa2bf5c",
+        "load": "x8, [sp, #0x1e18]"
+      },
+      "stack_type": {
+        "stype": 1000276000,
+        "name": "VkPhysicalDeviceShaderDemoteToHelperInvocationFeatures",
+        "offset_from_entry_sp": -2784,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3334c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bb6c",
+        "load_elf": "0xa2bb68",
+        "load": "x8, [sp, #0x24b8]"
+      },
+      "stack_type": {
+        "stype": 1000082000,
+        "name": "VkPhysicalDeviceShaderFloat16Int8Features",
+        "offset_from_entry_sp": -1088,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33354",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c008",
+        "load_elf": "0xa2c004",
+        "load": "x8, [sp, #0x1fc8]"
+      },
+      "stack_type": {
+        "stype": 1000257000,
+        "name": "VkPhysicalDeviceBufferDeviceAddressFeatures",
+        "offset_from_entry_sp": -2352,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa3335c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2beb0",
+        "load_elf": "0xa2beac",
+        "load": "x8, [sp, #0x12b0]"
+      },
+      "stack_type": {
+        "stype": 1000068001,
+        "name": "VkPhysicalDevicePipelineRobustnessFeatures",
+        "offset_from_entry_sp": -5704,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33364",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bed4",
+        "load_elf": "0xa2bed0",
+        "load": "x8, [sp, #0x1678]"
+      },
+      "stack_type": {
+        "stype": 1000466000,
+        "name": "VkPhysicalDevicePipelineProtectedAccessFeatures",
+        "offset_from_entry_sp": -4736,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3336c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c198",
+        "load_elf": "0xa2c194",
+        "load": "x8, [sp, #0x1468]"
+      },
+      "stack_type": {
+        "stype": 1000342000,
+        "name": "VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT",
+        "offset_from_entry_sp": -5264,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa33374",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c050",
+        "load_elf": "0xa2c04c",
+        "load": "x8, [sp, #0x19d0]"
+      },
+      "stack_type": {
+        "stype": 1000335000,
+        "name": "VkPhysicalDeviceImageRobustnessFeatures",
+        "offset_from_entry_sp": -3880,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3337c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bc34",
+        "load_elf": "0xa2bc30",
+        "load": "x8, [sp, #0x18c0]"
+      },
+      "stack_type": {
+        "stype": 1000215000,
+        "name": "VkPhysicalDeviceShaderTerminateInvocationFeatures",
+        "offset_from_entry_sp": -4152,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33384",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bbb0",
+        "load_elf": "0xa2bbac",
+        "load": "x8, [sp, #0x23e0]"
+      },
+      "stack_type": {
+        "stype": 1000207000,
+        "name": "VkPhysicalDeviceTimelineSemaphoreFeatures",
+        "offset_from_entry_sp": -1304,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3338c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2be08",
+        "load_elf": "0xa2be04",
+        "load": "x8, [sp, #0x25a8]"
+      },
+      "stack_type": {
+        "stype": 1000138000,
+        "name": "VkPhysicalDeviceInlineUniformBlockFeatures",
+        "offset_from_entry_sp": -848,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33394",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bbf0",
+        "load_elf": "0xa2bbec",
+        "load": "x8, [sp, #0x1e60]"
+      },
+      "stack_type": {
+        "stype": 1000241000,
+        "name": "VkPhysicalDeviceSeparateDepthStencilLayoutsFeatures",
+        "offset_from_entry_sp": -2712,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3339c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bd10",
+        "load_elf": "0xa2bd0c",
+        "load": "x8, [sp, #0x26d8]"
+      },
+      "stack_type": {
+        "stype": 1000053001,
+        "name": "VkPhysicalDeviceMultiviewFeatures",
+        "offset_from_entry_sp": -544,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa333a4",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bd34",
+        "load_elf": "0xa2bd30",
+        "load": "x8, [sp, #0x2230]"
+      },
+      "stack_type": {
+        "stype": 1000201000,
+        "name": "VkPhysicalDeviceComputeShaderDerivativesFeaturesKHR",
+        "offset_from_entry_sp": -1736,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa333ac",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bfc4",
+        "load_elf": "0xa2bfc0",
+        "load": "x8, [sp, #0x24a0]"
+      },
+      "stack_type": {
+        "stype": 1000261000,
+        "name": "VkPhysicalDeviceHostQueryResetFeatures",
+        "offset_from_entry_sp": -1112,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa333b4",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bcd4",
+        "load_elf": "0xa2bcd0",
+        "load": "x8, [sp, #0xc70]"
+      },
+      "stack_type": {
+        "stype": 1000421000,
+        "name": "VkPhysicalDeviceDepthClampZeroOneFeaturesKHR",
+        "offset_from_entry_sp": -7304,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa333bc",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bbd0",
+        "load_elf": "0xa2bbcc",
+        "load": "x8, [sp, #0x2608]"
+      },
+      "stack_type": {
+        "stype": 1000156004,
+        "name": "VkPhysicalDeviceSamplerYcbcrConversionFeatures",
+        "offset_from_entry_sp": -752,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa333c4",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c0ec",
+        "load_elf": "0xa2c0e8",
+        "load": "x8, [sp, #0x1a28]"
+      },
+      "stack_type": {
+        "stype": 1000325000,
+        "name": "VkPhysicalDeviceZeroInitializeWorkgroupMemoryFeatures",
+        "offset_from_entry_sp": -3792,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa333cc",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bf3c",
+        "load_elf": "0xa2bf38",
+        "load": "x8, [sp, #0x21b8]"
+      },
+      "stack_type": {
+        "stype": 1000427000,
+        "name": "VkPhysicalDeviceMemoryDecompressionFeaturesEXT",
+        "offset_from_entry_sp": -1856,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa333d4",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c070",
+        "load_elf": "0xa2c06c",
+        "load": "x8, [sp, #0x1138]"
+      },
+      "stack_type": {
+        "stype": 1000275000,
+        "name": "VkPhysicalDeviceSwapchainMaintenance1FeaturesKHR",
+        "offset_from_entry_sp": -6080,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa333dc",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bc94",
+        "load_elf": "0xa2bc90",
+        "load": "x8, [sp, #0x2050]"
+      },
+      "stack_type": {
+        "stype": 1000221000,
+        "name": "VkPhysicalDeviceScalarBlockLayoutFeatures",
+        "offset_from_entry_sp": -2216,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa333e4",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bc78",
+        "load_elf": "0xa2bc74",
+        "load": "x8, [sp, #0xe58]"
+      },
+      "stack_type": {
+        "stype": 1000416000,
+        "name": "VkPhysicalDeviceShaderSubgroupRotateFeatures",
+        "offset_from_entry_sp": -6816,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa333ec",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bd9c",
+        "load_elf": "0xa2bd98",
+        "load": "x8, [sp, #0x2620]"
+      },
+      "stack_type": {
+        "stype": 1000175000,
+        "name": "VkPhysicalDeviceShaderSubgroupExtendedTypesFeatures",
+        "offset_from_entry_sp": -728,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa333f4",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bd78",
+        "load_elf": "0xa2bd74",
+        "load": "x8, [sp, #0x2360]"
+      },
+      "stack_type": {
+        "stype": 1000180000,
+        "name": "VkPhysicalDeviceShaderAtomicInt64Features",
+        "offset_from_entry_sp": -1432,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa333fc",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bcb4",
+        "load_elf": "0xa2bcb0",
+        "load": "x8, [sp, #0x14a0]"
+      },
+      "stack_type": {
+        "stype": 1000044003,
+        "name": "VkPhysicalDeviceDynamicRenderingFeatures",
+        "offset_from_entry_sp": -5208,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33404",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2be8c",
+        "load_elf": "0xa2be88",
+        "load": "x8, [sp, #0x1538]"
+      },
+      "stack_type": {
+        "stype": 1000203000,
+        "name": "VkPhysicalDeviceFragmentShaderBarycentricFeaturesKHR",
+        "offset_from_entry_sp": -5056,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3340c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bc14",
+        "load_elf": "0xa2bc10",
+        "load": "x8, [sp, #0x1f90]"
+      },
+      "stack_type": {
+        "stype": 1000108000,
+        "name": "VkPhysicalDeviceImagelessFramebufferFeatures",
+        "offset_from_entry_sp": -2408,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33414",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2be48",
+        "load_elf": "0xa2be44",
+        "load": "x8, [sp, #0x2638]"
+      },
+      "stack_type": {
+        "stype": 1000083000,
+        "name": "VkPhysicalDevice16BitStorageFeatures",
+        "offset_from_entry_sp": -704,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa3341c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bfe8",
+        "load_elf": "0xa2bfe4",
+        "load": "x8, [sp, #0x1730]"
+      },
+      "stack_type": {
+        "stype": 1000314007,
+        "name": "VkPhysicalDeviceSynchronization2Features",
+        "offset_from_entry_sp": -4552,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33424",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c0ac",
+        "load_elf": "0xa2c0a8",
+        "load": "x8, [sp, #0x1700]"
+      },
+      "stack_type": {
+        "stype": 1000270000,
+        "name": "VkPhysicalDeviceHostImageCopyFeatures",
+        "offset_from_entry_sp": -4600,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3342c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c150",
+        "load_elf": "0xa2c14c",
+        "load": "x8, [sp, #0x2730]"
+      },
+      "stack_type": {
+        "stype": 1000295000,
+        "name": "VkPhysicalDevicePrivateDataFeatures",
+        "offset_from_entry_sp": -456,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33434",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bf84",
+        "load_elf": "0xa2bf80",
+        "load": "x8, [sp, #0x1550]"
+      },
+      "stack_type": {
+        "stype": 1000280000,
+        "name": "VkPhysicalDeviceShaderIntegerDotProductFeatures",
+        "offset_from_entry_sp": -5032,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3343c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bb90",
+        "load_elf": "0xa2bb8c",
+        "load": "x8, [sp, #0x23f8]"
+      },
+      "stack_type": {
+        "stype": 1000161001,
+        "name": "VkPhysicalDeviceDescriptorIndexingFeatures",
+        "offset_from_entry_sp": -1280,
+        "size": 96
+      }
+    },
+    {
+      "return_elf": "0xa33444",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bfa4",
+        "load_elf": "0xa2bfa0",
+        "load": "x8, [sp, #0x19e8]"
+      },
+      "stack_type": {
+        "stype": 1000286000,
+        "name": "VkPhysicalDeviceRobustness2FeaturesKHR",
+        "offset_from_entry_sp": -3856,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa3344c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c10c",
+        "load_elf": "0xa2c108",
+        "load": "x8, [sp, #0xe28]"
+      },
+      "stack_type": {
+        "stype": 1000528000,
+        "name": "VkPhysicalDeviceShaderFloatControls2Features",
+        "offset_from_entry_sp": -6864,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33454",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c174",
+        "load_elf": "0xa2c170",
+        "load": "x8, [sp, #0x1820]"
+      },
+      "stack_type": {
+        "stype": 1000351000,
+        "name": "VkPhysicalDeviceMutableDescriptorTypeFeaturesEXT",
+        "offset_from_entry_sp": -4312,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3345c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bc54",
+        "load_elf": "0xa2bc50",
+        "load": "x8, [sp, #0x2378]"
+      },
+      "stack_type": {
+        "stype": 1000211000,
+        "name": "VkPhysicalDeviceVulkanMemoryModelFeatures",
+        "offset_from_entry_sp": -1408,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa33464",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c02c",
+        "load_elf": "0xa2c028",
+        "load": "x8, [sp, #0x2038]"
+      },
+      "stack_type": {
+        "stype": 1000253000,
+        "name": "VkPhysicalDeviceUniformBufferStandardLayoutFeatures",
+        "offset_from_entry_sp": -2240,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3346c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bd54",
+        "load_elf": "0xa2bd50",
+        "load": "x8, [sp, #0x2590]"
+      },
+      "stack_type": {
+        "stype": 1000413000,
+        "name": "VkPhysicalDeviceMaintenance4Features",
+        "offset_from_entry_sp": -872,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33474",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bf1c",
+        "load_elf": "0xa2bf18",
+        "load": "x8, [sp, #0x2578]"
+      },
+      "stack_type": {
+        "stype": 1000470000,
+        "name": "VkPhysicalDeviceMaintenance5Features",
+        "offset_from_entry_sp": -896,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3347c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2be6c",
+        "load_elf": "0xa2be68",
+        "load": "x8, [sp, #0x1f78]"
+      },
+      "stack_type": {
+        "stype": 1000066000,
+        "name": "VkPhysicalDeviceTextureCompressionASTCHDRFeatures",
+        "offset_from_entry_sp": -2432,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa33484",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2bef8",
+        "load_elf": "0xa2bef4",
+        "load": "x8, [sp, #0x2068]"
+      },
+      "stack_type": {
+        "stype": 1000425000,
+        "name": "VkPhysicalDeviceFragmentDensityMapOffsetFeaturesEXT",
+        "offset_from_entry_sp": -2192,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa3348c",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c090",
+        "load_elf": "0xa2c08c",
+        "load": "x8, [sp, #0xe40]"
+      },
+      "stack_type": {
+        "stype": 1000544000,
+        "name": "VkPhysicalDeviceShaderExpectAssumeFeatures",
+        "offset_from_entry_sp": -6840,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34640",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d278",
+        "load_elf": "0xa2d274",
+        "load": "x8, [sp, #0xa50]"
+      },
+      "stack_type": {
+        "stype": 1000627000,
+        "name": "VkPhysicalDeviceShader64BitIndexingFeaturesEXT",
+        "offset_from_entry_sp": -7848,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34648",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dcbc",
+        "load_elf": "0xa2dcb8",
+        "load": "x8, [sp, #0xb80]"
+      },
+      "stack_type": {
+        "stype": 1000678000,
+        "name": "VkPhysicalDevicePrimitiveRestartIndexFeaturesEXT",
+        "offset_from_entry_sp": -7544,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34650",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d860",
+        "load_elf": "0xa2d85c",
+        "load": "x8, [sp, #0x1850]"
+      },
+      "stack_type": {
+        "stype": 1000524000,
+        "name": "VkPhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT",
+        "offset_from_entry_sp": -4264,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34658",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cde0",
+        "load_elf": "0xa2cddc",
+        "load": "x8, [sp, #0xf00]"
+      },
+      "stack_type": {
+        "stype": 1000468000,
+        "name": "VkPhysicalDeviceExternalFormatResolveFeaturesANDROID",
+        "offset_from_entry_sp": -6648,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34660",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d340",
+        "load_elf": "0xa2d33c",
+        "load": "x8, [sp, #0x1298]"
+      },
+      "stack_type": {
+        "stype": 1000304000,
+        "name": "VkPhysicalDeviceShaderMultipleWaitQueuesFeaturesQCOM",
+        "offset_from_entry_sp": -5728,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34668",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2ca74",
+        "load_elf": "0xa2ca70",
+        "load": "x8, [sp, #0x2098]"
+      },
+      "stack_type": {
+        "stype": 1000218000,
+        "name": "VkPhysicalDeviceFragmentDensityMapFeaturesEXT",
+        "offset_from_entry_sp": -2144,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34670",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d538",
+        "load_elf": "0xa2d534",
+        "load": "x8, [sp, #0x15a0]"
+      },
+      "stack_type": {
+        "stype": 1000254000,
+        "name": "VkPhysicalDeviceProvokingVertexFeaturesEXT",
+        "offset_from_entry_sp": -4952,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34678",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d298",
+        "load_elf": "0xa2d294",
+        "load": "x8, [sp, #0x14b8]"
+      },
+      "stack_type": {
+        "stype": 1000344000,
+        "name": "VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT",
+        "offset_from_entry_sp": -5184,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34680",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cb3c",
+        "load_elf": "0xa2cb38",
+        "load": "x8, [sp, #0x13f0]"
+      },
+      "stack_type": {
+        "stype": 1000420000,
+        "name": "VkPhysicalDeviceDescriptorSetHostMappingFeaturesVALVE",
+        "offset_from_entry_sp": -5384,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34688",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c6b8",
+        "load_elf": "0xa2c6b4",
+        "load": "x8, [sp, #0x1b18]"
+      },
+      "stack_type": {
+        "stype": 1000377000,
+        "name": "VkPhysicalDeviceExtendedDynamicState2FeaturesEXT",
+        "offset_from_entry_sp": -3552,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34690",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d210",
+        "load_elf": "0xa2d20c",
+        "load": "x8, [sp, #0x9a8]"
+      },
+      "stack_type": {
+        "stype": 1000305000,
+        "name": "VkPhysicalDeviceShaderSplitBarrierFeaturesEXT",
+        "offset_from_entry_sp": -8016,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34698",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d698",
+        "load_elf": "0xa2d694",
+        "load": "x8, [sp, #0xcb8]"
+      },
+      "stack_type": {
+        "stype": 1000590000,
+        "name": "VkPhysicalDeviceHdrVividFeaturesHUAWEI",
+        "offset_from_entry_sp": -7232,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa346a0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cfd4",
+        "load_elf": "0xa2cfd0",
+        "load": "x8, [sp, #0x25f0]"
+      },
+      "stack_type": {
+        "stype": 1000145001,
+        "name": "VkPhysicalDeviceProtectedMemoryFeatures",
+        "offset_from_entry_sp": -776,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa346a8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cc24",
+        "load_elf": "0xa2cc20",
+        "load": "x8, [sp, #0x1248]"
+      },
+      "stack_type": {
+        "stype": 1000485000,
+        "name": "VkPhysicalDeviceAmigoProfilingFeaturesSEC",
+        "offset_from_entry_sp": -5808,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa346b0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d7d8",
+        "load_elf": "0xa2d7d4",
+        "load": "x8, [sp, #0xf70]"
+      },
+      "stack_type": {
+        "stype": 1000518000,
+        "name": "VkPhysicalDeviceImageProcessing2FeaturesQCOM",
+        "offset_from_entry_sp": -6536,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa346b8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d910",
+        "load_elf": "0xa2d90c",
+        "load": "x8, [sp, #0xf48]"
+      },
+      "stack_type": {
+        "stype": 1000303000,
+        "name": "VkPhysicalDeviceImageProcessing3FeaturesQCOM",
+        "offset_from_entry_sp": -6576,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa346c0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c57c",
+        "load_elf": "0xa2c578",
+        "load": "x8, [sp, #0x21e8]"
+      },
+      "stack_type": {
+        "stype": 1000549000,
+        "name": "VkPhysicalDeviceCopyMemoryIndirectFeaturesKHR",
+        "offset_from_entry_sp": -1808,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa346c8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cc68",
+        "load_elf": "0xa2cc64",
+        "load": "x8, [sp, #0x1200]"
+      },
+      "stack_type": {
+        "stype": 1000464000,
+        "name": "VkPhysicalDeviceOpticalFlowFeaturesNV",
+        "offset_from_entry_sp": -5880,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa346d0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cd5c",
+        "load_elf": "0xa2cd58",
+        "load": "x8, [sp, #0xe70]"
+      },
+      "stack_type": {
+        "stype": 1000434000,
+        "name": "VkPhysicalDeviceShaderMaximalReconvergenceFeaturesKHR",
+        "offset_from_entry_sp": -6792,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa346d8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d954",
+        "load_elf": "0xa2d950",
+        "load": "x8, [sp, #0x1898]"
+      },
+      "stack_type": {
+        "stype": 1000326001,
+        "name": "VkPhysicalDeviceFragmentShadingRateEnumsFeaturesNV",
+        "offset_from_entry_sp": -4192,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa346e0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2db74",
+        "load_elf": "0xa2db70",
+        "load": "x8, [sp, #0x1790]"
+      },
+      "stack_type": {
+        "stype": 1000352000,
+        "name": "VkPhysicalDeviceVertexInputDynamicStateFeaturesEXT",
+        "offset_from_entry_sp": -4456,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa346e8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d3ec",
+        "load_elf": "0xa2d3e8",
+        "load": "x8, [sp, #0x1600]"
+      },
+      "stack_type": {
+        "stype": 1000598000,
+        "name": "VkPhysicalDeviceVideoEncodeFeedback2FeaturesKHR",
+        "offset_from_entry_sp": -4856,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa346f0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dcf8",
+        "load_elf": "0xa2dcf4",
+        "load": "x8, [sp, #0x24e8]"
+      },
+      "stack_type": {
+        "stype": 1000630000,
+        "name": "VkPhysicalDeviceMaintenance10FeaturesKHR",
+        "offset_from_entry_sp": -1040,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa346f8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2daa8",
+        "load_elf": "0xa2daa4",
+        "load": "x8, [sp, #0x1500]"
+      },
+      "stack_type": {
+        "stype": 1000327001,
+        "name": "VkPhysicalDeviceRayTracingMotionBlurFeaturesNV",
+        "offset_from_entry_sp": -5112,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34700",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cd14",
+        "load_elf": "0xa2cd10",
+        "load": "x8, [sp, #0x2678]"
+      },
+      "stack_type": {
+        "stype": 1000480001,
+        "name": "VkPhysicalDevicePresentWait2FeaturesKHR",
+        "offset_from_entry_sp": -640,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34708",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dd7c",
+        "load_elf": "0xa2dd78",
+        "load": "x8, [sp, #0xb98]"
+      },
+      "stack_type": {
+        "stype": 1000673000,
+        "name": "VkPhysicalDeviceShaderMixedFloatDotProductFeaturesVALVE",
+        "offset_from_entry_sp": -7520,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34710",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c994",
+        "load_elf": "0xa2c990",
+        "load": "x8, [sp, #0x930]"
+      },
+      "stack_type": {
+        "stype": 1000233000,
+        "name": "VkPhysicalDeviceShaderAbortFeaturesKHR",
+        "offset_from_entry_sp": -8136,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34718",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c88c",
+        "load_elf": "0xa2c888",
+        "load": "x8, [sp, #0x1b88]"
+      },
+      "stack_type": {
+        "stype": 1000133000,
+        "name": "VkPhysicalDeviceGpaFeaturesAMD",
+        "offset_from_entry_sp": -3440,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34720",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c558",
+        "load_elf": "0xa2c554",
+        "load": "x8, [sp, #0x22d8]"
+      },
+      "stack_type": {
+        "stype": 1000273000,
+        "name": "VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT",
+        "offset_from_entry_sp": -1568,
+        "size": 64
+      }
+    },
+    {
+      "return_elf": "0xa34728",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d578",
+        "load_elf": "0xa2d574",
+        "load": "x8, [sp, #0x1118]"
+      },
+      "stack_type": {
+        "stype": 1000283000,
+        "name": "VkPhysicalDeviceDepthBiasControlFeaturesEXT",
+        "offset_from_entry_sp": -6112,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34730",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dd98",
+        "load_elf": "0xa2dd94",
+        "load": "x8, [sp, #0x1230]"
+      },
+      "stack_type": {
+        "stype": 1000339000,
+        "name": "VkPhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT",
+        "offset_from_entry_sp": -5832,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34738",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2ca98",
+        "load_elf": "0xa2ca94",
+        "load": "x8, [sp, #0x1420]"
+      },
+      "stack_type": {
+        "stype": 1000483000,
+        "name": "VkPhysicalDevicePipelineBinaryFeaturesKHR",
+        "offset_from_entry_sp": -5336,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34740",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2db50",
+        "load_elf": "0xa2db4c",
+        "load": "x8, [sp, #0x11c8]"
+      },
+      "stack_type": {
+        "stype": 1000573000,
+        "name": "VkPhysicalDeviceFaultFeaturesKHR",
+        "offset_from_entry_sp": -5936,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34748",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d8a8",
+        "load_elf": "0xa2d8a4",
+        "load": "x8, [sp, #0x14e8]"
+      },
+      "stack_type": {
+        "stype": 1000568000,
+        "name": "VkPhysicalDeviceRayTracingValidationFeaturesNV",
+        "offset_from_entry_sp": -5136,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34750",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c3d8",
+        "load_elf": "0xa2c3d4",
+        "load": "x8, [sp, #0x1f00]"
+      },
+      "stack_type": {
+        "stype": 1000250000,
+        "name": "VkPhysicalDeviceCoverageReductionModeFeaturesNV",
+        "offset_from_entry_sp": -2552,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34758",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cafc",
+        "load_elf": "0xa2caf8",
+        "load": "x8, [sp, #0xb10]"
+      },
+      "stack_type": {
+        "stype": 1000460018,
+        "name": "VkPhysicalDeviceDescriptorBufferTensorFeaturesARM",
+        "offset_from_entry_sp": -7656,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34760",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d108",
+        "load_elf": "0xa2d104",
+        "load": "x8, [sp, #0x1398]"
+      },
+      "stack_type": {
+        "stype": 1000338000,
+        "name": "VkPhysicalDeviceImageCompressionControlFeaturesEXT",
+        "offset_from_entry_sp": -5472,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34768",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d83c",
+        "load_elf": "0xa2d838",
+        "load": "x8, [sp, #0x2318]"
+      },
+      "stack_type": {
+        "stype": 1000260000,
+        "name": "VkPhysicalDeviceShaderAtomicFloatFeaturesEXT",
+        "offset_from_entry_sp": -1504,
+        "size": 64
+      }
+    },
+    {
+      "return_elf": "0xa34770",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cd9c",
+        "load_elf": "0xa2cd98",
+        "load": "x8, [sp, #0x1088]"
+      },
+      "stack_type": {
+        "stype": 1000510000,
+        "name": "VkPhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM",
+        "offset_from_entry_sp": -6256,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34778",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dcd8",
+        "load_elf": "0xa2dcd4",
+        "load": "x8, [sp, #0x1940]"
+      },
+      "stack_type": {
+        "stype": 1000340000,
+        "name": "VkPhysicalDevice4444FormatsFeaturesEXT",
+        "offset_from_entry_sp": -4024,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34780",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d0c8",
+        "load_elf": "0xa2d0c4",
+        "load": "x8, [sp, #0x2008]"
+      },
+      "stack_type": {
+        "stype": 1000238000,
+        "name": "VkPhysicalDeviceMemoryPriorityFeaturesEXT",
+        "offset_from_entry_sp": -2288,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34788",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dd40",
+        "load_elf": "0xa2dd3c",
+        "load": "x8, [sp, #0x1a70]"
+      },
+      "stack_type": {
+        "stype": 1000668004,
+        "name": "VkPhysicalDeviceExtendedFlagsFeaturesKHR",
+        "offset_from_entry_sp": -3720,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34790",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c244",
+        "load_elf": "0xa2c240",
+        "load": "x8, [sp, #0x1450]"
+      },
+      "stack_type": {
+        "stype": 1000430000,
+        "name": "VkPhysicalDeviceLinearColorAttachmentFeaturesNV",
+        "offset_from_entry_sp": -5288,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34798",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d620",
+        "load_elf": "0xa2d61c",
+        "load": "x8, [sp, #0xee8]"
+      },
+      "stack_type": {
+        "stype": 1000307003,
+        "name": "VkPhysicalDeviceCudaKernelLaunchFeaturesNV",
+        "offset_from_entry_sp": -6672,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa347a0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d7f8",
+        "load_elf": "0xa2d7f4",
+        "load": "x8, [sp, #0x1e00]"
+      },
+      "stack_type": {
+        "stype": 1000281000,
+        "name": "VkPhysicalDeviceTexelBufferAlignmentFeaturesEXT",
+        "offset_from_entry_sp": -2808,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa347a8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c514",
+        "load_elf": "0xa2c510",
+        "load": "x8, [sp, #0x1f60]"
+      },
+      "stack_type": {
+        "stype": 1000249000,
+        "name": "VkPhysicalDeviceCooperativeMatrixFeaturesNV",
+        "offset_from_entry_sp": -2456,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa347b0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d998",
+        "load_elf": "0xa2d994",
+        "load": "x8, [sp, #0x2148]"
+      },
+      "stack_type": {
+        "stype": 1000328000,
+        "name": "VkPhysicalDeviceMeshShaderFeaturesEXT",
+        "offset_from_entry_sp": -1968,
+        "size": 40
+      }
+    },
+    {
+      "return_elf": "0xa347b8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c5f8",
+        "load_elf": "0xa2c5f4",
+        "load": "x8, [sp, #0x1690]"
+      },
+      "stack_type": {
+        "stype": 1000616000,
+        "name": "VkPhysicalDeviceMultisampledRenderToSwapchainFeaturesEXT",
+        "offset_from_entry_sp": -4712,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa347c0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d410",
+        "load_elf": "0xa2d40c",
+        "load": "x8, [sp, #0x1568]"
+      },
+      "stack_type": {
+        "stype": 1000316002,
+        "name": "VkPhysicalDeviceDescriptorBufferFeaturesEXT",
+        "offset_from_entry_sp": -5008,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa347c8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d794",
+        "load_elf": "0xa2d790",
+        "load": "x8, [sp, #0x2458]"
+      },
+      "stack_type": {
+        "stype": 1000284000,
+        "name": "VkPhysicalDeviceDeviceMemoryReportFeaturesEXT",
+        "offset_from_entry_sp": -1184,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa347d0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d31c",
+        "load_elf": "0xa2d318",
+        "load": "x8, [sp, #0x1618]"
+      },
+      "stack_type": {
+        "stype": 1000553009,
+        "name": "VkPhysicalDeviceVideoEncodeQuantizationMapFeaturesKHR",
+        "offset_from_entry_sp": -4832,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa347d8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cf08",
+        "load_elf": "0xa2cf04",
+        "load": "x8, [sp, #0x2748]"
+      },
+      "stack_type": {
+        "stype": 1000428000,
+        "name": "VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV",
+        "offset_from_entry_sp": -432,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa347e0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d63c",
+        "load_elf": "0xa2d638",
+        "load": "x8, [sp, #0x2518]"
+      },
+      "stack_type": {
+        "stype": 1000584000,
+        "name": "VkPhysicalDeviceMaintenance9FeaturesKHR",
+        "offset_from_entry_sp": -992,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa347e8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d2dc",
+        "load_elf": "0xa2d2d8",
+        "load": "x8, [sp, #0x1928]"
+      },
+      "stack_type": {
+        "stype": 1000369001,
+        "name": "VkPhysicalDeviceSubpassShadingFeaturesHUAWEI",
+        "offset_from_entry_sp": -4048,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa347f0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d0a8",
+        "load_elf": "0xa2d0a4",
+        "load": "x8, [sp, #0x2118]"
+      },
+      "stack_type": {
+        "stype": 1000150013,
+        "name": "VkPhysicalDeviceAccelerationStructureFeaturesKHR",
+        "offset_from_entry_sp": -2016,
+        "size": 40
+      }
+    },
+    {
+      "return_elf": "0xa347f8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d65c",
+        "load_elf": "0xa2d658",
+        "load": "x8, [sp, #0x960]"
+      },
+      "stack_type": {
+        "stype": 1000318006,
+        "name": "VkPhysicalDeviceDeviceAddressCommandsFeaturesKHR",
+        "offset_from_entry_sp": -8088,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34800",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c308",
+        "load_elf": "0xa2c304",
+        "load": "x8, [sp, #0x14d0]"
+      },
+      "stack_type": {
+        "stype": 1000429008,
+        "name": "VkPhysicalDeviceRayTracingLinearSweptSpheresFeaturesNV",
+        "offset_from_entry_sp": -5160,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34808",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d5bc",
+        "load_elf": "0xa2d5b8",
+        "load": "x8, [sp, #0x1718]"
+      },
+      "stack_type": {
+        "stype": 1000527000,
+        "name": "VkPhysicalDeviceUnifiedImageLayoutsFeaturesKHR",
+        "offset_from_entry_sp": -4576,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34810",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d254",
+        "load_elf": "0xa2d250",
+        "load": "x8, [sp, #0x19a8]"
+      },
+      "stack_type": {
+        "stype": 1000336000,
+        "name": "VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR",
+        "offset_from_entry_sp": -3920,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34818",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c8ac",
+        "load_elf": "0xa2c8a8",
+        "load": "x8, [sp, #0x1868]"
+      },
+      "stack_type": {
+        "stype": 1000418000,
+        "name": "VkPhysicalDeviceImageSlicedViewOf3DFeaturesEXT",
+        "offset_from_entry_sp": -4240,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34820",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c67c",
+        "load_elf": "0xa2c678",
+        "load": "x8, [sp, #0xd50]"
+      },
+      "stack_type": {
+        "stype": 1000575000,
+        "name": "VkPhysicalDeviceImageAlignmentControlFeaturesMESA",
+        "offset_from_entry_sp": -7080,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34828",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cee4",
+        "load_elf": "0xa2cee0",
+        "load": "x8, [sp, #0x1ea0]"
+      },
+      "stack_type": {
+        "stype": 1000154000,
+        "name": "VkPhysicalDeviceShaderSMBuiltinsFeaturesNV",
+        "offset_from_entry_sp": -2648,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34830",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c59c",
+        "load_elf": "0xa2c598",
+        "load": "x8, [sp, #0xa38]"
+      },
+      "stack_type": {
+        "stype": 1000302001,
+        "name": "VkPhysicalDeviceQueuePerfHintFeaturesQCOM",
+        "offset_from_entry_sp": -7872,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34838",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2de1c",
+        "load_elf": "0xa2de18",
+        "load": "x8, [sp, #0x11e8]"
+      },
+      "stack_type": {
+        "stype": 1000341000,
+        "name": "VkPhysicalDeviceFaultFeaturesEXT",
+        "offset_from_entry_sp": -5904,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34840",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2ca54",
+        "load_elf": "0xa2ca50",
+        "load": "x8, [sp, #0xeb8]"
+      },
+      "stack_type": {
+        "stype": 1000110000,
+        "name": "VkPhysicalDeviceRelaxedLineRasterizationFeaturesIMG",
+        "offset_from_entry_sp": -6720,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34848",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dbf4",
+        "load_elf": "0xa2dbf0",
+        "load": "x8, [sp, #0x2500]"
+      },
+      "stack_type": {
+        "stype": 1000657000,
+        "name": "VkPhysicalDeviceMaintenance11FeaturesKHR",
+        "offset_from_entry_sp": -1016,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34850",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cbc4",
+        "load_elf": "0xa2cbc0",
+        "load": "x8, [sp, #0x1748]"
+      },
+      "stack_type": {
+        "stype": 1000381000,
+        "name": "VkPhysicalDeviceColorWriteEnableFeaturesEXT",
+        "offset_from_entry_sp": -4528,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34858",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d434",
+        "load_elf": "0xa2d430",
+        "load": "x8, [sp, #0xce8]"
+      },
+      "stack_type": {
+        "stype": 1000593000,
+        "name": "VkPhysicalDeviceCooperativeMatrix2FeaturesNV",
+        "offset_from_entry_sp": -7184,
+        "size": 48
+      }
+    },
+    {
+      "return_elf": "0xa34860",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d5dc",
+        "load_elf": "0xa2d5d8",
+        "load": "x8, [sp, #0x9d8]"
+      },
+      "stack_type": {
+        "stype": 1000288000,
+        "name": "VkPhysicalDeviceTextureCompressionASTC3DFeaturesEXT",
+        "offset_from_entry_sp": -7968,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34868",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2ccf0",
+        "load_elf": "0xa2ccec",
+        "load": "x8, [sp, #0x1ee8]"
+      },
+      "stack_type": {
+        "stype": 1000209000,
+        "name": "VkPhysicalDeviceShaderIntegerFunctions2FeaturesINTEL",
+        "offset_from_entry_sp": -2576,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34870",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d9dc",
+        "load_elf": "0xa2d9d8",
+        "load": "x8, [sp, #0x1b40]"
+      },
+      "stack_type": {
+        "stype": 1000267000,
+        "name": "VkPhysicalDeviceExtendedDynamicStateFeaturesEXT",
+        "offset_from_entry_sp": -3512,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34878",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d1ac",
+        "load_elf": "0xa2d1a8",
+        "load": "x8, [sp, #0x1408]"
+      },
+      "stack_type": {
+        "stype": 1000676002,
+        "name": "VkPhysicalDeviceDataGraphNeuralAcceleratorStatisticsFeaturesARM",
+        "offset_from_entry_sp": -5360,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34880",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d7b8",
+        "load_elf": "0xa2d7b4",
+        "load": "x8, [sp, #0xd38]"
+      },
+      "stack_type": {
+        "stype": 1000564000,
+        "name": "VkPhysicalDeviceShaderReplicatedCompositesFeaturesEXT",
+        "offset_from_entry_sp": -7104,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34888",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d67c",
+        "load_elf": "0xa2d678",
+        "load": "x8, [sp, #0xe88]"
+      },
+      "stack_type": {
+        "stype": 1000596000,
+        "name": "VkPhysicalDevicePipelineOpacityMicromapFeaturesARM",
+        "offset_from_entry_sp": -6768,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34890",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d884",
+        "load_elf": "0xa2d880",
+        "load": "x8, [sp, #0x1b70]"
+      },
+      "stack_type": {
+        "stype": 1000287002,
+        "name": "VkPhysicalDeviceCustomBorderColorFeaturesEXT",
+        "offset_from_entry_sp": -3464,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34898",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cd38",
+        "load_elf": "0xa2cd34",
+        "load": "x8, [sp, #0x1958]"
+      },
+      "stack_type": {
+        "stype": 1000163000,
+        "name": "VkPhysicalDevicePortabilitySubsetFeaturesKHR",
+        "offset_from_entry_sp": -4000,
+        "size": 80
+      }
+    },
+    {
+      "return_elf": "0xa348a0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d6ec",
+        "load_elf": "0xa2d6e8",
+        "load": "x8, [sp, #0x1e78]"
+      },
+      "stack_type": {
+        "stype": 1000251000,
+        "name": "VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT",
+        "offset_from_entry_sp": -2688,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa348a8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d778",
+        "load_elf": "0xa2d774",
+        "load": "x8, [sp, #0xfa0]"
+      },
+      "stack_type": {
+        "stype": 1000520000,
+        "name": "VkPhysicalDeviceYcbcrDegammaFeaturesQCOM",
+        "offset_from_entry_sp": -6488,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa348b0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c220",
+        "load_elf": "0xa2c21c",
+        "load": "x8, [sp, #0x26a8]"
+      },
+      "stack_type": {
+        "stype": 1000479002,
+        "name": "VkPhysicalDevicePresentId2FeaturesKHR",
+        "offset_from_entry_sp": -592,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa348b8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cabc",
+        "load_elf": "0xa2cab8",
+        "load": "x8, [sp, #0x2290]"
+      },
+      "stack_type": {
+        "stype": 1000028000,
+        "name": "VkPhysicalDeviceTransformFeedbackFeaturesEXT",
+        "offset_from_entry_sp": -1640,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa348c0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d188",
+        "load_elf": "0xa2d184",
+        "load": "x8, [sp, #0x2188]"
+      },
+      "stack_type": {
+        "stype": 1000370000,
+        "name": "VkPhysicalDeviceInvocationMaskFeaturesHUAWEI",
+        "offset_from_entry_sp": -1904,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa348c8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c700",
+        "load_elf": "0xa2c6fc",
+        "load": "x8, [sp, #0x1a88]"
+      },
+      "stack_type": {
+        "stype": 1000455000,
+        "name": "VkPhysicalDeviceExtendedDynamicState3FeaturesEXT",
+        "offset_from_entry_sp": -3696,
+        "size": 144
+      }
+    },
+    {
+      "return_elf": "0xa348d0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d478",
+        "load_elf": "0xa2d474",
+        "load": "x8, [sp, #0x978]"
+      },
+      "stack_type": {
+        "stype": 1000607000,
+        "name": "VkPhysicalDeviceShaderInstrumentationFeaturesARM",
+        "offset_from_entry_sp": -8064,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa348d8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d2fc",
+        "load_elf": "0xa2d2f8",
+        "load": "x8, [sp, #0xb50]"
+      },
+      "stack_type": {
+        "stype": 1000674000,
+        "name": "VkPhysicalDeviceThrottleHintFeaturesSEC",
+        "offset_from_entry_sp": -7592,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa348e0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d3cc",
+        "load_elf": "0xa2d3c8",
+        "load": "x8, [sp, #0x1438]"
+      },
+      "stack_type": {
+        "stype": 1000320000,
+        "name": "VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT",
+        "offset_from_entry_sp": -5312,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa348e8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d16c",
+        "load_elf": "0xa2d168",
+        "load": "x8, [sp, #0xbc0]"
+      },
+      "stack_type": {
+        "stype": 1000642000,
+        "name": "VkPhysicalDeviceShaderUniformBufferUnsizedArrayFeaturesEXT",
+        "offset_from_entry_sp": -7480,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa348f0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cb1c",
+        "load_elf": "0xa2cb18",
+        "load": "x8, [sp, #0x1000]"
+      },
+      "stack_type": {
+        "stype": 1000134000,
+        "name": "VkPhysicalDeviceShaderEnqueueFeaturesAMDX",
+        "offset_from_entry_sp": -6392,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa348f8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d4bc",
+        "load_elf": "0xa2d4b8",
+        "load": "x8, [sp, #0xf18]"
+      },
+      "stack_type": {
+        "stype": 1000516000,
+        "name": "VkPhysicalDevicePerStageDescriptorSetFeaturesNV",
+        "offset_from_entry_sp": -6624,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34900",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d0e4",
+        "load_elf": "0xa2d0e0",
+        "load": "x8, [sp, #0x1168]"
+      },
+      "stack_type": {
+        "stype": 1000499000,
+        "name": "VkPhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT",
+        "offset_from_entry_sp": -6032,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34908",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c5d8",
+        "load_elf": "0xa2c5d4",
+        "load": "x8, [sp, #0x15b8]"
+      },
+      "stack_type": {
+        "stype": 1000330000,
+        "name": "VkPhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT",
+        "offset_from_entry_sp": -4928,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34910",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c82c",
+        "load_elf": "0xa2c828",
+        "load": "x8, [sp, #0x1bc8]"
+      },
+      "stack_type": {
+        "stype": 55,
+        "name": "VkPhysicalDeviceVulkan14Features",
+        "offset_from_entry_sp": -3376,
+        "size": 104
+      }
+    },
+    {
+      "return_elf": "0xa34918",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c7f0",
+        "load_elf": "0xa2c7ec",
+        "load": "x8, [sp, #0x948]"
+      },
+      "stack_type": {
+        "stype": 1000231000,
+        "name": "VkPhysicalDeviceShaderConstantDataFeaturesKHR",
+        "offset_from_entry_sp": -8112,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34920",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c638",
+        "load_elf": "0xa2c634",
+        "load": "x8, [sp, #0xfd0]"
+      },
+      "stack_type": {
+        "stype": 1000547000,
+        "name": "VkPhysicalDeviceTileMemoryHeapFeaturesQCOM",
+        "offset_from_entry_sp": -6440,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34928",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dae8",
+        "load_elf": "0xa2dae4",
+        "load": "x8, [sp, #0x1f30]"
+      },
+      "stack_type": {
+        "stype": 1000292000,
+        "name": "VkPhysicalDevicePresentBarrierFeaturesNV",
+        "offset_from_entry_sp": -2504,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34930",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c8d0",
+        "load_elf": "0xa2c8cc",
+        "load": "x8, [sp, #0x18d8]"
+      },
+      "stack_type": {
+        "stype": 1000226003,
+        "name": "VkPhysicalDeviceFragmentShadingRateFeaturesKHR",
+        "offset_from_entry_sp": -4128,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34938",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c534",
+        "load_elf": "0xa2c530",
+        "load": "x8, [sp, #0x15e8]"
+      },
+      "stack_type": {
+        "stype": 1000513004,
+        "name": "VkPhysicalDeviceVideoEncodeAV1FeaturesKHR",
+        "offset_from_entry_sp": -4880,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34940",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cc88",
+        "load_elf": "0xa2cc84",
+        "load": "x8, [sp, #0x12c8]"
+      },
+      "stack_type": {
+        "stype": 1000422000,
+        "name": "VkPhysicalDeviceNonSeamlessCubeMapFeaturesEXT",
+        "offset_from_entry_sp": -5680,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34948",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d084",
+        "load_elf": "0xa2d080",
+        "load": "x8, [sp, #0x2218]"
+      },
+      "stack_type": {
+        "stype": 1000204000,
+        "name": "VkPhysicalDeviceShaderImageFootprintFeaturesNV",
+        "offset_from_entry_sp": -1760,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34950",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d5fc",
+        "load_elf": "0xa2d5f8",
+        "load": "x8, [sp, #0x2718]"
+      },
+      "stack_type": {
+        "stype": 1000569000,
+        "name": "VkPhysicalDeviceClusterAccelerationStructureFeaturesNV",
+        "offset_from_entry_sp": -480,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34958",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2da24",
+        "load_elf": "0xa2da20",
+        "load": "x8, [sp, #0x17c0]"
+      },
+      "stack_type": {
+        "stype": 1000572000,
+        "name": "VkPhysicalDeviceDeviceGeneratedCommandsFeaturesEXT",
+        "offset_from_entry_sp": -4408,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34960",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cc04",
+        "load_elf": "0xa2cc00",
+        "load": "x8, [sp, #0xed0]"
+      },
+      "stack_type": {
+        "stype": 1000417001,
+        "name": "VkPhysicalDeviceSchedulingControlsFeaturesARM",
+        "offset_from_entry_sp": -6696,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34968",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c2e8",
+        "load_elf": "0xa2c2e4",
+        "load": "x8, [sp, #0xc88]"
+      },
+      "stack_type": {
+        "stype": 1000478000,
+        "name": "VkPhysicalDeviceDenseGeometryFormatFeaturesAMDX",
+        "offset_from_entry_sp": -7280,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34970",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d388",
+        "load_elf": "0xa2d384",
+        "load": "x8, [sp, #0xc08]"
+      },
+      "stack_type": {
+        "stype": 1000309000,
+        "name": "VkPhysicalDeviceTileShadingFeaturesQCOM",
+        "offset_from_entry_sp": -7408,
+        "size": 72
+      }
+    },
+    {
+      "return_elf": "0xa34978",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2ce24",
+        "load_elf": "0xa2ce20",
+        "load": "x8, [sp, #0x21d0]"
+      },
+      "stack_type": {
+        "stype": 1000426000,
+        "name": "VkPhysicalDeviceCopyMemoryIndirectFeaturesNV",
+        "offset_from_entry_sp": -1832,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34980",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cea4",
+        "load_elf": "0xa2cea0",
+        "load": "x8, [sp, #0x2260]"
+      },
+      "stack_type": {
+        "stype": 1000205002,
+        "name": "VkPhysicalDeviceExclusiveScissorFeaturesNV",
+        "offset_from_entry_sp": -1688,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34988",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cd78",
+        "load_elf": "0xa2cd74",
+        "load": "x8, [sp, #0x2690]"
+      },
+      "stack_type": {
+        "stype": 1000248000,
+        "name": "VkPhysicalDevicePresentWaitFeaturesKHR",
+        "offset_from_entry_sp": -616,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34990",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dc98",
+        "load_elf": "0xa2dc94",
+        "load": "x8, [sp, #0x1778]"
+      },
+      "stack_type": {
+        "stype": 1000371001,
+        "name": "VkPhysicalDeviceExternalMemoryRDMAFeaturesNV",
+        "offset_from_entry_sp": -4480,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34998",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cec8",
+        "load_elf": "0xa2cec4",
+        "load": "x8, [sp, #0xfe8]"
+      },
+      "stack_type": {
+        "stype": 1000476000,
+        "name": "VkPhysicalDeviceAntiLagFeaturesAMD",
+        "offset_from_entry_sp": -6416,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa349a0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2de00",
+        "load_elf": "0xa2ddfc",
+        "load": "x8, [sp, #0x9c0]"
+      },
+      "stack_type": {
+        "stype": 1000662000,
+        "name": "VkPhysicalDeviceShaderSubgroupPartitionedFeaturesEXT",
+        "offset_from_entry_sp": -7992,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa349a8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c8f0",
+        "load_elf": "0xa2c8ec",
+        "load": "x8, [sp, #0x10b8]"
+      },
+      "stack_type": {
+        "stype": 1000488000,
+        "name": "VkPhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM",
+        "offset_from_entry_sp": -6208,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa349b0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2db94",
+        "load_elf": "0xa2db90",
+        "load": "x8, [sp, #0x8a8]"
+      },
+      "stack_type": {
+        "stype": 1000659000,
+        "name": "VkPhysicalDeviceCooperativeMatrixMaintenance1FeaturesEXT",
+        "offset_from_entry_sp": -8272,
+        "size": 40
+      }
+    },
+    {
+      "return_elf": "0xa349b8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d710",
+        "load_elf": "0xa2d70c",
+        "load": "x8, [sp, #0x1660]"
+      },
+      "stack_type": {
+        "stype": 1000515000,
+        "name": "VkPhysicalDeviceVideoMaintenance1FeaturesKHR",
+        "offset_from_entry_sp": -4760,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa349c0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c32c",
+        "load_elf": "0xa2c328",
+        "load": "x8, [sp, #0x1030]"
+      },
+      "stack_type": {
+        "stype": 1000506000,
+        "name": "VkPhysicalDeviceCooperativeMatrixFeaturesKHR",
+        "offset_from_entry_sp": -6344,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa349c8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2db08",
+        "load_elf": "0xa2db04",
+        "load": "x8, [sp, #0x1a58]"
+      },
+      "stack_type": {
+        "stype": 1000570000,
+        "name": "VkPhysicalDevicePartitionedAccelerationStructureFeaturesNV",
+        "offset_from_entry_sp": -3744,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa349d0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2ce00",
+        "load_elf": "0xa2cdfc",
+        "load": "x8, [sp, #0x25d8]"
+      },
+      "stack_type": {
+        "stype": 1000148000,
+        "name": "VkPhysicalDeviceBlendOperationAdvancedFeaturesEXT",
+        "offset_from_entry_sp": -800,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa349d8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c3fc",
+        "load_elf": "0xa2c3f8",
+        "load": "x8, [sp, #0x1630]"
+      },
+      "stack_type": {
+        "stype": 1000514000,
+        "name": "VkPhysicalDeviceVideoDecodeVP9FeaturesKHR",
+        "offset_from_entry_sp": -4808,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa349e0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c848",
+        "load_elf": "0xa2c844",
+        "load": "x8, [sp, #0x16d8]"
+      },
+      "stack_type": {
+        "stype": 1000382000,
+        "name": "VkPhysicalDevicePrimitivesGeneratedQueryFeaturesEXT",
+        "offset_from_entry_sp": -4640,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa349e8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2da44",
+        "load_elf": "0xa2da40",
+        "load": "x8, [sp, #0xf30]"
+      },
+      "stack_type": {
+        "stype": 1000546000,
+        "name": "VkPhysicalDeviceDescriptorPoolOverallocationFeaturesNV",
+        "offset_from_entry_sp": -6600,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa349f0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2de40",
+        "load_elf": "0xa2de3c",
+        "load": "x8, [sp, #0x918]"
+      },
+      "stack_type": {
+        "stype": 1000631000,
+        "name": "VkPhysicalDeviceDataGraphOpticalFlowFeaturesARM",
+        "offset_from_entry_sp": -8160,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa349f8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2de60",
+        "load_elf": "0xa2de5c",
+        "load": "x8, [sp, #0x1e48]"
+      },
+      "stack_type": {
+        "stype": 1000356000,
+        "name": "VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT",
+        "offset_from_entry_sp": -2736,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a00",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c930",
+        "load_elf": "0xa2c92c",
+        "load": "x8, [sp, #0x16c0]"
+      },
+      "stack_type": {
+        "stype": 1000465000,
+        "name": "VkPhysicalDeviceLegacyDitheringFeaturesEXT",
+        "offset_from_entry_sp": -4664,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a08",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d6b4",
+        "load_elf": "0xa2d6b0",
+        "load": "x8, [sp, #0x12e0]"
+      },
+      "stack_type": {
+        "stype": 1000321000,
+        "name": "VkPhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD",
+        "offset_from_entry_sp": -5656,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a10",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c658",
+        "load_elf": "0xa2c654",
+        "load": "x8, [sp, #0x1a40]"
+      },
+      "stack_type": {
+        "stype": 1000300000,
+        "name": "VkPhysicalDeviceDiagnosticsConfigFeaturesNV",
+        "offset_from_entry_sp": -3768,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a18",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c398",
+        "load_elf": "0xa2c394",
+        "load": "x8, [sp, #0x2278]"
+      },
+      "stack_type": {
+        "stype": 1000166000,
+        "name": "VkPhysicalDeviceRepresentativeFragmentTestFeaturesNV",
+        "offset_from_entry_sp": -1664,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a20",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dddc",
+        "load_elf": "0xa2ddd8",
+        "load": "x8, [sp, #0x1218]"
+      },
+      "stack_type": {
+        "stype": 1000354000,
+        "name": "VkPhysicalDeviceAddressBindingReportFeaturesEXT",
+        "offset_from_entry_sp": -5856,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a28",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2db2c",
+        "load_elf": "0xa2db28",
+        "load": "x8, [sp, #0x1e30]"
+      },
+      "stack_type": {
+        "stype": 1000269000,
+        "name": "VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR",
+        "offset_from_entry_sp": -2760,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a30",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dc14",
+        "load_elf": "0xa2dc10",
+        "load": "x8, [sp, #0x12f8]"
+      },
+      "stack_type": {
+        "stype": 1000372001,
+        "name": "VkPhysicalDevicePipelinePropertiesFeaturesEXT",
+        "offset_from_entry_sp": -5632,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a38",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2ca14",
+        "load_elf": "0xa2ca10",
+        "load": "x8, [sp, #0x1018]"
+      },
+      "stack_type": {
+        "stype": 1000172000,
+        "name": "VkPhysicalDeviceCooperativeMatrixConversionFeaturesQCOM",
+        "offset_from_entry_sp": -6368,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a40",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c69c",
+        "load_elf": "0xa2c698",
+        "load": "x8, [sp, #0x1c88]"
+      },
+      "stack_type": {
+        "stype": 51,
+        "name": "VkPhysicalDeviceVulkan12Features",
+        "offset_from_entry_sp": -3184,
+        "size": 208
+      }
+    },
+    {
+      "return_elf": "0xa34a48",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c420",
+        "load_elf": "0xa2c41c",
+        "load": "x8, [sp, #0x2080]"
+      },
+      "stack_type": {
+        "stype": 1000332000,
+        "name": "VkPhysicalDeviceFragmentDensityMap2FeaturesEXT",
+        "offset_from_entry_sp": -2168,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a50",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c374",
+        "load_elf": "0xa2c370",
+        "load": "x8, [sp, #0x1070]"
+      },
+      "stack_type": {
+        "stype": 1000482000,
+        "name": "VkPhysicalDeviceShaderObjectFeaturesEXT",
+        "offset_from_entry_sp": -6280,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a58",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d230",
+        "load_elf": "0xa2d22c",
+        "load": "x8, [sp, #0x17a8]"
+      },
+      "stack_type": {
+        "stype": 1000582000,
+        "name": "VkPhysicalDeviceDepthClampControlFeaturesEXT",
+        "offset_from_entry_sp": -4432,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a60",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c46c",
+        "load_elf": "0xa2c468",
+        "load": "x8, [sp, #0x2020]"
+      },
+      "stack_type": {
+        "stype": 1000102000,
+        "name": "VkPhysicalDeviceDepthClipEnableFeaturesEXT",
+        "offset_from_entry_sp": -2264,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a68",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cf2c",
+        "load_elf": "0xa2cf28",
+        "load": "x8, [sp, #0x2200]"
+      },
+      "stack_type": {
+        "stype": 1000240000,
+        "name": "VkPhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV",
+        "offset_from_entry_sp": -1784,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a70",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2da00",
+        "load_elf": "0xa2d9fc",
+        "load": "x8, [sp, #0x26c0]"
+      },
+      "stack_type": {
+        "stype": 1000294001,
+        "name": "VkPhysicalDevicePresentIdFeaturesKHR",
+        "offset_from_entry_sp": -568,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a78",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c5b8",
+        "load_elf": "0xa2c5b4",
+        "load": "x8, [sp, #0x1518]"
+      },
+      "stack_type": {
+        "stype": 1000579000,
+        "name": "VkPhysicalDeviceShaderFmaFeaturesKHR",
+        "offset_from_entry_sp": -5088,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34a80",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cf70",
+        "load_elf": "0xa2cf6c",
+        "load": "x8, [sp, #0x24d0]"
+      },
+      "stack_type": {
+        "stype": 1000063000,
+        "name": "VkPhysicalDeviceShaderDrawParametersFeatures",
+        "offset_from_entry_sp": -1064,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a88",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dc54",
+        "load_elf": "0xa2dc50",
+        "load": "x8, [sp, #0x20d0]"
+      },
+      "stack_type": {
+        "stype": 1000348013,
+        "name": "VkPhysicalDeviceRayQueryFeaturesKHR",
+        "offset_from_entry_sp": -2088,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a90",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d2bc",
+        "load_elf": "0xa2d2b8",
+        "load": "x8, [sp, #0xab0]"
+      },
+      "stack_type": {
+        "stype": 1000637000,
+        "name": "VkPhysicalDevicePipelineCacheIncrementalModeFeaturesSEC",
+        "offset_from_entry_sp": -7752,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34a98",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d498",
+        "load_elf": "0xa2d494",
+        "load": "x8, [sp, #0x1f48]"
+      },
+      "stack_type": {
+        "stype": 1000252000,
+        "name": "VkPhysicalDeviceYcbcrImageArraysFeaturesEXT",
+        "offset_from_entry_sp": -2480,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34aa0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d1f4",
+        "load_elf": "0xa2d1f0",
+        "load": "x8, [sp, #0xd80]"
+      },
+      "stack_type": {
+        "stype": 1000555000,
+        "name": "VkPhysicalDeviceRawAccessChainsFeaturesNV",
+        "offset_from_entry_sp": -7032,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34aa8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2ca34",
+        "load_elf": "0xa2ca30",
+        "load": "x8, [sp, #0x13c8]"
+      },
+      "stack_type": {
+        "stype": 1000451000,
+        "name": "VkPhysicalDeviceNestedCommandBufferFeaturesEXT",
+        "offset_from_entry_sp": -5424,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34ab0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d9bc",
+        "load_elf": "0xa2d9b8",
+        "load": "x8, [sp, #0xbd8]"
+      },
+      "stack_type": {
+        "stype": 1000613001,
+        "name": "VkPhysicalDevicePresentMeteringFeaturesNV",
+        "offset_from_entry_sp": -7456,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34ab8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c86c",
+        "load_elf": "0xa2c868",
+        "load": "x8, [sp, #0xb28]"
+      },
+      "stack_type": {
+        "stype": 1000460009,
+        "name": "VkPhysicalDeviceTensorFeaturesARM",
+        "offset_from_entry_sp": -7632,
+        "size": 40
+      }
+    },
+    {
+      "return_elf": "0xa34ac0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dc38",
+        "load_elf": "0xa2dc34",
+        "load": "x8, [sp, #0x900]"
+      },
+      "stack_type": {
+        "stype": 1000687000,
+        "name": "VkPhysicalDeviceImageTilingControlFeaturesEXT",
+        "offset_from_entry_sp": -8184,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34ac8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c974",
+        "load_elf": "0xa2c970",
+        "load": "x8, [sp, #0xea0]"
+      },
+      "stack_type": {
+        "stype": 1000424000,
+        "name": "VkPhysicalDeviceRenderPassStripedFeaturesARM",
+        "offset_from_entry_sp": -6744,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34ad0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2ddbc",
+        "load_elf": "0xa2ddb8",
+        "load": "x8, [sp, #0xa98]"
+      },
+      "stack_type": {
+        "stype": 1000629000,
+        "name": "VkPhysicalDeviceDataGraphModelFeaturesQCOM",
+        "offset_from_entry_sp": -7776,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34ad8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d59c",
+        "load_elf": "0xa2d598",
+        "load": "x8, [sp, #0xde0]"
+      },
+      "stack_type": {
+        "stype": 1000563000,
+        "name": "VkPhysicalDeviceShaderAtomicFloat16VectorFeaturesNV",
+        "offset_from_entry_sp": -6936,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34ae0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dd60",
+        "load_elf": "0xa2dd5c",
+        "load": "x8, [sp, #0x9f0]"
+      },
+      "stack_type": {
+        "stype": 1000635000,
+        "name": "VkPhysicalDeviceShaderLongVectorFeaturesEXT",
+        "offset_from_entry_sp": -7944,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34ae8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cc48",
+        "load_elf": "0xa2cc44",
+        "load": "x8, [sp, #0x2248]"
+      },
+      "stack_type": {
+        "stype": 1000050000,
+        "name": "VkPhysicalDeviceCornerSampledImageFeaturesNV",
+        "offset_from_entry_sp": -1712,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34af0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2ce5c",
+        "load_elf": "0xa2ce58",
+        "load": "x8, [sp, #0x11b0]"
+      },
+      "stack_type": {
+        "stype": 1000498000,
+        "name": "VkPhysicalDevicePipelineLibraryGroupHandlesFeaturesKHR",
+        "offset_from_entry_sp": -5960,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34af8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2da88",
+        "load_elf": "0xa2da84",
+        "load": "x8, [sp, #0xca0]"
+      },
+      "stack_type": {
+        "stype": 1000608000,
+        "name": "VkPhysicalDeviceVertexAttributeRobustnessFeaturesEXT",
+        "offset_from_entry_sp": -7256,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b00",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c7ac",
+        "load_elf": "0xa2c7a8",
+        "load": "x8, [sp, #0x13b0]"
+      },
+      "stack_type": {
+        "stype": 1000462000,
+        "name": "VkPhysicalDeviceShaderModuleIdentifierFeaturesEXT",
+        "offset_from_entry_sp": -5448,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b08",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c744",
+        "load_elf": "0xa2c740",
+        "load": "x8, [sp, #0x1260]"
+      },
+      "stack_type": {
+        "stype": 1000484000,
+        "name": "VkPhysicalDeviceTilePropertiesFeaturesQCOM",
+        "offset_from_entry_sp": -5784,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b10",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c444",
+        "load_elf": "0xa2c440",
+        "load": "x8, [sp, #0x17f0]"
+      },
+      "stack_type": {
+        "stype": 1000620000,
+        "name": "VkPhysicalDeviceZeroInitializeDeviceMemoryFeaturesEXT",
+        "offset_from_entry_sp": -4360,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b18",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cadc",
+        "load_elf": "0xa2cad8",
+        "load": "x8, [sp, #0x20b8]"
+      },
+      "stack_type": {
+        "stype": 1000386000,
+        "name": "VkPhysicalDeviceRayTracingMaintenance1FeaturesKHR",
+        "offset_from_entry_sp": -2112,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b20",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dbb4",
+        "load_elf": "0xa2dbb0",
+        "load": "x8, [sp, #0x1180]"
+      },
+      "stack_type": {
+        "stype": 1000375000,
+        "name": "VkPhysicalDeviceFrameBoundaryFeaturesEXT",
+        "offset_from_entry_sp": -6008,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b28",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cb84",
+        "load_elf": "0xa2cb80",
+        "load": "x8, [sp, #0x10e8]"
+      },
+      "stack_type": {
+        "stype": 1000490000,
+        "name": "VkPhysicalDeviceRayTracingInvocationReorderFeaturesNV",
+        "offset_from_entry_sp": -6160,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b30",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c9d4",
+        "load_elf": "0xa2c9d0",
+        "load": "x8, [sp, #0x1d58]"
+      },
+      "stack_type": {
+        "stype": 49,
+        "name": "VkPhysicalDeviceVulkan11Features",
+        "offset_from_entry_sp": -2976,
+        "size": 64
+      }
+    },
+    {
+      "return_elf": "0xa34b38",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c4cc",
+        "load_elf": "0xa2c4c8",
+        "load": "x8, [sp, #0x21a0]"
+      },
+      "stack_type": {
+        "stype": 1000164001,
+        "name": "VkPhysicalDeviceShadingRateImageFeaturesNV",
+        "offset_from_entry_sp": -1880,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b40",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cba8",
+        "load_elf": "0xa2cba4",
+        "load": "x8, [sp, #0x1c38]"
+      },
+      "stack_type": {
+        "stype": 53,
+        "name": "VkPhysicalDeviceVulkan13Features",
+        "offset_from_entry_sp": -3264,
+        "size": 80
+      }
+    },
+    {
+      "return_elf": "0xa34b48",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cb60",
+        "load_elf": "0xa2cb5c",
+        "load": "x8, [sp, #0x1bb0]"
+      },
+      "stack_type": {
+        "stype": 1000229000,
+        "name": "VkPhysicalDeviceCoherentMemoryFeaturesAMD",
+        "offset_from_entry_sp": -3400,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b50",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d730",
+        "load_elf": "0xa2d72c",
+        "load": "x8, [sp, #0x15d0]"
+      },
+      "stack_type": {
+        "stype": 1000278000,
+        "name": "VkPhysicalDeviceInheritedViewportScissorFeaturesNV",
+        "offset_from_entry_sp": -4904,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b58",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d1d0",
+        "load_elf": "0xa2d1cc",
+        "load": "x8, [sp, #0x2780]"
+      },
+      "stack_type": {
+        "stype": 1000277007,
+        "name": "VkPhysicalDeviceDeviceGeneratedCommandsFeaturesNV",
+        "offset_from_entry_sp": -376,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b60",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d364",
+        "load_elf": "0xa2d360",
+        "load": "x8, [sp, #0x1100]"
+      },
+      "stack_type": {
+        "stype": 1000581000,
+        "name": "VkPhysicalDeviceRayTracingInvocationReorderFeaturesEXT",
+        "offset_from_entry_sp": -6136,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b68",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d930",
+        "load_elf": "0xa2d92c",
+        "load": "x8, [sp, #0x2768]"
+      },
+      "stack_type": {
+        "stype": 1000580001,
+        "name": "VkPhysicalDevicePushConstantBankFeaturesNV",
+        "offset_from_entry_sp": -400,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b70",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d4fc",
+        "load_elf": "0xa2d4f8",
+        "load": "x8, [sp, #0xfb8]"
+      },
+      "stack_type": {
+        "stype": 1000521000,
+        "name": "VkPhysicalDeviceCubicClampFeaturesQCOM",
+        "offset_from_entry_sp": -6464,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b78",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d454",
+        "load_elf": "0xa2d450",
+        "load": "x8, [sp, #0x1a10]"
+      },
+      "stack_type": {
+        "stype": 1000323000,
+        "name": "VkPhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR",
+        "offset_from_entry_sp": -3816,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b80",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cfb0",
+        "load_elf": "0xa2cfac",
+        "load": "x8, [sp, #0x2170]"
+      },
+      "stack_type": {
+        "stype": 1000202000,
+        "name": "VkPhysicalDeviceMeshShaderFeaturesNV",
+        "offset_from_entry_sp": -1928,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b88",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d8ec",
+        "load_elf": "0xa2d8e8",
+        "load": "x8, [sp, #0x1588]"
+      },
+      "stack_type": {
+        "stype": 1000552004,
+        "name": "VkPhysicalDeviceVideoEncodeIntraRefreshFeaturesKHR",
+        "offset_from_entry_sp": -4976,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b90",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d3a8",
+        "load_elf": "0xa2d3a4",
+        "load": "x8, [sp, #0x1648]"
+      },
+      "stack_type": {
+        "stype": 1000586000,
+        "name": "VkPhysicalDeviceVideoMaintenance2FeaturesKHR",
+        "offset_from_entry_sp": -4784,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34b98",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d558",
+        "load_elf": "0xa2d554",
+        "load": "x8, [sp, #0xf88]"
+      },
+      "stack_type": {
+        "stype": 1000519001,
+        "name": "VkPhysicalDeviceCubicWeightsFeaturesQCOM",
+        "offset_from_entry_sp": -6512,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34ba0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d14c",
+        "load_elf": "0xa2d148",
+        "load": "x8, [sp, #0x20e8]"
+      },
+      "stack_type": {
+        "stype": 1000347000,
+        "name": "VkPhysicalDeviceRayTracingPipelineFeaturesKHR",
+        "offset_from_entry_sp": -2064,
+        "size": 40
+      }
+    },
+    {
+      "return_elf": "0xa34ba8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c618",
+        "load_elf": "0xa2c614",
+        "load": "x8, [sp, #0xdb8]"
+      },
+      "stack_type": {
+        "stype": 1000272000,
+        "name": "VkPhysicalDeviceMapMemoryPlacedFeaturesEXT",
+        "offset_from_entry_sp": -6976,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34bb0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c724",
+        "load_elf": "0xa2c720",
+        "load": "x8, [sp, #0x1f18]"
+      },
+      "stack_type": {
+        "stype": 1000116000,
+        "name": "VkPhysicalDevicePerformanceQueryFeaturesKHR",
+        "offset_from_entry_sp": -2528,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34bb8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c350",
+        "load_elf": "0xa2c34c",
+        "load": "x8, [sp, #0x1ff0]"
+      },
+      "stack_type": {
+        "stype": 1000412000,
+        "name": "VkPhysicalDevicePageableDeviceLocalMemoryFeaturesEXT",
+        "offset_from_entry_sp": -2312,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34bc0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2de84",
+        "load_elf": "0xa2de80",
+        "load": "x8, [sp, #0x8d8]"
+      },
+      "stack_type": {
+        "stype": 1000672000,
+        "name": "VkPhysicalDeviceShaderOCPMicroscalingTypesFeaturesEXT",
+        "offset_from_entry_sp": -8224,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34bc8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2da64",
+        "load_elf": "0xa2da60",
+        "load": "x8, [sp, #0x2530]"
+      },
+      "stack_type": {
+        "stype": 1000574000,
+        "name": "VkPhysicalDeviceMaintenance8FeaturesKHR",
+        "offset_from_entry_sp": -968,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34bd0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c268",
+        "load_elf": "0xa2c264",
+        "load": "x8, [sp, #0x1fa8]"
+      },
+      "stack_type": {
+        "stype": 1000244000,
+        "name": "VkPhysicalDeviceBufferDeviceAddressFeaturesEXT",
+        "offset_from_entry_sp": -2384,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34bd8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dacc",
+        "load_elf": "0xa2dac8",
+        "load": "x8, [sp, #0xbf0]"
+      },
+      "stack_type": {
+        "stype": 1000611000,
+        "name": "VkPhysicalDeviceFragmentDensityMapLayeredFeaturesVALVE",
+        "offset_from_entry_sp": -7432,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34be0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c3b8",
+        "load_elf": "0xa2c3b4",
+        "load": "x8, [sp, #0x1278]"
+      },
+      "stack_type": {
+        "stype": 1000440000,
+        "name": "VkPhysicalDeviceImageProcessingFeaturesQCOM",
+        "offset_from_entry_sp": -5760,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34be8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d51c",
+        "load_elf": "0xa2d518",
+        "load": "x8, [sp, #0xaf8]"
+      },
+      "stack_type": {
+        "stype": 1000567000,
+        "name": "VkPhysicalDeviceShaderFloat8FeaturesEXT",
+        "offset_from_entry_sp": -7680,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34bf0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d754",
+        "load_elf": "0xa2d750",
+        "load": "x8, [sp, #0x1760]"
+      },
+      "stack_type": {
+        "stype": 1000558000,
+        "name": "VkPhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR",
+        "offset_from_entry_sp": -4504,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34bf8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c7d0",
+        "load_elf": "0xa2c7cc",
+        "load": "x8, [sp, #0x990]"
+      },
+      "stack_type": {
+        "stype": 1000135009,
+        "name": "VkPhysicalDeviceDescriptorHeapFeaturesEXT",
+        "offset_from_entry_sp": -8040,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c00",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d978",
+        "load_elf": "0xa2d974",
+        "load": "x8, [sp, #0xb68]"
+      },
+      "stack_type": {
+        "stype": 1000609000,
+        "name": "VkPhysicalDeviceFormatPackFeaturesARM",
+        "offset_from_entry_sp": -7568,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c08",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d6d0",
+        "load_elf": "0xa2d6cc",
+        "load": "x8, [sp, #0xa20]"
+      },
+      "stack_type": {
+        "stype": 1000605000,
+        "name": "VkPhysicalDevicePerformanceCountersByRegionFeaturesARM",
+        "offset_from_entry_sp": -7896,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c10",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d81c",
+        "load_elf": "0xa2d818",
+        "load": "x8, [sp, #0x2548]"
+      },
+      "stack_type": {
+        "stype": 1000562000,
+        "name": "VkPhysicalDeviceMaintenance7FeaturesKHR",
+        "offset_from_entry_sp": -944,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c18",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c6dc",
+        "load_elf": "0xa2c6d8",
+        "load": "x8, [sp, #0x2488]"
+      },
+      "stack_type": {
+        "stype": 1000173000,
+        "name": "VkPhysicalDeviceElapsedTimerQueryFeaturesQCOM",
+        "offset_from_entry_sp": -1136,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c20",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c2a8",
+        "load_elf": "0xa2c2a4",
+        "load": "x8, [sp, #0x23a0]"
+      },
+      "stack_type": {
+        "stype": 1000081001,
+        "name": "VkPhysicalDeviceConditionalRenderingFeaturesEXT",
+        "offset_from_entry_sp": -1368,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c28",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d018",
+        "load_elf": "0xa2d014",
+        "load": "x8, [sp, #0x1198]"
+      },
+      "stack_type": {
+        "stype": 1000497000,
+        "name": "VkPhysicalDeviceShaderCoreBuiltinsFeaturesARM",
+        "offset_from_entry_sp": -5984,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c30",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c48c",
+        "load_elf": "0xa2c488",
+        "load": "x8, [sp, #0x1b58]"
+      },
+      "stack_type": {
+        "stype": 1000411000,
+        "name": "VkPhysicalDeviceBorderColorSwizzleFeaturesEXT",
+        "offset_from_entry_sp": -3488,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c38",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c1fc",
+        "load_elf": "0xa2c1f8",
+        "load": "x8, [sp, #0x2658]"
+      },
+      "stack_type": {
+        "stype": 1000208000,
+        "name": "VkPhysicalDevicePresentTimingFeaturesEXT",
+        "offset_from_entry_sp": -672,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34c40",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c788",
+        "load_elf": "0xa2c784",
+        "load": "x8, [sp, #0x1ed0]"
+      },
+      "stack_type": {
+        "stype": 1000181000,
+        "name": "VkPhysicalDeviceShaderClockFeaturesKHR",
+        "offset_from_entry_sp": -2600,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c48",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c9f0",
+        "load_elf": "0xa2c9ec",
+        "load": "x8, [sp, #0x16a8]"
+      },
+      "stack_type": {
+        "stype": 1000376000,
+        "name": "VkPhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT",
+        "offset_from_entry_sp": -4688,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c50",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c80c",
+        "load_elf": "0xa2c808",
+        "load": "x8, [sp, #0xc58]"
+      },
+      "stack_type": {
+        "stype": 1000491000,
+        "name": "VkPhysicalDeviceCooperativeVectorFeaturesNV",
+        "offset_from_entry_sp": -7328,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c58",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c288",
+        "load_elf": "0xa2c284",
+        "load": "x8, [sp, #0xac8]"
+      },
+      "stack_type": {
+        "stype": 1000507006,
+        "name": "VkPhysicalDeviceDataGraphFeaturesARM",
+        "offset_from_entry_sp": -7728,
+        "size": 40
+      }
+    },
+    {
+      "return_elf": "0xa34c60",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c954",
+        "load_elf": "0xa2c950",
+        "load": "x8, [sp, #0xd98]"
+      },
+      "stack_type": {
+        "stype": 1000141000,
+        "name": "VkPhysicalDeviceShaderBfloat16FeaturesKHR",
+        "offset_from_entry_sp": -7008,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34c68",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c4ac",
+        "load_elf": "0xa2c4a8",
+        "load": "x8, [sp, #0x10a0]"
+      },
+      "stack_type": {
+        "stype": 1000481000,
+        "name": "VkPhysicalDeviceRayTracingPositionFetchFeaturesKHR",
+        "offset_from_entry_sp": -6232,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c70",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cff4",
+        "load_elf": "0xa2cff0",
+        "load": "x8, [sp, #0x18f8]"
+      },
+      "stack_type": {
+        "stype": 1000234000,
+        "name": "VkPhysicalDeviceShaderImageAtomicInt64FeaturesEXT",
+        "offset_from_entry_sp": -4096,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c78",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d4dc",
+        "load_elf": "0xa2d4d8",
+        "load": "x8, [sp, #0xd68]"
+      },
+      "stack_type": {
+        "stype": 1000559000,
+        "name": "VkPhysicalDeviceCommandBufferInheritanceFeaturesNV",
+        "offset_from_entry_sp": -7056,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c80",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2ccd0",
+        "load_elf": "0xa2cccc",
+        "load": "x8, [sp, #0x1910]"
+      },
+      "stack_type": {
+        "stype": 1000404000,
+        "name": "VkPhysicalDeviceClusterCullingShaderFeaturesHUAWEI",
+        "offset_from_entry_sp": -4072,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c88",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2ce44",
+        "load_elf": "0xa2ce40",
+        "load": "x8, [sp, #0xdf8]"
+      },
+      "stack_type": {
+        "stype": 1000235000,
+        "name": "VkPhysicalDeviceShaderQuadControlFeaturesKHR",
+        "offset_from_entry_sp": -6912,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c90",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c768",
+        "load_elf": "0xa2c764",
+        "load": "x8, [sp, #0xa80]"
+      },
+      "stack_type": {
+        "stype": 1000387000,
+        "name": "VkPhysicalDeviceShaderUntypedPointersFeaturesKHR",
+        "offset_from_entry_sp": -7800,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34c98",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c1d8",
+        "load_elf": "0xa2c1d4",
+        "load": "x8, [sp, #0x1310]"
+      },
+      "stack_type": {
+        "stype": 1000397000,
+        "name": "VkPhysicalDeviceDisplacementMicromapFeaturesNV",
+        "offset_from_entry_sp": -5608,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34ca0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dc78",
+        "load_elf": "0xa2dc74",
+        "load": "x8, [sp, #0xa08]"
+      },
+      "stack_type": {
+        "stype": 1000645001,
+        "name": "VkPhysicalDeviceComputeOccupancyPriorityFeaturesNV",
+        "offset_from_entry_sp": -7920,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34ca8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d12c",
+        "load_elf": "0xa2d128",
+        "load": "x8, [sp, #0x17d8]"
+      },
+      "stack_type": {
+        "stype": 1000628000,
+        "name": "VkPhysicalDeviceCustomResolveFeaturesEXT",
+        "offset_from_entry_sp": -4384,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34cb0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c9b4",
+        "load_elf": "0xa2c9b0",
+        "load": "x8, [sp, #0x1838]"
+      },
+      "stack_type": {
+        "stype": 1000495000,
+        "name": "VkPhysicalDeviceLegacyVertexAttributesFeaturesEXT",
+        "offset_from_entry_sp": -4288,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34cb8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c2c8",
+        "load_elf": "0xa2c2c4",
+        "load": "x8, [sp, #0x1328]"
+      },
+      "stack_type": {
+        "stype": 1000396005,
+        "name": "VkPhysicalDeviceOpacityMicromapFeaturesEXT",
+        "offset_from_entry_sp": -5584,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34cc0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d03c",
+        "load_elf": "0xa2d038",
+        "load": "x8, [sp, #0x22a8]"
+      },
+      "stack_type": {
+        "stype": 1000067001,
+        "name": "VkPhysicalDeviceASTCDecodeFeaturesEXT",
+        "offset_from_entry_sp": -1616,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34cc8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d8cc",
+        "load_elf": "0xa2d8c8",
+        "load": "x8, [sp, #0x1350]"
+      },
+      "stack_type": {
+        "stype": 1000623000,
+        "name": "VkPhysicalDeviceOpacityMicromapFeaturesKHR",
+        "offset_from_entry_sp": -5544,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34cd0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2ccac",
+        "load_elf": "0xa2cca8",
+        "load": "x8, [sp, #0x10d0]"
+      },
+      "stack_type": {
+        "stype": 1000492000,
+        "name": "VkPhysicalDeviceExtendedSparseAddressSpaceFeaturesNV",
+        "offset_from_entry_sp": -6184,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34cd8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cf50",
+        "load_elf": "0xa2cf4c",
+        "load": "x8, [sp, #0x1150]"
+      },
+      "stack_type": {
+        "stype": 1000504000,
+        "name": "VkPhysicalDeviceInternallySynchronizedQueuesFeaturesKHR",
+        "offset_from_entry_sp": -6056,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34ce0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dbd4",
+        "load_elf": "0xa2dbd0",
+        "load": "x8, [sp, #0xcd0]"
+      },
+      "stack_type": {
+        "stype": 1000689000,
+        "name": "VkPhysicalDeviceCooperativeMatrixDecodeVectorFeaturesNV",
+        "offset_from_entry_sp": -7208,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34ce8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2ce80",
+        "load_elf": "0xa2ce7c",
+        "load": "x8, [sp, #0x1048]"
+      },
+      "stack_type": {
+        "stype": 1000395000,
+        "name": "VkPhysicalDeviceShaderTileImageFeaturesEXT",
+        "offset_from_entry_sp": -6320,
+        "size": 32
+      }
+    },
+    {
+      "return_elf": "0xa34cf0",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2d060",
+        "load_elf": "0xa2d05c",
+        "load": "x8, [sp, #0x1880]"
+      },
+      "stack_type": {
+        "stype": 1000393000,
+        "name": "VkPhysicalDeviceImage2DViewOf3DFeaturesEXT",
+        "offset_from_entry_sp": -4216,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34cf8",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2dd1c",
+        "load_elf": "0xa2dd18",
+        "load": "x8, [sp, #0x1808]"
+      },
+      "stack_type": {
+        "stype": 1000355000,
+        "name": "VkPhysicalDeviceDepthClipControlFeaturesEXT",
+        "offset_from_entry_sp": -4336,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34d00",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c4f0",
+        "load_elf": "0xa2c4ec",
+        "load": "x8, [sp, #0x1380]"
+      },
+      "stack_type": {
+        "stype": 1000437000,
+        "name": "VkPhysicalDeviceImageCompressionControlSwapchainFeaturesEXT",
+        "offset_from_entry_sp": -5496,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34d08",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cdbc",
+        "load_elf": "0xa2cdb8",
+        "load": "x8, [sp, #0x25c0]"
+      },
+      "stack_type": {
+        "stype": 1000392000,
+        "name": "VkPhysicalDeviceMultiDrawFeaturesEXT",
+        "offset_from_entry_sp": -824,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34d10",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cbe4",
+        "load_elf": "0xa2cbe0",
+        "load": "x8, [sp, #0x1368]"
+      },
+      "stack_type": {
+        "stype": 1000458000,
+        "name": "VkPhysicalDeviceSubpassMergeFeedbackFeaturesEXT",
+        "offset_from_entry_sp": -5520,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34d18",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2cf90",
+        "load_elf": "0xa2cf8c",
+        "load": "x8, [sp, #0x1488]"
+      },
+      "stack_type": {
+        "stype": 1000391000,
+        "name": "VkPhysicalDeviceImageViewMinLodFeaturesEXT",
+        "offset_from_entry_sp": -5232,
+        "size": 24
+      }
+    },
+    {
+      "return_elf": "0xa34d20",
+      "result": -13,
+      "guard": {
+        "branch_elf": "0xa2c910",
+        "load_elf": "0xa2c90c",
+        "load": "x8, [sp, #0xa68]"
+      },
+      "stack_type": {
+        "stype": 1000390000,
+        "name": "VkPhysicalDeviceVideoEncodeRgbConversionFeaturesVALVE",
+        "offset_from_entry_sp": -7824,
+        "size": 24
+      }
+    }
+  ],
+  "unclassified": [],
+  "limits": [
+    "Classify residual checker blocks without faking successful execution.",
+    "",
+    "Duplicate diagnostics are interpreted with pure name/log abstractions. Error",
+    "post-call jumps and internal stack-link cycle guards are classified statically;",
+    "we do not corrupt pointers or pretend those paths were exercised."
+  ],
+  "unobserved_classes": {
+    "return epilogue after __vk_errorf (model deliberately stopped at diagnostic)": 605,
+    "internal query-stack pNext cycle guard; source has VK_ERROR_UNKNOWN": 274,
+    "same cycle-guard return epilogue": 274
+  },
+  "raw_report": {
+    "path": "native-complete/rutabaga-remaining-two-hours-20261027/checker-residual-classification.json",
+    "bytes": 651683,
+    "sha256": "f0d32b4f05f24f56fb11be865cf6c7249df24e5111902d77590e42d900e652b4"
+  }
+}

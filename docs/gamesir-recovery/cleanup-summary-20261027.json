@@ -1,0 +1,388 @@
+{
+  "applied": true,
+  "applied_utc": "2026-10-26T23:18:38.927551+00:00",
+  "baseline": {
+    "path": "source-baseline-candidate",
+    "exists": true,
+    "baseline_commit": "afec90a36cc9e433bc4c95b3bd6f42dda960c77b",
+    "baseline_tree": "8c7c5108734d9d6af12a9517b4c368d81c2bf56f",
+    "tracked_entries": 18368,
+    "candidate_entries": 18373,
+    "logical_bytes": 463959505,
+    "finder_extras": [
+      ".DS_Store",
+      "src/.DS_Store",
+      "src/gallium/.DS_Store",
+      "subprojects/.DS_Store",
+      "subprojects/libxml2-2.11.6/.DS_Store"
+    ],
+    "differences": [],
+    "missing": [],
+    "inventory_sha256": "d4332137d949b12358987073209b997547334398298b5ab50a9168a6058e521e",
+    "removable": true
+  },
+  "removed": [
+    {
+      "path": "source-baseline-candidate",
+      "bytes": 463959505,
+      "reason": "Verified exact tracked baseline plus Finder extras; recoverable from Git root/tree"
+    },
+    {
+      "path": "native-complete/decomp-gamesir-retry",
+      "bytes": 4121,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/decomp-gamesir-conservative",
+      "bytes": 630847,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/decomp-gamesir-contracts",
+      "bytes": 482577,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/termination-parent-output",
+      "bytes": 71476,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/feature-named-output",
+      "bytes": 457,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/c-only-retry-output",
+      "bytes": 1243,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/final-native-prefix-output",
+      "bytes": 457,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/properties-named-output",
+      "bytes": 457,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/barrier-dispatch-output",
+      "bytes": 1207,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/remaining-tail-output",
+      "bytes": 9030,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/bounded-tailcall-output",
+      "bytes": 40452,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/packed-format-output",
+      "bytes": 1882,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/combined-final-output",
+      "bytes": 169,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/vtn-parent-output",
+      "bytes": 8717,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/vtn-failure-output",
+      "bytes": 588,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/physical-typed-output",
+      "bytes": 457,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/leaf-path-output",
+      "bytes": 702,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/fp-epilogue-output",
+      "bytes": 611,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/device-named-output",
+      "bytes": 457,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/low-transform-output",
+      "bytes": 4207,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/device-named-final-output",
+      "bytes": 457,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-remaining-two-hours-20261027/checker-typed-final-output",
+      "bytes": 391,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-remaining-two-hours-20261027/small-style-output",
+      "bytes": 112,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-remaining-two-hours-20261027/checker-typed-output",
+      "bytes": 391,
+      "reason": "Superseded export runs; selected C/data and compact reports retained"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/barrier-dispatch.log",
+      "bytes": 8678,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/barrier-flow-info.log",
+      "bytes": 9048,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/bounded-tailcall.log",
+      "bytes": 8606,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/c-only-retry.log",
+      "bytes": 7555,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/combined-final.log",
+      "bytes": 12126,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/device-named-final.log",
+      "bytes": 7149,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/device-named.log",
+      "bytes": 7404,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/extension-ssa-data-only.log",
+      "bytes": 7781,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/extension-ssa.log",
+      "bytes": 7781,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/feature-named.log",
+      "bytes": 7218,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/feature-ssa.log",
+      "bytes": 6260,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/final-native-prefix.log",
+      "bytes": 7299,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/fp-epilogue.log",
+      "bytes": 12122,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/leaf-path.log",
+      "bytes": 12116,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/low-transform.log",
+      "bytes": 8737,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/packed-format.log",
+      "bytes": 8431,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/physical-typed-initial-error.log",
+      "bytes": 9768,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/physical-typed-short-prefix.log",
+      "bytes": 8763,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/physical-typed.log",
+      "bytes": 8763,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/properties-named.log",
+      "bytes": 7296,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/remaining-tail.log",
+      "bytes": 12006,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/termination-parent.log",
+      "bytes": 12040,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/vtn-failure.log",
+      "bytes": 9089,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-two-hours-20261027/vtn-parent.log",
+      "bytes": 9089,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-remaining-two-hours-20261027/checker-typed-final.log",
+      "bytes": 7158,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-remaining-two-hours-20261027/checker-typed.log",
+      "bytes": 7151,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "native-complete/rutabaga-remaining-two-hours-20261027/small-style.log",
+      "bytes": 5549,
+      "reason": "Verbose run log condensed into diagnostics"
+    },
+    {
+      "path": "scripts/NativeAlternateCStyle.java",
+      "bytes": 1744,
+      "reason": "Failed-only retry helper; strategy/results retained in compact report; no extracted source data"
+    },
+    {
+      "path": "scripts/NativeCOnlyRetry.java",
+      "bytes": 1901,
+      "reason": "Failed-only retry helper; strategy/results retained in compact report; no extracted source data"
+    },
+    {
+      "path": "scripts/NativeLowTransformRetry.java",
+      "bytes": 3544,
+      "reason": "Failed-only retry helper; strategy/results retained in compact report; no extracted source data"
+    },
+    {
+      "path": "native-complete/rutabaga-remaining-two-hours-20261027/checker-single-route.json",
+      "bytes": 2777,
+      "reason": "Temporary/superseded intermediate; final all-route/source-closure evidence retained"
+    },
+    {
+      "path": "native-complete/rutabaga-remaining-two-hours-20261027/property-getter-remaining-sites.json",
+      "bytes": 300,
+      "reason": "Temporary/superseded intermediate; final all-route/source-closure evidence retained"
+    },
+    {
+      "path": "scripts/__pycache__",
+      "bytes": 47708,
+      "reason": "Rebuildable analysis cache"
+    },
+    {
+      "path": "native-complete/ghidra-cache",
+      "bytes": 104,
+      "reason": "Rebuildable analysis cache"
+    },
+    {
+      "path": "native-complete/ghidra-settings/ghidra/ghidra_12.1.4_PUBLIC/osgi/felixcache",
+      "bytes": 378,
+      "reason": "Rebuildable analysis cache"
+    },
+    {
+      "path": "native-complete/ghidra-settings/aydar.kamaltdinov-ghidra/ghidra_12.1.4_PUBLIC/osgi/felixcache",
+      "bytes": 414,
+      "reason": "Rebuildable analysis cache"
+    }
+  ],
+  "finder_removed": [
+    {
+      "path": ".DS_Store",
+      "bytes": 6148
+    },
+    {
+      "path": "history/.DS_Store",
+      "bytes": 6148
+    },
+    {
+      "path": "mesa-gamesir-recovered/subprojects/.DS_Store",
+      "bytes": 6148
+    },
+    {
+      "path": "mesa-gamesir-recovered/subprojects/libxml2-2.11.6/.DS_Store",
+      "bytes": 6148
+    },
+    {
+      "path": "native-complete/.DS_Store",
+      "bytes": 6148
+    },
+    {
+      "path": "native-complete/ghidra-native/.DS_Store",
+      "bytes": 8196
+    },
+    {
+      "path": "native-complete/ghidra-native/Ghidra/.DS_Store",
+      "bytes": 6148
+    }
+  ],
+  "logical_bytes_removed": 465559907,
+  "superseded_run_directories": 24,
+  "verbose_logs": 27,
+  "canonical_C_exports": 7683,
+  "failed_C_exports": 8,
+  "outside_label_cases": 3,
+  "all_preferred_C_files_canonical_and_hash_verified": true,
+  "original_binary_hash_verified": true,
+  "protected": [
+    "originals/",
+    "device/",
+    "history/",
+    "mesa-gamesir-recovered/ tracked source",
+    "native-complete/decomp-gamesir/",
+    "native-complete/decomp-upstream/",
+    "full verified ARM listings",
+    "unique SSA and transfer evidence"
+  ],
+  "full_report": {
+    "path": "native-complete/rutabaga-remaining-two-hours-20261027/cleanup-applied.json",
+    "sha256": "030ad9394ce391d71e77c75e1dacfa136c0bad3a088f17aec6e06b0b0a3bee30"
+  },
+  "limits": [
+    "Logical file bytes, not a guarantee of physical APFS space freed.",
+    "Historical report/status text retained compactly; superseded C/verbose launcher logs are removed.",
+    "No driver build, device action, new archive or source-history deletion."
+  ]
+}

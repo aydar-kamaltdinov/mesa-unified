@@ -1,0 +1,14 @@
+{
+  "artifact": "docs/gamesir-recovery/reconstructed/feature-checker.c",
+  "sha256": "ef583fee9c768ab6e9bfbca44437db93e73a6c55395fd94ae43be4778ee00996",
+  "field_records": 715,
+  "type_descriptions": 275,
+  "separate_core_description": true,
+  "original_extension_table_entries": 431,
+  "query_or_driver_replacement": false,
+  "build": false,
+  "limits": [
+    "Readable original data/kernel reconstruction; current generic Mesa generator is retained.",
+    "Full API/query-chain/callback ownership and arbitrary runtime behavior remain for final validation."
+  ]
+}
