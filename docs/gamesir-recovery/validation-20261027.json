@@ -176,23 +176,23 @@
     },
     {
       "path": "src/freedreno/fdl/fd6_view.cc",
-      "status": "pending"
+      "status": "source delta reviewed; integrated validation pending"
     },
     {
       "path": "src/freedreno/fdl/freedreno_layout.h",
-      "status": "pending"
+      "status": "source delta reviewed; integrated validation pending"
     },
     {
       "path": "src/freedreno/ir3/disasm-a3xx.c",
-      "status": "pending"
+      "status": "source delta reviewed; integrated validation pending"
     },
     {
       "path": "src/freedreno/ir3/instr-a3xx.h",
-      "status": "pending"
+      "status": "source delta reviewed; integrated validation pending"
     },
     {
       "path": "src/freedreno/ir3/ir3.c",
-      "status": "pending"
+      "status": "source delta reviewed; integrated validation pending"
     },
     {
       "path": "src/freedreno/ir3/ir3.h",
@@ -204,7 +204,7 @@
     },
     {
       "path": "src/freedreno/ir3/ir3_compiler.c",
-      "status": "pending"
+      "status": "source delta reviewed; integrated validation pending"
     },
     {
       "path": "src/freedreno/ir3/ir3_compiler.h",
@@ -244,7 +244,7 @@
     },
     {
       "path": "src/freedreno/ir3/ir3_nir.h",
-      "status": "pending"
+      "status": "source delta reviewed; integrated validation pending"
     },
     {
       "path": "src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c",
@@ -328,7 +328,7 @@
     },
     {
       "path": "src/freedreno/vulkan/tu_acceleration_structure.cc",
-      "status": "pending"
+      "status": "source delta reviewed; integrated validation pending"
     },
     {
       "path": "src/freedreno/vulkan/tu_autotune.cc",
@@ -340,7 +340,7 @@
     },
     {
       "path": "src/freedreno/vulkan/tu_clear_blit.h",
-      "status": "pending"
+      "status": "source delta reviewed; integrated validation pending"
     },
     {
       "path": "src/freedreno/vulkan/tu_cmd_buffer.cc",
@@ -348,7 +348,7 @@
     },
     {
       "path": "src/freedreno/vulkan/tu_cmd_buffer.h",
-      "status": "pending"
+      "status": "source delta reviewed; integrated validation pending"
     },
     {
       "path": "src/freedreno/vulkan/tu_copy_memory_indirect.cc",
@@ -452,7 +452,7 @@
     },
     {
       "path": "src/freedreno/vulkan/tu_nir_mesh.h",
-      "status": "pending"
+      "status": "source delta reviewed; integrated validation pending"
     },
     {
       "path": "src/freedreno/vulkan/tu_nir_resolve.c",
@@ -468,7 +468,7 @@
     },
     {
       "path": "src/freedreno/vulkan/tu_pass.h",
-      "status": "pending"
+      "status": "source delta reviewed; integrated validation pending"
     },
     {
       "path": "src/freedreno/vulkan/tu_pipeline.cc",
@@ -660,6 +660,25 @@
       "id": "CAND-SPARSE-INTERFACE",
       "scope": "sparse FS/LDLV/prefetch/producer-map address domains",
       "state": "Compiler and helper source read; cross-path and limit validation still in progress."
+    },
+    {
+      "id": "CAND-PREFETCH-REMAP",
+      "scope": "META_TEX_PREFETCH input offsets across mesh/per-vertex/barycentric remapping",
+      "state": "coord_offset/emit_tex retain logical offsets, while setup_input can use physical mesh locations and late compaction changes ordinary locations. The original inspected helpers also retain logical offsets; no native-equivalent remap or hardware-domain correction has been proved. Check paired-coordinate contiguity, prefetch-only live inputs and basis allocation before any patch.",
+      "native_anchors": [
+        "ELF0xacb638 coord_offset",
+        "ELF0xaae20c fixup_per_vertex_input_inlocs",
+        "ELF0xaae4f4 fixup_barycentric_coord_inlocs"
+      ],
+      "source_anchors": [
+        "ir3_context.c prefetch eligibility (A830 supports it; A840/A850 gen2 disable it)",
+        "ir3_compiler_nir.c emit_tex / fixup_per_vertex_input_inlocs / fixup_barycentric_coord_inlocs / collect_tex_prefetches"
+      ],
+      "native_export_labels": [
+        "bcb638",
+        "bae20c",
+        "bae4f4"
+      ]
     }
   ],
   "next_checks": [
@@ -667,5 +686,13 @@
     "Finish GPU-state/resolve/FDM/secondary/binning/preemption and synchronization review, including earlier stage66 baseline paths.",
     "Complete feature/SDK/build-wiring consistency and host cache/memory failure paths without building.",
     "Compiled NIR/ISA/Vulkan/GPU/game/performance checks require a later user-authorized build/test phase."
-  ]
+  ],
+  "first_fix_commit": "7a8a69bfba5",
+  "syntax_checks": {
+    "changed_python_sources_parsed": 4,
+    "changed_XML_and_driconf_parsed": 6,
+    "git_diff_check": "passed",
+    "compiled": false,
+    "generators_executed": false
+  }
 }

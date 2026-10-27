@@ -4,7 +4,7 @@ Previous continuation snapshot before validation (2026-10-27): policy0x4753381d,
 
 # GameSir reconstruction — remaining work
 
-Updated2026-10-27: branch `rutabaga`, policy **0x4753381d, UNBUILT**. The six source transfers through503ca36a6db are followed by the three source bundles described above. The machine listing covers all sized code; recovered C has7683/7691 successful exports,8failures and3boundary-label cases. These are analysis quality counts, not behavioral coverage.
+Pre-validation snapshot2026-10-27: branch `rutabaga`, policy **0x4753381d, UNBUILT**. The six source transfers through503ca36a6db are followed by the three source bundles described above. The machine listing covers all sized code; recovered C has7683/7691 successful exports,8failures and3boundary-label cases. These are analysis quality counts, not behavioral coverage.
 
 The restored original getter maps contain274feature selectors/660member records/571physical bytes; property routes include122strict structures,659member records,118core fields and649distinct contiguous physical fields. The original getter map records four null-query-only cases; the separate property-caller-array-contracts.json now recovers their bounded nonempty-buffer semantics in6routes/620static cases. Arbitrary aliasing/lifetime and real initialization remain deferred. Original static device tables match121named properties and18header values on55common A6–A8 records; all9A8 raw magic sequences match including order. No extra profile defaults or feature activation inferred.
 
