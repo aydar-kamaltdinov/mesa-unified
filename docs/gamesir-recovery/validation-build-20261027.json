@@ -96,5 +96,25 @@
     "device-smoke-gmem.log": "c3ba311ffcf7bcbc7ace613c2da0dcfeaf24a5f3863a03d8d45fb17deaaa7ff4",
     "host-ir3-disasm.log": "b261f72ba1d0f25f75f735975f7e9754e239747740da5893ae017ee534c75c70",
     "host-ir3-delay.log": "929fff013d5e651ccb9491c6550ffe7cbb770abe18681125e0f73cec2562c3dd"
+  },
+  "artifact": {
+    "source_commit": "f71bc2ebb2c",
+    "test_commit": "0c0c26d492a",
+    "so_sha256": "cc5d9ca0b9e448a0b9c893d7ee0cbcf7b1ec00339b05db4b02dc425d102c2fe6",
+    "so_size": 16800776,
+    "zip_sha256": "a2b12b1f70fd0437f46da956b8c1943524ca7b9872a2bdbbc71f9d7b45fbf698",
+    "zip_size": 3250955,
+    "device_zip": "/sdcard/Download/AK-Turnip-1.17r-Gamesir-audit-f71bc2eb.zip",
+    "slot": "/data/user/0/com.xiaoji.egggame/files/usr/home/components/turnip_v26.0.0_R8_b1/libvulkan_freedreno.so",
+    "backup": "/sdcard/Download/gamehub-before-rutabaga-audit-20261027.so",
+    "previous_slot_sha256": "ba169139fd2949eccf986b44989bf31c805ea0f3c2d3152e00e31cfd870bfb69",
+    "deployed_utc": "2026-10-27T13:45:11.530139+00:00",
+    "deployment_complete": true,
+    "slot_metadata": {
+      "uid": 10146,
+      "gid": 10146,
+      "mode": "0755",
+      "selinux": "u:object_r:app_data_file:s0:c146,c256,c512,c768"
+    }
   }
 }
