@@ -59,6 +59,36 @@ store_cmat(nir_builder *b, nir_src dst, nir_def *value)
    nir_store_deref(b, nir_src_as_deref(dst), value, ~0u);
 }
 
+static bool
+lower_saturating_muladd(nir_builder *b, nir_intrinsic_instr *intr, void *data)
+{
+   if (intr->intrinsic != nir_intrinsic_cmat_muladd ||
+       !nir_intrinsic_saturate(intr))
+      return false;
+
+   const struct glsl_cmat_description *desc = cmat_desc(intr->src[0]);
+   assert(glsl_base_type_is_integer(desc->element_type));
+   b->cursor = nir_before_instr(&intr->instr);
+   nir_variable *tmp = nir_local_variable_create(
+      b->impl, nir_src_as_deref(intr->src[0])->type, "cmat product");
+   nir_deref_instr *product = nir_build_deref_var(b, tmp);
+   nir_cmat_construct(b, &product->def,
+                       nir_imm_zero(b, 1, glsl_base_type_bit_size(desc->element_type)));
+   nir_cmat_muladd(b, &product->def, intr->src[1].ssa, intr->src[2].ssa,
+                   &product->def,
+                   .cmat_signed_mask = nir_intrinsic_cmat_signed_mask(intr));
+   /* SPV_KHR_cooperative_matrix saturates A*B + C, not each product or
+    * each partial K tile. Split the full product before adding C once.
+    * Overflow in the intermediate product is undefined for this operation.
+    */
+   nir_cmat_binary_op(b, intr->src[0].ssa, &product->def, intr->src[3].ssa,
+                      .alu_op = (nir_intrinsic_cmat_signed_mask(intr) &
+                                 NIR_CMAT_RESULT_SIGNED) ?
+                         nir_op_iadd_sat : nir_op_uadd_sat);
+   nir_instr_remove(&intr->instr);
+   return true;
+}
+
 static void
 cmat_barrier(nir_builder *b)
 {
@@ -81,6 +111,7 @@ cmat_scratch(nir_builder *b, struct lower_cmat_ctx *ctx, nir_def *index)
 static nir_def *
 lower_muladd(nir_builder *b, struct lower_cmat_ctx *ctx, nir_intrinsic_instr *intr)
 {
+   assert(!nir_intrinsic_saturate(intr));
    const struct glsl_cmat_description *desc = cmat_desc(intr->src[0]);
    assert(desc->rows == 8 && desc->cols == 8);
    nir_def *a = load_cmat(b, intr->src[1]);
@@ -119,9 +150,7 @@ lower_muladd(nir_builder *b, struct lower_cmat_ctx *ctx, nir_intrinsic_instr *in
          av = (sign & NIR_CMAT_A_SIGNED) ? nir_i2iN(b, av, bits) : nir_u2uN(b, av, bits);
          bv = (sign & NIR_CMAT_B_SIGNED) ? nir_i2iN(b, bv, bits) : nir_u2uN(b, bv, bits);
          nir_def *product = nir_imul(b, av, bv);
-         result = !nir_intrinsic_saturate(intr) ? nir_iadd(b, result, product) :
-            (sign & NIR_CMAT_C_SIGNED) ? nir_iadd_sat(b, result, product) :
-                                       nir_uadd_sat(b, result, product);
+         result = nir_iadd(b, result, product);
       } else {
          av = nir_f2fN(b, av, bits);
          bv = nir_f2fN(b, bv, bits);
@@ -233,7 +262,9 @@ tu_nir_lower_cooperative_matrix(nir_shader *shader)
    if (shader->info.stage != MESA_SHADER_COMPUTE || !shader->info.cs.has_cooperative_matrix)
       return false;
    const struct nir_lower_coopmat_args args = {8, 8, 8};
-   bool progress = nir_lower_cooperative_matrix_flexible_dimensions(shader, &args);
+   bool progress = nir_shader_intrinsics_pass(shader, lower_saturating_muladd,
+                                              nir_metadata_control_flow, NULL);
+   progress |= nir_lower_cooperative_matrix_flexible_dimensions(shader, &args);
    if (progress) {
       nir_opt_deref(shader);
       nir_opt_dce(shader);

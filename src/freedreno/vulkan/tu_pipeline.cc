@@ -1908,8 +1908,9 @@ tu_hash_shaders(unsigned char *hash,
     * mesh producer map needed to rebuild VPC state after deserialization.
     * AQE logical-group coordinates now use the recovered division policy.
     * A8 flat-bypass encoding now uses the recovered destination/SY policy.
+    * Cooperative-matrix lowering preserves C and saturates only the full sum.
     * Separate this schema even when a build-ID override is in use. */
-   const uint32_t stage_schema = 0x4753381d;
+   const uint32_t stage_schema = 0x4753381e;
    _mesa_blake3_update(&ctx, &stage_schema, sizeof(stage_schema));
    const bool sample_center = ir3_gamesir_sample_center_enabled();
    _mesa_blake3_update(&ctx, &sample_center, sizeof(sample_center));
@@ -1941,8 +1942,8 @@ tu_hash_compute(unsigned char *hash,
    _mesa_blake3_init(&ctx);
 
    /* Keep the coordinated compiler policy/schema key in sync with graphics
-    * and the IR3 cache, including AQE coordinate lowering and A8 flat bypass. */
-   const uint32_t stage_schema = 0x4753381d;
+    * and IR3, including corrected cooperative-matrix accumulation. */
+   const uint32_t stage_schema = 0x4753381e;
    _mesa_blake3_update(&ctx, &stage_schema, sizeof(stage_schema));
 
    if (layout)
@@ -2070,7 +2071,7 @@ tu_nir_shaders_deserialize(struct vk_pipeline_cache *cache,
       }
    }
 
-   if (blob->overrun) {
+   if (blob->overrun || blob->current != blob->end) {
       vk_pipeline_cache_object_unref(&dev->vk, &shaders->base);
       return NULL;
    }
@@ -2180,6 +2181,7 @@ tu_pipeline_builder_compile_shaders(struct tu_pipeline_builder *builder,
    nir_shader *nir[ARRAY_SIZE(stage_infos)] = { NULL };
    struct tu_shader *shaders[ARRAY_SIZE(stage_infos)] = { NULL };
    nir_shader *post_link_nir[ARRAY_SIZE(nir)] = { NULL };
+   struct tu_nir_shaders *nir_owners[ARRAY_SIZE(nir)] = { NULL };
    nir_shader *retained_nir[ARRAY_SIZE(nir)] = { NULL };
    char *nir_initial_disasm[ARRAY_SIZE(stage_infos)] = { NULL };
    bool cache_hit = false;
@@ -2601,6 +2603,7 @@ done:
            stage < ARRAY_SIZE(nir); stage = (mesa_shader_stage) (stage + 1)) {
          if (nir_shaders->nir[stage]) {
             post_link_nir[stage] = nir_shaders->nir[stage];
+            nir_owners[stage] = nir_shaders;
          }
       }
    }
@@ -2616,6 +2619,10 @@ done:
            stage = (mesa_shader_stage) (stage + 1)) {
          if (!post_link_nir[stage] && library->shaders[stage].nir) {
             post_link_nir[stage] = library->shaders[stage].nir;
+            nir_owners[stage] = library->shaders[stage].nir_owner ?
+               library->shaders[stage].nir_owner : library->nir_shaders;
+            assert(nir_owners[stage] &&
+                   nir_owners[stage]->nir[stage] == post_link_nir[stage]);
             keys[stage] = library->shaders[stage].key;
          }
 
@@ -2653,6 +2660,10 @@ done:
            stage < ARRAY_SIZE(library->shaders);
            stage = (mesa_shader_stage) (stage + 1)) {
          library->shaders[stage].nir = post_link_nir[stage];
+         if (nir_owners[stage] && nir_owners[stage] != nir_shaders) {
+            library->shaders[stage].nir_owner = nir_owners[stage];
+            vk_pipeline_cache_object_ref(&nir_owners[stage]->base);
+         }
          library->shaders[stage].key = keys[stage];
       }
    }
@@ -5158,6 +5169,12 @@ tu_pipeline_finish(struct tu_pipeline *pipeline,
       if (library->nir_shaders)
          vk_pipeline_cache_object_unref(&dev->vk,
                                         &library->nir_shaders->base);
+
+      for (unsigned i = 0; i < ARRAY_SIZE(library->shaders); i++) {
+         if (library->shaders[i].nir_owner)
+            vk_pipeline_cache_object_unref(&dev->vk,
+                                           &library->shaders[i].nir_owner->base);
+      }
 
       for (unsigned i = 0; i < library->num_sets; i++) {
          if (library->layouts[i])

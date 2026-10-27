@@ -526,10 +526,8 @@ format_list_has_uncompressed_format(
 static bool
 ak_e5_ubwc_enabled(void)
 {
-   static int enabled = -1;
-   if (enabled < 0)
-      enabled = TU_DEBUG(E5_UBWC) ||
-                debug_get_bool_option("TU_AK_E5_UBWC", false);
+   static const bool enabled = TU_DEBUG(E5_UBWC) ||
+      debug_get_bool_option("TU_AK_E5_UBWC", false);
    return enabled;
 }
 

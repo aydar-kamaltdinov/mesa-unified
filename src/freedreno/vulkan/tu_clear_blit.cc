@@ -2687,6 +2687,17 @@ tu_CmdCopyMemoryToImageIndirectKHR(
 
    for (uint32_t i = 0; i < info->copyCount; i++) {
       const VkImageSubresourceLayers *subres = &info->pImageSubresources[i];
+      /* This command uses array layers as slices for every 3D destination,
+       * independently of maintenance9/2D_ARRAY_COMPATIBLE. Resolve the
+       * remaining-layers sentinel against the mip's depth, not array_layers.
+       */
+      const uint32_t available_layers = image->vk.image_type == VK_IMAGE_TYPE_3D ?
+         u_minify(image->vk.extent.depth, subres->mipLevel) : image->vk.array_layers;
+      const uint32_t layers = subres->layerCount == VK_REMAINING_ARRAY_LAYERS ?
+         available_layers - subres->baseArrayLayer : subres->layerCount;
+      if (!layers)
+         continue;
+
       enum pipe_format dst_format = copy_format(image->vk.format, subres->aspectMask);
       enum pipe_format src_format = dst_format;
       if (image->vk.format == VK_FORMAT_D24_UNORM_S8_UINT &&
@@ -2703,8 +2714,6 @@ tu_CmdCopyMemoryToImageIndirectKHR(
 
       struct fdl6_view dst;
       tu_image_view_copy<CHIP>(&dst, image, dst_format, subres, 0);
-      const uint32_t layers = image->vk.image_type == VK_IMAGE_TYPE_3D ?
-         subres->layerCount : vk_image_subresource_layer_count(&image->vk, subres);
       const uint64_t address = info->copyAddressRange.address +
                                uint64_t(i) * info->copyAddressRange.stride;
       for (uint32_t layer = 0; layer < layers; layer++) {

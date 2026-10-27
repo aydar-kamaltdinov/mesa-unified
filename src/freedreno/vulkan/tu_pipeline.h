@@ -246,6 +246,10 @@ struct tu_graphics_lib_pipeline {
    struct tu_nir_shaders *nir_shaders;
    struct {
       nir_shader *nir;
+      /* Imported snapshots may outlive their source library and cache. NULL
+       * means this library's nir_shaders owns the snapshot instead.
+       */
+      struct tu_nir_shaders *nir_owner;
       struct tu_shader_key key;
    } shaders[MESA_SHADER_MESH_STAGES];
 

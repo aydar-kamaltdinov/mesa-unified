@@ -2,6 +2,7 @@
 
 #include "compiler/nir/nir.h"
 #include "ir3_nir.h"
+#include "util/set.h"
 
 /* Recovered from GameSir ELF 0xa93918, 0xa93b98 and 0xa93e3c.
  * Check the whole shader before moving anything: a late phi, texture lookup
@@ -24,12 +25,19 @@ is_varying_input(nir_instr *instr)
    }
 }
 
+struct varying_input_check {
+   nir_block *start;
+   struct set *checked;
+};
+
 static bool
 check_precondition_src(nir_src *src, void *data)
 {
-   nir_block *start = data;
+   struct varying_input_check *check = data;
    nir_instr *instr = nir_def_instr(src->ssa);
-   if (instr->block == start)
+   if (instr->block == check->start)
+      return true;
+   if (_mesa_set_search(check->checked, instr))
       return true;
 
    switch (instr->type) {
@@ -45,7 +53,13 @@ check_precondition_src(nir_src *src, void *data)
    default:
       return false;
    }
-   return nir_foreach_src(instr, check_precondition_src, start);
+   if (!nir_foreach_src(instr, check_precondition_src, check))
+      return false;
+
+   /* SSA dependency chains are DAGs, not trees. Rechecking a shared subtree
+    * for every use can grow exponentially even for a small shader.
+    */
+   return _mesa_set_add(check->checked, instr) != NULL;
 }
 
 static bool
@@ -65,15 +79,26 @@ ir3_nir_move_varying_inputs(nir_shader *shader)
 {
    nir_foreach_function_impl(impl, shader) {
       nir_block *start = nir_start_block(impl);
+      struct varying_input_check check = { .start = start };
       nir_foreach_block(block, impl) {
          if (block == start)
             continue;
          nir_foreach_instr(instr, block) {
-            if (is_varying_input(instr) &&
-                !nir_foreach_src(instr, check_precondition_src, start))
+            if (!is_varying_input(instr))
+               continue;
+            if (!check.checked) {
+               check.checked = _mesa_pointer_set_create(NULL);
+               if (!check.checked)
+                  return false;
+            }
+            if (!nir_foreach_src(instr, check_precondition_src, &check)) {
+               _mesa_set_destroy(check.checked, NULL);
                return false;
+            }
          }
       }
+      if (check.checked)
+         _mesa_set_destroy(check.checked, NULL);
    }
 
    bool progress = false;

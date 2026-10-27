@@ -1,0 +1,671 @@
+{
+  "start_head": "2d782b0ac160a433000dd4dd57ad1fb21b92cde2",
+  "baseline": "afec90a36cc9e433bc4c95b3bd6f42dda960c77b",
+  "started_utc": "2026-10-27T07:48:03Z",
+  "mode": "source/static validation; no driver/component build",
+  "build": false,
+  "device_action": false,
+  "integrated_validation_complete": false,
+  "areas": [
+    {
+      "id": "CACHE",
+      "status": "in progress",
+      "scope": "TU/IR3 serialization, cache keys, immutable NIR and GPL owners"
+    },
+    {
+      "id": "COMPILER",
+      "status": "in progress",
+      "scope": "NIR/IR3 lowering, RA, barriers, assembly encodings"
+    },
+    {
+      "id": "MESH",
+      "status": "in progress",
+      "scope": "FS/VPC maps, AQE constants/payload/publication, bounds"
+    },
+    {
+      "id": "GPU_STATE",
+      "status": "in progress",
+      "scope": "draw/clear/resolve/FSR/MSAA/dynamic-state transitions"
+    },
+    {
+      "id": "MEMORY_RUNTIME",
+      "status": "in progress",
+      "scope": "KGSL timelines, host copy and Android mapper ownership"
+    },
+    {
+      "id": "FEATURES",
+      "status": "in progress",
+      "scope": "features/properties, SDK gates, settings and build wiring"
+    }
+  ],
+  "findings": [
+    {
+      "id": "V001",
+      "status": "fixed in worktree; no compiled test",
+      "title": "Imported library NIR had no retained owner",
+      "files": [
+        "src/freedreno/vulkan/tu_pipeline.h",
+        "src/freedreno/vulkan/tu_pipeline.cc"
+      ],
+      "trigger": "Compose a child library without recompiling an imported stage; destroy the source library/cache; later use its retained NIR in another link.",
+      "fix": "Flatten and retain the true NIR owner per imported stage; release each matching reference when destroying the child. No extra NIR clone or codegen/schema change."
+    },
+    {
+      "id": "V002",
+      "status": "fixed in worktree; no compiled test",
+      "title": "NIR deserializer accepted trailing bytes",
+      "files": [
+        "src/freedreno/vulkan/tu_pipeline.cc"
+      ],
+      "trigger": "A valid serialized NIR record followed by extra bytes reached the common runtime exact-consumption assertion.",
+      "fix": "Reject trailing bytes alongside overrun and release the partial object before returning a cache miss."
+    },
+    {
+      "id": "V003",
+      "status": "fixed in worktree; static model only",
+      "title": "Repeated traversal in varying-input dependency precheck",
+      "files": [
+        "src/freedreno/ir3/ir3_nir_move_varying_inputs.c"
+      ],
+      "trigger": "A shared SSA arithmetic DAG was recursively traversed once per path before hoisting FS inputs, allowing exponential compiler work.",
+      "fix": "Memoize successful dependency checks per implementation, allocate lazily, cancel before mutation on allocation failure. Preserve the existing eligibility and whole-shader rejection rules."
+    },
+    {
+      "id": "V004",
+      "title": "Cooperative matrix saturated each term and each K tile",
+      "status": "fixed in worktree; static arithmetic model only",
+      "files": [
+        "src/freedreno/vulkan/tu_nir_lower_cooperative_matrix.c"
+      ],
+      "trigger": "With C=INT32_MAX, a positive contribution followed by its negative compensation lost a unit due to intermediate saturation, including across K=8 tile boundaries.",
+      "fix": "Before dimension splitting, form the complete non-saturating A*B product with a zero accumulator, then perform one saturating elementwise addition with C using RESULT signedness.",
+      "primary_source": "https://github.khronos.org/SPIRV-Registry/extensions/KHR/SPV_KHR_cooperative_matrix.html"
+    },
+    {
+      "id": "V005",
+      "title": "Flexible cooperative matrix splitter overwrote input C",
+      "status": "fixed in worktree; static dataflow model only",
+      "files": [
+        "src/compiler/nir/nir_lower_cooperative_matrix.c"
+      ],
+      "trigger": "For K requiring multiple tiles, the common splitter used the C dereference for intermediate outputs. A later operation reusing that input read a modified matrix.",
+      "fix": "Copy each C tile into a private accumulator before the multi-K sequence; store only the final tile to the requested destination. This shared Mesa dependency is audited because the transferred TU path calls it."
+    },
+    {
+      "id": "V006",
+      "title": "3D indirect image copy used remaining-layers sentinel as a literal count",
+      "status": "fixed in source; static slice model only",
+      "files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc"
+      ],
+      "trigger": "A valid3D copy with layerCount=VK_REMAINING_ARRAY_LAYERS recorded up to UINT32_MAX slice draws instead of the remaining mip slices.",
+      "fix": "Resolve the sentinel against minified3D depth or the array layer count, subtract the base and skip zero remaining slices before view creation. The generic maintenance9 slice helper has different eligibility rules and is not used.",
+      "primary_source": "https://docs.vulkan.org/refpages/latest/refpages/source/VkCopyMemoryToImageIndirectInfoKHR.html"
+    },
+    {
+      "id": "V007",
+      "title": "Unsynchronized lazy initialization of the E5/UBWC option",
+      "status": "fixed in source; C++ language initialization rule; no executed concurrency test",
+      "files": [
+        "src/freedreno/vulkan/tu_image.cc"
+      ],
+      "trigger": "Concurrent image creation read and wrote the same non-atomic static int on first use.",
+      "fix": "Use a function-local static const bool with C++ guarded initialization. Keep the opt-in value and default unchanged."
+    }
+  ],
+  "files": [
+    {
+      "path": "src/compiler/nir/nir_divergence_analysis.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/compiler/nir/nir_gather_info.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/compiler/nir/nir_intrinsics.py",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/compiler/nir/nir_lower_io.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/compiler/nir/nir_lower_mem_access_bit_sizes.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/compiler/nir/nir_lower_subgroups.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/compiler/nir/nir_opt_constant_folding.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/compiler/nir/nir_opt_cse.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/compiler/nir/nir_opt_move_discards_to_top.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/compiler/shader_info.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/compiler/spirv/spirv_to_nir.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/common/fd6_gmem_cache.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/common/freedreno_dev_info.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/common/freedreno_dev_info.py",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/common/freedreno_devices.py",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/fdl/fd6_view.cc",
+      "status": "pending"
+    },
+    {
+      "path": "src/freedreno/fdl/freedreno_layout.h",
+      "status": "pending"
+    },
+    {
+      "path": "src/freedreno/ir3/disasm-a3xx.c",
+      "status": "pending"
+    },
+    {
+      "path": "src/freedreno/ir3/instr-a3xx.h",
+      "status": "pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3.c",
+      "status": "pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_a6xx.c",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_compiler.c",
+      "status": "pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_compiler.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_compiler_nir.c",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_context.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_cp.c",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_disk_cache.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_legalize.c",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_lexer.l",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_lower_subgroups.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_nir.c",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_nir.h",
+      "status": "pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_nir_lower_load_barycentric_at_offset.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_nir_lower_load_sample_pos.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_nir_lower_push_consts_to_preamble.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_nir_move_varying_inputs.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_parser.y",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_ra.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_ra_validate.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_shader.c",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_shader.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_shared_ra.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/ir3/meson.build",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/isa/encode.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/isa/ir3-cat6.xml",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/isa/ir3-cat7.xml",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/registers/adreno/a6xx.xml",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/registers/adreno/a8xx_descriptors.xml",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/registers/adreno/adreno_pm4.xml",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/00-turnip-defaults.conf",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/meson.build",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_acceleration_structure.cc",
+      "status": "pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_autotune.cc",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_clear_blit.cc",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_clear_blit.h",
+      "status": "pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_cmd_buffer.cc",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_cmd_buffer.h",
+      "status": "pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_copy_memory_indirect.cc",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_copy_memory_indirect.comp",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_device.cc",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_device.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_drirc_gen.py",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_formats.cc",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_fragment_primitive.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_image.cc",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_indirect_copy_format.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_knl_kgsl.cc",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_dispatch.cc",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_dispatch.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_draw.cc",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_layout.cc",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_layout.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_program.cc",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_program.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_vpc.cc",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_vpc.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_meta_compute.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_cooperative_matrix.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_indirect_copy.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_indirect_copy.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_lower_cooperative_matrix.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_lower_mesh.cc",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_mesh.h",
+      "status": "pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_resolve.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_resolve.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_pass.cc",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_pass.h",
+      "status": "pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_pipeline.cc",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_pipeline.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_query_pool.cc",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_shader.cc",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_shader.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_tile_config.cc",
+      "status": "source review in progress; selected paths reviewed"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_util.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/util/disk_cache_os.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/util/u_gralloc/meson.build",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/util/u_gralloc/u_gralloc.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/util/u_gralloc/u_gralloc_internal.h",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/util/u_gralloc/u_gralloc_mapper_runtime.c",
+      "status": "source delta reviewed; integrated validation pending"
+    },
+    {
+      "path": "src/compiler/nir/nir_lower_cooperative_matrix.c",
+      "status": "reviewed K-splitting; fixed V005; compiled/GPU validation pending",
+      "origin": "shared dependency, outside initial101-path delta"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_alias.c",
+      "status": "baseline context reviewed in part; integrated validation pending",
+      "scope": "A8 compute-like alias suppression and dual-source RT output guard read",
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_delay.c",
+      "status": "baseline context reviewed in part; integrated validation pending",
+      "scope": "A8 dp4acc/address-register delay delta read",
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_descriptor_set.cc",
+      "status": "baseline context reviewed in part; integrated validation pending",
+      "scope": "baseline allocation rollback and copy-boundary delta read; whole lifetime pending",
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_autotune.h",
+      "status": "baseline context reviewed in part; integrated validation pending",
+      "scope": "tile-observation helper declaration read",
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_scratch_ram.h",
+      "status": "baseline context reviewed in part; integrated validation pending",
+      "scope": "scratch layout and helper source read",
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_lrz.cc",
+      "status": "baseline context reviewed in part; integrated validation pending",
+      "scope": "baseline packet helper conversion read",
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_util.cc",
+      "status": "baseline context reviewed in part; integrated validation pending",
+      "scope": "baseline opt-in debug option wiring read",
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_cs.h",
+      "status": "baseline context reviewed in part; integrated validation pending",
+      "scope": "stage44/baseline packet helpers and reservation contract; further review pending",
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+    }
+  ],
+  "not_findings": [
+    {
+      "title": "cmd token in perf_debug argument",
+      "reason": "perf_debug does not expand its device argument; no undeclared identifier reaches C++ compilation. No patch."
+    },
+    {
+      "title": "Mesh VPC merged-mask table",
+      "reason": "regid is uint8_t, so regid>>2 remains inside the64-entry table. No out-of-bounds patch inferred."
+    },
+    {
+      "title": "TU command-stream allocation count/size",
+      "reason": "tu_cs_alloc takes count,size in dwords. The mesh passthrough allocation (1,32) provides the128 bytes copied; no argument-order error."
+    },
+    {
+      "title": "Dynamic FRAG_RESULT remap option",
+      "reason": "The new fragdata_dynamic_remap option is wired for meta clear shaders in tu_clear_blit.cc, which change output slots at execution. Ordinary FDM is not itself a render-target slot remap. No extra tu_shader.cc flag inferred."
+    },
+    {
+      "title": "Dedicated shared atomic increment source",
+      "reason": "The local ISA describes atomic.inc as a one-source operation; the parser retains an extra dummy source. No wrap-at-source-limit semantics inferred from unrelated GPUs."
+    },
+    {
+      "title": "Apparent duplicate task lowering",
+      "reason": "The duplicate came from overlapping display ranges; only one source call exists."
+    },
+    {
+      "title": "Indirect copy four-byte tail",
+      "reason": "VkCopyMemoryIndirectCommandKHR requires source, destination and size to be four-byte aligned (10958..10960). The word-copy loop has no valid sub-word tail to implement.",
+      "primary_source": "https://docs.vulkan.org/refpages/latest/refpages/source/VkCopyMemoryIndirectCommandKHR.html"
+    },
+    {
+      "title": "RGB9E5 indirect format decoding",
+      "reason": "copy_format already reinterprets E5B9G9R9 as R32_UINT before tu_get_indirect_copy_format; no new shared-exponent unpacker needed for this copy path."
+    }
+  ],
+  "models": {
+    "old_owner_counterexample_reproduced": true,
+    "lifetime_order_cases": 242,
+    "all_live_library_views_remain_owned": true,
+    "all_final_owner_refs_zero": true,
+    "hoist_DAG_depths": 64,
+    "old_visits_at_depth64": 110680464442257309691,
+    "memo_visits_at_depth64": 385,
+    "rejected_dependency_kinds": 3,
+    "cooperative_matrix_integer_cases": 6144,
+    "old_saturation_counterexamples": 2,
+    "old_C_mutation_counterexample_reproduced": true,
+    "indirect_copy_remaining_slice_cases": 8028,
+    "source_sha256": {
+      "src/freedreno/vulkan/tu_pipeline.cc": "6ab1ddfdbc1ac03d681ac03b0c169d42cc58e9d5d6ff8be90ed78809d732a2f7",
+      "src/freedreno/vulkan/tu_pipeline.h": "2203c763bc3719032de08b562cb7ee31d5b499955a26f8eb753df14672f9911c",
+      "src/freedreno/ir3/ir3_nir_move_varying_inputs.c": "1a9fd9fcff966dbf99438507363d700e6ccb12916be7c5942509e908556181bd",
+      "src/freedreno/vulkan/tu_nir_lower_cooperative_matrix.c": "9052b804942f34aab708aad30b53f29ae9d252c15825d44dc539f38ceb638075",
+      "src/compiler/nir/nir_lower_cooperative_matrix.c": "a8faae069ef0b3116731cabbc17e6648779b666947c16f676474d4d2439377a1",
+      "src/freedreno/vulkan/tu_clear_blit.cc": "b662a1585daac2131964c79f1a6d4fcff0208833e1cf87163994d5466a4160db"
+    },
+    "driver_or_C_executed": false,
+    "build": false,
+    "limits": [
+      "Static regression models for GameSir transfer audit. No C build/execution.",
+      "",
+      "These check lifetime/complexity contracts independently of Vulkan/GPU operation.",
+      "Source markers bind the models to the reviewed changes, not a C-equivalence",
+      "proof. Temporary ELF, ZIP, driver or device files are never created."
+    ]
+  },
+  "source_policy": "0x4753381e",
+  "inventory_scope": "Initial101 paths are the reconstructed continuation delta afec90a36cc..2d782b0ac16, not all earlier GameSir transfers. Relevant stage66 baseline paths and shared dependencies are expanded separately; exact pre-loss historical tree identity is not established.",
+  "open_candidates": [
+    {
+      "id": "CAND-RESOLVE-NONE",
+      "scope": "Independent NONE/sample-zero depth/stencil preservation",
+      "state": "No current valid exposed counterexample established; independentResolveNone=false. Recheck before extending modes/exposure."
+    },
+    {
+      "id": "CAND-SHARED-BASE",
+      "scope": "tu_update_shared_size ignores intrinsic BASE",
+      "state": "Need a real nonzero-BASE producer reaching this preprocessing point; explicit I/O currently emits base0."
+    },
+    {
+      "id": "CAND-KGSL-DEADLINE",
+      "scope": "Repeated EINTR/EAGAIN after deadline",
+      "state": "Need bounded retry/failure-injection policy; relative timeout is recomputed but zero-time retries can theoretically continue."
+    },
+    {
+      "id": "CAND-SPARSE-INTERFACE",
+      "scope": "sparse FS/LDLV/prefetch/producer-map address domains",
+      "state": "Compiler and helper source read; cross-path and limit validation still in progress."
+    }
+  ],
+  "next_checks": [
+    "Finish sparse FS/LDLV/prefetch address-domain and VPC/AQE linkage validation.",
+    "Finish GPU-state/resolve/FDM/secondary/binning/preemption and synchronization review, including earlier stage66 baseline paths.",
+    "Complete feature/SDK/build-wiring consistency and host cache/memory failure paths without building.",
+    "Compiled NIR/ISA/Vulkan/GPU/game/performance checks require a later user-authorized build/test phase."
+  ]
+}

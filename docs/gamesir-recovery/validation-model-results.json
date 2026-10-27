@@ -1,0 +1,31 @@
+{
+  "old_owner_counterexample_reproduced": true,
+  "lifetime_order_cases": 242,
+  "all_live_library_views_remain_owned": true,
+  "all_final_owner_refs_zero": true,
+  "hoist_DAG_depths": 64,
+  "old_visits_at_depth64": 110680464442257309691,
+  "memo_visits_at_depth64": 385,
+  "rejected_dependency_kinds": 3,
+  "cooperative_matrix_integer_cases": 6144,
+  "old_saturation_counterexamples": 2,
+  "old_C_mutation_counterexample_reproduced": true,
+  "indirect_copy_remaining_slice_cases": 8028,
+  "source_sha256": {
+    "src/freedreno/vulkan/tu_pipeline.cc": "6ab1ddfdbc1ac03d681ac03b0c169d42cc58e9d5d6ff8be90ed78809d732a2f7",
+    "src/freedreno/vulkan/tu_pipeline.h": "2203c763bc3719032de08b562cb7ee31d5b499955a26f8eb753df14672f9911c",
+    "src/freedreno/ir3/ir3_nir_move_varying_inputs.c": "1a9fd9fcff966dbf99438507363d700e6ccb12916be7c5942509e908556181bd",
+    "src/freedreno/vulkan/tu_nir_lower_cooperative_matrix.c": "9052b804942f34aab708aad30b53f29ae9d252c15825d44dc539f38ceb638075",
+    "src/compiler/nir/nir_lower_cooperative_matrix.c": "a8faae069ef0b3116731cabbc17e6648779b666947c16f676474d4d2439377a1",
+    "src/freedreno/vulkan/tu_clear_blit.cc": "b662a1585daac2131964c79f1a6d4fcff0208833e1cf87163994d5466a4160db"
+  },
+  "driver_or_C_executed": false,
+  "build": false,
+  "limits": [
+    "Static regression models for GameSir transfer audit. No C build/execution.",
+    "",
+    "These check lifetime/complexity contracts independently of Vulkan/GPU operation.",
+    "Source markers bind the models to the reviewed changes, not a C-equivalence",
+    "proof. Temporary ELF, ZIP, driver or device files are never created."
+  ]
+}
