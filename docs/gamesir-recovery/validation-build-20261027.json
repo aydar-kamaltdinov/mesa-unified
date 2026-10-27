@@ -1,0 +1,100 @@
+{
+  "date_utc": "2026-10-27T13:42:28.580784+00:00",
+  "branch": "rutabaga",
+  "production_code_commit": "f71bc2ebb2c",
+  "source_policy": "0x4753381f",
+  "android_build": {
+    "result": "passed",
+    "sdk": 33,
+    "strict": true,
+    "ndk_target_api": 29,
+    "cpu": "oryon-1",
+    "buildtype": "release",
+    "recipe": "canonical cross file and build flags; Python3.11/Bison3.8 selected in environment"
+  },
+  "native_component_build": {
+    "result": "passed",
+    "buildtype": "debugoptimized",
+    "b_ndebug": false,
+    "shipping_build_configuration_changed": false,
+    "IR3_disasm_delay_environment": "IR3_SHADER_DEBUG=nocache: Darwin Mach-O build-ID differs from the ELF20-byte requirement; Android tests run without this override"
+  },
+  "nir_suite": {
+    "passed": 6232,
+    "disabled": 10
+  },
+  "executed_transfer_fixtures": {
+    "hoist_DAG_and_whole_shader_rejection": 130,
+    "cooperative_matrix_splitter_and_lowering": 32,
+    "nir_validation_enabled": true,
+    "matrix_numerical_GPU_equivalence": false
+  },
+  "IR3": {
+    "instruction_fixture_count": 368,
+    "delay_fixture_count": 12,
+    "native_and_android_executed": true,
+    "result": "passed"
+  },
+  "device": {
+    "model": "Odin3",
+    "gpu": "Adreno830",
+    "android_sdk": 35,
+    "connection_at_test": "192.168.1.149:39569",
+    "driver_api_reported": "1.4.362",
+    "modes": [
+      "default",
+      "forced sysmem",
+      "forced gmem"
+    ],
+    "graphics_cold_warm_serialized_cache": true,
+    "triangle_readback_pixels_per_mode": 4096,
+    "RGBA_tolerance": 1,
+    "empty_timeline_submit_host_wait": true,
+    "pending_queue_dependency_order": true,
+    "loader": "existing ak-pipeline-timeline-validation Android HAL probe; recovered historical source/strings reviewed; binary reused"
+  },
+  "production_bugs_found_in_this_build_pass": [],
+  "environment_failures_resolved": [
+    "isaspec shebang selected Python without Mako; select installed Python3.11",
+    "system Bison2.3 rejected -Wcounterexamples; select installed Bison3.8",
+    "native IR3 test shader cache assumed ELF SHA1 build-ID; use nocache for Darwin-only fixtures"
+  ],
+  "fixture_construction_errors_resolved": [
+    "updated fixture to current nir_def_instr/front-face builder API",
+    "used interpolated coordinates for ALU DAG; ordinary FS input offset must be constant or permitted phi"
+  ],
+  "full_integrated_validation_complete": false,
+  "not_tested": [
+    "Vulkan conformance suite",
+    "all mesh/task/barycentric/interlock/coverage activation contracts",
+    "all DS resolve/FDM/MSAA/FSR combinations",
+    "allocator/kernel failure injection and complete cache/GPL concurrency",
+    "games, frame-time/FPS and thermals"
+  ],
+  "source_sha256": {
+    "docs/gamesir-recovery/tools/check_compiler_transfer.c": "cc7d5b50efe89b226359007574c27832cac28afa3aec6ccb3ecdbb749341da48",
+    "docs/gamesir-recovery/tools/run_compiler_transfer.py": "b02141ffbe4d2910a1e2fb531aa72a00ce5b690165ee958ac3b892036b7e06dd"
+  },
+  "log_summaries": {
+    "nir-tests.log": "Running main() from ../../src/gtest/src/gtest_main.cc\nSkipping test input due to too many signed zeroes to exhaustively test.\nSkipping test input due to too many signed zeroes to exhaustively test.\nSkipping test input due to too many signed zeroes to exhaustively test.\nSkipping test input due to too many signed zeroes to exhaustively test.\n[==========] 6232 tests from 58 test suites ran. (1666 ms total)\n[  PASSED  ] 6232 tests.\n\n  YOU HAVE 10 DISABLED TESTS\n",
+    "compiler-transfer.log": "ld: warning: ignoring duplicate libraries: '-lSystem', '-lz'\nPASS 130 hoist DAG/rejection fixtures; 32 matrix splitter/lowering fixtures with NIR validation",
+    "device-ir3-disasm.log": "PASSED!",
+    "device-ir3-delay.log": "2: PASS\n3: PASS\n4: PASS\n5: PASS\n6: PASS\n7: PASS\n8: PASS\n9: PASS\n10: PASS\n11: PASS",
+    "device-smoke-default.log": "Device: Adreno (TM) 830 vendor=5143 api=1.4.362\nPASS graphics pipeline cold\nPASS graphics pipeline warm\nPASS serialized-cache graphics pipeline (9872 bytes)\nPASS GPU triangle draw + transfer + coherent readback: 4096 pixels RGBA within 1 unit\nPASS empty native timeline submit and host wait\nPASS pending queue dependency prevents empty signal overtaking; GPU fallback completes after host release\nPASS driver load/device/graphics pipelines/cache/GPU draw-readback; no game or mesh execution test",
+    "device-smoke-sysmem.log": "Device: Adreno (TM) 830 vendor=5143 api=1.4.362\nPASS graphics pipeline cold\nPASS graphics pipeline warm\nPASS serialized-cache graphics pipeline (9872 bytes)\nPASS GPU triangle draw + transfer + coherent readback: 4096 pixels RGBA within 1 unit\nPASS empty native timeline submit and host wait\nPASS pending queue dependency prevents empty signal overtaking; GPU fallback completes after host release\nPASS driver load/device/graphics pipelines/cache/GPU draw-readback; no game or mesh execution test",
+    "device-smoke-gmem.log": "Device: Adreno (TM) 830 vendor=5143 api=1.4.362\nPASS graphics pipeline cold\nPASS graphics pipeline warm\nPASS serialized-cache graphics pipeline (9872 bytes)\nPASS GPU triangle draw + transfer + coherent readback: 4096 pixels RGBA within 1 unit\nPASS empty native timeline submit and host wait\nPASS pending queue dependency prevents empty signal overtaking; GPU fallback completes after host release\nPASS driver load/device/graphics pipelines/cache/GPU draw-readback; no game or mesh execution test",
+    "host-ir3-disasm.log": "PASSED!",
+    "host-ir3-delay.log": "2: PASS\n3: PASS\n4: PASS\n5: PASS\n6: PASS\n7: PASS\n8: PASS\n9: PASS\n10: PASS\n11: PASS"
+  },
+  "log_sha256": {
+    "nir-tests.log": "aacd20ee6682dec50ac7dd0ca48aede85a2866931e0735ad35158a93ca5079d8",
+    "compiler-transfer.log": "b8a9189f93cf38dd6d690374c1c80ff920e17a623bc7e304db5f17030f9ffba7",
+    "device-ir3-disasm.log": "b261f72ba1d0f25f75f735975f7e9754e239747740da5893ae017ee534c75c70",
+    "device-ir3-delay.log": "929fff013d5e651ccb9491c6550ffe7cbb770abe18681125e0f73cec2562c3dd",
+    "device-smoke-default.log": "c3ba311ffcf7bcbc7ace613c2da0dcfeaf24a5f3863a03d8d45fb17deaaa7ff4",
+    "device-smoke-sysmem.log": "c3ba311ffcf7bcbc7ace613c2da0dcfeaf24a5f3863a03d8d45fb17deaaa7ff4",
+    "device-smoke-gmem.log": "c3ba311ffcf7bcbc7ace613c2da0dcfeaf24a5f3863a03d8d45fb17deaaa7ff4",
+    "host-ir3-disasm.log": "b261f72ba1d0f25f75f735975f7e9754e239747740da5893ae017ee534c75c70",
+    "host-ir3-delay.log": "929fff013d5e651ccb9491c6550ffe7cbb770abe18681125e0f73cec2562c3dd"
+  }
+}

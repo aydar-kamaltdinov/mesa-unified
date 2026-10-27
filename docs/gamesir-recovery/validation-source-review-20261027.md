@@ -1,5 +1,7 @@
 # GameSir transfer: completed source/static review, 27 October 2026
 
+Later execution checkpoint: canonical Android SDK33 build and bounded native/device tests are recorded separately in [validation-build-20261027.json](validation-build-20261027.json). The no-build statements below describe the preceding static-review phase; full conformance/activation/game validation remains incomplete.
+
 Branch: `rutabaga`. Input continuation: `afec90a36cc..2d782b0ac16`; earlier relevant context: `import-stage43..afec90a36cc`. Current shader/cache policy: **0x4753381f, UNBUILT**.
 
 The bounded source/static review is complete **with validation blockers**. This is not a clean bill of health for the driver, formal equivalence with the GameSir ELF, or completed integrated validation. No C/C++ component, NIR, ISA generator, driver or GPU was built/executed in this pass. No device installation or new ZIP was made.
