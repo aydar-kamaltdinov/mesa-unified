@@ -991,12 +991,21 @@ kgsl_timeline_wait_absolute_ioctl(int fd, uint64_t abs_timeout_ns,
                                    struct kgsl_timeline_val *values,
                                    uint32_t count, uint32_t flags)
 {
-   int ret;
-   do {
-      ret = kgsl_timeline_wait_ioctl(fd, get_relative_ns(abs_timeout_ns),
-                                     values, count, flags);
-   } while (ret == -1 && (errno == EINTR || errno == EAGAIN));
-   return ret;
+   for (;;) {
+      int ret = kgsl_timeline_wait_ioctl(fd, get_relative_ns(abs_timeout_ns),
+                                        values, count, flags);
+      if (ret != -1 || (errno != EINTR && errno != EAGAIN))
+         return ret;
+
+      /* A stream of retryable failures must not extend a finite deadline,
+       * including a zero-time poll. Still try the ioctl once above so an
+       * already completed wait can succeed after its deadline.
+       */
+      if (get_relative_ns(abs_timeout_ns) == 0) {
+         errno = ETIMEDOUT;
+         return -1;
+      }
+   }
 }
 
 
@@ -1855,8 +1864,13 @@ vk_kgsl_binary_wait_many_fds(struct tu_device *device,
    while (poll_count > 0) {
       int ret = poll(fds, poll_count, get_relative_ms(abs_timeout_ns));
       if (ret < 0) {
-         if (errno == EINTR || errno == EAGAIN)
+         if (errno == EINTR || errno == EAGAIN) {
+            if (get_relative_ns(abs_timeout_ns) == 0) {
+               result = VK_TIMEOUT;
+               goto out;
+            }
             continue;
+         }
          result = vk_errorf(&device->vk, VK_ERROR_UNKNOWN, "poll failed: %m");
          goto out;
       }

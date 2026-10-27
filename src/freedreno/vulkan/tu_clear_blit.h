@@ -18,7 +18,7 @@
 
 struct tu_rect2d_float;
 
-/* A8xx shader averaging; FDM retains its existing store path for now. */
+/* A8xx shader averaging, including the offset-aware FDM store path. */
 bool tu_gmem_color_resolve_needs_shader(uint32_t chip, VkFormat format, bool has_fdm);
 
 void tu_init_clear_blit_shaders(struct tu_device *dev);

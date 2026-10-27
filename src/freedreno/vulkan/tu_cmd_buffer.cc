@@ -11279,13 +11279,13 @@ tu_CmdEndRendering2EXT(VkCommandBuffer commandBuffer,
 static bool
 tu_ak_no_ubwc_coherency_quirk(void)
 {
-   static int disabled = -1;
-   if (disabled < 0) {
-      disabled = TU_DEBUG(NO_UBWC_QUIRK) ||
-                 debug_get_bool_option("TU_AK_NO_UBWC_QUIRK", false);
-      if (disabled)
+   static const bool disabled = [] {
+      const bool value = TU_DEBUG(NO_UBWC_QUIRK) ||
+                         debug_get_bool_option("TU_AK_NO_UBWC_QUIRK", false);
+      if (value)
          mesa_logw("AK: ubwc_coherency_quirk CACHE_CLEAN on barriers disabled");
-   }
+      return value;
+   }();
    return disabled;
 }
 

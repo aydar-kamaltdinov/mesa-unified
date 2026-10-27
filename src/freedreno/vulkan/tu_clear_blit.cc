@@ -4379,7 +4379,11 @@ tu_resolve_sysmem(struct tu_cmd_buffer *cmd,
 
    const VkResolveModeFlags shader_modes = VK_RESOLVE_MODE_MIN_BIT |
       VK_RESOLVE_MODE_MAX_BIT | VK_RESOLVE_MODE_AVERAGE_BIT;
-   if ((depth_mode | stencil_mode) & shader_modes) {
+   /* A missing dynamic-rendering depth/stencil attachment selects NONE even
+    * when independentResolveNone is false: that limit only constrains two
+    * present attachments. Honor each mode on the sample-zero path as well.
+    */
+   if (vk_format_is_depth_or_stencil(src_format)) {
       VkImageAspectFlags aspects = vk_format_aspects(src_format) &
                                    vk_format_aspects(dst_format);
       if (dst_separate_ds) {
@@ -4415,11 +4419,13 @@ tu_resolve_sysmem(struct tu_cmd_buffer *cmd,
        * before a later subpass uses either the depth CCU or UCHE for the same
        * image. This conservative boundary is confined to the new modes.
        */
-      tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_CLEAN_COLOR);
-      tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_INVALIDATE_COLOR);
-      tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_INVALIDATE_DEPTH);
-      tu_emit_event_write<CHIP>(cmd, cs, FD_CACHE_INVALIDATE);
-      tu_cs_emit_wfi(cs);
+      if ((depth_mode | stencil_mode) & shader_modes) {
+         tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_CLEAN_COLOR);
+         tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_INVALIDATE_COLOR);
+         tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_INVALIDATE_DEPTH);
+         tu_emit_event_write<CHIP>(cmd, cs, FD_CACHE_INVALIDATE);
+         tu_cs_emit_wfi(cs);
+      }
       return;
    }
 
@@ -6925,6 +6931,7 @@ tu_store_gmem_attachment(struct tu_cmd_buffer *cmd,
                               vk_format_is_srgb(dst->format);
    bool shader_resolve = resolve &&
       (((depth_mode | stencil_mode) & shader_modes) || skip_transfer ||
+       (dst->format == VK_FORMAT_D24_UNORM_S8_UINT && depth_mode != stencil_mode) ||
        tu_gmem_color_resolve_needs_shader(CHIP, src->format, cmd->state.pass->has_fdm));
    if (resolve)
       clear_value = NULL;
@@ -6953,6 +6960,19 @@ tu_store_gmem_attachment(struct tu_cmd_buffer *cmd,
 
    bool store_common = dst->store && !resolve_d32s8_s8;
    bool store_separate_stencil = dst->store_stencil || resolve_d32s8_s8;
+   if (resolve && vk_format_is_depth_or_stencil(dst->format)) {
+      const VkImageAspectFlags aspects = vk_format_aspects(dst->format);
+      if (dst->format == VK_FORMAT_D32_SFLOAT_S8_UINT ||
+          aspects == VK_IMAGE_ASPECT_DEPTH_BIT)
+         store_common &= depth_mode != VK_RESOLVE_MODE_NONE;
+      else if (aspects == VK_IMAGE_ASPECT_STENCIL_BIT)
+         store_common &= stencil_mode != VK_RESOLVE_MODE_NONE;
+      else
+         store_common &= (depth_mode | stencil_mode) != VK_RESOLVE_MODE_NONE;
+      store_separate_stencil &= stencil_mode != VK_RESOLVE_MODE_NONE;
+      if (!store_common && !store_separate_stencil)
+         return;
+   }
 
    bool use_fast_path = !shader_resolve && !unaligned && !mismatched_mutability &&
                         !resolve_d24s8_s8 &&

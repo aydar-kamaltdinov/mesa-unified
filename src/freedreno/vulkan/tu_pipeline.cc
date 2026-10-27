@@ -1910,7 +1910,7 @@ tu_hash_shaders(unsigned char *hash,
     * A8 flat-bypass encoding now uses the recovered destination/SY policy.
     * Cooperative-matrix lowering preserves C and saturates only the full sum.
     * Separate this schema even when a build-ID override is in use. */
-   const uint32_t stage_schema = 0x4753381e;
+   const uint32_t stage_schema = 0x4753381f;
    _mesa_blake3_update(&ctx, &stage_schema, sizeof(stage_schema));
    const bool sample_center = ir3_gamesir_sample_center_enabled();
    _mesa_blake3_update(&ctx, &sample_center, sizeof(sample_center));
@@ -1943,7 +1943,7 @@ tu_hash_compute(unsigned char *hash,
 
    /* Keep the coordinated compiler policy/schema key in sync with graphics
     * and IR3, including corrected cooperative-matrix accumulation. */
-   const uint32_t stage_schema = 0x4753381e;
+   const uint32_t stage_schema = 0x4753381f;
    _mesa_blake3_update(&ctx, &stage_schema, sizeof(stage_schema));
 
    if (layout)

@@ -636,8 +636,12 @@ emit_intrinsic_store_global(struct ir3_context *ctx, nir_intrinsic_instr *intr)
    }
 
    unsigned bit_size = intr->src[0].ssa->bit_size;
-   stg->cat6.type = a8_mesh ? (bit_size == 16 ? TYPE_S16 : TYPE_S32)
-                            : type_uint_size(bit_size);
+   /* AQE's ordinary output words use the recovered signed16/32 types. User
+    * physical-storage-buffer writes can still be8-bit after memory lowering;
+    * preserving their width is required even in a mesh shader.
+    */
+   stg->cat6.type = a8_mesh && bit_size >= 16 ?
+      (bit_size == 16 ? TYPE_S16 : TYPE_S32) : type_uint_size(bit_size);
    stg->cat6.iim_val = 1;
 
    array_insert(ctx->block, ctx->block->keeps, stg);

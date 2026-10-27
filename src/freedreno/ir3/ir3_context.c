@@ -21,6 +21,24 @@ should_lower_undef(nir_undef_instr *undef)
    return undef->def.bit_size == 1;
 }
 
+static bool
+has_per_vertex_fragment_inputs(nir_shader *shader)
+{
+   nir_foreach_function_impl(impl, shader) {
+      nir_foreach_block(block, impl) {
+         nir_foreach_instr(instr, block) {
+            if (instr->type != nir_instr_type_intrinsic)
+               continue;
+            nir_intrinsic_op op = nir_instr_as_intrinsic(instr)->intrinsic;
+            if (op == nir_intrinsic_load_input_vertex ||
+                op == nir_intrinsic_load_per_vertex_input)
+               return true;
+         }
+      }
+   }
+   return false;
+}
+
 struct ir3_context *
 ir3_context_init(struct ir3_compiler *compiler, struct ir3_shader *shader,
                  struct ir3_shader_variant *so)
@@ -115,7 +133,15 @@ ir3_context_init(struct ir3_compiler *compiler, struct ir3_shader *shader,
    /* Enable the texture pre-fetch feature only a4xx onwards.  But
     * only enable it on generations that have been tested:
     */
-   if ((so->type == MESA_SHADER_FRAGMENT) && compiler->info->props.has_fs_tex_prefetch) {
+   /* Prefetch stores a logical coordinate offset, unlike mesh placement and
+    * the late per-vertex compaction. Until both components can be remapped
+    * together (including pairs crossing a vec4), emit ordinary texture loads
+    * for these interfaces. Their coordinate instructions follow the fixup.
+    */
+   if (so->type == MESA_SHADER_FRAGMENT &&
+       compiler->info->props.has_fs_tex_prefetch &&
+       !so->shader_options.mesh_fs_inputs.enabled &&
+       !has_per_vertex_fragment_inputs(ctx->s)) {
       NIR_PASS(_, ctx->s, ir3_nir_lower_tex_prefetch, &so->prefetch_bary_type);
    }
 

@@ -9,32 +9,32 @@
   "areas": [
     {
       "id": "CACHE",
-      "status": "in progress",
+      "status": "source/static review complete with fixes and execution/activation blockers",
       "scope": "TU/IR3 serialization, cache keys, immutable NIR and GPL owners"
     },
     {
       "id": "COMPILER",
-      "status": "in progress",
+      "status": "source/static review complete with fixes and execution/activation blockers",
       "scope": "NIR/IR3 lowering, RA, barriers, assembly encodings"
     },
     {
       "id": "MESH",
-      "status": "in progress",
+      "status": "source/static review complete with fixes and execution/activation blockers",
       "scope": "FS/VPC maps, AQE constants/payload/publication, bounds"
     },
     {
       "id": "GPU_STATE",
-      "status": "in progress",
+      "status": "source/static review complete with fixes and execution/activation blockers",
       "scope": "draw/clear/resolve/FSR/MSAA/dynamic-state transitions"
     },
     {
       "id": "MEMORY_RUNTIME",
-      "status": "in progress",
+      "status": "source/static review complete with fixes and execution/activation blockers",
       "scope": "KGSL timelines, host copy and Android mapper ownership"
     },
     {
       "id": "FEATURES",
-      "status": "in progress",
+      "status": "source/static review complete with fixes and execution/activation blockers",
       "scope": "features/properties, SDK gates, settings and build wiring"
     }
   ],
@@ -48,7 +48,8 @@
         "src/freedreno/vulkan/tu_pipeline.cc"
       ],
       "trigger": "Compose a child library without recompiling an imported stage; destroy the source library/cache; later use its retained NIR in another link.",
-      "fix": "Flatten and retain the true NIR owner per imported stage; release each matching reference when destroying the child. No extra NIR clone or codegen/schema change."
+      "fix": "Flatten and retain the true NIR owner per imported stage; release each matching reference when destroying the child. No extra NIR clone or codegen/schema change.",
+      "first_fix_commit": "7a8a69bfba5"
     },
     {
       "id": "V002",
@@ -58,7 +59,8 @@
         "src/freedreno/vulkan/tu_pipeline.cc"
       ],
       "trigger": "A valid serialized NIR record followed by extra bytes reached the common runtime exact-consumption assertion.",
-      "fix": "Reject trailing bytes alongside overrun and release the partial object before returning a cache miss."
+      "fix": "Reject trailing bytes alongside overrun and release the partial object before returning a cache miss.",
+      "first_fix_commit": "7a8a69bfba5"
     },
     {
       "id": "V003",
@@ -68,7 +70,8 @@
         "src/freedreno/ir3/ir3_nir_move_varying_inputs.c"
       ],
       "trigger": "A shared SSA arithmetic DAG was recursively traversed once per path before hoisting FS inputs, allowing exponential compiler work.",
-      "fix": "Memoize successful dependency checks per implementation, allocate lazily, cancel before mutation on allocation failure. Preserve the existing eligibility and whole-shader rejection rules."
+      "fix": "Memoize successful dependency checks per implementation, allocate lazily, cancel before mutation on allocation failure. Preserve the existing eligibility and whole-shader rejection rules.",
+      "first_fix_commit": "7a8a69bfba5"
     },
     {
       "id": "V004",
@@ -79,7 +82,8 @@
       ],
       "trigger": "With C=INT32_MAX, a positive contribution followed by its negative compensation lost a unit due to intermediate saturation, including across K=8 tile boundaries.",
       "fix": "Before dimension splitting, form the complete non-saturating A*B product with a zero accumulator, then perform one saturating elementwise addition with C using RESULT signedness.",
-      "primary_source": "https://github.khronos.org/SPIRV-Registry/extensions/KHR/SPV_KHR_cooperative_matrix.html"
+      "primary_source": "https://github.khronos.org/SPIRV-Registry/extensions/KHR/SPV_KHR_cooperative_matrix.html",
+      "first_fix_commit": "7a8a69bfba5"
     },
     {
       "id": "V005",
@@ -89,7 +93,8 @@
         "src/compiler/nir/nir_lower_cooperative_matrix.c"
       ],
       "trigger": "For K requiring multiple tiles, the common splitter used the C dereference for intermediate outputs. A later operation reusing that input read a modified matrix.",
-      "fix": "Copy each C tile into a private accumulator before the multi-K sequence; store only the final tile to the requested destination. This shared Mesa dependency is audited because the transferred TU path calls it."
+      "fix": "Copy each C tile into a private accumulator before the multi-K sequence; store only the final tile to the requested destination. This shared Mesa dependency is audited because the transferred TU path calls it.",
+      "first_fix_commit": "7a8a69bfba5"
     },
     {
       "id": "V006",
@@ -100,476 +105,733 @@
       ],
       "trigger": "A valid3D copy with layerCount=VK_REMAINING_ARRAY_LAYERS recorded up to UINT32_MAX slice draws instead of the remaining mip slices.",
       "fix": "Resolve the sentinel against minified3D depth or the array layer count, subtract the base and skip zero remaining slices before view creation. The generic maintenance9 slice helper has different eligibility rules and is not used.",
-      "primary_source": "https://docs.vulkan.org/refpages/latest/refpages/source/VkCopyMemoryToImageIndirectInfoKHR.html"
+      "primary_source": "https://docs.vulkan.org/refpages/latest/refpages/source/VkCopyMemoryToImageIndirectInfoKHR.html",
+      "first_fix_commit": "7a8a69bfba5"
     },
     {
       "id": "V007",
-      "title": "Unsynchronized lazy initialization of the E5/UBWC option",
+      "title": "Unsynchronized lazy initialization of E5/UBWC and UBWC-quirk options",
       "status": "fixed in source; C++ language initialization rule; no executed concurrency test",
       "files": [
-        "src/freedreno/vulkan/tu_image.cc"
+        "src/freedreno/vulkan/tu_image.cc",
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
       ],
-      "trigger": "Concurrent image creation read and wrote the same non-atomic static int on first use.",
-      "fix": "Use a function-local static const bool with C++ guarded initialization. Keep the opt-in value and default unchanged."
+      "trigger": "Concurrent first image creation or command-buffer barrier recording read/wrote a non-atomic static int.",
+      "fix": "Use function-local static const bool with C++ guarded initialization in both option readers; keep opt-in defaults and one-time diagnostic.",
+      "first_fix_commit": "7a8a69bfba5"
+    },
+    {
+      "id": "V008",
+      "title": "FS relocation left texture-prefetch and FLAT_B consumers inconsistent",
+      "files": [
+        "src/freedreno/ir3/ir3_context.c",
+        "src/freedreno/ir3/ir3_compiler_nir.c"
+      ],
+      "status": "source fixed; independent interface models passed; compiled/GPU validation pending",
+      "trigger": "A per-vertex input moves ahead of UV, while META_TEX_PREFETCH retains its old logical coordinate offset. Prefetch-only live coordinates can also overlap the subsequently allocated barycentric basis. Pre-A8 FLAT_B duplicated immediates were not updated together.",
+      "fix": "Use normal sampling for mesh-map/per-vertex interfaces until both prefetch coordinates can be remapped together; include prefetch-only coordinates when allocating the barycentric basis; synchronize both immediate FLAT_B location operands. Ordinary unrelocated prefetch remains enabled.",
+      "native_fidelity": "Explicit local correctness adaptation. The inspected native helpers retain logical offsets too; this is not represented as byte-identical native code."
+    },
+    {
+      "id": "V009",
+      "title": "KGSL retry loop could outlive a finite absolute deadline",
+      "files": [
+        "src/freedreno/vulkan/tu_knl_kgsl.cc"
+      ],
+      "status": "source fixed; scripted outcome model passed; no kernel fault injection",
+      "trigger": "Repeated EINTR/EAGAIN at an expired finite deadline could spin in both native timeline ioctl and binary-fence FD-poll loops.",
+      "fix": "Attempt once and preserve success/fatal errors; after a retryable failure with no remaining finite duration, return ETIMEDOUT for ioctl or VK_TIMEOUT for poll. Infinite convention unchanged."
+    },
+    {
+      "id": "V010",
+      "title": "Sample-zero depth/stencil resolve wrote an absent dynamic-rendering aspect",
+      "files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc"
+      ],
+      "status": "source fixed; aspect-preservation model passed; GPU validation pending",
+      "trigger": "Only depth or only stencil is present in dynamic rendering with a combined DS format. VUID06104 constrains two present attachments, so independentResolveNone=false does not exclude this valid case. Legacy sample-zero paths resolved both aspects.",
+      "fix": "Honor per-aspect modes in sysmem for all depth/stencil resolves, filter separate GMEM plane stores and route partial D24S8 through the existing masked3D sample-zero path. Color resolve selection and the existing extra-flush condition remain.",
+      "primary_source": "https://docs.vulkan.org/refpages/latest/refpages/source/VkRenderingInfo.html"
+    },
+    {
+      "id": "V011",
+      "title": "A8 mesh global8-bit stores were encoded with32-bit width",
+      "files": [
+        "src/freedreno/ir3/ir3_a6xx.c"
+      ],
+      "status": "source fixed; lowering/encoding path traced; compiled/GPU validation pending",
+      "trigger": "Physical-storage-buffer writes in a mesh shader can remain8-bit through ir3_mem_access_size_align; the transferred signed16/else32 selection widened them to32-bit.",
+      "fix": "Keep the recovered signed16/32 types for those widths, but retain TYPE_U8 for8-bit accesses. TASK/MESH feature and compilation gates remain held."
     }
   ],
   "files": [
     {
+      "path": "src/compiler/nir/nir.h",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "5362eb0958f3e073cc76ca94465be4c1f2680a3be6ccd4f838f276330ce96854"
+    },
+    {
+      "path": "src/compiler/nir/nir_builder.h",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "f1f0dc401a1eebcefbc2ec8eaf0c4fc83f86613ea03f455272981695160688ca"
+    },
+    {
+      "path": "src/compiler/nir/nir_builtin_builder.c",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "c0a0175543ffa751eb549013cf44ce58e07f16d9f82aa53810c815f22da33373"
+    },
+    {
       "path": "src/compiler/nir/nir_divergence_analysis.c",
-      "status": "source delta reviewed; integrated validation pending"
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "7f3f1d6778f56d2614a6a4253cd68df89089d494f15d97160fe133107f49bc52"
     },
     {
       "path": "src/compiler/nir/nir_gather_info.c",
-      "status": "source delta reviewed; integrated validation pending"
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "a5e01f9e3e58c27a76892fd7ce850179d0fb34c6287db00d1bba262bd41d7fd1"
     },
     {
       "path": "src/compiler/nir/nir_intrinsics.py",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/compiler/nir/nir_lower_io.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/compiler/nir/nir_lower_mem_access_bit_sizes.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/compiler/nir/nir_lower_subgroups.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/compiler/nir/nir_opt_constant_folding.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/compiler/nir/nir_opt_cse.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/compiler/nir/nir_opt_move_discards_to_top.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/compiler/shader_info.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/compiler/spirv/spirv_to_nir.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/common/fd6_gmem_cache.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/common/freedreno_dev_info.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/common/freedreno_dev_info.py",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/common/freedreno_devices.py",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/fdl/fd6_view.cc",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/fdl/freedreno_layout.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/disasm-a3xx.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/instr-a3xx.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_a6xx.c",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_compiler.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_compiler.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_compiler_nir.c",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_context.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_cp.c",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_disk_cache.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_legalize.c",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_lexer.l",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_lower_subgroups.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_nir.c",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_nir.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_nir_lower_load_barycentric_at_offset.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_nir_lower_load_sample_pos.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_nir_lower_push_consts_to_preamble.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_nir_move_varying_inputs.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_parser.y",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_ra.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_ra_validate.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_shader.c",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_shader.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/ir3_shared_ra.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/ir3/meson.build",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/isa/encode.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/isa/ir3-cat6.xml",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/isa/ir3-cat7.xml",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/registers/adreno/a6xx.xml",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/registers/adreno/a8xx_descriptors.xml",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/registers/adreno/adreno_pm4.xml",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/00-turnip-defaults.conf",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/meson.build",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_acceleration_structure.cc",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_autotune.cc",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_clear_blit.cc",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_clear_blit.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_cmd_buffer.cc",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_cmd_buffer.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_copy_memory_indirect.cc",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_copy_memory_indirect.comp",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_device.cc",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_device.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_drirc_gen.py",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_formats.cc",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_fragment_primitive.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_image.cc",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_indirect_copy_format.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_knl_kgsl.cc",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_mesh_dispatch.cc",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_mesh_dispatch.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_mesh_draw.cc",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_mesh_layout.cc",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_mesh_layout.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_mesh_program.cc",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_mesh_program.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_mesh_vpc.cc",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_mesh_vpc.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_meta_compute.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_nir_cooperative_matrix.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_nir_indirect_copy.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_nir_indirect_copy.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_nir_lower_cooperative_matrix.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_nir_lower_mesh.cc",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_nir_mesh.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_nir_resolve.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_nir_resolve.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_pass.cc",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_pass.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_pipeline.cc",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_pipeline.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_query_pool.cc",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_shader.cc",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_shader.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_tile_config.cc",
-      "status": "source review in progress; selected paths reviewed"
-    },
-    {
-      "path": "src/freedreno/vulkan/tu_util.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/util/disk_cache_os.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/util/u_gralloc/meson.build",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/util/u_gralloc/u_gralloc.c",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/util/u_gralloc/u_gralloc_internal.h",
-      "status": "source delta reviewed; integrated validation pending"
-    },
-    {
-      "path": "src/util/u_gralloc/u_gralloc_mapper_runtime.c",
-      "status": "source delta reviewed; integrated validation pending"
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "3a334b33b094b58eae16488896177952660103298178441bf850153c860530d0"
     },
     {
       "path": "src/compiler/nir/nir_lower_cooperative_matrix.c",
-      "status": "reviewed K-splitting; fixed V005; compiled/GPU validation pending",
-      "origin": "shared dependency, outside initial101-path delta"
+      "status": "source/static review complete; execution validation pending",
+      "origin": "shared dependency, outside initial101-path delta",
+      "sha256": "a8faae069ef0b3116731cabbc17e6648779b666947c16f676474d4d2439377a1"
+    },
+    {
+      "path": "src/compiler/nir/nir_lower_io.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "028e858ac4078b4d9dbe1dd3ef138b3de1fba5ac21ac30cb51a22fad8dd9de0d"
+    },
+    {
+      "path": "src/compiler/nir/nir_lower_mem_access_bit_sizes.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "e056e782925a12ca21b9fda20ec038b3dd49018a58479c85eb27d55f24c68369"
+    },
+    {
+      "path": "src/compiler/nir/nir_lower_subgroups.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "4e2da494142110cb6d430fa7170882efdffe284b7502dcb565e4a381568b60b5"
+    },
+    {
+      "path": "src/compiler/nir/nir_lower_tex.c",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "a19a61f6cc70b7142e17ff0ea1458ee713d8753d0c9845003f1848a122ecf444"
+    },
+    {
+      "path": "src/compiler/nir/nir_opt_constant_folding.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "cb7aa5905ae5230f41e1ac18c4a1a1d203b2073db753741d94f4844d793cd72a"
+    },
+    {
+      "path": "src/compiler/nir/nir_opt_cse.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "8d7a5f9423ae9e168eea3cc4b9e13bef130dae78977c8b719d6af4965cc37bb3"
+    },
+    {
+      "path": "src/compiler/nir/nir_opt_move_discards_to_top.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "a7c802251b01874c234ec36232b6dd56eceb9b7fafb54d56dd1aaace91824523"
+    },
+    {
+      "path": "src/compiler/nir/nir_range_analysis.c",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "7fad662e3dac24c6036f9f68aa82aee641197293596cb13289699609a04bb1e8"
+    },
+    {
+      "path": "src/compiler/nir/nir_serialize.c",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "82f405c234247462bee2a7f008c96e92c07ed495d08ca3a58a28d2871f71bf1d"
+    },
+    {
+      "path": "src/compiler/nir/tests/serialize_tests.cpp",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "reviewed source/static context; execution not performed",
+      "sha256": "ef411b22cec41d5870df18fc7841d188f475d59ee33156406bc5bc4fb0d14a26"
+    },
+    {
+      "path": "src/compiler/shader_info.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "b0e1e77c938f09d571e2eb4214e018565af45bc01c5225f2b205716a430187c7"
+    },
+    {
+      "path": "src/compiler/spirv/spirv_to_nir.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "6da81167fc9bfa367b034aad641bff2ccdab4a6d65420051100179bf0e567d91"
+    },
+    {
+      "path": "src/freedreno/common/fd6_gmem_cache.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "36e4f3a7c48b531065756ba6c753361f5819e2dfb941b2e7c5388a3637aada3f"
+    },
+    {
+      "path": "src/freedreno/common/freedreno_dev_info.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "d765f75d31d5a0985adf912f68b6985b978e710e76830a7ccc042a8e2195802e"
+    },
+    {
+      "path": "src/freedreno/common/freedreno_dev_info.py",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "ca6846d352022ff7b609ee6686de5bb9a3a04052f67734775c5de5bbf0efdde3"
+    },
+    {
+      "path": "src/freedreno/common/freedreno_devices.py",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "cae45465a64eb721ff935a9de089facc6172989dbeb91cf7de1e96eb204055d5"
+    },
+    {
+      "path": "src/freedreno/computerator/a6xx.cc",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "101686be96cee7841a8c9f6c329665d45f377008e1364d20af45893a5d09d309"
+    },
+    {
+      "path": "src/freedreno/drm-shim/freedreno_noop.c",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "2e9476f0d02878346bd6dc58dddd975230468f2c8554055b8137102a86a7092c"
+    },
+    {
+      "path": "src/freedreno/fdl/fd6_view.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "350004921ebd37640756157c600572b79acea3209f0486b5c6799f2d13479de5"
+    },
+    {
+      "path": "src/freedreno/fdl/freedreno_layout.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "8ba0cfcd1308a8aa86a2d323b64b2cc3c5bf688ad3cae60b042fc7854528d9a5"
+    },
+    {
+      "path": "src/freedreno/ir3/disasm-a3xx.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "4e56a096b3abf093cede63067e0ea1faeb1e9c77329c69da89f47b0007181402"
+    },
+    {
+      "path": "src/freedreno/ir3/instr-a3xx.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "1e71559fb23aa2f5348dce3844e491e8846fcfe5cc5c669e422d694504ebcc7f"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "b8f4b5aa69a33081d0e8d8d2f68a066b3b661eabe91573c2dfcebd4d2fdbf0b1"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "30fd2d71e097b4340aec46c1bcc4b3b71689a67666702e2e990d0334897777eb"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_a6xx.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "e47ae0b18a641bb75a5bb76ff9ca9660defda76327bc096f50f957f198126c45"
     },
     {
       "path": "src/freedreno/ir3/ir3_alias.c",
-      "status": "baseline context reviewed in part; integrated validation pending",
+      "status": "source/static review complete; execution validation pending",
       "scope": "A8 compute-like alias suppression and dual-source RT output guard read",
-      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir",
+      "sha256": "c431568b9dcad8680c7c75c7b8873ef4598fe3fe06b4df00331c52a838de9696"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_cf.c",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "76b2487e904a7d5848903430540ec4c4f9a2406adf81071ebfa06c421c857c2c"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_compiler.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "5dd7cdeaf8a4262c4d6d05d257f33e4cd3cdbc3f3f4af359988887501af09cb8"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_compiler.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "8a94899a4bfc8ceb3b1b536e7f96c6f70da62b2cd8c1c122a1cbe2ef8274a353"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_compiler_nir.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "f6d819b00419b878778f8579b4aa1dad7d5e4774edf1610e15c57a7c9ae217ac"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_context.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "3199787c9e7222fa041016ba9a805bcc05afac62eaa6fa8c52d04ca9c4d8f2bb"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_context.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "a2ef044adb1a4b902d352d8d32305a922390e86f70989030db35c51c1bfb17af"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_cp.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "00bcdff3fc668a492943ec6e936c095ec68ef687f91fb230710fe49174540ed6"
     },
     {
       "path": "src/freedreno/ir3/ir3_delay.c",
-      "status": "baseline context reviewed in part; integrated validation pending",
+      "status": "source/static review complete; execution validation pending",
       "scope": "A8 dp4acc/address-register delay delta read",
-      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir",
+      "sha256": "7bfd121475e29f4f104d89869c0f964682f1f7661e760a4844245b8c3b787789"
     },
     {
-      "path": "src/freedreno/vulkan/tu_descriptor_set.cc",
-      "status": "baseline context reviewed in part; integrated validation pending",
-      "scope": "baseline allocation rollback and copy-boundary delta read; whole lifetime pending",
-      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+      "path": "src/freedreno/ir3/ir3_disk_cache.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "9a17a415d2667414bc5de6965dfb3382f05242d3936f96adc9be752d47a556d9"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_legalize.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "e48d9e6dee41270b4ddcfbb85bd01b4a2fffc0644365ece7b7efd628f17bfe62"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_lexer.l",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "91b944b0f9d0dfb230d7b448b3a0f057a3055408a879596bf2449c58419e2f0c"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_liveness.c",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "1e3fc1b5eaeffa5446d178bad943c32334dd91bf38d18811e48247967f1137f9"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_lower_parallelcopy.c",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "71638d8b8ee69dd0bfb9301ef6f4535685a890ae19b1297bcf6dddf409fcfec6"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_lower_subgroups.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "ebab1a46b372a97e402e528ff835e9787cbbc469ccb984493ef1aef5e32a7aad"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_nir.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "d0105cc24b4b9d4b0ebe657948ce2a050017f274e88ccc4ceee16f6120b01c4b"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_nir.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "79622d73cdeccb9b9242d158803096edcfc035d3d0ee0decf19bbffe32887bef"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "51575a2bfc034cf6fa0e2683d10ab1e2bb2d0c5bc5410dd6abbf7f1a917d5c2a"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_nir_lower_load_barycentric_at_offset.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "87e3aec208e141fa98a484395aaff97c3efc09532957eeaee9c84bd29ed71fa2"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_nir_lower_load_sample_pos.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "ad727b32c796508c25bdfe117f375f56ed26672c99d8e1344565f4e8a102ea79"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_nir_lower_push_consts_to_preamble.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "8a34a1a41e0a2eba1ce090e5c4ca7726a8f6beb2db1d1e08d4f5e01981f2e206"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_nir_move_varying_inputs.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "1a9fd9fcff966dbf99438507363d700e6ccb12916be7c5942509e908556181bd"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_parser.y",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "b2377c5fe3d2528ffa5c149578179572c097ab178bece07bcbe34d71c3dda2bd"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_ra.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "95ab1ec8e122fc233f00af6c9be87d151e4e332bd19a041f190e205e2559c484"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_ra_validate.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "fa6f290eb86c45e7d52b7b2615c2badb41f891263cadcf86d61f2a36e2ef66df"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_shader.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "78c506e2e9a31029f6dd6fd63b3ab5abbd61611e81b8b1c693ec9e34a3514803"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_shader.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "db9247e94f72b17ce9eed2a65dbe6c4246ea7526cd1f173b083e7642caddc375"
+    },
+    {
+      "path": "src/freedreno/ir3/ir3_shared_ra.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "fffcc23c1799e4df468e0c641d532a59082269b6f2da50b7e2f49c1a71dc0eea"
+    },
+    {
+      "path": "src/freedreno/ir3/meson.build",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "403b0f53ad6977329299c8a1502e544ac1ecf965ffca1e04446335c7157bd131"
+    },
+    {
+      "path": "src/freedreno/isa/encode.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "6759ee97b1af93978161e36c8c2f4e93cde2d79f5b4d2449e30ba796c56685e3"
+    },
+    {
+      "path": "src/freedreno/isa/ir3-cat6.xml",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "6ecfe859df49a36b95358d77190b043af0382e50686913a91722ea0c7dcd0dc0"
+    },
+    {
+      "path": "src/freedreno/isa/ir3-cat7.xml",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "f7f4796a4456d94b118ca73fe63ce16d174e3db8b93a617a292235cb6db5ffde"
+    },
+    {
+      "path": "src/freedreno/registers/adreno/a6xx.xml",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "cd9403879bd466f9a5a69da87edaed3e86396af1b4a26182d42e9a71cabfd32a"
+    },
+    {
+      "path": "src/freedreno/registers/adreno/a8xx_descriptors.xml",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "38dd2e753fa8168dab4b2c52434094ab127dfd5da4c591af5a35e23cafadeb9a"
+    },
+    {
+      "path": "src/freedreno/registers/adreno/adreno_pm4.xml",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "c22824b51543c8344c65cac28dd9e165afeb8e25df2ce744fd23f69eca807f26"
+    },
+    {
+      "path": "src/freedreno/tests/reference/crash.log",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "reviewed source/static context; execution not performed",
+      "sha256": "12a337bb991c60b8a14aac1fb42d60c449092691ab302b0889c75dc3cdae0c02"
+    },
+    {
+      "path": "src/freedreno/tests/reference/crash_prefetch.log",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "reviewed source/static context; execution not performed",
+      "sha256": "e5dfaba5f85baba2211883df5d45ab74e4a7ae1830c4ec6e8ce1dd9d19579b62"
+    },
+    {
+      "path": "src/freedreno/tests/reference/qrisc_test_a7xx.asm",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "reviewed source/static context; execution not performed",
+      "sha256": "fb063ef397e28773b5192b5878e18b96705239d5ab761e8beae0d0b9a98410d8"
+    },
+    {
+      "path": "src/freedreno/vulkan/00-turnip-defaults.conf",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "9d829bb44c16ee92c846ac56b6f603ee3037d96ba107e60d8607302515cb2f99"
+    },
+    {
+      "path": "src/freedreno/vulkan/meson.build",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "f75441fc115e867d8ce2b3a1bf5de02e159400712dcc5beac7466331914c08ac"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_acceleration_structure.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "3f28fef43b45cf9ee07384d21252110c201d5eb26a95e6b1f6ac8d98b7a81e26"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_autotune.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "dbbe311385835387eb8b134edd3fb4c0955b73823d0c934b9c415761174f25b3"
     },
     {
       "path": "src/freedreno/vulkan/tu_autotune.h",
-      "status": "baseline context reviewed in part; integrated validation pending",
+      "status": "source/static review complete; execution validation pending",
       "scope": "tile-observation helper declaration read",
-      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir",
+      "sha256": "232ac977608d73c7ea162cc2eefe7674c9ddc8a7ae0a04f3e32a2cdb3a592fce"
     },
     {
-      "path": "src/freedreno/vulkan/tu_scratch_ram.h",
-      "status": "baseline context reviewed in part; integrated validation pending",
-      "scope": "scratch layout and helper source read",
-      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+      "path": "src/freedreno/vulkan/tu_clear_blit.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "15a139f006ddfc6c37c77dd15852b44cfa20ca2ebef7547686cba58af3c84066"
     },
     {
-      "path": "src/freedreno/vulkan/tu_lrz.cc",
-      "status": "baseline context reviewed in part; integrated validation pending",
-      "scope": "baseline packet helper conversion read",
-      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+      "path": "src/freedreno/vulkan/tu_clear_blit.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "f605b428ff5b271053c2ce1fd988c3c4047c9bcb609c853c3b30ea06ce626190"
     },
     {
-      "path": "src/freedreno/vulkan/tu_util.cc",
-      "status": "baseline context reviewed in part; integrated validation pending",
-      "scope": "baseline opt-in debug option wiring read",
-      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+      "path": "src/freedreno/vulkan/tu_cmd_buffer.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "bdcd52b06f1e7e72178dccbb544cff6b401cb297cffe8b2c78d5a2ef35a127ac"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_cmd_buffer.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "6334e6e56aa9fc5d07b0fda2d57d619b0d41b737a711c460835f89624c4c70c5"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_copy_memory_indirect.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "7a9b1aaf5a50a1e1460bd7f16b7ec6d2f9c22d91416224f2282b83521e09a4f9"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_copy_memory_indirect.comp",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "40bb475710628ae954661121a9ec8081dfe880cb8781816bdb3f7d8e22ac8660"
     },
     {
       "path": "src/freedreno/vulkan/tu_cs.h",
-      "status": "baseline context reviewed in part; integrated validation pending",
-      "scope": "stage44/baseline packet helpers and reservation contract; further review pending",
-      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir"
+      "status": "source/static review complete; execution validation pending",
+      "scope": "stage44/baseline packet helpers and reservation contract; count/address/reservation helpers reviewed",
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir",
+      "sha256": "41921d4b031f3163ba56bb43a84a4478dd885595edcc7182949ab7db4fa15987"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_descriptor_set.cc",
+      "status": "source/static review complete; execution validation pending",
+      "scope": "baseline allocation rollback and copy-boundary delta read; allocation/free/reset and failed-batch lifetime reviewed",
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir",
+      "sha256": "2ef544a329d3ec2bf583619840343f281c4f750580a75c65b5ba8fd2ae7dc399"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_device.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "23da4ebe0bda204e3622a735af6bcd053fbb92a57741b088de950dd99f41a7dc"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_device.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "98387e125ad2e76436126de7b2c0eefa9dc56b10b80c4b734c3a1bd5a328427d"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_drirc_gen.py",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "f394414ac7d4365e4f79fa6c35852c800a399a13c3233358c7f71dde79f82b9e"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_formats.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "39db39e069f255e3b2852aaf0f00647b27d57ccd6b4fe8cd83daa5fca81d25a6"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_fragment_primitive.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "a41cfbcefae479f69e2e86c5c0f827853083ee1c3cb1e272c7dcd9388745ed2c"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_image.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "fc9e4cabe32b02af2ec2ff7512f1881524feb4338661e29c9455b06fe6681c7f"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_image.h",
+      "origin": "stage43..reconstructed-stage66 context; upstream/local attribution not inferred",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "5f51f23fbe606d3066eba7037499d4e0673a7119c2740848b3ef849ecbfaaef7"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_indirect_copy_format.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "cb4479cccdfc588f14a7a5b8e95a2821203103d4f08a366c7686a257852e6d52"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_knl_kgsl.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "f3dd3e8479a4988a43e0381543d1d806e6813b9a6a87fb74898c72e2f680b4bf"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_lrz.cc",
+      "status": "source/static review complete; execution validation pending",
+      "scope": "baseline packet helper conversion read",
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir",
+      "sha256": "f90e2e8f278cd39d310077b02d3c971cb034d0d13db357aa2f9268f1af0e31f9"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_dispatch.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "2d88d7cacb00cae5e611e637dbf9d173d0413d7653baa0c90693e9645a9c2544"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_dispatch.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "60fd4d6da9541c18bd53264ba8d996aa1ecd3e596c2030deb9a7d6ed87df3b0b"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_draw.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "b8a46264ee2ccdd98e8f1b0b48fc1eb0da0cb334afebaf2c1dec2fe8ca7b2d86"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_layout.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "8203deeea5a6e43156c75b4894a2ed6f952b643709a4afb41594dfec2a7bf130"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_layout.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "ed28707113cbb237bc20a3973385e1addddc3b5ee3a882c22d5c77bdde22f892"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_program.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "4331dff7280afac612a3e533417cf71ffeac0ad0ee4e0af4c6c98b29bc449de6"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_program.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "971fa2023be6fdc142dc410e2936f75006228ea5077333173d9c09e7c040367a"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_vpc.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "5116367f7941cce2f786a9d7a43b0f9dd8ac67225f908d1b8db6be463b6b0bf0"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_mesh_vpc.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "e79b5f5a30d28c94ad73fc10dfe45326a29e41a7c414bf811edf48eed8d83439"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_meta_compute.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "2d4b2299aaed9857a7a840ddf864a68e4b9442a2782c3294b6b0d7f1447ed729"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_cooperative_matrix.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "08cbb9234938331ebecfa99c3b73c1d631ca606f2def913f9ca7bcb721cb2313"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_indirect_copy.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "8e15a19a6bbfd969cc718d0cf008ca1410b030a37c0d220f07df33537897554f"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_indirect_copy.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "990a98e344d7214d7356be6132629d80c1135b8519398d474d475057633165b5"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_lower_cooperative_matrix.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "9052b804942f34aab708aad30b53f29ae9d252c15825d44dc539f38ceb638075"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_lower_mesh.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "5080425ab9f75ab9236faee14a03222d96b73e0df4e6fbcf3147738ab8d74f5a"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_mesh.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "be8816ad8079a9bf2c93b91c183f78f2f14789ac301d5b569c8173185232dea7"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_resolve.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "41450a9240e928d5476b2a57db307410fa67fda0a7cd63ff35c41da2c9ff8eec"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_nir_resolve.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "cccf2a1c9d358765646c641e4886faa9665915a8f5f9644529b4b1611087cfba"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_pass.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "c78943b1aded5d7ceeb82564cfe27a57e8d2e8dc30b270d946e2fab22aebf8ce"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_pass.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "0cc44ef245bdaa5a07421b92a2df603c8c466f88f85e1fb457f94d9bb6792dfa"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_pipeline.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "b76ee987b84f615bc983e07fa02d8b87c80da9f700afcf03c8c5bb9c4fe51b0f"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_pipeline.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "2203c763bc3719032de08b562cb7ee31d5b499955a26f8eb753df14672f9911c"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_query_pool.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "a43b83945bf309f1ac135be97a49fe991e9041b0deb28d307dd84e8f7a5483d2"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_scratch_ram.h",
+      "status": "source/static review complete; execution validation pending",
+      "scope": "scratch layout and helper source read",
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir",
+      "sha256": "4e2c695a743776c7c964e570ae9f0a27f815cdc2645f97466fdd265115950b84"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_shader.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "bd79b693de5b1a3a330fe6d78e572242cc97763b3e52be72c4582da8d3212939"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_shader.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "a016c6b717036da9448de5e79a2c81dc653eb29e1d8e60a8df2483e44c0aa123"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_tile_config.cc",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "e4dd87b164f2795d925272c59e1d9cb7075b7694e930d92dae458c29857d08dd"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_util.cc",
+      "status": "source/static review complete; execution validation pending",
+      "scope": "baseline opt-in debug option wiring read",
+      "origin": "stage43..reconstructed-stage66 comparison; includes upstream/local history, not automatically attributed to Gamesir",
+      "sha256": "c20abd9c465d72e7635ead69330dffa2896e62cba56d1b8abe1ec96e571ebece"
+    },
+    {
+      "path": "src/freedreno/vulkan/tu_util.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "b0e1326aee5372c72cbb83a930a2c3f362289123255c0101260938ed0ab0badb"
+    },
+    {
+      "path": "src/util/disk_cache_os.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "9c3e9ff236c946e529191e5b560255c68020a000759026e43d41e8bb700f6b29"
+    },
+    {
+      "path": "src/util/u_gralloc/meson.build",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "0e16dfadec8f3cf4a5a4d88923f59c5596a417692a57198a58cddceb2864be33"
+    },
+    {
+      "path": "src/util/u_gralloc/u_gralloc.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "c0650564aa7a6a7f83c3be9e9d61dcbe904f6ae101ce860b091c7382211ec6e9"
+    },
+    {
+      "path": "src/util/u_gralloc/u_gralloc_internal.h",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "8a4671e3be6b5b607d99036e8d242e081d8e68f670d8ecc889082fe2a23eeb50"
+    },
+    {
+      "path": "src/util/u_gralloc/u_gralloc_mapper_runtime.c",
+      "status": "source/static review complete; execution validation pending",
+      "sha256": "b45ac392a309faad3a8d90bec8518d2676f081b30149fc4d969026e5e847be15"
     }
   ],
   "not_findings": [
@@ -605,6 +867,26 @@
     {
       "title": "RGB9E5 indirect format decoding",
       "reason": "copy_format already reinterprets E5B9G9R9 as R32_UINT before tu_get_indirect_copy_format; no new shared-exponent unpacker needed for this copy path."
+    },
+    {
+      "title": "Compiler-option cache separation",
+      "reason": "tu_device_get_cache_uuid already hashes compiler_options. No duplicate SSBO-emulation cache-key patch."
+    },
+    {
+      "title": "Per-tile autotune in the shared bin-loop body",
+      "reason": "tu_cmd_render_tiles already requires !autotune->tracks_tiles(rp_ctx) and !has_fdm before choosing the bin loop. No duplicate eligibility fix."
+    },
+    {
+      "title": "Empty-submit profiling allocation",
+      "reason": "tu_queue.cc only creates trace submission data for command buffers with trace points, whose entries/timestamp copies are submitted. No demonstrated empty-submit trace-data producer; no speculative cleanup patch."
+    },
+    {
+      "title": "Mesh query counter register",
+      "reason": "Native A8 begin/end query wrappers af789c/afd6c0 route both primitive query types to CINVOCATIONS0x038a. The name MSPRIMITIVES alone does not justify a patch. Hardware counter semantics remain part of held mesh activation."
+    },
+    {
+      "title": "AIMapper callback ABI",
+      "reason": "AOSP IMapper.h confirms the getStandardMetadata signature and preceding callback layout; the AArch64 offset0x48 and signed byte-count return match. Actual Android handle/loader operation remains unexecuted."
     }
   ],
   "models": {
@@ -621,12 +903,12 @@
     "old_C_mutation_counterexample_reproduced": true,
     "indirect_copy_remaining_slice_cases": 8028,
     "source_sha256": {
-      "src/freedreno/vulkan/tu_pipeline.cc": "6ab1ddfdbc1ac03d681ac03b0c169d42cc58e9d5d6ff8be90ed78809d732a2f7",
+      "src/freedreno/vulkan/tu_pipeline.cc": "b76ee987b84f615bc983e07fa02d8b87c80da9f700afcf03c8c5bb9c4fe51b0f",
       "src/freedreno/vulkan/tu_pipeline.h": "2203c763bc3719032de08b562cb7ee31d5b499955a26f8eb753df14672f9911c",
       "src/freedreno/ir3/ir3_nir_move_varying_inputs.c": "1a9fd9fcff966dbf99438507363d700e6ccb12916be7c5942509e908556181bd",
       "src/freedreno/vulkan/tu_nir_lower_cooperative_matrix.c": "9052b804942f34aab708aad30b53f29ae9d252c15825d44dc539f38ceb638075",
       "src/compiler/nir/nir_lower_cooperative_matrix.c": "a8faae069ef0b3116731cabbc17e6648779b666947c16f676474d4d2439377a1",
-      "src/freedreno/vulkan/tu_clear_blit.cc": "b662a1585daac2131964c79f1a6d4fcff0208833e1cf87163994d5466a4160db"
+      "src/freedreno/vulkan/tu_clear_blit.cc": "15a139f006ddfc6c37c77dd15852b44cfa20ca2ebef7547686cba58af3c84066"
     },
     "driver_or_C_executed": false,
     "build": false,
@@ -638,33 +920,92 @@
       "proof. Temporary ELF, ZIP, driver or device files are never created."
     ]
   },
-  "source_policy": "0x4753381e",
-  "inventory_scope": "Initial101 paths are the reconstructed continuation delta afec90a36cc..2d782b0ac16, not all earlier GameSir transfers. Relevant stage66 baseline paths and shared dependencies are expanded separately; exact pre-loss historical tree identity is not established.",
-  "open_candidates": [
+  "source_policy": "0x4753381f",
+  "inventory_scope": "127 paths: initial101 continuation paths, relevant49-path stage43..reconstructed-stage66 comparison, and shared dependencies (overlaps deduplicated). This is the bounded source-review inventory, not every Mesa function or proof of the lost historical source identity. Upstream/local baseline changes are not automatically attributed to GameSir.",
+  "next_checks": [
+    "One coordinated driver/component build and generator/linker/SDK checks (not authorized in this no-build pass).",
+    "Executed NIR/IR3/ISA, serialization/cache concurrency/OOM, arithmetic/robustness and device API validation.",
+    "KGSL/Android imports, resolves/FDM/MSAA/FSR, secondary replay/SIMULTANEOUS_USE/preemption on hardware.",
+    "Gate-specific dynamic primitive selection, mesh payload/shared/output limit coverage, AQE firmware/FRCP/counter/interlock contracts before activation.",
+    "Controlled game correctness, frame-time/FPS and thermal A/B comparison against the confirmed baseline."
+  ],
+  "first_fix_commit": "7a8a69bfba5",
+  "syntax_checks": {
+    "changed_python_sources_parsed": 4,
+    "changed_XML_and_driconf_parsed": 6,
+    "audit_model_scripts_parsed": 2,
+    "meson_transferred_source_references_checked": 10,
+    "git_diff_check": "passed",
+    "compiled": false,
+    "generators_executed": false
+  },
+  "interface_models": {
+    "aqe_division_F32_and_neighbor_cases": 8580,
+    "aqe_reciprocal_hardware_accuracy_proved": false,
+    "aqe_nonoverlapping_BO_ranges": 6,
+    "aqe_capacity_bound_cases": 393216,
+    "prefetch_gate_cases": 8,
+    "prefetch_basis_disjoint_cases": 123,
+    "scripted_wait_cases": 7,
+    "resolve_aspect_preservation_cases": 48,
+    "byte_base_alignment_cases": 17152,
+    "shuffle_modulo_lane_cases": 57344,
+    "sparse_semantic_permutations": 1024,
+    "source_sha256": {
+      "src/freedreno/ir3/ir3_context.c": "3199787c9e7222fa041016ba9a805bcc05afac62eaa6fa8c52d04ca9c4d8f2bb",
+      "src/freedreno/ir3/ir3_compiler_nir.c": "f6d819b00419b878778f8579b4aa1dad7d5e4774edf1610e15c57a7c9ae217ac",
+      "src/freedreno/ir3/ir3_a6xx.c": "e47ae0b18a641bb75a5bb76ff9ca9660defda76327bc096f50f957f198126c45",
+      "src/freedreno/vulkan/tu_knl_kgsl.cc": "f3dd3e8479a4988a43e0381543d1d806e6813b9a6a87fb74898c72e2f680b4bf",
+      "src/freedreno/vulkan/tu_clear_blit.cc": "15a139f006ddfc6c37c77dd15852b44cfa20ca2ebef7547686cba58af3c84066",
+      "src/freedreno/vulkan/tu_mesh_dispatch.h": "60fd4d6da9541c18bd53264ba8d996aa1ecd3e596c2030deb9a7d6ed87df3b0b",
+      "src/freedreno/vulkan/tu_mesh_dispatch.cc": "2d88d7cacb00cae5e611e637dbf9d173d0413d7653baa0c90693e9645a9c2544",
+      "src/freedreno/vulkan/tu_device.cc": "23da4ebe0bda204e3622a735af6bcd053fbb92a57741b088de950dd99f41a7dc",
+      "src/freedreno/vulkan/tu_pipeline.cc": "b76ee987b84f615bc983e07fa02d8b87c80da9f700afcf03c8c5bb9c4fe51b0f",
+      "src/freedreno/ir3/ir3_disk_cache.c": "9a17a415d2667414bc5de6965dfb3382f05242d3936f96adc9be752d47a556d9"
+    },
+    "driver_or_C_executed": false,
+    "build": false,
+    "limits": [
+      "Independent contract models for the second GameSir source audit.",
+      "",
+      "No C/NIR/ISA, kernel ioctl, driver or GPU is executed. Source markers bind",
+      "the checks to the reviewed edits, without claiming compiled equivalence."
+    ]
+  },
+  "source_static_review_complete": true,
+  "source_static_review_finished_utc": "2026-10-27T11:40:50.340693+00:00",
+  "source_static_review_report": "docs/gamesir-recovery/validation-source-review-20261027.md",
+  "inventory_counts": {
+    "paths": 127,
+    "initial_continuation_paths": 101,
+    "earlier_context_paths": 49,
+    "test_or_reference_paths": 4
+  },
+  "review_candidates": [
     {
       "id": "CAND-RESOLVE-NONE",
       "scope": "Independent NONE/sample-zero depth/stencil preservation",
-      "state": "No current valid exposed counterexample established; independentResolveNone=false. Recheck before extending modes/exposure."
+      "state": "Confirmed and fixed in this pass; see V010"
     },
     {
       "id": "CAND-SHARED-BASE",
       "scope": "tu_update_shared_size ignores intrinsic BASE",
-      "state": "Need a real nonzero-BASE producer reaching this preprocessing point; explicit I/O currently emits base0."
+      "state": "No present producer found: TU explicit shared I/O and matrix derefs generate base0 here; task/mesh direct shared lowering runs later. Review closed as no demonstrated current bug, reopen only with an actual earlier producer."
     },
     {
       "id": "CAND-KGSL-DEADLINE",
       "scope": "Repeated EINTR/EAGAIN after deadline",
-      "state": "Need bounded retry/failure-injection policy; relative timeout is recomputed but zero-time retries can theoretically continue."
+      "state": "Confirmed and fixed in this pass; see V009"
     },
     {
       "id": "CAND-SPARSE-INTERFACE",
       "scope": "sparse FS/LDLV/prefetch/producer-map address domains",
-      "state": "Compiler and helper source read; cross-path and limit validation still in progress."
+      "state": "Source/static domain review complete with V008 fallback/fix.1024 independent component-preserving sparse permutations passed; actual C/NIR/ISA/GPU remapping and full advertised mesh limits remain execution/activation obligations."
     },
     {
       "id": "CAND-PREFETCH-REMAP",
       "scope": "META_TEX_PREFETCH input offsets across mesh/per-vertex/barycentric remapping",
-      "state": "coord_offset/emit_tex retain logical offsets, while setup_input can use physical mesh locations and late compaction changes ordinary locations. The original inspected helpers also retain logical offsets; no native-equivalent remap or hardware-domain correction has been proved. Check paired-coordinate contiguity, prefetch-only live inputs and basis allocation before any patch.",
+      "state": "Confirmed and fixed in this pass; see V008",
       "native_anchors": [
         "ELF0xacb638 coord_offset",
         "ELF0xaae20c fixup_per_vertex_input_inlocs",
@@ -681,18 +1022,31 @@
       ]
     }
   ],
-  "next_checks": [
-    "Finish sparse FS/LDLV/prefetch address-domain and VPC/AQE linkage validation.",
-    "Finish GPU-state/resolve/FDM/secondary/binning/preemption and synchronization review, including earlier stage66 baseline paths.",
-    "Complete feature/SDK/build-wiring consistency and host cache/memory failure paths without building.",
-    "Compiled NIR/ISA/Vulkan/GPU/game/performance checks require a later user-authorized build/test phase."
-  ],
-  "first_fix_commit": "7a8a69bfba5",
-  "syntax_checks": {
-    "changed_python_sources_parsed": 4,
-    "changed_XML_and_driconf_parsed": 6,
-    "git_diff_check": "passed",
-    "compiled": false,
-    "generators_executed": false
-  }
+  "activation_blockers": [
+    {
+      "id": "A01",
+      "scope": "Barycentric/per-vertex dynamic topology and provoking vertex",
+      "reason": "The recovered static key/retained GPL NIR path does not supply a draw-time dynamic variant selector. Keep exposure held."
+    },
+    {
+      "id": "A02",
+      "scope": "TASK/MESH limits, AQE and shared/payload/output memory",
+      "reason": "Compilation/exposure stay held. Checked32-record/128-scalar staging and BO/GMEM arithmetic do not prove all advertised EXT limit combinations, hardware FRCP accuracy or firmware context/bank/count ordering."
+    },
+    {
+      "id": "A03",
+      "scope": "Sample-center polarity",
+      "reason": "Native operand order is preserved under IR3_GAMESIR_SAMPLE_CENTER=false; mathematical/GPU behavior must be resolved before default activation."
+    },
+    {
+      "id": "A04",
+      "scope": "Selected-bin CP prefix",
+      "reason": "TU_GAMESIR_BIN_DATA remains false pending firmware/replay/preemption and concurrent-submission validation."
+    },
+    {
+      "id": "A05",
+      "scope": "Interlock, unrestricted depth and FullyCovered",
+      "reason": "Source compiler/raster paths remain gated until memory-ordering, clamp and coverage/sample-mask contracts are tested."
+    }
+  ]
 }

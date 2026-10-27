@@ -76,7 +76,7 @@ ir3_disk_cache_init_shader_key(struct ir3_compiler *compiler,
    struct blob blob;
    blob_init(&blob);
    /* Includes A8 input policy and corrected cooperative-matrix lowering. */
-   const uint32_t variant_schema = 0x4753381e;
+   const uint32_t variant_schema = 0x4753381f;
    _mesa_blake3_update(&ctx, &variant_schema, sizeof(variant_schema));
    nir_serialize(&blob, shader->nir, true);
    _mesa_blake3_update(&ctx, blob.data, blob.size);

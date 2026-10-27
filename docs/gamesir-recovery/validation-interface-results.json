@@ -1,0 +1,33 @@
+{
+  "aqe_division_F32_and_neighbor_cases": 8580,
+  "aqe_reciprocal_hardware_accuracy_proved": false,
+  "aqe_nonoverlapping_BO_ranges": 6,
+  "aqe_capacity_bound_cases": 393216,
+  "prefetch_gate_cases": 8,
+  "prefetch_basis_disjoint_cases": 123,
+  "scripted_wait_cases": 7,
+  "resolve_aspect_preservation_cases": 48,
+  "byte_base_alignment_cases": 17152,
+  "shuffle_modulo_lane_cases": 57344,
+  "sparse_semantic_permutations": 1024,
+  "source_sha256": {
+    "src/freedreno/ir3/ir3_context.c": "3199787c9e7222fa041016ba9a805bcc05afac62eaa6fa8c52d04ca9c4d8f2bb",
+    "src/freedreno/ir3/ir3_compiler_nir.c": "f6d819b00419b878778f8579b4aa1dad7d5e4774edf1610e15c57a7c9ae217ac",
+    "src/freedreno/ir3/ir3_a6xx.c": "e47ae0b18a641bb75a5bb76ff9ca9660defda76327bc096f50f957f198126c45",
+    "src/freedreno/vulkan/tu_knl_kgsl.cc": "f3dd3e8479a4988a43e0381543d1d806e6813b9a6a87fb74898c72e2f680b4bf",
+    "src/freedreno/vulkan/tu_clear_blit.cc": "15a139f006ddfc6c37c77dd15852b44cfa20ca2ebef7547686cba58af3c84066",
+    "src/freedreno/vulkan/tu_mesh_dispatch.h": "60fd4d6da9541c18bd53264ba8d996aa1ecd3e596c2030deb9a7d6ed87df3b0b",
+    "src/freedreno/vulkan/tu_mesh_dispatch.cc": "2d88d7cacb00cae5e611e637dbf9d173d0413d7653baa0c90693e9645a9c2544",
+    "src/freedreno/vulkan/tu_device.cc": "23da4ebe0bda204e3622a735af6bcd053fbb92a57741b088de950dd99f41a7dc",
+    "src/freedreno/vulkan/tu_pipeline.cc": "b76ee987b84f615bc983e07fa02d8b87c80da9f700afcf03c8c5bb9c4fe51b0f",
+    "src/freedreno/ir3/ir3_disk_cache.c": "9a17a415d2667414bc5de6965dfb3382f05242d3936f96adc9be752d47a556d9"
+  },
+  "driver_or_C_executed": false,
+  "build": false,
+  "limits": [
+    "Independent contract models for the second GameSir source audit.",
+    "",
+    "No C/NIR/ISA, kernel ioctl, driver or GPU is executed. Source markers bind",
+    "the checks to the reviewed edits, without claiming compiled equivalence."
+  ]
+}

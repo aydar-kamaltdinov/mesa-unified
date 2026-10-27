@@ -5533,6 +5533,9 @@ fixup_per_vertex_input_inlocs(struct ir3_context *ctx)
             if (map[i].per_vertex == per_vertex &&
                 src->iim_val >= map[i].old && src->iim_val < map[i].old + 4) {
                src->iim_val = src->iim_val - map[i].old + map[i].current;
+               if (instr->opc == OPC_FLAT_B &&
+                   (instr->srcs[1]->flags & IR3_REG_IMMED))
+                  instr->srcs[1]->iim_val = src->iim_val;
                break;
             }
          }
@@ -5547,6 +5550,13 @@ fixup_barycentric_coord_inlocs(struct ir3_context *ctx)
    unsigned end = 0;
    foreach_block (block, &ctx->ir->block_list) {
       foreach_instr (instr, &block->instr_list) {
+         /* The coordinate loads of a prefetch may have been removed by DCE.
+          * Its two varying components still occupy space before the basis.
+          */
+         if (instr->opc == OPC_META_TEX_PREFETCH) {
+            end = MAX2(end, instr->prefetch.input_offset + 2);
+            continue;
+         }
          if (!is_input(instr))
             continue;
          struct ir3_register *src = instr->srcs[0];
