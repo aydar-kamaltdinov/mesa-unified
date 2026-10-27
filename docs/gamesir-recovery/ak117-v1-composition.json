@@ -1,0 +1,1711 @@
+{
+  "v1_source": "11216a7f7bb21da24d1cd063989e44825ab9ff68",
+  "v1_original_sha256": "90c056d7919a1da8ef0fd3131403729b81b05fe3c7373e772e3ceaa522ad397e",
+  "ak117_release": "c9d0be37510b08a6de3d33ad59705115d21304b5",
+  "our_author_filter": "aydar.kamaltdinov",
+  "our_reachable_commits": 88,
+  "dispositions": {
+    "superseded": 6,
+    "cherry-picked": 2,
+    "superseded-in-release": 2,
+    "inherited-exact": 34,
+    "empty-historical-commit": 2,
+    "reverted-in-release": 6,
+    "inherited-adapted": 18,
+    "inherited-hardened": 7,
+    "superseded-partially": 1,
+    "replaced-release-metadata": 8,
+    "covered-by-final-policy": 2
+  },
+  "commits": [
+    {
+      "commit": "79b6b417be6a8a966fd4c56e58ca188eecd72eb9",
+      "date": "2026-08-26",
+      "subject": "freedreno/common: reclassify A830 from a8xx_gen1 to a8xx_gen2 (reg_size_vec4=112)",
+      "files": [
+        "src/freedreno/common/freedreno_devices.py"
+      ],
+      "source_files": [
+        "src/freedreno/common/freedreno_devices.py"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/common/freedreno_devices.py:1411\nerror: src/freedreno/common/freedreno_devices.py: patch does n",
+      "forward_diagnostic": "error: patch failed: src/freedreno/common/freedreno_devices.py:1411\nerror: src/freedreno/common/freedreno_devices.py: patch does n",
+      "final_disposition": "superseded",
+      "review_note": "Final e52f2e89a89 gen1 policy exists; reg_size=112 experiment is not replayed."
+    },
+    {
+      "commit": "b1ff928eb59e87d4eec55fae4bc3719140edca63",
+      "date": "2026-08-26",
+      "subject": "tu/autotune: drop the 10% anti-GMEM bandwidth margin",
+      "files": [
+        "src/freedreno/vulkan/tu_autotune.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_autotune.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_autotune.cc:1059\nerror: src/freedreno/vulkan/tu_autotune.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_autotune.cc:1059\nerror: src/freedreno/vulkan/tu_autotune.cc: patch does not apply",
+      "final_disposition": "cherry-picked",
+      "review_note": "24acb9f6512: restores the AK1.17 GMEM bandwidth formula; newer baseline depth-only pass selection is preserved."
+    },
+    {
+      "commit": "c9b42bc32acd8699acf430979d1c05d8c6c6295e",
+      "date": "2026-08-26",
+      "subject": "tu: drop per-tile WFI in tu6_render_tile() (experimental)",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:3780\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:3780\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "final_disposition": "superseded-in-release",
+      "review_note": "Per-tile synchronization later changed in Mesa/V1; preserve the audited current cache/emit framework rather than replay an obsolete experimental deletion."
+    },
+    {
+      "commit": "2ab056606612855537ef99e3e14d333d59b0190e",
+      "date": "2026-08-27",
+      "subject": "freedreno/common: document real hang risk in A830 reg_size_vec4=112 override",
+      "files": [
+        "src/freedreno/common/freedreno_devices.py"
+      ],
+      "source_files": [
+        "src/freedreno/common/freedreno_devices.py"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/common/freedreno_devices.py:1415\nerror: src/freedreno/common/freedreno_devices.py: patch does n",
+      "forward_diagnostic": "error: patch failed: src/freedreno/common/freedreno_devices.py:1415\nerror: src/freedreno/common/freedreno_devices.py: patch does n",
+      "final_disposition": "superseded",
+      "review_note": "Comment about the older112-register experiment is obsolete after gen1 restoration."
+    },
+    {
+      "commit": "8a5d1e14fd94f6d80c667f37106631afb8713d56",
+      "date": "2026-08-27",
+      "subject": "tu: Honor VK_IMAGE_COMPRESSION_DISABLED_EXT in image creation",
+      "files": [
+        "src/freedreno/vulkan/tu_image.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_image.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": true,
+      "triage": "candidate-forward",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_image.cc:867\nerror: src/freedreno/vulkan/tu_image.cc: patch does not apply",
+      "forward_diagnostic": "",
+      "final_disposition": "superseded",
+      "review_note": "The final compression-disable implementation is the following fixup62dd20e5f70, which is already present exactly."
+    },
+    {
+      "commit": "62dd20e5f70d499d039a41b9ed9646cdd4b5a9b3",
+      "date": "2026-08-28",
+      "subject": "tu: Honor VK_IMAGE_COMPRESSION_DISABLED_EXT in image creation (fixup)",
+      "files": [
+        "src/freedreno/vulkan/tu_image.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_image.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_image.cc:867\nerror: src/freedreno/vulkan/tu_image.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "5f1443f73405f9dcde9528c0de72b6879de12ceb",
+      "date": "2026-08-27",
+      "subject": "tu: Fix subsampled metadata and blit emission for separate stencil",
+      "files": [],
+      "source_files": [],
+      "triage": "release-metadata",
+      "final_disposition": "empty-historical-commit",
+      "review_note": "No tree delta against its parent; subject text does not establish a code change."
+    },
+    {
+      "commit": "1fd5aa2472dbaf8d1ce7e6bf62a3bf0fa1ee7433",
+      "date": "2026-08-27",
+      "subject": "tu: fix bit collision, kgsl memory-type detection, and 4 more small correctness fixes",
+      "files": [],
+      "source_files": [],
+      "triage": "release-metadata",
+      "final_disposition": "empty-historical-commit",
+      "review_note": "No tree delta against its parent; subject text does not establish a code change."
+    },
+    {
+      "commit": "fd7bed398d62e875ab18b915459e044dcdcb528a",
+      "date": "2026-08-27",
+      "subject": "EXPERIMENTAL: tu: drop unconditional defensive CCU flush in EndCommandBuffer",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": true,
+      "triage": "candidate-forward",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:5406\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "forward_diagnostic": "",
+      "final_disposition": "superseded-in-release",
+      "review_note": "AK1.17 release source restored defensive CCU cleanup; the experimental removal is not in its final tree and is not replayed."
+    },
+    {
+      "commit": "82015dd1745ad5a4747cace2be4d0a7a8054794f",
+      "date": "2026-08-28",
+      "subject": "tu/autotune: fix total_draw_call_bandwidth canceling out of GMEM/SYSMEM decision",
+      "files": [
+        "src/freedreno/vulkan/tu_autotune.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_autotune.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_autotune.cc:1058\nerror: src/freedreno/vulkan/tu_autotune.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_autotune.cc:1058\nerror: src/freedreno/vulkan/tu_autotune.cc: patch does not apply",
+      "final_disposition": "reverted-in-release",
+      "review_note": "Final fe8e78100c2 policy restores draw-bandwidth participation in the GMEM estimate; b1ff cherry-pick supplies that policy."
+    },
+    {
+      "commit": "98b3cd24f74bcfc8894a4209a3f7a918d6b43b3a",
+      "date": "2026-08-26",
+      "subject": "tu: add AK-TURNIP marker log for driver-identity verification",
+      "files": [
+        "src/freedreno/vulkan/tu_device.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_device.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_device.cc:2000\nerror: src/freedreno/vulkan/tu_device.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "a801126b02ce2e6e2e76922d336913b296a7986c",
+      "date": "2026-08-26",
+      "subject": "tu: gralloc UBWC gmsm-bypass + disable has_64b_image_atomics (no KGSL-merge fix)",
+      "files": [
+        "src/freedreno/common/freedreno_devices.py",
+        "src/util/u_gralloc/u_gralloc_fallback.c"
+      ],
+      "source_files": [
+        "src/freedreno/common/freedreno_devices.py",
+        "src/util/u_gralloc/u_gralloc_fallback.c"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/common/freedreno_devices.py:864\nerror: src/freedreno/common/freedreno_devices.py: patch does no",
+      "forward_diagnostic": "error: patch failed: src/freedreno/common/freedreno_devices.py:864\nerror: src/freedreno/common/freedreno_devices.py: patch does no",
+      "final_disposition": "inherited-adapted",
+      "review_note": "Android gralloc layout was restored with ABI-correct stable-C header; atomic capability policy follows current device profiles, not the historical blanket workaround."
+    },
+    {
+      "commit": "c02426ff93dbbd45f7f1cb70c1fbec1a237a674e",
+      "date": "2026-08-25",
+      "subject": "tu: fix buffer bind NULL deref, pipeline builder leak, shader variant NULL check, push-constant unit mismatch",
+      "files": [
+        "src/freedreno/vulkan/tu_buffer.cc",
+        "src/freedreno/vulkan/tu_pipeline.cc",
+        "src/freedreno/vulkan/tu_shader.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_buffer.cc",
+        "src/freedreno/vulkan/tu_pipeline.cc",
+        "src/freedreno/vulkan/tu_shader.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_shader.cc:311\nerror: src/freedreno/vulkan/tu_shader.cc: patch does not apply\nerror: p",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_buffer.cc:213\nerror: src/freedreno/vulkan/tu_buffer.cc: patch does not apply\nerror: p",
+      "final_disposition": "inherited-adapted",
+      "review_note": "tu_buffer memory-bound-only reporting, pipeline allocation/copy error unwind and shader NULL checks exist. Push-constant byte/dword conversion exists once in the corrected lowering."
+    },
+    {
+      "commit": "bb7d7a1cedd237f340352fe8913bdc982336976c",
+      "date": "2026-08-28",
+      "subject": "tu: enable force_nan_preserve_min_max spirv_to_nir workaround",
+      "files": [
+        "src/freedreno/vulkan/tu_shader.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_shader.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_shader.cc:56\nerror: src/freedreno/vulkan/tu_shader.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_shader.cc:56\nerror: src/freedreno/vulkan/tu_shader.cc: patch does not apply",
+      "final_disposition": "inherited-adapted",
+      "review_note": "tu_spirv_options.workarounds.force_nan_preserve_min_max=true; comments were corrected during the baseline audit."
+    },
+    {
+      "commit": "6d3896c67adeb666beec957c5ec23e7e9367110c",
+      "date": "2026-08-28",
+      "subject": "tu: revert upstream fbc05622038 (nir/algebraic inexact-vs-preserve relaxation)",
+      "files": [
+        "src/compiler/nir/nir_algebraic.py"
+      ],
+      "source_files": [
+        "src/compiler/nir/nir_algebraic.py"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/compiler/nir/nir_algebraic.py:480\nerror: src/compiler/nir/nir_algebraic.py: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "382cf8e1fdf0576817af6b7987048f969292f817",
+      "date": "2026-08-29",
+      "subject": "tu: add compute_flush_bits, avoid forcing CCU invalidate before dispatch",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:9607\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:9607\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "final_disposition": "inherited-adapted",
+      "review_note": "Separate compute flush tracking is present in the current cache framework; old dirty-bit layout is not transplanted."
+    },
+    {
+      "commit": "6aab31c83632a4c580baab84721754212b94e533",
+      "date": "2026-08-29",
+      "subject": "tu: cache RB_RESOLVE_GMEM_BUFFER_INFO across multi-rect gmem clears",
+      "files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": true,
+      "triage": "candidate-forward",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_clear_blit.cc:4637\nerror: src/freedreno/vulkan/tu_clear_blit.cc: patch does not apply",
+      "forward_diagnostic": "",
+      "final_disposition": "reverted-in-release",
+      "review_note": "60541fbc15d cancels this cache; its revert is already present exactly."
+    },
+    {
+      "commit": "f8d9ce453a863b89c2f9ffceecd729c86809ed66",
+      "date": "2026-08-29",
+      "subject": "tu: replace GMEM tile-pixel-count allocator with a max-min binary search",
+      "files": [
+        "src/freedreno/vulkan/tu_pass.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_pass.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_pass.cc:813\nerror: src/freedreno/vulkan/tu_pass.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_pass.cc:813\nerror: src/freedreno/vulkan/tu_pass.cc: patch does not apply",
+      "final_disposition": "inherited-adapted",
+      "review_note": "Current GMEM allocation and caching implementation supersedes the original allocation-loop patch."
+    },
+    {
+      "commit": "fb4e84f2bccb78bde7a900a467624381242211c9",
+      "date": "2026-08-29",
+      "subject": "freedreno/common: revert A830 reg_size_vec4 112 -> 96, fixes shooting crash",
+      "files": [
+        "src/freedreno/common/freedreno_devices.py"
+      ],
+      "source_files": [
+        "src/freedreno/common/freedreno_devices.py"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/common/freedreno_devices.py:1429\nerror: src/freedreno/common/freedreno_devices.py: patch does n",
+      "forward_diagnostic": "error: patch failed: src/freedreno/common/freedreno_devices.py:1429\nerror: src/freedreno/common/freedreno_devices.py: patch does n",
+      "final_disposition": "superseded",
+      "review_note": "Final A830 gen1 profile already uses96 registers without the obsolete gen2 override."
+    },
+    {
+      "commit": "44aacf6024ac9f1b7bd880d9a68ff3308ed85948",
+      "date": "2026-08-29",
+      "subject": "ir3: revert nir_opt_gcm register-bank gate, found to corrupt A830 output",
+      "files": [
+        "src/freedreno/ir3/ir3_nir.c"
+      ],
+      "source_files": [
+        "src/freedreno/ir3/ir3_nir.c"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/ir3/ir3_nir.c:318\nerror: src/freedreno/ir3/ir3_nir.c: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "464fb34528e5c34d0e9fa58bca87c01fa8db6fc2",
+      "date": "2026-08-29",
+      "subject": "tu/driconf: add yuzu Emulator engine block for Eden TOTK/BOTW artifacts",
+      "files": [
+        "src/freedreno/vulkan/00-turnip-defaults.conf"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/00-turnip-defaults.conf"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": true,
+      "triage": "candidate-forward",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/00-turnip-defaults.conf:54\nerror: src/freedreno/vulkan/00-turnip-defaults.conf: patch do",
+      "forward_diagnostic": "",
+      "final_disposition": "reverted-in-release",
+      "review_note": "1467c5acb0d cancels the yuzu engine block; its revert is already present exactly."
+    },
+    {
+      "commit": "99f590a987dc5b1893bd6efd1e3d14e7dc97c75c",
+      "date": "2026-08-29",
+      "subject": "build: make MESA_GIT_SHA1 dirty-tree-aware",
+      "files": [
+        "bin/git_sha1_gen.py"
+      ],
+      "source_files": [
+        "bin/git_sha1_gen.py"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: bin/git_sha1_gen.py:18\nerror: bin/git_sha1_gen.py: patch does not apply",
+      "forward_diagnostic": "error: patch failed: bin/git_sha1_gen.py:18\nerror: bin/git_sha1_gen.py: patch does not apply",
+      "final_disposition": "inherited-hardened",
+      "review_note": "Dirty-tree SHA generation exists; display helpers are disabled while hashing tracked repository diff."
+    },
+    {
+      "commit": "88ad63ec154ffcb44c293ba88eced33e5f2f5c4d",
+      "date": "2026-08-31",
+      "subject": "freedreno/a730: revert PC_MODE_CNTL to upstream's own documented-safe value",
+      "files": [
+        "src/freedreno/common/freedreno_devices.py"
+      ],
+      "source_files": [
+        "src/freedreno/common/freedreno_devices.py"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": true,
+      "triage": "candidate-forward",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/common/freedreno_devices.py:918\nerror: src/freedreno/common/freedreno_devices.py: patch does no",
+      "forward_diagnostic": "",
+      "final_disposition": "cherry-picked",
+      "review_note": "d6cd3e5f69e: restores A730 PC_MODE_CNTL=0x3f. A730 hardware was not tested."
+    },
+    {
+      "commit": "f4a900d4413d188f238e2470db7149919748fbd5",
+      "date": "2026-08-31",
+      "subject": "tu: skip redundant dirty-flag forcing on exact repeat CmdBindPipeline",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc",
+        "src/freedreno/vulkan/tu_cmd_buffer.h"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc",
+        "src/freedreno/vulkan/tu_cmd_buffer.h"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:4363\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:4363\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "final_disposition": "inherited-adapted",
+      "review_note": "Repeat-pipeline bind state tracking exists and now accounts for mesh-mode transitions."
+    },
+    {
+      "commit": "7419c9b9ab2f6f4c6248b0d5eded6a340c635f2e",
+      "date": "2026-08-31",
+      "subject": "tu: cache tu_render_pass_gmem_config() result for dynamic rendering",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc",
+        "src/freedreno/vulkan/tu_cmd_buffer.h",
+        "src/freedreno/vulkan/tu_pass.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc",
+        "src/freedreno/vulkan/tu_cmd_buffer.h",
+        "src/freedreno/vulkan/tu_pass.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_pass.cc:1919\nerror: src/freedreno/vulkan/tu_pass.cc: patch does not apply\nerror: patc",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:4364\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "final_disposition": "inherited-adapted",
+      "review_note": "Dynamic GMEM configuration cache is present with the later248c3c5133a key expansion."
+    },
+    {
+      "commit": "420bbcaf4f7cd49fb7df0a5c152e9035e37dcb2f",
+      "date": "2026-09-01",
+      "subject": "freedreno,tu: Extract and make more accurate common fd_ticks_to_ns helper",
+      "files": [
+        "src/freedreno/common/freedreno_common.h",
+        "src/freedreno/ds/fd_pps_driver.cc",
+        "src/freedreno/vulkan/tu_device.cc",
+        "src/gallium/drivers/freedreno/a5xx/fd5_query.c",
+        "src/gallium/drivers/freedreno/a6xx/fd6_query.cc",
+        "src/gallium/drivers/freedreno/freedreno_screen.c",
+        "src/gallium/drivers/freedreno/freedreno_util.h"
+      ],
+      "source_files": [
+        "src/freedreno/common/freedreno_common.h",
+        "src/freedreno/ds/fd_pps_driver.cc",
+        "src/freedreno/vulkan/tu_device.cc",
+        "src/gallium/drivers/freedreno/a5xx/fd5_query.c",
+        "src/gallium/drivers/freedreno/a6xx/fd6_query.cc",
+        "src/gallium/drivers/freedreno/freedreno_screen.c",
+        "src/gallium/drivers/freedreno/freedreno_util.h"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/common/freedreno_common.h:162\nerror: src/freedreno/common/freedreno_common.h: patch does not ap",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "e9bae3287df7452532c161585a1b987cd177b804",
+      "date": "2026-09-04",
+      "subject": "tu: fix A8XX TEX_LINE_OFFSET unit (bits vs bytes)",
+      "files": [
+        "src/freedreno/vulkan/tu_descriptor_set.h"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_descriptor_set.h"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_descriptor_set.h:432\nerror: src/freedreno/vulkan/tu_descriptor_set.h: patch does not ",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "b0a36c19841d38882c0224dec50b3cdcbd44e8ab",
+      "date": "2026-09-04",
+      "subject": "tu: add GMEM->GMEM resolve prototype",
+      "files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc",
+        "src/freedreno/vulkan/tu_clear_blit.h",
+        "src/freedreno/vulkan/tu_device.h",
+        "src/freedreno/vulkan/tu_pass.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc",
+        "src/freedreno/vulkan/tu_clear_blit.h",
+        "src/freedreno/vulkan/tu_device.h",
+        "src/freedreno/vulkan/tu_pass.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_device.h:50\nerror: src/freedreno/vulkan/tu_device.h: patch does not apply\nerror: patc",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_clear_blit.cc:902\nerror: src/freedreno/vulkan/tu_clear_blit.cc: patch does not apply\n",
+      "final_disposition": "superseded",
+      "review_note": "The prototype evolved through later resolve fixes and remains opt-in; keep current checked per-aspect implementation."
+    },
+    {
+      "commit": "8d9148e8798848be7d223c73602fa731171f2282",
+      "date": "2026-09-04",
+      "subject": "tu: wire up GMEM->GMEM resolve, TU_DEBUG(GMEM) override, render-mode log",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:1403\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:1428\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "final_disposition": "superseded",
+      "review_note": "Later fixes removed forced/debug rendering policy and closed the prototype; keep final guarded implementation."
+    },
+    {
+      "commit": "f9d65be334797810fbce6aca5654f1881d9c3bad",
+      "date": "2026-09-04",
+      "subject": "tu: revert TU_DEBUG(GMEM) override, leave gmem/sysmem choice to autotune",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:1428\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:1403\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "final_disposition": "inherited-adapted",
+      "review_note": "TU_DEBUG(GMEM) stays after structural/hardware fallback checks in the current render-mode selector."
+    },
+    {
+      "commit": "3aee4195bf747bea30d3e333590f453215bcc3d8",
+      "date": "2026-09-12",
+      "subject": "tu: remove always-on render and dispatch telemetry",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:4136\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "2a85cb21ee4d9681b99303e023d2d9fbd79e25e6",
+      "date": "2026-09-12",
+      "subject": "tu: correctly preserve GRAS_SC_BIN_CNTL around GMEM resolve",
+      "files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_clear_blit.cc:5904\nerror: src/freedreno/vulkan/tu_clear_blit.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_clear_blit.cc:5859\nerror: src/freedreno/vulkan/tu_clear_blit.cc: patch does not apply",
+      "final_disposition": "inherited-adapted",
+      "review_note": "Resolve/blit packet helpers preserve separate RB/GRAS scratch records; newer V1 per-aspect and resolve changes remain."
+    },
+    {
+      "commit": "f1fa2f8953881324a6fc2f38a5adc8bf9507c84c",
+      "date": "2026-09-12",
+      "subject": "tu: remove unconditional GMEM resolve debug messages",
+      "files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_clear_blit.cc:6012\nerror: src/freedreno/vulkan/tu_clear_blit.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_clear_blit.cc:5947\nerror: src/freedreno/vulkan/tu_clear_blit.cc: patch does not apply",
+      "final_disposition": "inherited-adapted",
+      "review_note": "Always-on render/dispatch telemetry removed; current guarded debug framework retained."
+    },
+    {
+      "commit": "7541d9d27b77bf7e98d581bd51fee17017c65e91",
+      "date": "2026-09-12",
+      "subject": "tu: optimize descriptor rebinding and transform feedback state",
+      "files": [
+        "meta-optimizations.json",
+        "src/freedreno/vulkan/tu_cmd_buffer.cc",
+        "src/freedreno/vulkan/tu_cmd_buffer.h"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc",
+        "src/freedreno/vulkan/tu_cmd_buffer.h"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:4823\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:2462\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "final_disposition": "superseded-partially",
+      "review_note": "Unsafe descriptor-only equality shortcut was removed by7c86de56a71; current descriptor and transform-feedback state handling is retained."
+    },
+    {
+      "commit": "f9dcde57bf07ab44fe3265fe6ef31d751c372506",
+      "date": "2026-09-12",
+      "subject": "meta: mark AK-Turnip 1.10 as release",
+      "files": [
+        "meta-optimizations.json"
+      ],
+      "source_files": [],
+      "triage": "release-metadata",
+      "final_disposition": "replaced-release-metadata",
+      "review_note": "New requested GS release metadata is prepared separately."
+    },
+    {
+      "commit": "b785f22ce6b4aa99a0fd2ce936171bc4bcc39afb",
+      "date": "2026-09-15",
+      "subject": "tu: re-close GMEM->GMEM resolve prototype behind TU_DEBUG gate",
+      "files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc",
+        "src/freedreno/vulkan/tu_util.cc",
+        "src/freedreno/vulkan/tu_util.h"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc",
+        "src/freedreno/vulkan/tu_util.cc",
+        "src/freedreno/vulkan/tu_util.h"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_util.h:76\nerror: src/freedreno/vulkan/tu_util.h: patch does not apply\nerror: patch fa",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_clear_blit.cc:5954\nerror: src/freedreno/vulkan/tu_clear_blit.cc: patch does not apply",
+      "final_disposition": "inherited-adapted",
+      "review_note": "GMEM_RESOLVE_PROTOTYPE remains an opt-in guard; revised resolve/cache framework retained."
+    },
+    {
+      "commit": "4eb9933582412c4d2f2e6d587ddbd4beb14cd3e0",
+      "date": "2026-09-15",
+      "subject": "tu: expose VK_EXT_depth_bias_control and VK_EXT_depth_range_unrestricted",
+      "files": [
+        "src/freedreno/vulkan/tu_device.cc",
+        "src/freedreno/vulkan/tu_pipeline.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_device.cc",
+        "src/freedreno/vulkan/tu_pipeline.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_pipeline.cc:2553\nerror: src/freedreno/vulkan/tu_pipeline.cc: patch does not apply\nerr",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_device.cc:336\nerror: src/freedreno/vulkan/tu_device.cc: patch does not apply\nerror: p",
+      "final_disposition": "reverted-in-release",
+      "review_note": "dc6150cc140 cancelled unvalidated extension activation; current feature gates stay held."
+    },
+    {
+      "commit": "7f71bf7fcdf01b620087a2dd10e0610be476aa2e",
+      "date": "2026-09-15",
+      "subject": "tu: try FD_SUBPASS_SLICE_FENCE for GMEM->GMEM resolve prototype sync",
+      "files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_clear_blit.cc:5980\nerror: src/freedreno/vulkan/tu_clear_blit.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_clear_blit.cc:5980\nerror: src/freedreno/vulkan/tu_clear_blit.cc: patch does not apply",
+      "final_disposition": "reverted-in-release",
+      "review_note": "Immediately reverted by67775410c1d; no subpass-slice-fence experiment is reintroduced."
+    },
+    {
+      "commit": "67775410c1d9c83e07c76ec964cb541ef3c1fdeb",
+      "date": "2026-09-15",
+      "subject": "Revert \"tu: try FD_SUBPASS_SLICE_FENCE for GMEM->GMEM resolve prototype sync\"",
+      "files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_clear_blit.cc:5980\nerror: src/freedreno/vulkan/tu_clear_blit.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_clear_blit.cc:5980\nerror: src/freedreno/vulkan/tu_clear_blit.cc: patch does not apply",
+      "final_disposition": "covered-by-final-policy",
+      "review_note": "Revert of7f71bf7fcdf; current resolve synchronization follows the final guarded implementation."
+    },
+    {
+      "commit": "eba2fce753c52ae417cf7e5df29bbf9f7898f82e",
+      "date": "2026-09-15",
+      "subject": "tu: GMEM->GMEM resolve prototype -- fix coordinate math + use real flush framework",
+      "files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc",
+        "src/freedreno/vulkan/tu_cmd_buffer.cc",
+        "src/freedreno/vulkan/tu_cmd_buffer.h"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc",
+        "src/freedreno/vulkan/tu_cmd_buffer.cc",
+        "src/freedreno/vulkan/tu_cmd_buffer.h"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_clear_blit.cc:926\nerror: src/freedreno/vulkan/tu_clear_blit.cc: patch does not apply\n",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "d7545e7b03ebf6db04e9fbc7a3307b9fc8c643a3",
+      "date": "2026-09-15",
+      "subject": "tu: batch query pool resets into large CP_MEM_WRITE packets",
+      "files": [
+        "src/freedreno/vulkan/tu_cs.h",
+        "src/freedreno/vulkan/tu_query_pool.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cs.h",
+        "src/freedreno/vulkan/tu_query_pool.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_query_pool.cc:1034\nerror: src/freedreno/vulkan/tu_query_pool.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "abd3520069b2f7fbf8940f1f63bc3771fa8e65c1",
+      "date": "2026-09-15",
+      "subject": "meta: mark AK-Turnip 1.11 as release",
+      "files": [
+        "meta-optimizations.json"
+      ],
+      "source_files": [],
+      "triage": "release-metadata",
+      "final_disposition": "replaced-release-metadata",
+      "review_note": "New requested GS release metadata is prepared separately."
+    },
+    {
+      "commit": "1e02bc38b5d2a11156c9b8be81638ff132bf6992",
+      "date": "2026-09-20",
+      "subject": "tu: enable the on-disk pipeline cache by default on Android",
+      "files": [
+        "src/freedreno/vulkan/tu_device.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_device.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": true,
+      "triage": "candidate-forward",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_device.cc:52\nerror: src/freedreno/vulkan/tu_device.cc: patch does not apply",
+      "forward_diagnostic": "",
+      "final_disposition": "reverted-in-release",
+      "review_note": "af48e1134b9 cancels Android disk-cache default activation; the revert is already present exactly."
+    },
+    {
+      "commit": "af48e1134b90971aee249a9bdfc612f9b9ab0059",
+      "date": "2026-09-21",
+      "subject": "Revert \"tu: enable the on-disk pipeline cache by default on Android\"",
+      "files": [
+        "src/freedreno/vulkan/tu_device.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_device.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_device.cc:52\nerror: src/freedreno/vulkan/tu_device.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "3a64191ac05365c005975762a197d6220417a45a",
+      "date": "2026-10-02",
+      "subject": "meta: mark AK-Turnip 1.12 as release",
+      "files": [
+        "meta-optimizations.json",
+        "meta.json"
+      ],
+      "source_files": [],
+      "triage": "release-metadata",
+      "final_disposition": "replaced-release-metadata",
+      "review_note": "New requested GS release metadata is prepared separately."
+    },
+    {
+      "commit": "489b180026e2acabf0a5b90ff0306aa656b64f86",
+      "date": "2026-10-03",
+      "subject": "tu/kgsl: Don't leak the command object list on every submit",
+      "files": [
+        "src/freedreno/vulkan/tu_knl_kgsl.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_knl_kgsl.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_knl_kgsl.cc:1521\nerror: src/freedreno/vulkan/tu_knl_kgsl.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_knl_kgsl.cc:1521\nerror: src/freedreno/vulkan/tu_knl_kgsl.cc: patch does not apply",
+      "final_disposition": "inherited-adapted",
+      "review_note": "Current KGSL submission/profile cleanup supersedes the old local list-free patch."
+    },
+    {
+      "commit": "f8c4823597392112528d80377bd7ef8703aef565",
+      "date": "2026-10-03",
+      "subject": "tu/kgsl: Fix NULL deref and OOB read in kgsl_syncobj_wait_any()",
+      "files": [
+        "src/freedreno/vulkan/tu_knl_kgsl.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_knl_kgsl.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_knl_kgsl.cc:998\nerror: src/freedreno/vulkan/tu_knl_kgsl.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_knl_kgsl.cc:936\nerror: src/freedreno/vulkan/tu_knl_kgsl.cc: patch does not apply",
+      "final_disposition": "inherited-hardened",
+      "review_note": "Current wait-any checks queue presence and FD conversion/errors, with deadline-aware retries from the V1 audit."
+    },
+    {
+      "commit": "258c77a07bf4d8745fedb76d8d3be101074c6a14",
+      "date": "2026-10-03",
+      "subject": "tu: Release submit_mutex on queue submit error paths",
+      "files": [
+        "src/freedreno/vulkan/tu_queue.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_queue.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_queue.cc:347\nerror: src/freedreno/vulkan/tu_queue.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "c302216679d598780800591767ede9c3653819a8",
+      "date": "2026-10-03",
+      "subject": "tu: Release derived perf counters when destroying a query pool",
+      "files": [
+        "src/freedreno/vulkan/tu_query_pool.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_query_pool.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_query_pool.cc:301\nerror: src/freedreno/vulkan/tu_query_pool.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "9aa2e110b39824f3ff386a13e2afe69f34cf9af7",
+      "date": "2026-10-04",
+      "subject": "tu: Fix shader refcounting on graphics pipeline compile failure",
+      "files": [
+        "src/freedreno/vulkan/tu_pipeline.cc",
+        "src/freedreno/vulkan/tu_shader.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_pipeline.cc",
+        "src/freedreno/vulkan/tu_shader.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_shader.cc:3827\nerror: src/freedreno/vulkan/tu_shader.cc: patch does not apply\nerror: ",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_pipeline.cc:2006\nerror: src/freedreno/vulkan/tu_pipeline.cc: patch does not apply\nerr",
+      "final_disposition": "inherited-hardened",
+      "review_note": "Created-stage ownership mask, caller-owned cache-hit unrefs and nulled NIR cleanup extend through TASK/MESH-sized stage arrays."
+    },
+    {
+      "commit": "dad2a024256bbf184dc148e99b36df3f549fafd3",
+      "date": "2026-10-04",
+      "subject": "tu: Don't leak the BO when AHB image binding fails in vkAllocateMemory",
+      "files": [
+        "src/freedreno/vulkan/tu_device.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_device.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_device.cc:3866\nerror: src/freedreno/vulkan/tu_device.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "746eb1f84674ca582aa81d9bed212f58c1433139",
+      "date": "2026-10-04",
+      "subject": "tu/autotune: Hold the RP history reference until the entry owns it",
+      "files": [
+        "src/freedreno/vulkan/tu_autotune.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_autotune.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_autotune.cc:1917\nerror: src/freedreno/vulkan/tu_autotune.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "3adf50bb19325c20c0b5c5014fe19c983b128bb2",
+      "date": "2026-10-04",
+      "subject": "tu: Use the per-chip LRZ fast-clear layout in tu_lrz_before_sysmem_br",
+      "files": [
+        "src/freedreno/vulkan/tu_lrz.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_lrz.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_lrz.cc:873\nerror: src/freedreno/vulkan/tu_lrz.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_lrz.cc:843\nerror: src/freedreno/vulkan/tu_lrz.cc: patch does not apply",
+      "final_disposition": "inherited-adapted",
+      "review_note": "LRZ metadata reads use the per-chip layout, including A8xx, in the current source."
+    },
+    {
+      "commit": "ec6cbda64813a8e35b005eebd48f8f2d74b1a423",
+      "date": "2026-10-04",
+      "subject": "vulkan: Don't busy-spin in the WAIT_ANY fallback of vk_sync_wait_many",
+      "files": [
+        "src/vulkan/runtime/vk_sync.c"
+      ],
+      "source_files": [
+        "src/vulkan/runtime/vk_sync.c"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/vulkan/runtime/vk_sync.c:411\nerror: src/vulkan/runtime/vk_sync.c: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "5ceb6fd939e333ba53bd5eb80c88a84d840beb11",
+      "date": "2026-10-04",
+      "subject": "ir3: Fix merge_neighbors() skipping ranges and dropping can_speculate",
+      "files": [
+        "src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c"
+      ],
+      "source_files": [
+        "src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c:115\nerror: src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c: pat",
+      "forward_diagnostic": "error: patch failed: src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c:115\nerror: src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c: pat",
+      "final_disposition": "inherited-adapted",
+      "review_note": "Current merge-neighbor iteration/speculation handling supersedes the original IR3 range patch."
+    },
+    {
+      "commit": "cf15e10f56cc1c4b8e036b580a2190bfae08ae09",
+      "date": "2026-10-04",
+      "subject": "ir3/spill: Don't spill rematerializable full live-ins",
+      "files": [
+        "src/freedreno/ir3/ir3_spill.c"
+      ],
+      "source_files": [
+        "src/freedreno/ir3/ir3_spill.c"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/ir3/ir3_spill.c:1477\nerror: src/freedreno/ir3/ir3_spill.c: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "a94e64c386d15ed8e8f9415f9b3854dd0c6168c1",
+      "date": "2026-10-04",
+      "subject": "ir3: Avoid the waterfall loop for uniform and relative absolute shuffles",
+      "files": [
+        "src/freedreno/ir3/ir3_lower_subgroups.c"
+      ],
+      "source_files": [
+        "src/freedreno/ir3/ir3_lower_subgroups.c"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/ir3/ir3_lower_subgroups.c:838\nerror: src/freedreno/ir3/ir3_lower_subgroups.c: patch does not ap",
+      "forward_diagnostic": "error: patch failed: src/freedreno/ir3/ir3_lower_subgroups.c:838\nerror: src/freedreno/ir3/ir3_lower_subgroups.c: patch does not ap",
+      "final_disposition": "inherited-hardened",
+      "review_note": "Uniform/relative shuffle fast paths exist; newer modular-arithmetic/range fixes are retained."
+    },
+    {
+      "commit": "dac2609d7e108030b8dc0b147d230b6d5c7eda4f",
+      "date": "2026-10-04",
+      "subject": "meta: mark AK-Turnip 1.13 as release",
+      "files": [
+        "meta.json"
+      ],
+      "source_files": [],
+      "triage": "release-metadata",
+      "final_disposition": "replaced-release-metadata",
+      "review_note": "New requested GS release metadata is prepared separately."
+    },
+    {
+      "commit": "9e47feb34233359b3489341d3a41758078d87264",
+      "date": "2026-10-04",
+      "subject": "tu/kgsl: harden the timeline-based binary sync type",
+      "files": [
+        "src/freedreno/vulkan/tu_knl_kgsl.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_knl_kgsl.cc"
+      ],
+      "release_reverse_exact": false,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_knl_kgsl.cc:1676\nerror: src/freedreno/vulkan/tu_knl_kgsl.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_knl_kgsl.cc:1653\nerror: src/freedreno/vulkan/tu_knl_kgsl.cc: patch does not apply",
+      "final_disposition": "inherited-hardened",
+      "review_note": "Timeline-based binary sync exists with probe/create/destroy, fatal errors and absolute-deadline retry fixes."
+    },
+    {
+      "commit": "3f14fa9afe8a80a352afafa086ff3c8e4403ac85",
+      "date": "2026-10-04",
+      "subject": "meta: mark AK-Turnip 1.13 Rutabaga as release",
+      "files": [
+        "meta.json"
+      ],
+      "source_files": [],
+      "triage": "release-metadata",
+      "final_disposition": "replaced-release-metadata",
+      "review_note": "New requested GS release metadata is prepared separately."
+    },
+    {
+      "commit": "13bde81cc92c5082cdcfb9b2acae81a92b721142",
+      "date": "2026-10-05",
+      "subject": "tu: Don't leak pool host memory on OUT_OF_POOL_MEMORY",
+      "files": [
+        "src/freedreno/vulkan/tu_descriptor_set.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_descriptor_set.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_descriptor_set.cc:683\nerror: src/freedreno/vulkan/tu_descriptor_set.cc: patch does no",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "b7bc1bf04aa89a8cedbb38672e67c6fee6e7cda9",
+      "date": "2026-10-05",
+      "subject": "tu: Fail sampler creation when custom border colors run out",
+      "files": [
+        "src/freedreno/vulkan/tu_sampler.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_sampler.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_sampler.cc:57\nerror: src/freedreno/vulkan/tu_sampler.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "fd2af38b3abd05af675af0e2c0106115dd78b8be",
+      "date": "2026-10-05",
+      "subject": "tu: Free the temporary cmdbuf array on tu_insert_dynamic_cmdbufs errors",
+      "files": [
+        "src/freedreno/vulkan/tu_dynamic_rendering.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_dynamic_rendering.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_dynamic_rendering.cc:171\nerror: src/freedreno/vulkan/tu_dynamic_rendering.cc: patch d",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "97d6f7ca30c700ccf3e86d774b7f8460f0918609",
+      "date": "2026-10-05",
+      "subject": "vulkan/runtime: Pop the previous insert label in CmdInsertDebugUtilsLabelEXT",
+      "files": [
+        "src/vulkan/runtime/vk_debug_utils.c"
+      ],
+      "source_files": [
+        "src/vulkan/runtime/vk_debug_utils.c"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/vulkan/runtime/vk_debug_utils.c:465\nerror: src/vulkan/runtime/vk_debug_utils.c: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "c550b55bc74d9085ef86b390c1b1dbfb6d8ba409",
+      "date": "2026-10-05",
+      "subject": "tu: Use the region's own label name when ending a debug label",
+      "files": [
+        "src/freedreno/vulkan/tu_device.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_device.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_device.cc:4719\nerror: src/freedreno/vulkan/tu_device.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "106bb77267a5b1d8e6e2bb58aca6793bda44c8c1",
+      "date": "2026-10-05",
+      "subject": "vulkan/queue: Keep the binary wait flag of both merged submits",
+      "files": [
+        "src/vulkan/runtime/vk_queue.c"
+      ],
+      "source_files": [
+        "src/vulkan/runtime/vk_queue.c"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/vulkan/runtime/vk_queue.c:521\nerror: src/vulkan/runtime/vk_queue.c: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "7440d9e29ea8c3beabafa188578ecb58af551aaf",
+      "date": "2026-10-05",
+      "subject": "vulkan/runtime: Fix two copy-pasted sTypes",
+      "files": [
+        "src/vulkan/runtime/vk_command_buffer.c",
+        "src/vulkan/runtime/vk_meta.c"
+      ],
+      "source_files": [
+        "src/vulkan/runtime/vk_command_buffer.c",
+        "src/vulkan/runtime/vk_meta.c"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/vulkan/runtime/vk_command_buffer.c:284\nerror: src/vulkan/runtime/vk_command_buffer.c: patch does not appl",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "91bbdf47acd265fb153f1bd410bb76ebe2527b5a",
+      "date": "2026-10-05",
+      "subject": "tu: Log the actual result when the FD_RD_DUMP_FULL wait fails",
+      "files": [
+        "src/freedreno/vulkan/tu_queue.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_queue.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_queue.cc:524\nerror: src/freedreno/vulkan/tu_queue.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "a331f014b62028715c6376b1ae416255a04304be",
+      "date": "2026-10-06",
+      "subject": "meta: mark AK-Turnip 1.14 Rutabaga as release",
+      "files": [
+        "meta.json"
+      ],
+      "source_files": [],
+      "triage": "release-metadata",
+      "final_disposition": "replaced-release-metadata",
+      "review_note": "New requested GS release metadata is prepared separately."
+    },
+    {
+      "commit": "6e9a7ffd53c9fba439073aca9c6000f6c633d325",
+      "date": "2026-10-07",
+      "subject": "tu: enable override_uncached_as_cache_coherent by default (AK test)",
+      "files": [
+        "src/freedreno/vulkan/tu_drirc_gen.py"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_drirc_gen.py"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_drirc_gen.py:93\nerror: src/freedreno/vulkan/tu_drirc_gen.py: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "7c86de56a713fc7799afec081f8d6b95ef2d37d3",
+      "date": "2026-10-07",
+      "subject": "tu: always dirty descriptor sets on bind again",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:5013\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:4878\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "final_disposition": "inherited-adapted",
+      "review_note": "Descriptor binds dirty the required state with deferred dynamic-descriptor uploads from the recovered baseline; no old pointer-equality shortcut is reintroduced."
+    },
+    {
+      "commit": "60541fbc15d6b42c1204bcac2cd2fe13d7b39aaa",
+      "date": "2026-10-07",
+      "subject": "Revert \"tu: cache RB_RESOLVE_GMEM_BUFFER_INFO across multi-rect gmem clears\"",
+      "files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_clear_blit.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_clear_blit.cc:4722\nerror: src/freedreno/vulkan/tu_clear_blit.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "248c3c5133acb3f2d8d0f351d8d62aadc2591638",
+      "date": "2026-10-07",
+      "subject": "tu: key the dynamic gmem_config cache on everything it reads",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.h",
+        "src/freedreno/vulkan/tu_pass.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.h",
+        "src/freedreno/vulkan/tu_pass.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_pass.cc:1982\nerror: src/freedreno/vulkan/tu_pass.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.h:763\nerror: src/freedreno/vulkan/tu_cmd_buffer.h: patch does not apply\ner",
+      "final_disposition": "inherited-adapted",
+      "review_note": "Dynamic GMEM key contains attachment signatures, subpass ranges, custom DS resolves and per-device capacities; cache invalidation retained."
+    },
+    {
+      "commit": "96072a1ac97247576ad20e11feffc4c6948ab7a8",
+      "date": "2026-10-08",
+      "subject": "meta: mark AK-Turnip 1.15 Rutabaga as release",
+      "files": [
+        "meta.json"
+      ],
+      "source_files": [],
+      "triage": "release-metadata",
+      "final_disposition": "replaced-release-metadata",
+      "review_note": "New requested GS release metadata is prepared separately."
+    },
+    {
+      "commit": "dc6150cc1408537d97f92aed57476fc405c401e3",
+      "date": "2026-10-10",
+      "subject": "Revert \"tu: expose VK_EXT_depth_bias_control and VK_EXT_depth_range_unrestricted\"",
+      "files": [
+        "src/freedreno/vulkan/tu_device.cc",
+        "src/freedreno/vulkan/tu_pipeline.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_device.cc",
+        "src/freedreno/vulkan/tu_pipeline.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_pipeline.cc:2660\nerror: src/freedreno/vulkan/tu_pipeline.cc: patch does not apply\nerr",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_device.cc:336\nerror: src/freedreno/vulkan/tu_device.cc: patch does not apply\nerror: p",
+      "final_disposition": "inherited-adapted",
+      "review_note": "Unvalidated unrestricted-depth capability remains held. Newer depth-clamp/lowering and held-feature gates preserved."
+    },
+    {
+      "commit": "1467c5acb0d52fc9d425e5649489a2d6c65255fb",
+      "date": "2026-10-10",
+      "subject": "Revert \"tu/driconf: add yuzu Emulator engine block for Eden TOTK/BOTW artifacts\"",
+      "files": [
+        "src/freedreno/vulkan/00-turnip-defaults.conf"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/00-turnip-defaults.conf"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/00-turnip-defaults.conf:54\nerror: src/freedreno/vulkan/00-turnip-defaults.conf: patch do",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "fe8e78100c2050cb70de562b5c44c28f71644e49",
+      "date": "2026-10-10",
+      "subject": "Revert \"tu/autotune: fix total_draw_call_bandwidth canceling out of GMEM/SYSMEM decision\"",
+      "files": [
+        "src/freedreno/vulkan/tu_autotune.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_autotune.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_autotune.cc:1058\nerror: src/freedreno/vulkan/tu_autotune.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_autotune.cc:1058\nerror: src/freedreno/vulkan/tu_autotune.cc: patch does not apply",
+      "final_disposition": "covered-by-final-policy",
+      "review_note": "Its final bandwidth policy is implemented by cherry-picking b1ff928eb59; do not replay a revert over the already final formula."
+    },
+    {
+      "commit": "e52f2e89a89e824d2793a731d8d133c1cc51686d",
+      "date": "2026-10-10",
+      "subject": "freedreno/common: put A830 back on upstream's a8xx_gen1 props",
+      "files": [
+        "src/freedreno/common/freedreno_devices.py"
+      ],
+      "source_files": [
+        "src/freedreno/common/freedreno_devices.py"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/common/freedreno_devices.py:1430\nerror: src/freedreno/common/freedreno_devices.py: patch does n",
+      "forward_diagnostic": "error: patch failed: src/freedreno/common/freedreno_devices.py:1430\nerror: src/freedreno/common/freedreno_devices.py: patch does n",
+      "final_disposition": "inherited-adapted",
+      "review_note": "A830 uses a8xx_gen1; the additional recovered indexed-draw quirk is preserved. No old reg_size=112 override."
+    },
+    {
+      "commit": "0e49d6ca5d68ef466a55e164295c9f675f2ab77d",
+      "date": "2026-10-09",
+      "subject": "tu/kgsl: Round sub-millisecond timeline waits up to 1ms",
+      "files": [
+        "src/freedreno/vulkan/tu_knl_kgsl.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_knl_kgsl.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_knl_kgsl.cc:93\nerror: src/freedreno/vulkan/tu_knl_kgsl.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "40d3233d21772143e99202d111b2bcc95ff8856d",
+      "date": "2026-10-11",
+      "subject": "\u043f\u0440\u0435\u0434\u0432\u0430\u0440\u0438\u0442\u0435\u043b\u044c\u043d\u043e \u0437\u0430\u043a\u043e\u043c\u043c\u0438\u0442\u0438\u043c \u043d\u0430\u0448\u0438 \u0444\u0438\u043a\u0441\u044b",
+      "files": [
+        "src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c",
+        "src/freedreno/ir3/ir3_shader.c",
+        "src/freedreno/vulkan/tu_autotune.cc",
+        "src/freedreno/vulkan/tu_cmd_buffer.cc",
+        "src/freedreno/vulkan/tu_cs.cc",
+        "src/freedreno/vulkan/tu_descriptor_set.cc",
+        "src/freedreno/vulkan/tu_knl_kgsl.cc",
+        "src/freedreno/vulkan/tu_shader.cc",
+        "src/freedreno/vulkan/tu_suballoc.cc"
+      ],
+      "source_files": [
+        "src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c",
+        "src/freedreno/ir3/ir3_shader.c",
+        "src/freedreno/vulkan/tu_autotune.cc",
+        "src/freedreno/vulkan/tu_cmd_buffer.cc",
+        "src/freedreno/vulkan/tu_cs.cc",
+        "src/freedreno/vulkan/tu_descriptor_set.cc",
+        "src/freedreno/vulkan/tu_knl_kgsl.cc",
+        "src/freedreno/vulkan/tu_shader.cc",
+        "src/freedreno/vulkan/tu_suballoc.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_shader.cc:3411\nerror: src/freedreno/vulkan/tu_shader.cc: patch does not apply",
+      "forward_diagnostic": "error: patch failed: src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c:96\nerror: src/freedreno/ir3/ir3_nir_analyze_ubo_ranges.c: patc",
+      "final_disposition": "inherited-hardened",
+      "review_note": "Existing source includes guarded autotune division, dynamic-offset gating, CS status/overflow/debug varargs fixes, size_t template offsets, sparse BO cleanup, shader cleanup and 64-bit suballocation arithmetic."
+    },
+    {
+      "commit": "c6fbf884ea518b04c47c1b43cfd7180721712d15",
+      "date": "2026-10-11",
+      "subject": "Release tested Stage20 driver fixes",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc",
+        "src/freedreno/vulkan/tu_descriptor_set.cc",
+        "src/freedreno/vulkan/tu_device.cc",
+        "src/freedreno/vulkan/tu_shader.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc",
+        "src/freedreno/vulkan/tu_descriptor_set.cc",
+        "src/freedreno/vulkan/tu_device.cc",
+        "src/freedreno/vulkan/tu_shader.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:54\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply\ne",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "179e8decbff8916f24c5892a859217d0e2a075a9",
+      "date": "2026-10-13",
+      "subject": "tu: Bind only the static descriptor-set prefix (stage21)",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:4886\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "5801e0c7d8cfd9d30e598d9fdb868bcf373b2f4a",
+      "date": "2026-10-13",
+      "subject": "tu: Don't reserve inline UBO dwords when there are none (stage22)",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:7788\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "162aa0d3b21113a0fa4feefa1c3b758dc22a9a99",
+      "date": "2026-10-13",
+      "subject": "tu: Cheaper descriptor pool reset/destroy cleanup (stage29)",
+      "files": [
+        "src/freedreno/vulkan/tu_descriptor_set.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_descriptor_set.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": false,
+      "v1_forward_clean": false,
+      "triage": "needs-semantic-review",
+      "reverse_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_descriptor_set.cc:879\nerror: src/freedreno/vulkan/tu_descriptor_set.cc: patch does no",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_descriptor_set.cc:879\nerror: src/freedreno/vulkan/tu_descriptor_set.cc: patch does no",
+      "final_disposition": "inherited-hardened",
+      "review_note": "Pool reset/destruction uses vk_object_free directly; embedded host-memory entries also finish object-base bookkeeping."
+    },
+    {
+      "commit": "4092aabb0024378292dbee8ea758d46eea7309f2",
+      "date": "2026-10-13",
+      "subject": "tu: Only call tu_emit_draw_state when its dependencies are dirty (stage34)",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:8676\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "dd64a6b713fbd4e29282b353d4f7c6fc4f1351f3",
+      "date": "2026-10-13",
+      "subject": "tu: Bound the dynamic-binding scan in descriptor set binds (stage41)",
+      "files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc",
+        "src/freedreno/vulkan/tu_descriptor_set.cc",
+        "src/freedreno/vulkan/tu_descriptor_set.h"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_cmd_buffer.cc",
+        "src/freedreno/vulkan/tu_descriptor_set.cc",
+        "src/freedreno/vulkan/tu_descriptor_set.h"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_cmd_buffer.cc:4916\nerror: src/freedreno/vulkan/tu_cmd_buffer.cc: patch does not apply",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "52d68e8dbef4ba4c1e53ec85b26cfa8e80fb27fd",
+      "date": "2026-10-13",
+      "subject": "tu: Zero SSBO descriptors only for null buffers (stage42)",
+      "files": [
+        "src/freedreno/vulkan/tu_descriptor_set.cc"
+      ],
+      "source_files": [
+        "src/freedreno/vulkan/tu_descriptor_set.cc"
+      ],
+      "release_reverse_exact": true,
+      "v1_reverse_exact": true,
+      "v1_forward_clean": false,
+      "triage": "already-present-exact",
+      "reverse_diagnostic": "",
+      "forward_diagnostic": "error: patch failed: src/freedreno/vulkan/tu_descriptor_set.cc:1152\nerror: src/freedreno/vulkan/tu_descriptor_set.cc: patch does n",
+      "final_disposition": "inherited-exact",
+      "review_note": "All source hunks reverse-apply to the pinned V1 baseline without mutation."
+    },
+    {
+      "commit": "c9d0be37510b08a6de3d33ad59705115d21304b5",
+      "date": "2026-10-13",
+      "subject": "meta: mark AK-Turnip 1.17 Rutabaga as release",
+      "files": [
+        "meta.json"
+      ],
+      "source_files": [],
+      "triage": "release-metadata",
+      "final_disposition": "replaced-release-metadata",
+      "review_note": "New requested GS release metadata is prepared separately."
+    }
+  ],
+  "new_cherry_picks": [
+    "24acb9f6512",
+    "d6cd3e5f69e"
+  ],
+  "limits": [
+    "V1 is the recovered stage66-based source plus later GameSir transfer/audit fixes; not the vendor original source tree.",
+    "Reverse-patch checks are literal evidence only; adapted/superseded entries have manual final-state accounting, not a new exhaustive semantic audit.",
+    "Additional pre-existing post-AK1.17 source and recovery fixes remain part of the V1 base.",
+    "V2 changes are isolated on rutabaga and absent from this experiment.",
+    "Driver build/runtime/game/thermal validation is recorded separately."
+  ]
+}

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "name": "AK Turnip 1.17 Rutabaga",
-  "description": "AK Turnip 1.17 Rutabaga: the tested Stage34 + Stage41 + Stage42 base with upstream fixes for vertex-input-only pipeline creation and non-uniform ray queries. Reduces dynamic-state processing, descriptor-binding scans, SSBO initialization, descriptor-pool cleanup and empty inline-UBO reservations. Retains the fixes from 1.16 Rutabaga. Built with platform-sdk-version=33.",
+  "name": "AK Turnip 1.17 GS Rutabaga",
+  "description": "Recovered GameSir Rutabaga V1 (26.10.10) source with AK-Turnip 1.17 optimizations and V1 audit fixes. Includes the Stage34/41/42 descriptor and draw-state base, restored AK1.17 autotune policy, and KGSL deadline/cache/FS/resolve fixes. SDK33 strict, Android API29, Oryon-1. Held optional feature gates remain closed; V2 changes are separate.",
   "author": "aydar",
   "packageVersion": "1",
   "vendor": "Mesa",
-  "driverVersion": "AK-1.17-rutabaga",
+  "driverVersion": "AK-1.17-GS-rutabaga",
   "minApi": 29,
   "libraryName": "libvulkan_freedreno.so"
 }
