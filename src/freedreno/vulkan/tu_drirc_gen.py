@@ -40,6 +40,13 @@ def declare_options():
     ]
 
     misc_options = [
+        B("tu_disable_mesh_shader", False,
+          "Disable mesh and task shader support",
+          c_name="disable_mesh_shader"),
+        B("tu_split_indexed_draws", False,
+          "Split eligible indexed triangle-list draws for affected applications and hardware",
+          c_name="split_indexed_draws"),
+
         # Conservative LRZ (default true) invalidates LRZ on draws with
         # blend and depth-write enabled, because this can lead to incorrect
         # rendering.  Driconf can be used to disable conservative LRZ for
@@ -96,8 +103,8 @@ def declare_options():
         B("tu_emulate_alpha_to_coverage", False,
           "Enable emulation of alpha-to-coverage in the shader, which provides improved visual quality for many games at the cost of some performance",
           c_name="emulate_alpha_to_coverage"),
-        B("tu_override_uncached_as_cache_coherent", False,
-          "Replaces uncached-host allocations with cached-coherent-host when possible. Only useful under x86 emulation where memory accesses tend to be atomic",
+        B("tu_override_uncached_as_cache_coherent", True,
+          "Replaces uncached-host allocations with cached-coherent-host when possible. Only takes effect when KGSL supports IO-coherent write-back memory. On by default in AK-Turnip: also measurably faster on the GPU side (blend-heavy render targets) and for driver command-stream writes",
           c_name="override_uncached_as_cache_coherent"),
         B("tu_expose_device_local_only_memory_type", False,
           "Expose an extra DEVICE_LOCAL-only memory type. Some applications may unconditionally expect non-HOST_VISIBLE memory available, also its presence signals vkd3d-proton that device is non-UMA, which we may need to force for d3d12 traces compatibility purpose.",
@@ -105,6 +112,12 @@ def declare_options():
         B("tu_restrict_subgroup_size_64", False,
           "Restrict subgroup size to 64 (instead of a max of 128) to work around games assuming desktop GPU 32/64 sizes",
           c_name="restrict_subgroup_size_64"),
+        B("tu_advertise_wave32_compat", False,
+          "Advertise a Wave32-compatible minimum subgroup size and accept smaller required sizes using a native single wave; this does not implement native Wave32 execution",
+          c_name="advertise_wave32_compat"),
+        B("tu_uncharted_legacy_adreno_compat", False,
+          "Use the Uncharted minimum-precision and descriptor-set compatibility path on A6xx/A7xx, with SSBO emulation on A7xx",
+          c_name="uncharted_legacy_adreno_compat"),
         B("tu_emulate_second_queue", False,
           "Provide a second queue for applications that require it, like the Android framework",
           c_name="emulate_second_queue"),

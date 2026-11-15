@@ -537,6 +537,19 @@ split_cmat_muladd(nir_builder *b,
          nir_deref_instr *dst_deref = result_split ? recreate_derefs(b, &intr->src[0], result_split->split_vars[idx]) : nir_src_as_deref(intr->src[0]);
          nir_deref_instr *c_deref = c_split ? recreate_derefs(b, &intr->src[3], c_split->split_vars[idx]) : nir_src_as_deref(intr->src[3]);
 
+         if (k_splits > 1) {
+            /* C is an input, and may be read again after this instruction.
+             * Accumulate partial K products in a private temporary instead
+             * of overwriting C before storing the final result.
+             */
+            b->cursor = nir_before_instr(instr);
+            nir_variable *tmp = nir_local_variable_create(impl, c_deref->type,
+                                                         "cmat split accumulator");
+            nir_deref_instr *accum = nir_build_deref_var(b, tmp);
+            nir_copy_deref(b, accum, c_deref);
+            c_deref = accum;
+         }
+
          for (unsigned k = 0; k < k_splits; k++) {
             unsigned a_idx = m * k_splits + k;
             unsigned b_idx = k * n_splits + n;

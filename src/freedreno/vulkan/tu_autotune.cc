@@ -1014,6 +1014,21 @@ struct tu_autotune::rp_history {
    /** Bandwidth Estimation Algorithm **/
    struct bandwidth_algo {
     private:
+      static bool pass_is_depth_stencil_only(const struct tu_render_pass *pass)
+      {
+         bool has_ds = false;
+         for (uint32_t i = 0; i < pass->subpass_count; i++) {
+            const struct tu_subpass *subpass = &pass->subpasses[i];
+            for (uint32_t j = 0; j < subpass->color_count; j++) {
+               if (subpass->color_attachments[j].attachment != VK_ATTACHMENT_UNUSED)
+                  return false;
+            }
+            if (subpass->depth_stencil_attachment.attachment != VK_ATTACHMENT_UNUSED)
+               has_ds = true;
+         }
+         return has_ds;
+      }
+
       exponential_average<uint32_t> mean_samples_passed;
 
     public:
@@ -1060,11 +1075,28 @@ struct tu_autotune::rp_history {
          sysmem_bandwidth += total_draw_call_bandwidth;
 
          /* Drawcalls access GMEM in GMEM rendering, but we do not want to ignore them completely.  The state changes
-          * between tiles also have an overhead.  The magic numbers of 11 and 10 are randomly chosen.
+          * between tiles also have an overhead. Upstream pads this by 10% (magic numbers "randomly chosen" per
+          * their own comment); dropped for A830 since GMEM has been validated to behave correctly on this chip,
+          * so the conservative anti-GMEM margin isn't warranted here.
           */
-         gmem_bandwidth = (gmem_bandwidth * 11 + total_draw_call_bandwidth) / 10;
+         gmem_bandwidth = gmem_bandwidth + total_draw_call_bandwidth;
 
          bool select_sysmem = sysmem_bandwidth <= gmem_bandwidth;
+
+         /* AK: depth/stencil-only passes (shadow maps, depth prepasses) that
+          * would be split into several tiles stay in SYSMEM. The estimate
+          * above only counts per-sample framebuffer traffic, but such passes
+          * are dominated by geometry, which GMEM processes twice (binning and
+          * then again per tile), while their SYSMEM depth traffic is reduced
+          * by UBWC and the CCU. In game_sim on A830, a 4096x4096 shadow pass
+          * with ~1000 draws was 37% slower in GMEM although this estimate
+          * favored GMEM 3:1.
+          */
+         const VkExtent2D &tile_count = cmd_state->tiling->vsc.tile_count;
+         if (!select_sysmem && tile_count.width * tile_count.height > 1 &&
+             pass_is_depth_stencil_only(pass))
+            select_sysmem = true;
+
          render_mode mode = select_sysmem ? render_mode::SYSMEM : render_mode::GMEM;
 
          UNUSED const VkExtent2D &extent = cmd_state->render_areas[0].extent;
@@ -1179,7 +1211,7 @@ struct tu_autotune::rp_history {
                   sysmem_ema.count >= MIN_LOCK_DURATION_COUNT && gmem_ema.count >= MIN_LOCK_DURATION_COUNT;
                uint64_t min_avg = MIN2(avg_sysmem, avg_gmem);
                uint64_t max_avg = MAX2(avg_sysmem, avg_gmem);
-               uint64_t percent_diff = (100 * (max_avg - min_avg)) / min_avg;
+               uint64_t percent_diff = min_avg ? (100 * (max_avg - min_avg)) / min_avg : 0;
 
                if (has_resolved && enough_samples && max_avg >= MIN_LOCK_THRESHOLD &&
                    percent_diff >= LOCK_PERCENT_DIFF && (now - winning_since_ts) >= LOCK_TIME_WINDOW_NS) {
@@ -1833,6 +1865,19 @@ tu_autotune::get_optimal_mode(struct tu_cmd_buffer *cmd_buffer, rp_ctx_t *rp_ctx
    if (pass->has_msrtss)
       return forced("Uses MSRTSS", render_mode::GMEM);
 
+   /* GameSir get_optimal_mode (ELF0x8eae64..0x8eaea8) keeps single-subpass
+    * MSAA passes in GMEM on A8xx. The caller has already rejected cases
+    * that cannot use GMEM, including the separate A8xx MSAA restrictions.
+    * Make this decision before the autotuner's configuration/history paths.
+    */
+   if (cmd_buffer->device->physical_device->info->chip >= 8 &&
+       pass->subpass_count == 1) {
+      for (uint32_t i = 0; i < pass->attachment_count; i++) {
+         if (pass->attachments[i].samples > VK_SAMPLE_COUNT_1_BIT)
+            return forced("Single-subpass MSAA on A8xx", render_mode::GMEM);
+      }
+   }
+
    /* SYSMEM is always a safe default mode when we can't fully engage the autotuner. From testing, we know that for an
     * incorrect decision towards SYSMEM tends to be far less impactful than an incorrect decision towards GMEM, which
     * can cause significant performance issues.
@@ -2100,6 +2145,12 @@ tu_autotune::end_tile(struct tu_cmd_buffer *cmd, struct tu_cs *cs, rp_ctx_t rp_c
       return;
 
    rp_ctx->emit_tile_end(cmd, cs, tile_idx);
+}
+
+bool
+tu_autotune::tracks_tiles(rp_ctx_t rp_ctx) const
+{
+   return rp_ctx && rp_ctx->config.test(metric_flag::TS_TILE);
 }
 
 /** Preemption Latency Tracking API **/

@@ -21,6 +21,11 @@ struct tu_image
 {
    struct vk_image vk;
 
+   /* AK experiment: UBWC was kept only because TU_AK_E5_UBWC let an
+    * E5B9G9R9 entry of the format list through, see tu_image_init().
+    */
+   bool ak_e5_ubwc;
+
    struct fdl_layout layout[3];
    uint64_t subsampled_metadata_offset;
    uint64_t total_size;

@@ -59,6 +59,9 @@ compute_block_liveness(struct ir3_liveness *live, struct ir3_block *block,
    bool progress = false;
    for (unsigned i = 0; i < block->predecessors_count; i++) {
       const struct ir3_block *pred = block->predecessors[i];
+      /* AK: nothing flows out of a halting block into its successor. */
+      if (pred->halt)
+         continue;
       for (unsigned j = 0; j < bitset_words; j++) {
          if (tmp_live[j] & ~live->live_out[pred->index][j])
             progress = true;

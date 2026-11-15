@@ -1477,7 +1477,9 @@ spill_live_ins(struct ra_spill_ctx *ctx, struct ir3_block *block)
          if (all_preds_visited &&
              is_live_in_all_preds(ctx, interval->interval.reg, block))
             continue;
-         spill_live_in(ctx, interval->interval.reg, block);
+         if (interval->interval.reg->merge_set ||
+             !interval->can_rematerialize)
+            spill_live_in(ctx, interval->interval.reg, block);
          ir3_reg_interval_remove_all(&ctx->reg_ctx, &interval->interval);
          if (ctx->cur_pressure.full <= ctx->limit_pressure.full)
             break;

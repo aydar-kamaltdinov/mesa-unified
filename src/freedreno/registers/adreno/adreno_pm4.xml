@@ -1002,6 +1002,9 @@ opcode: CP_LOAD_STATE4 (30) (4 dwords)
 		<value name="INDIRECT_OP_INDEXED" value="0x4"/>
 		<value name="INDIRECT_OP_INDIRECT_COUNT" value="0x6"/>
 		<value name="INDIRECT_OP_INDIRECT_COUNT_INDEXED" value="0x7"/>
+		<!-- A850 compact CPU multi-draw records; common instance parameters. -->
+		<value name="INDIRECT_OP_MULTI" value="0x9"/>
+		<value name="INDIRECT_OP_MULTI_INDEXED" value="0xa"/>
 	</enum>
 	<reg32 offset="0" name="0" type="vgt_draw_initiator_a4xx"/>
 	<reg32 offset="1" name="1">
@@ -1014,6 +1017,22 @@ opcode: CP_LOAD_STATE4 (30) (4 dwords)
 		<bitfield name="DST_OFF" low="8" high="21" type="hex"/>
 	</reg32>
 	<reg32 offset="2" name="DRAW_COUNT" type="uint"/>
+	<!-- Compact records are {firstVertex, vertexCount} or
+	     {firstIndex, indexCount, vertexOffset}; instance parameters are common. -->
+	<stripe varset="a6xx_draw_indirect_opcode" variants="INDIRECT_OP_MULTI" prefix="MULTI">
+		<reg64 offset="3" name="INDIRECT" type="address"/>
+		<reg32 offset="5" name="STRIDE" type="uint"/>
+		<reg32 offset="6" name="INSTANCE_COUNT" type="uint"/>
+		<reg32 offset="7" name="FIRST_INSTANCE" type="uint"/>
+	</stripe>
+	<stripe varset="a6xx_draw_indirect_opcode" variants="INDIRECT_OP_MULTI_INDEXED" prefix="MULTI_INDEXED">
+		<reg64 offset="3" name="INDEX" type="address"/>
+		<reg32 offset="5" name="MAX_INDICES" type="uint"/>
+		<reg64 offset="6" name="INDIRECT" type="address"/>
+		<reg32 offset="8" name="STRIDE" type="uint"/>
+		<reg32 offset="9" name="INSTANCE_COUNT" type="uint"/>
+		<reg32 offset="10" name="FIRST_INSTANCE" type="uint"/>
+	</stripe>
 	<stripe varset="a6xx_draw_indirect_opcode" variants="INDIRECT_OP_NORMAL">
 		<reg64 offset="3" name="INDIRECT" type="address"/>
 		<reg32 offset="5" name="STRIDE" type="uint"/>

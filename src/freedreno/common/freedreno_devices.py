@@ -825,6 +825,8 @@ a7xx_gen2 = GPUProps(
         has_ray_intersection = True,
         has_hw_bin_scaling = True,
         has_image_processing = True,
+        # Restore the original GameSir capability policy in this preliminary
+        # full-capability branch. The image atomic backend already exists.
         has_64b_image_atomics = True,
         has_implicit_fragface_fragcoord_ij_linear = True,
         has_resbase = True,
@@ -885,7 +887,13 @@ a730_raw_magic_regs = [
         [A6XXRegs.REG_A7XX_UCHE_UNKNOWN_0E11, 0x00000040],
         [A6XXRegs.REG_A7XX_SP_HLSQ_DBG_ECO_CNTL, 0x00008000],
         [A6XXRegs.REG_A6XX_SP_DBG_ECO_CNTL, 0x10000000],
-        [A6XXRegs.REG_A6XX_PC_MODE_CNTL,    0x1f1f],
+        # AK: Blob uses 0x1f or 0x1f1f, however these values cause vertices
+        # corruption in some tests. Restored from AK-Turnip 1.04 (pre-26.3.0
+        # rebase) after 0x1f1f was found upstream to match a reported
+        # regression in Eden/yuzu (TOTK/BOTW shrine interiors) on a730 --
+        # not tested by us on real a730 hardware, but this restores the
+        # exact value + warning upstream itself carried before dropping it.
+        [A6XXRegs.REG_A6XX_PC_MODE_CNTL,    0x0000003f],
         [A6XXRegs.REG_A6XX_PC_DBG_ECO_CNTL, 0x20080000],
         [A6XXRegs.REG_A7XX_PC_UNKNOWN_9E24, 0x21fc7f00],
         [A6XXRegs.REG_A7XX_VFD_DBG_ECO_CNTL, 0x00000000],
@@ -1389,6 +1397,20 @@ add_gpus([
     ))
 
 a8xx_base = GPUProps(
+        # Original A8 profile byte0x309, consumed by tu_calc_frag_area.
+        fdm_requires_full_density = True,
+        # Original A8 profile bytes0x30a/0x30b; false on older profiles.
+        multi_subpass_msaa_no_input_requires_sysmem = True,
+        msaa_input_d32s8_requires_gmem = True,
+        # Recovered later-device policies; enable only with its complete
+        # draw-parameter profile, not on existing A8xx records.
+        has_native_64b_image_umax = False,
+        has_hw_vs_draw_params = False,
+        tpl1_mode_cntl_unk16 = False,
+        has_array_index_rounding = False,
+        has_cat4_rpt_quirk = False,
+        # AK: GameHub's Turnip uses 15 on every a8xx (a6xx/a7xx keep 7).
+        prim_alloc_threshold = 0xf,
         has_dp2acc = False,
         reg_size_vec4 = 96,
         supports_double_threadsize = False,
@@ -1506,7 +1528,8 @@ add_gpus([
         GPUId(chip_id=0x44050001, name="Adreno (TM) 830"), # KGSL
     ], A6xxGPUInfo(
         CHIP.A8XX,
-        [a7xx_base, a7xx_gen3, a8xx_base, a8xx_gen1],
+        [a7xx_base, a7xx_gen3, a8xx_base, a8xx_gen1,
+         GPUProps(has_indexed_draw_split_quirk = True)],
         num_ccu = 6,
         num_slices = 3,
         tile_align_w = 96,
@@ -1560,6 +1583,43 @@ add_gpus([
         wave_granularity = 2,
         fibers_per_sp = 128 * 2 * 16,
         raw_magic_regs = a8xx_base_raw_magic_regs,
+    ))
+
+# GameSir fd_dev_recs record76, chip0xffff440514ff, info ELF0x897408.
+# The recovered A850 profile shares A840's geometry/CCU layout and differs
+# in exactly these five properties and two raw registers. Keep the profile
+# separate: enabling these flags on A830/A840 would change their ISA/draw ABI.
+a850_raw_magic_regs = [
+    [reg, 0x00c00280 if reg == A6XXRegs.REG_A8XX_PC_UNKNOWN_980B else value]
+    for reg, value in a8xx_base_raw_magic_regs
+] + [
+    [A6XXRegs.REG_A8XX_RB_RESOLVE_CR_CNTL, 0x00000001],
+]
+
+add_gpus([
+        GPUId(chip_id=0xffff440514ff, name="Adreno (TM) 850"),
+    ], A6xxGPUInfo(
+        CHIP.A8XX,
+        [a7xx_base, a7xx_gen3, a8xx_base, a8xx_gen2,
+         GPUProps(
+            shading_rate_matches_vk = True,
+            has_native_64b_image_umax = True,
+            has_hw_vs_draw_params = True,
+            tpl1_mode_cntl_unk16 = True,
+            has_array_index_rounding = True,
+            has_cat4_rpt_quirk = True,
+         )],
+        num_ccu = 6,
+        num_slices = 3,
+        tile_align_w = 96,
+        tile_align_h = 32,
+        tile_max_w = 16416,
+        tile_max_h = 16384,
+        num_vsc_pipes = 32,
+        cs_shared_mem_size = 32 * 1024,
+        wave_granularity = 2,
+        fibers_per_sp = 128 * 2 * 16,
+        raw_magic_regs = a850_raw_magic_regs,
     ))
 
 # 2 slice configuration of a840

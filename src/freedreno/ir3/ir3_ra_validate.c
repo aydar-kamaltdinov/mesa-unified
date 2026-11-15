@@ -495,9 +495,12 @@ propagate_block(struct ra_val_ctx *ctx, struct ir3_block *block)
    }
 
    bool progress = false;
+   /* Halt has no outgoing logical values. Physical edges still propagate
+    * shared registers below, matching liveness.
+    */
    for (unsigned i = 0; i < 2; i++) {
       struct ir3_block *succ = block->successors[i];
-      if (!succ)
+      if (!succ || block->halt)
          continue;
       progress |=
          merge_state(ctx, &ctx->block_reaching[succ->index], &ctx->reaching);
@@ -650,7 +653,7 @@ check_reaching_block(struct ra_val_ctx *ctx, struct ir3_block *block)
 
    for (unsigned i = 0; i < 2; i++) {
       struct ir3_block *succ = block->successors[i];
-      if (!succ)
+      if (!succ || block->halt)
          continue;
 
       unsigned pred_idx = ir3_block_get_pred_index(succ, block);

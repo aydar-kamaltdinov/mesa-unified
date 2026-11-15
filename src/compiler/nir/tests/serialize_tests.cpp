@@ -101,7 +101,94 @@ nir_serialize_test::ASSERT_SWIZZLE_EQ(nir_alu_instr *a, nir_alu_instr *b, unsign
 class nir_serialize_all_test : public nir_serialize_test {};
 class nir_serialize_all_but_one_test : public nir_serialize_test {};
 
+class nir_serialize_spec_test : public ::testing::TestWithParam<bool> {
+protected:
+   nir_serialize_spec_test()
+   {
+      glsl_type_singleton_init_or_ref();
+      b = nir_builder_init_simple_shader(MESA_SHADER_VERTEX, &options, "spec test");
+      nir_imm_int(&b, 42);
+      b.shader->info.spec = ralloc_strdup(b.shader, "spec[0] = 0x0000002a\n");
+   }
+
+   ~nir_serialize_spec_test()
+   {
+      ralloc_free(b.shader);
+      glsl_type_singleton_decref();
+   }
+
+   const nir_shader_compiler_options options = {};
+   nir_builder b;
+};
+
 } // namespace
+
+INSTANTIATE_TEST_SUITE_P(nir_serialize_spec, nir_serialize_spec_test,
+                        ::testing::Bool());
+
+TEST_P(nir_serialize_spec_test, clone_and_roundtrip_are_pointer_independent)
+{
+   const bool strip = GetParam();
+   const char *original_spec = b.shader->info.spec;
+   nir_shader *clone = nir_shader_clone(b.shader, b.shader);
+   ASSERT_NE(original_spec, clone->info.spec);
+   ASSERT_STREQ(original_spec, clone->info.spec);
+
+   struct blob original, copied, restored;
+   blob_init(&original);
+   blob_init(&copied);
+   blob_init(&restored);
+   nir_serialize(&original, b.shader, strip);
+   nir_serialize(&copied, clone, strip);
+   EXPECT_EQ(original.size, copied.size);
+   if (original.size == copied.size)
+      EXPECT_EQ(memcmp(original.data, copied.data, original.size), 0);
+   EXPECT_EQ(b.shader->info.spec, original_spec);
+
+   struct blob_reader reader;
+   blob_reader_init(&reader, original.data, original.size);
+   nir_shader *roundtrip = nir_deserialize(b.shader, &options, &reader);
+   EXPECT_FALSE(reader.overrun);
+   EXPECT_EQ(reader.current, reader.end);
+   if (strip)
+      EXPECT_EQ(roundtrip->info.spec, nullptr);
+   else
+      EXPECT_STREQ(roundtrip->info.spec, original_spec);
+   nir_serialize(&restored, roundtrip, strip);
+   EXPECT_EQ(original.size, restored.size);
+   if (original.size == restored.size)
+      EXPECT_EQ(memcmp(original.data, restored.data, original.size), 0);
+
+   blob_finish(&original);
+   blob_finish(&copied);
+   blob_finish(&restored);
+}
+
+TEST_P(nir_serialize_spec_test, description_is_stripped_but_shader_code_is_not)
+{
+   const bool strip = GetParam();
+   nir_shader *clone = nir_shader_clone(b.shader, b.shader);
+   clone->info.spec = ralloc_strdup(clone, "another debug description");
+
+   struct blob original, copied, modified;
+   blob_init(&original);
+   blob_init(&copied);
+   blob_init(&modified);
+   nir_serialize(&original, b.shader, strip);
+   nir_serialize(&copied, clone, strip);
+   const bool same = original.size == copied.size &&
+      memcmp(original.data, copied.data, original.size) == 0;
+   EXPECT_EQ(same, strip);
+
+   nir_imm_int(&b, 43);
+   nir_serialize(&modified, b.shader, strip);
+   EXPECT_FALSE(original.size == modified.size &&
+                memcmp(original.data, modified.data, original.size) == 0);
+
+   blob_finish(&original);
+   blob_finish(&copied);
+   blob_finish(&modified);
+}
 
 #if NIR_MAX_VEC_COMPONENTS == 16
 #define COMPONENTS 2, 3, 4, 8, 16

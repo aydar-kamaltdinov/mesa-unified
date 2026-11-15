@@ -71,6 +71,8 @@ add_src_to_worklist(nir_src *src, void *state_)
       case nir_intrinsic_ddx_fine:
       case nir_intrinsic_ddy_fine:
       case nir_intrinsic_ddx_coarse:
+      case nir_intrinsic_ddx_3d_ir3:
+      case nir_intrinsic_ddy_3d_ir3:
       case nir_intrinsic_ddy_coarse:
       case nir_intrinsic_quad_broadcast:
       case nir_intrinsic_quad_swap_horizontal:

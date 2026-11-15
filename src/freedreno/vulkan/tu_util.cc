@@ -57,6 +57,10 @@ static const struct debug_control tu_debug_options[] = {
    { "forcecb", TU_DEBUG_FORCE_CONCURRENT_BINNING },
    { "computeroundrobin", TU_DEBUG_COMPUTE_ROUND_ROBIN },
    { "gmem_warmup", TU_DEBUG_GMEM_WARMUP },
+   { "gmemresolveprototype", TU_DEBUG_GMEM_RESOLVE_PROTOTYPE },
+   { "e5ubwc", TU_DEBUG_E5_UBWC },
+   { "noubwcquirk", TU_DEBUG_NO_UBWC_QUIRK },
+   { "gmemall", TU_DEBUG_GMEM_ALL },
    { NULL, 0 }
 };
 

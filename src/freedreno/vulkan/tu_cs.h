@@ -71,6 +71,18 @@ struct tu_draw_state {
    bool writeable;
 };
 
+/* Whether a draw state already set to a can be left alone instead of being
+ * set to b. Empty states are never considered equal, because a zeroed
+ * tracked state may not reflect what the GPU has (e.g. at the start of a
+ * secondary command buffer), and writeable ones may have been patched.
+ */
+static inline bool
+tu_draw_state_equal(struct tu_draw_state a, struct tu_draw_state b)
+{
+   return a.iova && a.iova == b.iova && a.size == b.size &&
+          !a.writeable && !b.writeable;
+}
+
 struct tu_bo_array {
    struct tu_bo **bos;
    uint32_t bo_count;
@@ -436,6 +448,19 @@ tu_cs_emit_array(struct tu_cs *cs, const uint32_t *values, uint32_t length)
 {
    assert(cs->cur + length <= cs->reserved_end);
    memcpy(cs->cur, values, sizeof(uint32_t) * length);
+   cs->cur += length;
+}
+
+/**
+ * Emit `length` zero dwords into a command stream, without boundary
+ * checking. Cheaper than an equivalent tu_cs_emit_array() from a scratch
+ * zero-filled buffer, and than `length` individual tu_cs_emit(cs, 0) calls.
+ */
+static inline void
+tu_cs_emit_zeros(struct tu_cs *cs, uint32_t length)
+{
+   assert(cs->cur + length <= cs->reserved_end);
+   memset(cs->cur, 0, sizeof(uint32_t) * length);
    cs->cur += length;
 }
 
@@ -1090,6 +1115,8 @@ tu_cs::mem_to_reg(struct fd_reg_pair reg, uint64_t va, struct tu_mem_to_reg_args
       .add(va)
       .add(va >> 32);
 }
+
+
 
 template <chip CHIP>
 static inline fd_reg_pair

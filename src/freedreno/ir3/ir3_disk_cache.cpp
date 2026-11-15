@@ -183,6 +183,13 @@ ir3_process_variant(IO &io, struct ir3_shader_variant *v)
    io.bytes(&v->key, sizeof(v->key));
    io.enum_t(v->type);
    io.boolean(v->mergedregs);
+   /* TU needs the immutable mesh producer map when rebuilding VPC state
+    * after a pipeline-cache hit. shader_options precedes VARIANT_CACHE_START
+    * and is otherwise initialized only when compiling a variant.
+    */
+   io.bytes(&v->shader_options.mesh_fs_inputs,
+            sizeof(v->shader_options.mesh_fs_inputs));
+   io.boolean(v->shader_options.mesh_multiview);
    process_variant(io, v);
 
    if (v->type == MESA_SHADER_VERTEX && ir3_has_binning_vs(&v->key)) {

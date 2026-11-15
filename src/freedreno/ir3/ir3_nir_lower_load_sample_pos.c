@@ -18,20 +18,17 @@ ir3_nir_lower_load_sample_pos_instr(nir_builder *b, nir_intrinsic_instr *intr,
 {
    b->cursor = nir_after_instr(&intr->instr);
    if (intr->intrinsic == nir_intrinsic_load_sample_pos_from_id) {
-      /* Our RGETPOS returns a position with a 0-based center, rather than NIR's
-       * 0.5 center.
+      /* RGETPOS has a zero-based center; replace the generic operation so
+       * rerunning the pass cannot add the center correction a second time.
        */
-      nir_def_rewrite_uses_after(&intr->def, nir_fadd_imm(b, &intr->def, 0.5));
+      nir_def_replace(&intr->def,
+                      nir_fadd_imm(b, nir_load_sample_pos_from_id_ir3(
+                                        b, intr->src[0].ssa), 0.5));
       return true;
    } else if (intr->intrinsic == nir_intrinsic_load_sample_pos) {
-      /* Note that the safe iterator will skip the load_sample_pos_from_id that
-       * we generate.
-       */
-      nir_def_replace(
-         &intr->def,
-         nir_fadd_imm(
-            b, nir_load_sample_pos_from_id(b, 32, nir_load_sample_id(b)), 0.5));
-
+      nir_def_replace(&intr->def,
+                      nir_fadd_imm(b, nir_load_sample_pos_from_id_ir3(
+                                        b, nir_load_sample_id(b)), 0.5));
       return true;
    } else {
       return false;

@@ -268,6 +268,8 @@ tu_CreateDescriptorSetLayout(
          ALIGN_POT(set_layout->binding[b].array_size * set_layout->binding[b].size, 4 * FDL6_TEX_CONST_DWORDS);
       if (vk_descriptor_type_is_dynamic(binding->descriptorType)) {
          dynamic_offset_size += size;
+         if (size)
+            set_layout->dynamic_binding_end = b + 1;
       } else {
          set_layout->size += size;
       }
@@ -667,8 +669,14 @@ tu_descriptor_set_create(struct tu_device *device,
          set->offset = pool_vma_offset - TU_POOL_HEAP_OFFSET;
          current_offset = set->offset;
       } else {
-         if (current_offset + set->size > pool->size)
+         if (current_offset + set->size > pool->size) {
+            /* The set was the last linear allocation from host_memory, give
+             * it back so a failed allocation doesn't leak pool host memory.
+             */
+            vk_object_base_finish(&set->base);
+            pool->host_memory_ptr -= mem_size;
             return VK_ERROR_OUT_OF_POOL_MEMORY;
+         }
 
          pool->current_offset += set->size;
       }
@@ -843,6 +851,8 @@ tu_CreateDescriptorPool(VkDevice _device,
 fail_map:
    tu_bo_finish(device, pool->bo);
 fail_alloc:
+   if (bo_size && !pool->host_memory_base)
+      util_vma_heap_finish(&pool->bo_heap);
    vk_object_free(&device->vk, pAllocator, pool);
    return ret;
 }
@@ -855,7 +865,9 @@ tu_destroy_descriptor_pool_entries(struct tu_device *device,
                              pool_link) {
       vk_descriptor_set_layout_unref(&device->vk, &set->layout->vk);
       if (!pool->host_memory_base)
-         tu_descriptor_set_destroy(device, pool, set);
+         vk_object_free(&device->vk, NULL, set);
+      else
+         vk_object_base_finish(&set->base);
    }
 
    list_inithead(&pool->desc_sets);
@@ -924,6 +936,10 @@ tu_AllocateDescriptorSets(VkDevice _device,
    uint32_t i;
    struct tu_descriptor_set *set = NULL;
 
+   const auto saved_host_memory_ptr = pool->host_memory_ptr;
+   const auto saved_current_offset = pool->current_offset;
+   const auto saved_entry_count = pool->entry_count;
+
    const VkDescriptorSetVariableDescriptorCountAllocateInfo *variable_counts =
       vk_find_struct_const(pAllocateInfo->pNext, DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO);
    if (variable_counts && !variable_counts->descriptorSetCount)
@@ -948,6 +964,19 @@ tu_AllocateDescriptorSets(VkDevice _device,
    if (result != VK_SUCCESS) {
       tu_FreeDescriptorSets(_device, pAllocateInfo->descriptorPool,
                i, pDescriptorSets);
+      if (pool->host_memory_base) {
+         /* FreeDescriptorSets unlinks linear-pool sets, but cannot reclaim
+          * individual allocations. Roll back the entire failed batch; all
+          * of its allocations are at the end of the pool.
+          */
+         for (uint32_t j = 0; j < i; j++) {
+            VK_FROM_HANDLE(tu_descriptor_set, allocated, pDescriptorSets[j]);
+            vk_object_base_finish(&allocated->base);
+         }
+         pool->host_memory_ptr = saved_host_memory_ptr;
+         pool->current_offset = saved_current_offset;
+         pool->entry_count = saved_entry_count;
+      }
       for (i = 0; i < pAllocateInfo->descriptorSetCount; i++) {
          pDescriptorSets[i] = VK_NULL_HANDLE;
       }
@@ -1126,13 +1155,13 @@ write_buffer_descriptor_addr(const struct tu_device *device,
    assert(!info->props.storage_8bit || (info->props.storage_16bit &&
                                        info->props.has_isam_v));
 
-   unsigned num_descriptors = 1 +
-      COND(info->props.storage_16bit && !info->props.has_isam_v, 1) +
-      COND(info->props.storage_8bit, 1);
-   memset(dst, 0, num_descriptors * FDL6_TEX_CONST_DWORDS * sizeof(uint32_t));
-
-   if (!buffer_info || buffer_info->address == 0)
+   if (!buffer_info || buffer_info->address == 0) {
+      unsigned num_descriptors = 1 +
+         COND(info->props.storage_16bit && !info->props.has_isam_v, 1) +
+         COND(info->props.storage_8bit, 1);
+      memset(dst, 0, num_descriptors * FDL6_TEX_CONST_DWORDS * sizeof(uint32_t));
       return;
+   }
 
    enum fdl_ssbo_emulation_mode ssbo_emulation_mode =
       device->physical_device->compiler_options.enable_ssbo_emulation ?
@@ -1706,7 +1735,7 @@ tu_CreateDescriptorUpdateTemplate(
       case VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK: {
          uint32_t remaining = entry->descriptorCount;
          uint32_t dst_start = entry->dstArrayElement;
-         uint32_t src_offset = entry->offset;
+         size_t src_offset = entry->offset;
          /* See comment in update_descriptor_sets() */
          do {
             dst_offset =

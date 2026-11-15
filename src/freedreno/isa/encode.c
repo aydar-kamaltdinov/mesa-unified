@@ -353,6 +353,22 @@ isa_assemble(struct ir3_shader_variant *v)
 			bitmask_t encoded;
 			if (instr->opc == OPC_META_RAW) {
 				encoded = uint64_t_to_bitmask(instr->raw.value);
+			} else if (shader->compiler->gen >= 8 &&
+					instr->opc == OPC_FLAT_B &&
+					(instr->srcs[1]->flags & IR3_REG_IMMED)) {
+				/* GameSir isa_assemble (ELF0xaeada4..0xaeae34): the A8
+				 * flat-bypass form encodes src2 as the destination register
+				 * and requires SY. Keep this at assembly time so scheduling,
+				 * RA and repeat merging still see the original immediate.
+				 */
+				struct ir3_register saved_src = *instr->srcs[1];
+				ir3_instruction_flags saved_flags = instr->flags;
+				instr->srcs[1]->flags &= ~IR3_REG_IMMED;
+				instr->srcs[1]->num = instr->dsts[0]->num;
+				instr->flags |= IR3_INSTR_SY;
+				encoded = encode__instruction(&s, NULL, instr);
+				*instr->srcs[1] = saved_src;
+				instr->flags = saved_flags;
 			} else {
 				encoded = encode__instruction(&s, NULL, instr);
 			}

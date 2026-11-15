@@ -328,6 +328,12 @@ typedef struct shader_info {
     */
    bool maximally_reconverges:1;
 
+   /**
+    * SPV_KHR_subgroup_uniform_control_flow. Drivers may need to preserve
+    * this execution mode when selecting the workgroup dispatch layout.
+    */
+   bool subgroup_uniform_control_flow:1;
+
    /* Use ACO instead of LLVM on AMD. */
    bool use_aco_amd:1;
 
@@ -520,6 +526,8 @@ typedef struct shader_info {
          bool pixel_interlock_unordered:1;
          bool sample_interlock_ordered:1;
          bool sample_interlock_unordered:1;
+         bool shading_rate_interlock_ordered:1;
+         bool shading_rate_interlock_unordered:1;
 
          /**
           * Whether the original shader had sample_mask_in regardless of

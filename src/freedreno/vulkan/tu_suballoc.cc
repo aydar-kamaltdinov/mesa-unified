@@ -55,8 +55,11 @@ tu_suballoc_bo_alloc(struct tu_suballoc_bo *suballoc_bo,
 {
    struct tu_bo *bo = suballoc->bo;
    if (bo) {
-      uint32_t offset = align(suballoc->next_offset, alignment);
-      if (offset + size <= bo->size) {
+      uint64_t offset = align64(suballoc->next_offset, alignment);
+      uint64_t limit = MIN2(bo->size, UINT32_MAX);
+      if (offset + size > limit && p_atomic_read(&bo->refcnt) == 1)
+         offset = 0;
+      if (offset + size <= limit) {
          suballoc_bo->bo = tu_bo_get_ref(bo);
          suballoc_bo->iova = bo->iova + offset;
          suballoc_bo->size = size;

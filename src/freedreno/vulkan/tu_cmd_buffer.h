@@ -277,6 +277,8 @@ enum tu_cmd_ccu_state {
    TU_CMD_CCU_SYSMEM,
    TU_CMD_CCU_GMEM,
    TU_CMD_CCU_UNKNOWN,
+   /* Symbolic local value; original GameSir state1 is mesh, state2 GMEM. */
+   TU_CMD_CCU_MESH_SYSMEM,
 };
 
 struct tu_cache_state {
@@ -320,9 +322,12 @@ struct tu_render_pass_state
 {
    bool xfb_used;
    bool has_tess;
+   bool has_mesh;
    bool has_prim_generated_query_in_rp;
    bool has_vtx_stats_query_in_rp;
    bool has_zpass_done_sample_count_write_in_rp;
+   /* draw_epilogue_cs already contains the occlusion-query depth invalidate. */
+   bool has_occlusion_depth_invalidate;
    bool disable_gmem;
    bool sysmem_single_prim_mode;
    bool lrz_disable_for_next_rp;
@@ -494,7 +499,7 @@ struct tu_cmd_state
 {
    uint32_t dirty;
 
-   struct tu_shader *shaders[MESA_SHADER_STAGES];
+   struct tu_shader *shaders[MESA_SHADER_MESH_STAGES];
 
    struct tu_program_state program;
 
@@ -517,6 +522,12 @@ struct tu_cmd_state
    } vb[MAX_VBS];
 
    uint32_t max_vbs_bound;
+
+   /* Last graphics VkPipeline handle passed to vkCmdBindPipeline, used to
+    * skip re-forcing DESC_SETS/SHADER_CONSTS/VS_PARAMS/PROGRAM dirty on an
+    * exact repeat bind (measured ~13% of graphics binds in real content).
+    */
+   VkPipeline last_gfx_pipeline;
 
    bool has_fdm;
    /* See tu_pipeline::per_view_viewport */
@@ -560,6 +571,7 @@ struct tu_cmd_state
     * unaligned
     */
    uint8_t streamout_offset[IR3_MAX_SO_BUFFERS];
+   uint8_t streamout_active_mask;
 
    /* Renderpasses are tricky, because we may need to flush differently if
     * using sysmem vs. gmem and therefore we have to delay any flushing that
@@ -648,6 +660,11 @@ struct tu_cmd_state
    bool vtx_stats_query_running_before_rp;
    bool xfb_query_running_before_rp;
 
+   /* Conservative AQE accounting latch: inherited pipeline statistics or
+    * a begun pipeline/primitive query. Kept until command-state reset.
+    */
+   bool statistics_query_may_be_running;
+
    bool occlusion_query_may_be_running;
 
    bool trace_draws_enabled;
@@ -660,9 +677,14 @@ struct tu_cmd_state
    struct tu_lrz_state lrz;
 
    struct tu_draw_state lrz_and_depth_plane_state;
+   /* CPU copy of the commands in lrz_and_depth_plane_state, used to skip
+    * re-emitting it when rebuilding it yields the same commands.
+    */
+   const uint32_t *lrz_and_depth_plane_map;
 
    struct tu_vs_params last_vs_params;
    bool last_draw_indexed;
+   bool last_fragment_vertex_ordering;
 
    /* Set by tu_sw_multiview_draw() while it replays a draw for a single view
     * on devices without HW multiview. Outside of it SW multiview is never
@@ -757,6 +779,39 @@ struct tu_cmd_buffer
    struct tu_render_pass dynamic_pass;
    struct tu_subpass dynamic_subpasses[2];
    struct tu_framebuffer dynamic_framebuffer;
+
+   /* Cache tu_render_pass_gmem_config() for this command buffer's device.
+    * The key includes attachment format/size and GMEM eligibility, subpass
+    * lifetimes, and custom depth/stencil resolve use. Device tile alignment
+    * and GMEM/CCU budgets are fixed for the lifetime of this cache.
+    * Keep the key in sync with the inputs read by gmem_config. The other
+    * pass configuration functions depend on additional state and still
+    * run for every dynamic render pass.
+    */
+   struct {
+      bool valid;
+      uint32_t attachment_count;
+      /* Also read by tu_render_pass_gmem_config(): the subpass layout
+       * (attachments with disjoint subpass ranges share GMEM allocations)
+       * and whether a custom resolve touches depth/stencil (shrinks the
+       * AVOID_CCU budget).
+       */
+      uint32_t subpass_count;
+      bool custom_resolve_depth_stencil;
+      struct {
+         bool gmem;
+         uint32_t cpp;
+         VkFormat format;
+         uint32_t samples;
+         uint32_t first_subpass_idx;
+         uint32_t last_subpass_idx;
+      } sig[3 * (MAX_RTS + 1) + 2];
+      uint32_t tile_align_w;
+      uint32_t min_cpp;
+      uint32_t gmem_pixels[TU_GMEM_LAYOUT_COUNT];
+      int32_t gmem_offset[3 * (MAX_RTS + 1) + 2][TU_GMEM_LAYOUT_COUNT];
+      int32_t gmem_offset_stencil[3 * (MAX_RTS + 1) + 2][TU_GMEM_LAYOUT_COUNT];
+   } dynamic_gmem_config_cache;
 
    struct tu_cs cs;
    struct tu_cs draw_cs;
@@ -907,6 +962,16 @@ void
 tu_flush_for_access(struct tu_cache_state *cache,
                     enum tu_cmd_access_mask src_mask,
                     enum tu_cmd_access_mask dst_mask);
+
+/* Immediately emits whatever cache->flush_bits currently holds into cs,
+ * for callers (like resolve_3d_blit) that aren't in draw_cs/renderpass_cache's
+ * normal deferred-emission path and need a synchronous flush at a specific
+ * point in an arbitrary cs. */
+template <chip CHIP>
+void
+tu6_emit_flushes(struct tu_cmd_buffer *cmd_buffer,
+                 struct tu_cs *cs,
+                 struct tu_cache_state *cache);
 
 static inline struct tu_descriptor_state *
 tu_get_descriptors_state(struct tu_cmd_buffer *cmd_buffer,
@@ -1075,5 +1140,14 @@ tu_fdm_num_layers(const struct tu_cmd_buffer *cmd)
    return cmd->state.pass->num_views ? cmd->state.pass->num_views : 
       (cmd->state.fdm_per_layer ? cmd->state.framebuffer->layers : 1);
 }
+
+/* Internal recording boundaries; Vulkan TASK/MESH entrypoints stay guarded.
+ * A session borrows pipeline data only until the matching end call.
+ */
+struct tu_a8_mesh_draw_session;
+VkResult tu_a8_begin_mesh_draw(struct tu_cmd_buffer *cmd,
+                               struct tu_a8_mesh_draw_session *session);
+VkResult tu_a8_end_mesh_draw(struct tu_cmd_buffer *cmd,
+                             struct tu_a8_mesh_draw_session *session);
 
 #endif /* TU_CMD_BUFFER_H */

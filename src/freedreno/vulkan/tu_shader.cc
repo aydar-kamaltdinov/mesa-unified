@@ -4,14 +4,21 @@
  */
 
 #include "tu_shader.h"
+#include "tu_fragment_primitive.h"
+#include "tu_nir_cooperative_matrix.h"
+#include "tu_nir_mesh.h"
+#include "tu_mesh_vpc.h"
 
 #include <initializer_list>
 
 #include "nir/nir_xfb_info.h"
 #include "spirv/nir_spirv.h"
 #include "util/blob.h"
+#include "util/log.h"
 #include "util/macros.h"
 #include "util/mesa-blake3.h"
+#include "util/u_atomic.h"
+#include "util/u_debug.h"
 #include "vk_nir.h"
 #include "vk_nir_convert_ycbcr.h"
 #include "vk_pipeline.h"
@@ -56,6 +63,16 @@ static const struct spirv_to_nir_options tu_spirv_options = {
 
    /* Accessed via stg/ldg (not used with Vulkan?) */
    .global_addr_format = nir_address_format_64bit_global,
+
+   /* AK: treat FMin/FMax/FClamp like the NMin/NMax variants, so algebraic
+    * optimizations keep their NaN results. RADV only enables this for
+    * specific games via driconf; here it is global. It costs some
+    * optimizations but matches emulated min/max semantics (e.g. Maxwell
+    * FMNMX returning the non-NaN operand) more closely.
+    */
+   .workarounds = {
+      .force_nan_preserve_min_max = true,
+   },
 
    .min_ubo_alignment = 64,
    .min_ssbo_alignment = 4,
@@ -321,6 +338,12 @@ lower_load_push_constant(struct tu_device *dev,
        */
       base += dev->compiler->shared_consts_base_offset * 4;
    } else {
+      /* AK: base is a byte offset while lo_dwords and the const file base
+       * are in dwords. nir_lower_explicit_io currently always emits base 0
+       * for push constants, so this is a no-op today; it only keeps the
+       * units consistent if a non-zero byte base ever reaches this point.
+       */
+      base /= 4;
       assert(base >= shader->const_state.push_consts.lo_dwords);
       base -= shader->const_state.push_consts.lo_dwords;
       base += push_consts_offset_vec4 * 4;
@@ -2111,6 +2134,14 @@ shared_type_info(const struct glsl_type *type, unsigned *size, unsigned *align)
    *align = comp_size;
 }
 
+static void
+task_payload_type_info(const struct glsl_type *type, unsigned *size,
+                       unsigned *alignment)
+{
+   *size = glsl_get_std430_size(type, false);
+   *alignment = glsl_get_std430_base_alignment(type, false);
+}
+
 static uint32_t
 tu_xs_get_immediates_packet_size_dwords(const struct ir3_shader_variant *xs)
 {
@@ -2146,6 +2177,13 @@ tu_xs_get_additional_cs_size_dwords(const struct ir3_shader_variant *xs)
    size += xs->input_size;
 
    size += xs->constant_data_size / 4;
+
+   /* Account for the recovered VFD draw-input register in every VS
+    * substream, including binning and safe-const variants.
+    */
+   if (xs->type == MESA_SHADER_VERTEX && xs->compiler->gen >= 8 &&
+       xs->compiler->info->props.has_hw_vs_draw_params)
+      size += 2;
 
    return size;
 }
@@ -2620,13 +2658,16 @@ tu6_emit_fs_inputs(struct tu_cs *cs, const struct ir3_shader_variant *fs)
 {
    uint32_t face_regid, coord_regid, zwcoord_regid, samp_id_regid;
    uint32_t ij_regid[IJ_COUNT];
-   uint32_t smask_in_regid, shading_rate_regid;
+   uint32_t smask_in_regid, shading_rate_regid, fully_covered_regid;
 
    bool sample_shading = fs->sample_shading;
    bool enable_varyings = fs->total_in > 0;
 
    samp_id_regid   = ir3_find_sysval_regid(fs, SYSTEM_VALUE_SAMPLE_ID);
    smask_in_regid  = ir3_find_sysval_regid(fs, SYSTEM_VALUE_SAMPLE_MASK_IN);
+   fully_covered_regid = ir3_find_sysval_regid(fs, SYSTEM_VALUE_FULLY_COVERED);
+   const uint32_t coverage_regid = CHIP >= A8XX && VALIDREG(fully_covered_regid) ?
+      fully_covered_regid : smask_in_regid;
    face_regid      = ir3_find_sysval_regid(fs, SYSTEM_VALUE_FRONT_FACE);
    coord_regid     = ir3_find_sysval_regid(fs, SYSTEM_VALUE_FRAG_COORD);
    zwcoord_regid   = VALIDREG(coord_regid) ? coord_regid + 2 : regid(63, 0);
@@ -2675,7 +2716,7 @@ tu6_emit_fs_inputs(struct tu_cs *cs, const struct ir3_shader_variant *fs)
             cs->device->physical_device->info->props.prim_alloc_threshold),
       SP_REG_PROG_ID_0(CHIP, .faceregid = face_regid,
                          .sampleid = samp_id_regid,
-                         .samplemask = smask_in_regid,
+                         .samplemask = coverage_regid,
                          .centerrhw = ij_regid[IJ_PERSP_CENTER_RHW]),
       SP_REG_PROG_ID_1(CHIP, .ij_persp_pixel = ij_regid[IJ_PERSP_PIXEL],
                          .ij_linear_pixel = ij_regid[IJ_LINEAR_PIXEL],
@@ -2705,7 +2746,7 @@ tu6_emit_fs_inputs(struct tu_cs *cs, const struct ir3_shader_variant *fs)
       }
 
       for (uint32_t sysval : { face_regid, samp_id_regid, smask_in_regid,
-                               shading_rate_regid }) {
+                               shading_rate_regid, fully_covered_regid }) {
          if (VALIDREG(sysval))
             sysval_regs += 1;
       }
@@ -2761,7 +2802,7 @@ tu6_emit_fs_inputs(struct tu_cs *cs, const struct ir3_shader_variant *fs)
          .interp_en             = enable_varyings,
       ),
       A6XX_RB_PS_INPUT_CNTL(
-         .samplemask            = VALIDREG(smask_in_regid),
+         .samplemask            = VALIDREG(coverage_regid),
          .postdepthcoverage     = fs->post_depth_coverage,
          .faceness              = fs->frag_face,
          .sampleid              = VALIDREG(samp_id_regid),
@@ -2800,6 +2841,14 @@ tu6_emit_fs_inputs(struct tu_cs *cs, const struct ir3_shader_variant *fs)
       }
    }
 
+   if (fs->has_barycentric_coord) {
+      assert(fs->barycentric_coord_inloc + 3 <= 128);
+      for (unsigned i = 0; i < 3; i++) {
+         unsigned loc = fs->barycentric_coord_inloc + i;
+         varmask[loc / 32] |= BITFIELD_BIT(loc % 32);
+      }
+   }
+
    tu_cs_emit_regs(
       cs, VPC_VARYING_LM_TRANSFER_CNTL_DISABLE(CHIP, 0, .dword = ~varmask[0]),
       VPC_VARYING_LM_TRANSFER_CNTL_DISABLE(CHIP, 1, .dword = ~varmask[1]),
@@ -2817,7 +2866,8 @@ tu6_emit_fs_inputs(struct tu_cs *cs, const struct ir3_shader_variant *fs)
    tu_cs_emit_regs(
       cs,
       VPC_PS_CNTL(CHIP, .numnonposvar = num_nonpos_var, .primidloc = primid_loc,
-                  .varying = fs && fs->total_in, .viewidloc = viewid_loc));
+                  .varying = fs && fs->total_in, .viewidloc = viewid_loc,
+                  .barycentric_coord = fs->has_barycentric_coord));
 }
 
 template <chip CHIP>
@@ -2829,7 +2879,18 @@ tu6_emit_fs_outputs(struct tu_cs *cs,
 
    posz_regid      = ir3_find_output_regid(fs, FRAG_RESULT_DEPTH);
    smask_regid     = ir3_find_output_regid(fs, FRAG_RESULT_SAMPLE_MASK);
-   stencilref_regid = ir3_find_output_regid(fs, FRAG_RESULT_STENCIL);
+   int stencil_output = ir3_find_output(fs, (gl_varying_slot) FRAG_RESULT_STENCIL);
+   if (stencil_output < 0) {
+      /* Original GameSir also scans metadata slot 13 after STENCIL.  Preserve
+       * the raw record lookup without assigning it a new frontend/API meaning.
+       * A present STENCIL record takes priority even if its regid is invalid.
+       */
+      constexpr unsigned gamesir_stencil_fallback_slot = 13;
+      stencil_output = ir3_find_output(
+         fs, (gl_varying_slot) gamesir_stencil_fallback_slot);
+   }
+   stencilref_regid = stencil_output < 0 ? INVALID_REG :
+      ir3_get_output_regid(&fs->outputs[stencil_output]);
 
    int output_reg_count = 0;
    uint32_t fragdata_regid[8];
@@ -2858,6 +2919,14 @@ tu6_emit_fs_outputs(struct tu_cs *cs,
                                         << (i * 4);
       }
    }
+
+   /* GameSir mirrors the second source when a dual-source FS omits DATA0.
+    * Keep both hardware slots valid without changing the shader outputs or
+    * the alias-component masks.
+    */
+   if (fs->dual_src_blend && fragdata_regid[0] == INVALID_REG &&
+       fragdata_regid[1] != INVALID_REG)
+      fragdata_regid[0] = fragdata_regid[1];
 
    tu_cs_emit_pkt4(cs, REG_A6XX_SP_PS_OUTPUT_CNTL, 1);
    tu_cs_emit(cs, A6XX_SP_PS_OUTPUT_CNTL_DEPTH_REGID(posz_regid) |
@@ -2978,6 +3047,17 @@ tu6_emit_vs(struct tu_cs *cs,
                   A6XX_VFD_CNTL_1_REGID4INST(instanceid_regid) |
                   A6XX_VFD_CNTL_1_REGID4PRIMID(vs_primitiveid_regid) |
                   A6XX_VFD_CNTL_1_REGID4VIEWID(viewid_regid));
+
+   if (CHIP >= A8XX && vs->compiler->info->props.has_hw_vs_draw_params) {
+      /* Original A8 tu6_emit_vs writes ELF register 0xa00a, byte slots
+       * DRAW_ID/FIRST_VERTEX/BASE_INSTANCE/unused (0xfc).
+       */
+      tu_cs_emit_regs(cs, VFD_DRAW_PARAMS(CHIP,
+         .regid_draw_id = ir3_find_sysval_regid(vs, SYSTEM_VALUE_DRAW_ID),
+         .regid_first_vertex = ir3_find_sysval_regid(vs, SYSTEM_VALUE_FIRST_VERTEX),
+         .regid_base_instance = ir3_find_sysval_regid(vs, SYSTEM_VALUE_BASE_INSTANCE),
+         .regid_unk = regid(63, 0)));
+   }
 }
 TU_GENX(tu6_emit_vs);
 
@@ -3109,7 +3189,10 @@ tu6_emit_variant(struct tu_cs *cs,
                  uint32_t view_mask,
                  uint64_t binary_iova)
 {
-   if (stage == MESA_SHADER_COMPUTE) {
+   /* AQE task/mesh variants use the CS register bank, retaining their NIR
+    * stage identity. GameSir tu6_emit_variant routes CS/TS/MS/KERNEL here.
+    */
+   if (ir3_stage_is_compute(stage)) {
       tu6_emit_cs_config<CHIP>(cs, xs, pvtmem_config, binary_iova);
       return;
    }
@@ -3172,24 +3255,27 @@ tu_setup_pvtmem(struct tu_device *dev,
    mtx_lock(&pvtmem_bo->mtx);
 
    if (pvtmem_bo->per_fiber_size < pvtmem_bytes) {
-      if (pvtmem_bo->bo)
-         tu_bo_finish(dev, pvtmem_bo->bo);
-
-      pvtmem_bo->per_fiber_size =
+      uint32_t per_fiber_size =
          util_next_power_of_two(align(pvtmem_bytes, 512));
-      pvtmem_bo->per_sp_size =
-         align(pvtmem_bo->per_fiber_size *
-                  dev->physical_device->info->fibers_per_sp,
+      uint32_t per_sp_size =
+         align(per_fiber_size * dev->physical_device->info->fibers_per_sp,
                1 << 12);
       uint32_t total_size =
-         dev->physical_device->info->num_sp_cores * pvtmem_bo->per_sp_size;
+         dev->physical_device->info->num_sp_cores * per_sp_size;
+      struct tu_bo *new_bo;
 
-      VkResult result = tu_bo_init_new(dev, NULL, &pvtmem_bo->bo, total_size,
+      VkResult result = tu_bo_init_new(dev, NULL, &new_bo, total_size,
                                        TU_BO_ALLOC_INTERNAL_RESOURCE, "pvtmem");
       if (result != VK_SUCCESS) {
          mtx_unlock(&pvtmem_bo->mtx);
          return result;
       }
+
+      if (pvtmem_bo->bo)
+         tu_bo_finish(dev, pvtmem_bo->bo);
+      pvtmem_bo->bo = new_bo;
+      pvtmem_bo->per_fiber_size = per_fiber_size;
+      pvtmem_bo->per_sp_size = per_sp_size;
    }
 
    config->per_wave = per_wave;
@@ -3256,8 +3342,17 @@ tu_upload_shader(struct tu_device *dev,
    /* We emit an empty VPC including streamout state in the binning draw state */
    if (binning || v->type == MESA_SHADER_GEOMETRY) {
       size += vpc_size;
-      if (safe_const)
+      if (safe_const) {
          size += vpc_size;
+         static const bool diagnose =
+            debug_get_bool_option("TU_AC4_DIAGNOSTIC_LOG", false);
+         static unsigned reports = 0;
+         if (diagnose && p_atomic_fetch_add(&reports, 1) < 8) {
+            mesa_log(MESA_LOG_INFO, "TU",
+                     "AC4 safe-const VPC reservation: stage=%u extra_dwords=%u",
+                     (unsigned)v->type, vpc_size);
+         }
+      }
    }
 
    pthread_mutex_lock(&dev->pipeline_mutex);
@@ -3301,6 +3396,8 @@ tu_upload_shader(struct tu_device *dev,
    if (result != VK_SUCCESS) {
       pthread_mutex_lock(&dev->pipeline_mutex);
       tu_suballoc_bo_free(&dev->pipeline_suballoc, &shader->bo);
+      /* The caller may destroy the partially initialized shader. */
+      shader->bo = {};
       pthread_mutex_unlock(&dev->pipeline_mutex);
       return result;
    }
@@ -3453,6 +3550,9 @@ tu_shader_cache_process_blob(IO &io, struct tu_shader *shader)
       io.variant(shader->safe_const_variant);
 
    switch (shader->variant->type) {
+   case MESA_SHADER_MESH:
+      io.bytes(&shader->mesh, sizeof(shader->mesh));
+      break;
    case MESA_SHADER_TESS_EVAL:
       io.bytes(&shader->tes, sizeof(shader->tes));
       break;
@@ -3489,16 +3589,93 @@ tu_shader_deserialize(struct vk_pipeline_cache *cache,
    if (!shader)
       return NULL;
 
-   ir3_blob_read reader { blob, dev->compiler };
-   tu_shader_cache_process_blob(reader, shader);
-
-   VkResult result = tu_upload_shader(dev, shader);
-   if (result != VK_SUCCESS) {
-      vk_free(&dev->vk.alloc, shader);
-      return NULL;
+   VkResult result;
+   {
+      ir3_blob_read reader { blob, dev->compiler };
+      tu_shader_cache_process_blob(reader, shader);
    }
+   if (blob->overrun || !shader->variant ||
+       (unsigned)shader->variant->type >= MESA_SHADER_MESH_STAGES ||
+       (shader->safe_const_variant &&
+        shader->safe_const_variant->type != shader->variant->type))
+      goto fail;
+
+   /* Reject a truncated or mismatched record before using its shader state
+    * to allocate/upload GPU resources. The cache lookup can then recompile.
+    */
+   if (blob->overrun || blob->current != blob->end)
+      goto fail;
+
+   result = tu_upload_shader(dev, shader);
+   if (result != VK_SUCCESS)
+      goto fail;
 
    return &shader->base;
+
+fail:
+   ralloc_free((void *) shader->variant);
+   ralloc_free((void *) shader->safe_const_variant);
+   vk_free(&dev->vk.alloc, shader);
+   return NULL;
+}
+
+static void
+tu_update_shared_size(struct tu_device *dev, nir_shader *nir)
+{
+   const uint32_t initial_size = nir->info.shared_size;
+   if (!initial_size)
+      return;
+
+   /* GameSir tu_lower_nir ELF0xa08c24..0xa09078 extends the reservation
+    * for bounded shared accesses, up to four times the original size and
+    * never beyond the device limit. Unknown bounds do not grow it.
+    */
+   const uint64_t limit =
+      MIN2((uint64_t)initial_size * 4,
+           dev->physical_device->info->cs_shared_mem_size);
+   uint32_t required_size = initial_size;
+   struct hash_table *range_ht = _mesa_pointer_hash_table_create(NULL);
+
+   nir_foreach_function_impl(impl, nir) {
+      nir_foreach_block(block, impl) {
+         nir_foreach_instr(instr, block) {
+            if (instr->type != nir_instr_type_intrinsic)
+               continue;
+            nir_intrinsic_instr *intr = nir_instr_as_intrinsic(instr);
+            unsigned offset_src = 0;
+            unsigned bytes;
+            switch (intr->intrinsic) {
+            case nir_intrinsic_load_shared:
+               bytes = intr->def.num_components * intr->def.bit_size / 8;
+               break;
+            case nir_intrinsic_store_shared: {
+               unsigned components = nir_intrinsic_has_write_mask(intr) ?
+                  util_last_bit(nir_intrinsic_write_mask(intr)) :
+                  intr->src[0].ssa->num_components;
+               bytes = components * intr->src[0].ssa->bit_size / 8;
+               offset_src = 1;
+               break;
+            }
+            case nir_intrinsic_shared_atomic:
+            case nir_intrinsic_shared_atomic_swap:
+               bytes = 4;
+               break;
+            default:
+               continue;
+            }
+
+            uint32_t upper = nir_unsigned_upper_bound(
+               nir, range_ht, nir_scalar{intr->src[offset_src].ssa, 0});
+            uint64_t end = (uint64_t)upper + bytes;
+            if (upper != UINT32_MAX && end <= limit)
+               required_size = MAX2(required_size, (uint32_t)end);
+         }
+      }
+   }
+   _mesa_hash_table_destroy(range_ht, NULL);
+
+   if (required_size > initial_size)
+      nir->info.shared_size = align(required_size, 16);
 }
 
 void
@@ -3508,6 +3685,11 @@ tu_lower_nir(struct tu_device *dev,
              const struct ir3_shader_key *ir3_key,
              struct tu_shader_info *info)
 {
+   /* Expand matrix operations before access analysis and explicit shared/global
+    * memory lowering. The capability remains gated on 64-lane subgroups.
+    */
+   NIR_PASS(_, nir, tu_nir_lower_cooperative_matrix);
+
    const nir_opt_access_options access_options = {
       .is_vulkan = true,
    };
@@ -3521,6 +3703,13 @@ tu_lower_nir(struct tu_device *dev,
          .use_ia_coord_intrin = true,
       };
       NIR_PASS(_, nir, nir_lower_input_attachments, &att_options);
+
+      /* Mesh dispatch supplies ViewIndex at a fixed AQE constant slot, not
+       * through the ordinary vertex-to-fragment varying. Lower after input
+       * attachments have introduced their own ViewIndex loads.
+       */
+      if (info->mesh_multiview)
+         NIR_PASS(_, nir, tu_nir_lower_mesh_fragment_view_index);
 
       const nir_lower_sysvals_to_varyings_options sysval_options = {
          .point_coord = true,
@@ -3556,7 +3745,7 @@ tu_lower_nir(struct tu_device *dev,
    NIR_PASS(_, nir, tu_nir_lower_fdm, &fdm_options);
 
    if (nir->info.stage != MESA_SHADER_FRAGMENT &&
-       nir->info.stage != MESA_SHADER_COMPUTE &&
+       !mesa_shader_stage_uses_workgroup(nir->info.stage) &&
        !key->multiview_mask &&
        key->fdm_per_layer) {
       NIR_PASS(_, nir, tu_nir_lower_layered_fdm, &info->per_layer_viewport);
@@ -3598,7 +3787,8 @@ tu_lower_nir(struct tu_device *dev,
       tu_nir_lower_multiview_sw_fs(nir);
    }
 
-   if (nir->info.stage == MESA_SHADER_GEOMETRY)
+   if (nir->info.stage == MESA_SHADER_GEOMETRY ||
+       nir->info.stage == MESA_SHADER_MESH)
       nir->info.view_mask = key->multiview_mask;
 
    if (!key->multiview_mask)
@@ -3624,11 +3814,21 @@ tu_lower_nir(struct tu_device *dev,
    NIR_PASS(_, nir, nir_lower_explicit_io, nir_var_mem_global,
             nir_address_format_64bit_global_32bit_offset);
 
-   if (nir->info.stage == MESA_SHADER_COMPUTE) {
+   if (nir->info.stage == MESA_SHADER_TASK ||
+       nir->info.stage == MESA_SHADER_MESH) {
+      NIR_PASS(_, nir, nir_lower_vars_to_explicit_types,
+               nir_var_mem_task_payload, task_payload_type_info);
+      NIR_PASS(_, nir, nir_lower_explicit_io, nir_var_mem_task_payload,
+               nir_address_format_32bit_offset);
+   }
+
+   if (mesa_shader_stage_uses_workgroup(nir->info.stage)) {
       NIR_PASS(_, nir, nir_lower_vars_to_explicit_types,
                nir_var_mem_shared, shared_type_info);
       NIR_PASS(_, nir, nir_lower_explicit_io, nir_var_mem_shared,
                nir_address_format_32bit_offset);
+
+      tu_update_shared_size(dev, nir);
 
       if (nir->info.zero_initialize_shared_memory && nir->info.shared_size > 0) {
          const unsigned chunk_size = 16; /* max single store size */
@@ -3643,7 +3843,7 @@ tu_lower_nir(struct tu_device *dev,
       }
 
       const struct nir_lower_compute_system_values_options compute_sysval_options = {
-         .has_base_workgroup_id = true,
+         .has_base_workgroup_id = nir->info.stage != MESA_SHADER_MESH,
       };
       NIR_PASS(_, nir, nir_lower_compute_system_values,
                &compute_sysval_options);
@@ -3697,6 +3897,20 @@ tu_shader_create(struct tu_device *dev,
       return VK_ERROR_OUT_OF_HOST_MEMORY;
 
    shader->per_layer_viewport = info->per_layer_viewport;
+   if (nir->info.stage == MESA_SHADER_MESH)
+      shader->mesh = info->mesh;
+   if (nir->info.stage == MESA_SHADER_FRAGMENT) {
+      shader->fs.uses_primitive_key = tu_fragment_shader_uses_primitive_key(nir);
+      /* Original shader+0x22a is the OR of all six interlock execution
+       * modes (NIR info+0x1a0 mask0x3f0000), not a barycentric flag.
+       */
+      shader->fs.uses_interlock = nir->info.fs.pixel_interlock_ordered ||
+         nir->info.fs.pixel_interlock_unordered ||
+         nir->info.fs.sample_interlock_ordered ||
+         nir->info.fs.sample_interlock_unordered ||
+         nir->info.fs.shading_rate_interlock_ordered ||
+         nir->info.fs.shading_rate_interlock_unordered;
+   }
 
    if (nir->info.stage == MESA_SHADER_FRAGMENT &&
        key->fdm_per_layer) {
@@ -3717,6 +3931,15 @@ tu_shader_create(struct tu_device *dev,
    }
 
    struct ir3_const_allocations const_allocs = {};
+   /* GameSir tu_shader_create ELF 0xa094a0..0xa094f4 reserves [0,36)
+    * scalar words before any API allocation for TASK/MESH and mesh-multiview
+    * FS. load_const_ir3 addresses these slots absolutely; reserving later in
+    * IR3 would allow push/inline constants to alias the AQE prefix.
+    */
+   if (nir->info.stage == MESA_SHADER_TASK ||
+       nir->info.stage == MESA_SHADER_MESH ||
+       (nir->info.stage == MESA_SHADER_FRAGMENT && info->mesh_multiview))
+      const_allocs.max_const_offset_vec4 = TU_AQE_CONST_PREFIX_VEC4;
    NIR_PASS(_, nir, tu_lower_io, dev, shader, ir3_key, layout,
             key->read_only_input_attachments, key->dynamic_renderpass,
             &const_allocs);
@@ -3757,6 +3980,8 @@ tu_shader_create(struct tu_device *dev,
       .push_consts_dwords = shader->const_state.push_consts.dwords,
       .const_allocs = const_allocs,
       .nir_options = nir_options,
+      .mesh_fs_inputs = info->mesh_fs_inputs,
+      .mesh_multiview = info->mesh_multiview,
    };
 
    struct ir3_shader *ir3_shader =
@@ -3765,12 +3990,23 @@ tu_shader_create(struct tu_device *dev,
    shader->variant =
       ir3_shader_create_variant(ir3_shader, ir3_key, executable_info);
 
+   if (!shader->variant) {
+      ir3_shader_destroy(ir3_shader);
+      tu_shader_destroy(dev, shader);
+      return VK_ERROR_OUT_OF_HOST_MEMORY;
+   }
+
    if (ir3_exceeds_safe_constlen(shader->variant)) {
       struct ir3_shader_key safe_constlen_key = *ir3_key;
       safe_constlen_key.safe_constlen = true;
       shader->safe_const_variant =
          ir3_shader_create_variant(ir3_shader, &safe_constlen_key,
                                    executable_info);
+      if (!shader->safe_const_variant) {
+         ir3_shader_destroy(ir3_shader);
+         tu_shader_destroy(dev, shader);
+         return VK_ERROR_OUT_OF_HOST_MEMORY;
+      }
    }
 
    ir3_shader_destroy(ir3_shader);
@@ -3842,6 +4078,8 @@ tu_shader_create(struct tu_device *dev,
 
    VkResult result = tu_upload_shader(dev, shader);
    if (result != VK_SUCCESS) {
+      ralloc_free((void *) shader->variant);
+      ralloc_free((void *) shader->safe_const_variant);
       vk_free(&dev->vk.alloc, shader);
       return result;
    }
@@ -3864,16 +4102,40 @@ tu_link_shaders(struct tu_device *dev,
                 nir_shader **shaders,
                 unsigned shaders_count)
 {
-   nir_shader *link_shaders[MESA_SHADER_STAGES] = {};
+   nir_shader *link_shaders[MESA_SHADER_MESH_STAGES] = {};
    assert(shaders_count <= ARRAY_SIZE(link_shaders));
+
+   if (shaders_count > MESA_SHADER_MESH && shaders[MESA_SHADER_MESH]) {
+      /* AQE layout owns mesh attribute placement; ordinary varying
+       * compaction would erase the recovered per-primitive header slot.
+       * Task payload is separate from the mesh-to-fragment interface.
+       */
+      if (shaders[MESA_SHADER_TASK]) {
+         nir_recompute_io_bases(shaders[MESA_SHADER_TASK],
+                                nir_var_shader_in | nir_var_shader_out);
+         nir_shader_gather_info(shaders[MESA_SHADER_TASK],
+                                nir_shader_get_entrypoint(shaders[MESA_SHADER_TASK]));
+      }
+      tu_nir_link_mesh_fragment(shaders[MESA_SHADER_MESH],
+                                shaders[MESA_SHADER_FRAGMENT]);
+      return;
+   }
 
    unsigned link_shaders_count = 0;
 
-   for (unsigned i = 0; i < shaders_count; i++) {
-      if (shaders[i]) {
-         link_shaders[link_shaders_count++] = shaders[i];
-      }
+   /* Mesa enum order places FS before TASK/MESH. Varying linkage must use
+    * producer order, while task payload and compute stages are not varyings. */
+   const mesa_shader_stage order[] = {
+      MESA_SHADER_VERTEX, MESA_SHADER_TESS_CTRL, MESA_SHADER_TESS_EVAL,
+      MESA_SHADER_GEOMETRY, MESA_SHADER_MESH, MESA_SHADER_FRAGMENT,
+   };
+   for (mesa_shader_stage stage : order) {
+      if ((unsigned)stage < shaders_count && shaders[stage])
+         link_shaders[link_shaders_count++] = shaders[stage];
    }
+   if (!link_shaders_count && shaders_count > MESA_SHADER_COMPUTE &&
+       shaders[MESA_SHADER_COMPUTE])
+      link_shaders[link_shaders_count++] = shaders[MESA_SHADER_COMPUTE];
 
    nir_opt_varyings_bulk(link_shaders, link_shaders_count, true, UINT32_MAX,
                          UINT32_MAX, link_opts, dev->compiler);
@@ -3920,14 +4182,29 @@ tu_compile_shaders(struct tu_device *device,
                    char **nir_initial_disasm,
                    void *nir_initial_disasm_mem_ctx,
                    nir_shader **nir_out,
+                   bool retain_all_nir,
+                   bool retain_mesh_interface_nir,
                    VkPipelineCreationFeedback *stage_feedbacks)
 {
+   /* All callers provide MESA_SHADER_MESH_STAGES slots. The restored mesh
+    * FS keys/remapping and AQE paths below remain held for the final integrated
+    * compiler/API/GPU validation. Keep compilation and feature exposure gated
+    * together; source restoration alone is not an activation switch.
+    */
+   if (stage_infos[MESA_SHADER_TASK] || stage_infos[MESA_SHADER_MESH] ||
+       nir[MESA_SHADER_TASK] || nir[MESA_SHADER_MESH])
+      return VK_ERROR_FEATURE_NOT_PRESENT;
+
    struct ir3_shader_key ir3_key = {};
-   struct tu_shader_info info[MESA_SHADER_STAGES] = {};
+   struct tu_shader_info info[MESA_SHADER_MESH_STAGES] = {};
+   /* Stages already in shaders[] on entry are cache hits owned by the
+    * caller; only the ones compiled here may be destroyed on failure.
+    */
+   bool created[MESA_SHADER_MESH_STAGES] = {};
    VkResult result = VK_SUCCESS;
    void *mem_ctx = ralloc_context(NULL);
 
-   for (mesa_shader_stage stage = MESA_SHADER_VERTEX; stage < MESA_SHADER_STAGES;
+   for (mesa_shader_stage stage = MESA_SHADER_VERTEX; stage < MESA_SHADER_MESH_STAGES;
         stage = static_cast<mesa_shader_stage>(stage + 1)) {
       const VkPipelineShaderStageCreateInfo *stage_info = stage_infos[stage];
       if (!stage_info)
@@ -3967,7 +4244,7 @@ tu_compile_shaders(struct tu_device *device,
 
    if (nir_initial_disasm) {
       for (mesa_shader_stage stage = MESA_SHADER_VERTEX;
-           stage < MESA_SHADER_STAGES;
+           stage < MESA_SHADER_MESH_STAGES;
            stage = static_cast<mesa_shader_stage>(stage + 1)) {
       if (!nir[stage])
          continue;
@@ -3977,7 +4254,31 @@ tu_compile_shaders(struct tu_device *device,
       }
    }
 
-   for (mesa_shader_stage stage = MESA_SHADER_VERTEX; stage < MESA_SHADER_STAGES;
+   /* Keep the consumer before mesh-dependent IO lowering/linkage. A library
+    * compiled without MS may later be linked against a mesh producer.
+    * nir_out owns this snapshot, including on the failure path below.
+    */
+   if (nir_out && retain_mesh_interface_nir && nir[MESA_SHADER_FRAGMENT]) {
+      nir_out[MESA_SHADER_FRAGMENT] =
+         nir_shader_clone(NULL, nir[MESA_SHADER_FRAGMENT]);
+      if (!nir_out[MESA_SHADER_FRAGMENT]) {
+         result = VK_ERROR_OUT_OF_HOST_MEMORY;
+         goto fail;
+      }
+   }
+
+   /* Preparation precedes common lowering. The final AQE lowering runs only
+    * after linkage and the retained NIR snapshots below.
+    */
+   if (nir[MESA_SHADER_TASK])
+      tu_nir_prepare_task(nir[MESA_SHADER_TASK]);
+   if (nir[MESA_SHADER_MESH])
+      tu_nir_prepare_mesh(nir[MESA_SHADER_MESH]);
+
+   info[MESA_SHADER_FRAGMENT].mesh_multiview =
+      nir[MESA_SHADER_MESH] && keys[MESA_SHADER_FRAGMENT].multiview_mask;
+
+   for (mesa_shader_stage stage = MESA_SHADER_VERTEX; stage < MESA_SHADER_MESH_STAGES;
         stage = static_cast<mesa_shader_stage>(stage + 1)) {
       if (!nir[stage])
          continue;
@@ -3989,15 +4290,49 @@ tu_compile_shaders(struct tu_device *device,
       stage_feedbacks[stage].duration += os_time_get_nano() - stage_start;
    }
 
-   tu_link_shaders(device, nir, MESA_SHADER_STAGES);
+   tu_link_shaders(device, nir, MESA_SHADER_MESH_STAGES);
 
    if (nir_out) {
       for (mesa_shader_stage stage = MESA_SHADER_VERTEX;
-           stage < MESA_SHADER_STAGES; stage = static_cast<mesa_shader_stage>(stage + 1)) {
+           stage < MESA_SHADER_MESH_STAGES; stage = static_cast<mesa_shader_stage>(stage + 1)) {
          if (!nir[stage])
             continue;
 
-         nir_out[stage] = nir_shader_clone(NULL, nir[stage]);
+         if (nir_out[stage])
+            continue;
+
+         if (retain_all_nir || tu_fragment_shader_uses_primitive_key(nir[stage]) ||
+             (retain_mesh_interface_nir &&
+              (stage == MESA_SHADER_TASK || stage == MESA_SHADER_MESH))) {
+            nir_out[stage] = nir_shader_clone(NULL, nir[stage]);
+            if (!nir_out[stage]) {
+               result = VK_ERROR_OUT_OF_HOST_MEMORY;
+               goto fail;
+            }
+         }
+      }
+   }
+
+   /* Preserve library snapshots before consuming the task payload and mesh
+    * output/count ABI. They must remain linkable to a different consumer.
+    * Unsupported NV/shared-count/index-read forms fail closed in the helpers.
+    */
+   if (nir[MESA_SHADER_TASK] && !tu_nir_lower_task_aqe(nir[MESA_SHADER_TASK])) {
+      result = VK_ERROR_FEATURE_NOT_PRESENT;
+      goto fail;
+   }
+   if (nir[MESA_SHADER_MESH]) {
+      if (!tu_nir_lower_mesh_aqe_recovered(nir[MESA_SHADER_MESH],
+                                           nir[MESA_SHADER_FRAGMENT],
+                                           &info[MESA_SHADER_MESH].mesh)) {
+         result = VK_ERROR_FEATURE_NOT_PRESENT;
+         goto fail;
+      }
+      if (nir[MESA_SHADER_FRAGMENT] &&
+          !tu_a8_build_mesh_fs_inputs(&info[MESA_SHADER_MESH].mesh,
+                                      &info[MESA_SHADER_FRAGMENT].mesh_fs_inputs)) {
+         result = VK_ERROR_FEATURE_NOT_PRESENT;
+         goto fail;
       }
    }
 
@@ -4029,7 +4364,7 @@ tu_compile_shaders(struct tu_device *device,
       ir3_key.tessellation = tu6_get_tessmode(tes);
    }
 
-   for (mesa_shader_stage stage = MESA_SHADER_VERTEX; stage < MESA_SHADER_STAGES;
+   for (mesa_shader_stage stage = MESA_SHADER_VERTEX; stage < MESA_SHADER_MESH_STAGES;
         stage = static_cast<mesa_shader_stage>(stage + 1)) {
       if (!nir[stage])
          continue;
@@ -4045,13 +4380,23 @@ tu_compile_shaders(struct tu_device *device,
       }
    }
 
+   ir3_key.fs_primitive = tu_fragment_primitive_from_producer(
+      keys[MESA_SHADER_FRAGMENT].fs_primitive,
+      nir[MESA_SHADER_GEOMETRY] ? &nir[MESA_SHADER_GEOMETRY]->info : NULL,
+      nir[MESA_SHADER_TESS_EVAL] ? &nir[MESA_SHADER_TESS_EVAL]->info : NULL);
+   if (nir[MESA_SHADER_MESH])
+      ir3_key.fs_primitive = tu_fragment_primitive_from_mesh(
+         nir[MESA_SHADER_MESH]->info.mesh.primitive_type);
+   ir3_key.fs_provoking_vtx_last =
+      keys[MESA_SHADER_FRAGMENT].fs_provoking_vtx_last;
+
    /* In the the tess-but-not-FS case we don't know whether the FS will read
     * PrimID so we need to unconditionally store it.
     */
    if (nir[MESA_SHADER_TESS_CTRL] && !nir[MESA_SHADER_FRAGMENT])
       ir3_key.tcs_store_primid = true;
 
-   for (mesa_shader_stage stage = MESA_SHADER_VERTEX; stage < MESA_SHADER_STAGES;
+   for (mesa_shader_stage stage = MESA_SHADER_VERTEX; stage < MESA_SHADER_MESH_STAGES;
         stage = static_cast<mesa_shader_stage>(stage + 1)) {
       if (!nir[stage] || shaders[stage])
          continue;
@@ -4070,6 +4415,7 @@ tu_compile_shaders(struct tu_device *device,
       if (result != VK_SUCCESS) {
          goto fail;
       }
+      created[stage] = true;
 
       stage_feedbacks[stage].duration += os_time_get_nano() - stage_start;
    }
@@ -4081,13 +4427,15 @@ tu_compile_shaders(struct tu_device *device,
 fail:
    ralloc_free(mem_ctx);
 
-   for (mesa_shader_stage stage = MESA_SHADER_VERTEX; stage < MESA_SHADER_STAGES;
+   for (mesa_shader_stage stage = MESA_SHADER_VERTEX; stage < MESA_SHADER_MESH_STAGES;
         stage = static_cast<mesa_shader_stage>(stage + 1)) {
-      if (shaders[stage]) {
+      if (created[stage]) {
          tu_shader_destroy(device, shaders[stage]);
+         shaders[stage] = NULL;
       }
       if (nir_out && nir_out[stage]) {
          ralloc_free(nir_out[stage]);
+         nir_out[stage] = NULL;
       }
    }
 
@@ -4110,7 +4458,13 @@ tu_shader_key_subgroup_size(struct tu_shader_key *key,
          api_wavesize = real_wavesize = IR3_SINGLE_OR_DOUBLE;
       } else {
          if (subgroup_info) {
-            if (subgroup_info->requiredSubgroupSize == dev->compiler->info->threadsize_base) {
+            /* The original compatibility option accepts requests below the
+             * native size as a single native wave. It does not add a new
+             * 32-lane execution mode or alter the matrix software layout.
+             */
+            if (subgroup_info->requiredSubgroupSize == dev->compiler->info->threadsize_base ||
+                (subgroup_info->requiredSubgroupSize < dev->compiler->info->threadsize_base &&
+                 dev->physical_device->instance->drirc.misc.advertise_wave32_compat)) {
                api_wavesize = IR3_SINGLE_ONLY;
             } else {
                assert(subgroup_info->requiredSubgroupSize == dev->compiler->info->threadsize_base * 2);
@@ -4188,12 +4542,12 @@ tu_empty_fs_create(struct tu_device *dev, struct tu_shader **shader,
       ir3_get_compiler_options(dev->compiler);
    nir_builder fs_b;
 
-   fs_b = nir_builder_init_simple_shader(MESA_SHADER_FRAGMENT, nir_options,
-                                         "noop_fs");
-
    *shader = tu_shader_init(dev, NULL, 0);
    if (!*shader)
       return VK_ERROR_OUT_OF_HOST_MEMORY;
+
+   fs_b = nir_builder_init_simple_shader(MESA_SHADER_FRAGMENT, nir_options,
+                                         "noop_fs");
 
    (*shader)->fs.has_fdm = fragment_density_map;
    if (fragment_density_map && dev->physical_device->info->chip < 7)
@@ -4206,6 +4560,9 @@ tu_empty_fs_create(struct tu_device *dev, struct tu_shader **shader,
       ir3_shader_from_nir(dev->compiler, fs_b.shader, &options);
    (*shader)->variant = ir3_shader_create_variant(ir3_shader, &key, false);
    ir3_shader_destroy(ir3_shader);
+
+   if (!(*shader)->variant)
+      return VK_ERROR_OUT_OF_HOST_MEMORY;
 
    return tu_upload_shader(dev, *shader);
 }

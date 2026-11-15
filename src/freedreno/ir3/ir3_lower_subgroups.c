@@ -741,7 +741,8 @@ ir3_nir_lower_subgroups_filter(const nir_intrinsic_instr *intrin, const void *da
          return intrin->def.num_components > 1;
       }
    case nir_intrinsic_read_invocation:
-      return !compiler->info->props.has_movs;
+      return !compiler->info->props.has_movs ||
+             (compiler->gen >= 8 && !nir_src_is_const(intrin->src[1]));
    default:
       return true;
    }
@@ -838,14 +839,153 @@ make_shuffle_uniform(nir_builder *b, nir_def *val, nir_def *index,
    return nir_load_var(b, result);
 }
 
+static bool
+is_subgroup_invocation(nir_scalar s)
+{
+   return nir_scalar_is_intrinsic(s) &&
+          nir_scalar_intrinsic_op(s) == nir_intrinsic_load_subgroup_invocation;
+}
+
+/* Match an absolute shuffle index of the form id + u, u + id, id - u or
+ * id ^ u, where id is gl_SubgroupInvocationID and u is uniform. These map to
+ * a single shfl with a uniform operand instead of a waterfall loop.
+ */
+static nir_def *
+match_relative_shuffle(nir_builder *b, nir_def *index, nir_intrinsic_op *op)
+{
+   nir_scalar s = nir_get_scalar(index, 0);
+   if (!nir_scalar_is_alu(s))
+      return NULL;
+
+   nir_op alu_op = nir_scalar_alu_op(s);
+   if (alu_op != nir_op_iadd && alu_op != nir_op_isub && alu_op != nir_op_ixor)
+      return NULL;
+
+   nir_scalar src0 = nir_scalar_chase_alu_src(s, 0);
+   nir_scalar src1 = nir_scalar_chase_alu_src(s, 1);
+
+   nir_scalar uniform;
+   if (is_subgroup_invocation(src0)) {
+      uniform = src1;
+   } else if (alu_op != nir_op_isub && is_subgroup_invocation(src1)) {
+      uniform = src0;
+   } else {
+      return NULL;
+   }
+
+   if (uniform.def->divergent)
+      return NULL;
+
+   nir_def *amount = nir_channel(b, uniform.def, uniform.comp);
+   switch (alu_op) {
+   case nir_op_iadd:
+      *op = nir_intrinsic_shuffle;
+      return amount;
+   case nir_op_isub:
+      *op = nir_intrinsic_shuffle;
+      return nir_ineg(b, amount);
+   case nir_op_ixor:
+      *op = nir_intrinsic_shuffle_xor;
+      return amount;
+   default:
+      UNREACHABLE("filtered op");
+   }
+}
+
+/* GameSir shuffle_rotate_offset (ELF 0xa82ef8) recognizes scalar32
+ * lane-id expressions modulo the largest possible subgroup size. A mask
+ * preserving every lane bit does not change a rotate; uniform adds/subtracts
+ * can be accumulated across up to eight expression nodes. This also catches
+ * wrapped forms such as ((lane + u) & 63) + v without a waterfall loop.
+ */
+static nir_def *
+shuffle_rotate_offset(nir_builder *b, nir_def *index, unsigned subgroup_size,
+                      unsigned depth)
+{
+   if (!depth || index->num_components != 1 || index->bit_size != 32)
+      return NULL;
+
+   if (nir_def_instr(index)->type == nir_instr_type_intrinsic) {
+      nir_intrinsic_instr *intr = nir_instr_as_intrinsic(nir_def_instr(index));
+      return intr->intrinsic == nir_intrinsic_load_subgroup_invocation ?
+                nir_imm_int(b, 0) : NULL;
+   }
+   if (nir_def_instr(index)->type != nir_instr_type_alu)
+      return NULL;
+
+   nir_alu_instr *alu = nir_instr_as_alu(nir_def_instr(index));
+   if (alu->op != nir_op_iadd && alu->op != nir_op_isub &&
+       alu->op != nir_op_iand)
+      return NULL;
+   nir_def *a = alu->src[0].src.ssa;
+   nir_def *c = alu->src[1].src.ssa;
+   if (a->num_components != 1 || c->num_components != 1 ||
+       alu->src[0].swizzle[0] || alu->src[1].swizzle[0])
+      return NULL;
+
+   if (alu->op == nir_op_iand) {
+      const uint32_t lane_mask = subgroup_size - 1;
+      if (nir_src_is_const(alu->src[1].src) &&
+          (nir_src_as_uint(alu->src[1].src) & lane_mask) == lane_mask)
+         return shuffle_rotate_offset(b, a, subgroup_size, depth - 1);
+      if (nir_src_is_const(alu->src[0].src) &&
+          (nir_src_as_uint(alu->src[0].src) & lane_mask) == lane_mask)
+         return shuffle_rotate_offset(b, c, subgroup_size, depth - 1);
+      return NULL;
+   }
+
+   if (!c->divergent) {
+      nir_def *offset = shuffle_rotate_offset(b, a, subgroup_size, depth - 1);
+      if (offset)
+         return alu->op == nir_op_isub ? nir_isub(b, offset, c) :
+                                        nir_iadd(b, offset, c);
+   }
+   if (alu->op == nir_op_iadd && !a->divergent) {
+      nir_def *offset = shuffle_rotate_offset(b, c, subgroup_size, depth - 1);
+      if (offset)
+         return nir_iadd(b, offset, a);
+   }
+   return NULL;
+}
+
 static nir_def *
 lower_shuffle(nir_builder *b, nir_instr *instr, void *data)
 {
+   struct ir3_shader *shader = data;
    nir_intrinsic_instr *intrin = nir_instr_as_intrinsic(instr);
    nir_def *val = intrin->src[0].ssa;
    nir_def *index = intrin->src[1].ssa;
 
    if (intrin->intrinsic == nir_intrinsic_shuffle) {
+      /* A uniform absolute index is a broadcast. Rotating by
+       * index - gl_SubgroupInvocationID would need one waterfall iteration
+       * per invocation, while a single movs (or read_invocation_cond)
+       * suffices.
+       */
+      if (!index->divergent && val->bit_size <= 32) {
+         if (shader->compiler->info->props.has_movs)
+            return nir_read_invocation(b, val, index);
+
+         nir_def *cond =
+            nir_ieq(b, nir_load_subgroup_invocation(b), index);
+         return nir_read_invocation_cond_ir3(b, val->bit_size, val, cond);
+      }
+
+      unsigned subgroup_size, max_subgroup_size;
+      ir3_shader_get_subgroup_size(shader->compiler, &shader->options,
+                                   b->shader->info.stage,
+                                   &subgroup_size, &max_subgroup_size);
+      if (max_subgroup_size && util_is_power_of_two_nonzero(max_subgroup_size)) {
+         nir_def *offset = shuffle_rotate_offset(b, index, max_subgroup_size, 8);
+         if (offset)
+            return shuffle_to_uniform(b, nir_intrinsic_shuffle, val, offset);
+      }
+
+      nir_intrinsic_op rel_op;
+      nir_def *amount = match_relative_shuffle(b, index, &rel_op);
+      if (amount)
+         return shuffle_to_uniform(b, rel_op, val, amount);
+
       /* The hw only does relative shuffles/rotates so transform shuffle(val, x)
        * into rotate(val, x - gl_SubgroupInvocationID) which is valid since we
        * make sure to only use it with uniform indices.
@@ -874,5 +1014,5 @@ ir3_nir_lower_shuffle(nir_shader *nir, struct ir3_shader *shader)
 
    nir_divergence_analysis(nir);
    return nir_shader_lower_instructions(nir, filter_shuffle, lower_shuffle,
-                                        NULL);
+                                        shader);
 }

@@ -92,6 +92,9 @@ struct tu_descriptor_set_layout
    bool has_variable_descriptors;
    bool has_inline_uniforms;
 
+   /* One past the last binding with non-empty dynamic descriptors. */
+   uint32_t dynamic_binding_end;
+
    struct tu_bo *embedded_samplers;
 
    /* Bindings in this descriptor set */
