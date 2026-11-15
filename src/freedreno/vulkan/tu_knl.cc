@@ -114,6 +114,29 @@ tu_bo_init_dmabuf(struct tu_device *dev,
    return VK_SUCCESS;
 }
 
+VkResult
+tu_bo_init_userptr(struct tu_device *dev,
+                   struct tu_bo **bo,
+                   void *host_ptr,
+                   uint64_t size)
+{
+   if (!dev->instance->knl->bo_init_userptr)
+      return vk_error(dev, VK_ERROR_INVALID_EXTERNAL_HANDLE);
+
+   VkResult result =
+      dev->instance->knl->bo_init_userptr(dev, bo, host_ptr, size);
+   if (result != VK_SUCCESS)
+      return result;
+
+   /* The mapping belongs to the application: never unmap it. */
+   (*bo)->never_unmap = true;
+   (*bo)->host_import = true;
+   if (!(*bo)->unique_id)
+      (*bo)->unique_id = (*bo)->gem_handle;
+
+   return VK_SUCCESS;
+}
+
 int
 tu_bo_export_dmabuf(struct tu_device *dev, struct tu_bo *bo)
 {

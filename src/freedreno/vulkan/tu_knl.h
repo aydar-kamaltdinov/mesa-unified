@@ -66,6 +66,8 @@ struct tu_bo {
    bool never_unmap : 1;
    bool cached_non_coherent : 1;
    bool lazy : 1;
+   /* map points at imported host memory that the driver doesn't own. */
+   bool host_import : 1;
 
    bool dump;
 
@@ -156,6 +158,11 @@ struct tu_knl {
    VkResult (*bo_init_dmabuf)(struct tu_device *dev, struct tu_bo **out_bo,
                               uint64_t size, uint64_t align,
                               enum tu_bo_alloc_flags flags, int prime_fd);
+   /* Optional. Wraps already allocated, page-aligned host memory in a BO for
+    * VK_EXT_external_memory_host. The memory has to stay CPU/GPU coherent.
+    */
+   VkResult (*bo_init_userptr)(struct tu_device *dev, struct tu_bo **out_bo,
+                               void *host_ptr, uint64_t size);
    int (*bo_export_dmabuf)(struct tu_device *dev, struct tu_bo *bo);
    VkResult (*bo_alloc_lazy)(struct tu_device *dev, struct tu_bo *bo);
    VkResult (*bo_map)(struct tu_device *dev, struct tu_bo *bo, void *placed_addr);
@@ -236,6 +243,12 @@ tu_bo_init_dmabuf(struct tu_device *dev,
                   uint64_t align,
                   enum tu_bo_alloc_flags flags,
                   int fd);
+
+VkResult
+tu_bo_init_userptr(struct tu_device *dev,
+                   struct tu_bo **bo,
+                   void *host_ptr,
+                   uint64_t size);
 
 int
 tu_bo_export_dmabuf(struct tu_device *dev, struct tu_bo *bo);
