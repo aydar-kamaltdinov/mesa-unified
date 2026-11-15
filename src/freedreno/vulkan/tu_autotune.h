@@ -344,6 +344,11 @@ struct tu_autotune {
 
    void end_tile(struct tu_cmd_buffer *cmd, struct tu_cs *cs, rp_ctx_t rp_ctx, uint32_t tile_idx);
 
+   /* Whether rp_ctx records per-tile metrics, which need distinct per-tile
+    * commands.
+    */
+   bool tracks_tiles(rp_ctx_t rp_ctx) const;
+
    /* The submit-time hook for autotuner, this may return a CS (can be NULL) which must be amended for autotuner
     * tracking to function correctly.
     *

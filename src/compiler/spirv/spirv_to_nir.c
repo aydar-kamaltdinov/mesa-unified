@@ -91,6 +91,7 @@ static const struct spirv_capabilities implemented_capabilities = {
    .FragmentMaskAMD = true,
    .FragmentShaderPixelInterlockEXT = true,
    .FragmentShaderSampleInterlockEXT = true,
+   .FragmentShaderShadingRateInterlockEXT = true,
    .FragmentShadingRateKHR = true,
    .GenericPointer = true,
    .Geometry = true,
@@ -3499,6 +3500,13 @@ vtn_handle_texture(struct vtn_builder *b, SpvOp opcode,
       ret_type = struct_type->members[1];
    }
 
+   /* Queries execute with a 32-bit texture destination, then convert to the
+    * integer result width requested by SPIR-V.
+    */
+   if (opcode == SpvOpImageQueryLevels || opcode == SpvOpImageQuerySamples)
+      dest_type = nir_get_nir_type_for_glsl_base_type(
+         glsl_get_base_type(ret_type->type));
+
    nir_tex_instr *instr = nir_tex_instr_create(b->shader, p - srcs);
    instr->op = texop;
 
@@ -5468,6 +5476,16 @@ vtn_handle_execution_mode(struct vtn_builder *b, struct vtn_value *entry_point,
       b->shader->info.fs.sample_interlock_unordered = true;
       break;
 
+   case SpvExecutionModeShadingRateInterlockOrderedEXT:
+      vtn_assert(b->shader->info.stage == MESA_SHADER_FRAGMENT);
+      b->shader->info.fs.shading_rate_interlock_ordered = true;
+      break;
+
+   case SpvExecutionModeShadingRateInterlockUnorderedEXT:
+      vtn_assert(b->shader->info.stage == MESA_SHADER_FRAGMENT);
+      b->shader->info.fs.shading_rate_interlock_unordered = true;
+      break;
+
    case SpvExecutionModeSignedZeroInfNanPreserve: {
       const struct glsl_type *type = glsl_floatN_t_type(mode->operands[0]);
       unsigned *fp_math_ctrl = vtn_fp_math_ctrl_for_base_type(b, glsl_get_base_type(type));
@@ -5559,7 +5577,7 @@ vtn_handle_execution_mode(struct vtn_builder *b, struct vtn_value *entry_point,
       break;
 
    case SpvExecutionModeSubgroupUniformControlFlowKHR:
-      /* Nothing to do here */
+      b->shader->info.subgroup_uniform_control_flow = true;
       break;
 
    case SpvExecutionModeEarlyAndLateFragmentTestsAMD:

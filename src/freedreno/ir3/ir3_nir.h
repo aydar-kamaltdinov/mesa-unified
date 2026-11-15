@@ -22,12 +22,14 @@ bool ir3_nir_lower_imul(nir_shader *shader);
 bool ir3_nir_lower_io_offsets(nir_shader *shader, struct ir3_compiler *c);
 bool ir3_nir_lower_fb_read_offset(nir_shader *shader);
 bool ir3_nir_lower_load_sample_pos(nir_shader *shader);
-bool ir3_nir_lower_load_barycentric_at_offset(nir_shader *shader);
+bool ir3_gamesir_sample_center_enabled(void);
+bool ir3_nir_lower_load_barycentric_at_offset(nir_shader *shader,
+                                                struct ir3_compiler *compiler);
+bool ir3_nir_lower_barycentric_coord_at_offset(nir_shader *shader);
 bool ir3_nir_lower_push_consts_to_preamble(nir_shader *nir,
                                            struct ir3_shader_variant *v);
 bool ir3_nir_lower_driver_params_to_ubo(nir_shader *nir,
                                         struct ir3_shader_variant *v);
-bool ir3_nir_move_varying_inputs(nir_shader *shader);
 int ir3_nir_coord_offset(nir_def *ssa, gl_system_value *bary_type);
 bool ir3_nir_lower_tex_prefetch(nir_shader *shader,
                                 enum ir3_bary *prefetch_bary_type);

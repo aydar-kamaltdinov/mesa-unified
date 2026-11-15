@@ -113,7 +113,16 @@ ir3_delayslots(struct ir3_compiler *compiler,
       bool mismatched_half = (assigner->dsts[0]->flags & IR3_REG_HALF) !=
                              (consumer->srcs[n]->flags & IR3_REG_HALF);
       unsigned penalty = mismatched_half ? 3 : 0;
-      return compiler->delay_slots.alu_to_alu + penalty -
-             ir3_src_read_delay(compiler, consumer, n);
+      unsigned delay = compiler->delay_slots.alu_to_alu;
+      /* AK: a8xx needs extra cycles after dp4acc and before an instruction
+       * that writes a0.x/a1.x (as GameHub's a8xx Turnip does).
+       */
+      if (compiler->gen >= 8) {
+         if (assigner->opc == OPC_DP4ACC)
+            delay += 2;
+         if (writes_addr0(consumer) || writes_addr1(consumer))
+            delay += 1;
+      }
+      return delay + penalty - ir3_src_read_delay(compiler, consumer, n);
    }
 }

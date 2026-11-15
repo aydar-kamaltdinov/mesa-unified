@@ -6,7 +6,7 @@
 c_args_for_u_gralloc = []
 cpp_args_for_u_gralloc = []
 options_for_u_gralloc = []
-deps_for_u_gralloc = [dep_android]
+deps_for_u_gralloc = [dep_android, dep_dl]
 
 files_u_gralloc = files(
   'u_gralloc.c',
@@ -15,6 +15,7 @@ files_u_gralloc = files(
   'u_gralloc_cros_api.c',
   'u_gralloc_libdrm.c',
   'u_gralloc_qcom.c',
+  'u_gralloc_mapper_runtime.c',
 )
 
 if dep_android_ui.found()

@@ -423,6 +423,11 @@ typedef enum ir3_instruction_flags {
    IR3_INSTR_CLP = BIT(25),
 
    IR3_INSTR_EOSTSC = BIT(26),
+
+   /* AK: ldib from a volatile image/SSBO access (ACCESS_VOLATILE). Not
+    * encoded; ir3_legalize uses it to fully sync such loads on a8xx.
+    */
+   IR3_INSTR_VOLATILE = BIT(27),
 } ir3_instruction_flags;
 
 struct ir3_instruction {
@@ -611,6 +616,8 @@ struct ir3_instruction {
       IR3_BARRIER_CONST_W = 1 << 11,
       IR3_BARRIER_ACTIVE_FIBERS_R = 1 << 12,
       IR3_BARRIER_ACTIVE_FIBERS_W = 1 << 13,
+      /* Per-vertex varying reads must stay ordered against full barriers. */
+      IR3_BARRIER_VARYING_R = 1 << 14,
    } barrier_class,
       barrier_conflict;
 
@@ -789,6 +796,11 @@ struct ir3_block {
    uint32_t dom_post_index;
 
    uint32_t loop_depth;
+
+   /* AK: the block ends in a NIR halt: control continues to the end block,
+    * but nothing computed after the halt point is live along this edge.
+    */
+   bool halt;
 };
 
 enum ir3_cursor_option {
@@ -1445,9 +1457,16 @@ is_mem(struct ir3_instruction *instr)
 }
 
 static inline bool
+is_split_barrier(struct ir3_instruction *instr)
+{
+   return instr->opc == OPC_BAR_SET || instr->opc == OPC_BAR_SYNC;
+}
+
+static inline bool
 is_barrier(struct ir3_instruction *instr)
 {
-   return (opc_cat(instr->opc) == 7) && instr->opc != OPC_ALIAS;
+   return (opc_cat(instr->opc) == 7) && instr->opc != OPC_ALIAS &&
+          !is_split_barrier(instr);
 }
 
 static inline bool
@@ -2213,7 +2232,11 @@ is_sy_producer(struct ir3_instruction *instr)
 static inline bool
 is_compute_or_frag(mesa_shader_stage type)
 {
-   return mesa_shader_stage_is_compute(type) || (type == MESA_SHADER_FRAGMENT);
+   /* TASK/MESH use the compute execution resources in the original AQE
+    * backend, including subgroup-size and scheduling decisions.
+    */
+   return mesa_shader_stage_uses_workgroup(type) ||
+          type == MESA_SHADER_FRAGMENT;
 }
 
 static inline unsigned
@@ -3242,6 +3265,8 @@ INSTR5(RAY_INTERSECTION)
 /* cat7 instructions: */
 INSTR0(BAR)
 INSTR0(FENCE)
+INSTR0(BAR_SET)
+INSTR0(BAR_SYNC)
 INSTR0(CCINV)
 
 /* ************************************************************************* */

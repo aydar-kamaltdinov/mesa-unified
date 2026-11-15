@@ -75,6 +75,24 @@ enum tu_debug_flags : uint64_t
    TU_DEBUG_FORCE_CONCURRENT_BINNING = BITFIELD64_BIT(36),
    TU_DEBUG_COMPUTE_ROUND_ROBIN      = BITFIELD64_BIT(37),
    TU_DEBUG_GMEM_WARMUP              = BITFIELD64_BIT(38),
+   /* AK: opt-in for the GMEM->GMEM resolve prototype (resolve_3d_blit /
+    * tu_resolve_gmem_attachment) -- off by default. It has an unresolved,
+    * timing-dependent duplication bug for unusually short resolve shaders
+    * (see the long comment in resolve_3d_blit(), tu_clear_blit.cc) that
+    * only a heuristic settle-loop workaround was found for, tuned against
+    * one synthetic test scene -- not something to trust for arbitrary real
+    * content without re-tuning per case. Falls back to the proven GMEM->
+    * system-memory->GMEM round trip unless this is explicitly set. */
+   TU_DEBUG_GMEM_RESOLVE_PROTOTYPE    = BITFIELD64_BIT(39),
+   /* AK experiments, off by default: keep UBWC for images whose format list
+    * contains E5B9G9R9, and skip the A750 ubwc_coherency_quirk CACHE_CLEAN.
+    */
+   TU_DEBUG_E5_UBWC                  = BITFIELD64_BIT(40),
+   TU_DEBUG_NO_UBWC_QUIRK            = BITFIELD64_BIT(41),
+   /* AK: with TU_DEBUG=gmem, also force tiled depth/stencil-only passes into
+    * GMEM (by default they stay in SYSMEM, see use_sysmem_rendering()).
+    */
+   TU_DEBUG_GMEM_ALL                 = BITFIELD64_BIT(42),
 };
 
 struct tu_env {
@@ -147,7 +165,7 @@ tu_framebuffer_get_tiling_config(struct tu_framebuffer *fb,
                                  int gmem_layout,
                                  uint32_t divisor);
 
-#define TU_STAGE_MASK ((1 << MESA_SHADER_STAGES) - 1)
+#define TU_STAGE_MASK ((1 << MESA_SHADER_MESH_STAGES) - 1)
 
 #define tu_foreach_stage(stage, stage_bits)                                  \
    for (mesa_shader_stage stage,                                               \
@@ -165,7 +183,7 @@ tu_msaa_samples(uint32_t samples)
 static inline uint32_t
 tu6_stage2opcode(mesa_shader_stage stage)
 {
-   if (stage == MESA_SHADER_FRAGMENT || stage == MESA_SHADER_COMPUTE)
+   if (stage == MESA_SHADER_FRAGMENT || mesa_shader_stage_uses_workgroup(stage))
       return CP_LOAD_STATE6_FRAG;
    return CP_LOAD_STATE6_GEOM;
 }
@@ -173,12 +191,19 @@ tu6_stage2opcode(mesa_shader_stage stage)
 static inline enum a6xx_state_block
 tu6_stage2texsb(mesa_shader_stage stage)
 {
+   /* AQE TS/MS keep their shader identity but use the compute state bank,
+    * just as the recovered stage6/7 CP_LOAD_STATE6 packets do.
+    */
+   if (mesa_shader_stage_uses_workgroup(stage))
+      return SB6_CS_TEX;
    return (enum a6xx_state_block) (SB6_VS_TEX + stage);
 }
 
 static inline enum a6xx_state_block
 tu6_stage2shadersb(mesa_shader_stage stage)
 {
+   if (mesa_shader_stage_uses_workgroup(stage))
+      return SB6_CS_SHADER;
    return (enum a6xx_state_block) (SB6_VS_SHADER + stage);
 }
 

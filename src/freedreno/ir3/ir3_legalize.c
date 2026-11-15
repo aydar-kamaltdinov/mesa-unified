@@ -77,9 +77,13 @@ ir3_required_sync_flags(struct ir3_legalize_state *state,
                         struct ir3_compiler *compiler,
                         struct ir3_instruction *n)
 {
-   if (n->opc == OPC_SHPE) {
+   if (n->opc == OPC_SHPE || (compiler->gen >= 8 && n->opc == OPC_BAR)) {
       return IR3_INSTR_SS | IR3_INSTR_SY;
    }
+
+   /* These fixed encodings synchronize without carrying SS/SY flags. */
+   if (is_split_barrier(n))
+      return 0;
 
    enum ir3_instruction_flags flags = 0;
    bool n_is_scalar_alu = is_scalar_alu(n, compiler);
@@ -217,9 +221,9 @@ static void
 sync_update(struct ir3_legalize_state *state, struct ir3_compiler *compiler,
             struct ir3_instruction *n)
 {
-   if (n->flags & IR3_INSTR_SS)
+   if ((n->flags & IR3_INSTR_SS) || is_split_barrier(n))
       apply_ss(state, compiler->mergedregs);
-   if (n->flags & IR3_INSTR_SY)
+   if ((n->flags & IR3_INSTR_SY) || is_split_barrier(n))
       apply_sy(state, compiler->mergedregs);
 
    if (is_barrier(n)) {
@@ -523,6 +527,12 @@ ir3_required_delay(struct ir3_legalize_state *state,
       for (unsigned elem = 0; elem < elems; elem++, num++) {
          unsigned ready_cycle =
             *get_ready_slot(state, src, num, is_alu(instr), true);
+         /* AK: on a8xx, instructions writing a0.x/a1.x need one more cycle
+          * after their sources are ready (see ir3_delayslots()).
+          */
+         if (ready_cycle && compiler->gen >= 8 &&
+             (writes_addr0(instr) || writes_addr1(instr)))
+            ready_cycle++;
          delay = MAX2(delay, MAX2(ready_cycle, src_cycle) - src_cycle);
 
          /* Increment cycle for ALU instructions with (rptN) where sources are
@@ -603,6 +613,9 @@ delay_update(struct ir3_compiler *compiler,
                   delay = (consumer_alu && matching_size)
                              ? compiler->delay_slots.alu_to_alu
                              : compiler->delay_slots.non_alu;
+                  if (compiler->gen >= 8 && instr->opc == OPC_DP4ACC &&
+                      consumer_alu && matching_size)
+                     delay += 2;
                }
 
                if (!matching_size) {
@@ -634,6 +647,16 @@ ir3_update_legalize_state(struct ir3_legalize_state *state,
                           struct ir3_instruction *n)
 {
    sync_update(state, compiler, n);
+
+   /* GameSir ELF0xad7b0c also clears fixed-latency readiness at both split
+    * barriers. Keep the block cycle: only outstanding dependencies retire.
+    */
+   if (is_split_barrier(n)) {
+      memset(&state->alu_nop, 0, sizeof(state->alu_nop));
+      memset(&state->non_alu_nop, 0, sizeof(state->non_alu_nop));
+      memset(state->pred_ready, 0, sizeof(state->pred_ready));
+      memset(state->addr_ready, 0, sizeof(state->addr_ready));
+   }
 
    bool count = count_instruction(n, compiler);
    if (count)
@@ -971,7 +994,10 @@ static void
 apply_push_consts_load_macro(struct ir3_legalize_ctx *ctx,
                              struct ir3_block *block)
 {
-   foreach_instr (n, &block->instr_list) {
+   /* Native ELF 0xad9a60..0xad9bc0 expands every copy: API push constants
+    * and AQE DrawID/ViewIndex can coexist in the same preamble block.
+    */
+   foreach_instr_safe (n, &block->instr_list) {
       if (n->opc == OPC_PUSH_CONSTS_LOAD_MACRO) {
          struct ir3_instruction *stsc =
             ir3_instr_create_at(ir3_after_instr(n), OPC_STSC, 0, 2);
@@ -990,9 +1016,6 @@ apply_push_consts_load_macro(struct ir3_legalize_ctx *ctx,
          }
 
          list_delinit(&n->node);
-         break;
-      } else if (!is_meta(n)) {
-         break;
       }
    }
 }
@@ -1569,6 +1592,36 @@ dbg_sync_sched(struct ir3 *ir, struct ir3_shader_variant *so)
    }
 }
 
+/* AK: on a8xx, when a shader has volatile image/SSBO loads (spin-waits,
+ * cross-workgroup communication), wait for every such load and every bindless
+ * atomic to complete before continuing, as GameHub's a8xx Turnip does.
+ */
+static void
+a8xx_volatile_uav_sync(struct ir3 *ir)
+{
+   bool has_volatile = false;
+   foreach_block (block, &ir->block_list) {
+      foreach_instr (instr, &block->instr_list) {
+         if (instr->opc == OPC_LDIB && (instr->flags & IR3_INSTR_VOLATILE))
+            has_volatile = true;
+      }
+   }
+   if (!has_volatile)
+      return;
+
+   foreach_block (block, &ir->block_list) {
+      foreach_instr_safe (instr, &block->instr_list) {
+         if ((instr->opc >= OPC_ATOMIC_B_ADD &&
+              instr->opc <= OPC_ATOMIC_B_XOR) ||
+             (instr->opc == OPC_LDIB && (instr->flags & IR3_INSTR_VOLATILE))) {
+            struct ir3_builder build = ir3_builder_at(ir3_after_instr(instr));
+            struct ir3_instruction *nop = ir3_NOP(&build);
+            nop->flags |= IR3_INSTR_SS | IR3_INSTR_SY;
+         }
+      }
+   }
+}
+
 static void
 dbg_nop_sched(struct ir3 *ir, struct ir3_shader_variant *so)
 {
@@ -1582,11 +1635,12 @@ dbg_nop_sched(struct ir3 *ir, struct ir3_shader_variant *so)
 }
 
 static void
-dbg_expand_rpt(struct ir3 *ir)
+expand_rpt(struct ir3 *ir, bool cat4_only)
 {
    foreach_block (block, &ir->block_list) {
       foreach_instr_safe (instr, &block->instr_list) {
-         if (instr->repeat == 0 || instr->opc == OPC_NOP ||
+         if ((cat4_only && opc_cat(instr->opc) != 4) ||
+             instr->repeat == 0 || instr->opc == OPC_NOP ||
              instr->opc == OPC_SWZ || instr->opc == OPC_GAT ||
              instr->opc == OPC_SCT) {
             continue;
@@ -2507,6 +2561,7 @@ ir3_legalize(struct ir3 *ir, struct ir3_shader_variant *so, int *max_bary,
 
    /* Gather information to determine whether we can enable early preamble.
     */
+   bool has_bindless_atomic = false;
    bool gpr_in_preamble = false;
    bool pred_in_preamble = false;
    bool relative_in_preamble = false;
@@ -2527,6 +2582,9 @@ ir3_legalize(struct ir3 *ir, struct ir3_shader_variant *so, int *max_bary,
 
          if (is_meta(instr))
             continue;
+
+         has_bindless_atomic |= instr->opc >= OPC_ATOMIC_B_ADD &&
+                                instr->opc <= OPC_ATOMIC_B_XOR;
 
          foreach_src (reg, instr) {
             if (in_preamble) {
@@ -2560,6 +2618,9 @@ ir3_legalize(struct ir3 *ir, struct ir3_shader_variant *so, int *max_bary,
       ir->compiler->info->props.has_early_preamble &&
       !(ir3_shader_debug & IR3_DBG_NOEARLYPREAMBLE);
 
+   if (ir->compiler->gen >= 8 && has_bindless_atomic)
+      so->early_preamble = false;
+
    if (relative_in_preamble && so->early_preamble &&
        IR3_QUIRK(ctx->compiler, QCTDD10789828_no_a0_ep))
       so->early_preamble = false;
@@ -2578,8 +2639,9 @@ ir3_legalize(struct ir3 *ir, struct ir3_shader_variant *so, int *max_bary,
 
    assert(ctx->early_input_release || ctx->compiler->gen >= 5);
 
-   if (ir3_shader_debug & IR3_DBG_EXPANDRPT) {
-      dbg_expand_rpt(ir);
+   if ((ir3_shader_debug & IR3_DBG_EXPANDRPT) ||
+       ir->compiler->info->props.has_cat4_rpt_quirk) {
+      expand_rpt(ir, !(ir3_shader_debug & IR3_DBG_EXPANDRPT));
    }
 
    /* process each block: */
@@ -2642,6 +2704,9 @@ ir3_legalize(struct ir3 *ir, struct ir3_shader_variant *so, int *max_bary,
    if (ir3_shader_debug & IR3_DBG_FULLSYNC) {
       dbg_sync_sched(ir, so);
    }
+
+   if (so->compiler->gen >= 8)
+      a8xx_volatile_uav_sync(ir);
 
    if (ir3_shader_debug & IR3_DBG_FULLNOP) {
       dbg_nop_sched(ir, so);

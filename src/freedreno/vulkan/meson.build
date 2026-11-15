@@ -39,6 +39,7 @@ libtu_files = files(
   'tu_buffer_view.cc',
   'tu_clear_blit.cc',
   'tu_cmd_buffer.cc',
+  'tu_copy_memory_indirect.cc',
   'tu_cs_breadcrumbs.cc',
   'tu_cs.cc',
   'tu_device.cc',
@@ -50,7 +51,16 @@ libtu_files = files(
   'tu_knl.cc',
   'tu_lrz.cc',
   'tu_nir_lower_demote_samples.cc',
+  'tu_nir_indirect_copy.c',
+  'tu_nir_resolve.c',
+  'tu_nir_lower_cooperative_matrix.c',
   'tu_nir_lower_multiview.cc',
+  'tu_nir_lower_mesh.cc',
+  'tu_mesh_layout.cc',
+  'tu_mesh_dispatch.cc',
+  'tu_mesh_draw.cc',
+  'tu_mesh_program.cc',
+  'tu_mesh_vpc.cc',
   'tu_nir_lower_ray_query.cc',
   'tu_pass.cc',
   'tu_pipeline.cc',
@@ -89,6 +99,14 @@ libtu_files += custom_target(
     glslang_depfile,
   ],
   depfile : 'float64_spv.h.d',
+)
+
+libtu_files += custom_target(
+  'tu_copy_memory_indirect.spv.h',
+  input : 'tu_copy_memory_indirect.comp',
+  output : 'tu_copy_memory_indirect.spv.h',
+  command : [prog_glslang, '-V', '--target-env', 'spirv1.5', '-x',
+             '-o', '@OUTPUT@', '@INPUT@', glslang_quiet],
 )
 
 subdir('bvh')

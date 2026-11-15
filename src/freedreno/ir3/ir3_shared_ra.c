@@ -697,6 +697,17 @@ try_allocate_src_subreg(struct ra_ctx *ctx, struct ir3_register *reg,
 static physreg_t
 get_reg(struct ra_ctx *ctx, struct ir3_register *reg, bool src)
 {
+   /* Shared vectors can be allocated here before the ordinary RA handles
+    * precolored inputs. Preserve their requested location when available,
+    * including the TASK/MESH WorkgroupID input at register 0xcf.
+    */
+   if (reg->instr->opc == OPC_META_INPUT && reg->num != INVALID_REG) {
+      physreg_t physreg = ra_reg_get_physreg(reg);
+      if (physreg + reg_size(reg) <= reg_file_size(reg) &&
+          get_reg_specified(ctx, reg, physreg))
+         return physreg;
+   }
+
    /* For subreg moves (see ir3_is_subreg_move), try to allocate half of their
     * full src for their dst. If this succeeds, the instruction can be removed.
     */

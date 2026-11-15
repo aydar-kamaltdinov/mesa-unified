@@ -36,6 +36,27 @@ struct fd6_gmem_config {
    uint32_t color_cache_size;
 };
 
+/* GameSir A8 mesh sysmem carveout (original CCU state1). Keep physical
+ * field names here rather than relying on the original12-word struct ABI.
+ * The caller checks generation/GMEM eligibility before selecting this state.
+ */
+static inline void
+fd6_calc_mesh_gmem_config(unsigned num_ccu,
+                          const struct fd6_gmem_config *gmem,
+                          const struct fd6_gmem_config *sysmem,
+                          struct fd6_gmem_config *mesh)
+{
+   *mesh = *sysmem;
+   mesh->color_ccu_offset = 0x1068000;
+   mesh->depth_ccu_offset = num_ccu * gmem->vpc_attr_buf_size;
+   mesh->vpc_attr_buf_size = gmem->vpc_attr_buf_size;
+   mesh->vpc_attr_buf_offset = 0;
+   mesh->vpc_pos_buf_size = (gmem->vpc_pos_buf_size + 0x3fff) & ~0x3fffu;
+   mesh->vpc_pos_buf_offset = num_ccu * sysmem->color_cache_size + 0x1068000;
+   mesh->vpc_bv_pos_buf_size = gmem->vpc_bv_pos_buf_size;
+   mesh->vpc_bv_pos_buf_offset = gmem->vpc_bv_pos_buf_offset;
+}
+
 static inline unsigned
 __calc_gmem_cache_offsets(const struct fd_dev_info *info, unsigned offset,
                           struct fd6_gmem_config *config)

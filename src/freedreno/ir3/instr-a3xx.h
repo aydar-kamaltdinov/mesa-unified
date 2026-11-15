@@ -382,6 +382,8 @@ typedef enum {
    OPC_ALIAS           = _OPC(7, 9),
 
    OPC_CCINV           = _OPC(7, 10),
+   OPC_BAR_SET         = _OPC(7, 11),
+   OPC_BAR_SYNC        = _OPC(7, 12),
 
    /* meta instructions (category 8): */
 #define OPC_META 8

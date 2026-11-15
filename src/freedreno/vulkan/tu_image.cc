@@ -184,9 +184,22 @@ tu_image_view_init(struct tu_device *device,
       vk_ycbcr_conversion_from_handle(ycbcr_conversion->conversion) : NULL;
    const VkImageViewSampleWeightCreateInfoQCOM *sample_weights =
       vk_find_struct_const(pCreateInfo->pNext, IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM);
+   const VkImageViewASTCDecodeModeEXT *astc_decode =
+      vk_find_struct_const(pCreateInfo->pNext, IMAGE_VIEW_ASTC_DECODE_MODE_EXT);
 
    vk_image_view_init(&device->vk, &iview->vk, pCreateInfo);
    assert(iview->vk.format != VK_FORMAT_UNDEFINED);
+
+   if (image->ak_e5_ubwc &&
+       iview->vk.format == VK_FORMAT_E5B9G9R9_UFLOAT_PACK32) {
+      static uint32_t logged;
+      if (p_atomic_inc_return(&logged) <= 64) {
+         mesa_logw("AK E5-UBWC: E5B9G9R9 view created on UBWC image %ux%u %s "
+                   "(reading it may be wrong)",
+                   image->vk.extent.width, image->vk.extent.height,
+                   util_format_short_name(vk_format_to_pipe_format(image->vk.format)));
+      }
+   }
 
    iview->image = image;
 
@@ -230,6 +243,16 @@ tu_image_view_init(struct tu_device *device,
    args.level_count = vk_image_subresource_level_count(&image->vk, range);
    args.min_lod_clamp = iview->vk.min_lod;
    args.format = tu_format_for_aspect(format, aspect_mask);
+   /* GameSir tu_image_view_init ELF0x999e6c: only A8 has these controls.
+    * FP32/default leaves both precision bits clear; shared exponent is not
+    * supported. Vulkan validation restricts this pNext to valid ASTC views.
+    */
+   if (astc_decode && device->physical_device->info->chip >= 8) {
+      if (astc_decode->decodeMode == VK_FORMAT_R16G16B16A16_SFLOAT)
+         args.astc_decode_mode = FDL_ASTC_DECODE_FP16;
+      else if (astc_decode->decodeMode == VK_FORMAT_R8G8B8A8_UNORM)
+         args.astc_decode_mode = FDL_ASTC_DECODE_UNORM8;
+   }
    vk_component_mapping_to_pipe_swizzle(pCreateInfo->components, args.swiz);
    if (conversion) {
       unsigned char conversion_swiz[4], create_swiz[4];
@@ -495,11 +518,27 @@ format_list_has_uncompressed_format(
    return false;
 }
 
+/* AK experiment: with TU_DEBUG=e5ubwc (or TU_AK_E5_UBWC) set,
+ * E5B9G9R9 entries of a format list don't disable UBWC for the image.
+ * Emulators (Eden) list every format of the 32-bit compatibility class,
+ * E5B9G9R9 included, for their render targets, which otherwise loses UBWC
+ * for all of them. Views in E5B9G9R9 of such an image are reported, as
+ * reading UBWC data through them is not known to work.
+ */
+static bool
+ak_e5_ubwc_enabled(void)
+{
+   static const bool enabled = TU_DEBUG(E5_UBWC) ||
+      debug_get_bool_option("TU_AK_E5_UBWC", false);
+   return enabled;
+}
+
 /* Return true if all formats in the format list can support UBWC. */
 static bool
 format_list_ubwc_possible(struct tu_device *dev,
                           const VkImageFormatListCreateInfo *fmt_list,
-                          const VkImageCreateInfo *create_info)
+                          const VkImageCreateInfo *create_info,
+                          bool *skipped_e5)
 {
    /* If there is no format list, we may have to assume that a
     * UBWC-incompatible format may be used.
@@ -509,6 +548,12 @@ format_list_ubwc_possible(struct tu_device *dev,
       return false;
 
    for (uint32_t i = 0; i < fmt_list->viewFormatCount; i++) {
+      if (fmt_list->pViewFormats[i] == VK_FORMAT_E5B9G9R9_UFLOAT_PACK32 &&
+          create_info->format != VK_FORMAT_E5B9G9R9_UFLOAT_PACK32 &&
+          ak_e5_ubwc_enabled()) {
+         *skipped_e5 = true;
+         continue;
+      }
       if (!ubwc_possible(dev, fmt_list->pViewFormats[i],
                          create_info->imageType, create_info->flags,
                          create_info->usage, create_info->usage,
@@ -527,6 +572,8 @@ tu_image_init(struct tu_device *device, struct tu_image *image,
               const VkSubresourceLayout *plane_layouts,
               enum tu_image_id_mode id_mode)
 {
+   image->ak_e5_ubwc = false;
+
    switch (id_mode) {
    case TU_IMAGE_ID_ASSIGN:
       image->id = p_atomic_inc_return(&device->next_image_id);
@@ -659,8 +706,12 @@ tu_image_init(struct tu_device *device, struct tu_image *image,
             }
          } else {
             is_mutable = true;
-            if (!format_list_ubwc_possible(device, fmt_list, pCreateInfo))
+            bool skipped_e5 = false;
+            if (!format_list_ubwc_possible(device, fmt_list, pCreateInfo,
+                                           &skipped_e5))
                ubwc_enabled = false;
+            else if (skipped_e5 && ubwc_enabled)
+               image->ak_e5_ubwc = true;
          }
 
          /* If the threshold of the linear mipmap fallback for compressed
@@ -870,6 +921,17 @@ tu_image_init(struct tu_device *device, struct tu_image *image,
       image->subsampled_metadata_offset = align64(image->total_size, 16);
       image->total_size = image->subsampled_metadata_offset +
          image->vk.array_layers * sizeof(struct tu_subsampled_metadata);
+   }
+
+   /* Later checks may still have disabled UBWC. */
+   image->ak_e5_ubwc = image->ak_e5_ubwc && image->layout[0].ubwc;
+   if (image->ak_e5_ubwc) {
+      static uint32_t logged;
+      if (p_atomic_inc_return(&logged) <= 64) {
+         mesa_logw("AK E5-UBWC: %ux%u %s keeps UBWC despite E5B9G9R9 in its format list",
+                   image->vk.extent.width, image->vk.extent.height,
+                   util_format_short_name(vk_format_to_pipe_format(image->vk.format)));
+      }
    }
 
    return VK_SUCCESS;

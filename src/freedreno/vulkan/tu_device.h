@@ -39,7 +39,8 @@
 #define TU_BORDER_COLOR_COUNT 4096
 #define TU_BORDER_COLOR_BUILTIN 6
 
-#define TU_BLIT_SHADER_SIZE 4096
+/* Include the indirect image copy shaders and optional resolve variants. */
+#define TU_BLIT_SHADER_SIZE 8192
 
 /* extra space in vsc draw/prim streams */
 #define VSC_PAD 0x40
@@ -54,11 +55,27 @@ enum global_shader {
    GLOBAL_SH_FS_BLIT_ZSCALE_SWAP_COORDS,
    GLOBAL_SH_FS_COPY_MS,
    GLOBAL_SH_FS_COPY_MS_HALF,
+   /* AK: GMEM->GMEM resolve prototype -- averages all samples of a
+    * multisampled GMEM-resident source and writes the single-sample result
+    * to a GMEM-resident destination, entirely without leaving the tile.
+    * One variant per supported MSAA sample count (2/4/8x); indexed via
+    * tu_resolve_ms_shader_idx() below. */
    GLOBAL_SH_FS_RESOLVE_MS2,
    GLOBAL_SH_FS_RESOLVE_MS4,
    GLOBAL_SH_FS_RESOLVE_MS8,
    GLOBAL_SH_FS_CLEAR0,
    GLOBAL_SH_FS_CLEAR_MAX = GLOBAL_SH_FS_CLEAR0 + MAX_RTS,
+   GLOBAL_SH_VS_INDIRECT_COPY,
+   GLOBAL_SH_FS_INDIRECT_COPY,
+   GLOBAL_SH_FS_INDIRECT_COPY_UINT,
+   GLOBAL_SH_FS_RESOLVE_FLOAT_MIN,
+   GLOBAL_SH_FS_RESOLVE_FLOAT_MAX,
+   GLOBAL_SH_FS_RESOLVE_FLOAT_AVERAGE,
+   GLOBAL_SH_FS_RESOLVE_UINT_MIN,
+   GLOBAL_SH_FS_RESOLVE_UINT_MAX,
+   GLOBAL_SH_FS_RESOLVE_D24_MIN,
+   GLOBAL_SH_FS_RESOLVE_D24_MAX,
+   GLOBAL_SH_FS_RESOLVE_D24_AVERAGE,
    GLOBAL_SH_COUNT,
 };
 
@@ -78,6 +95,11 @@ enum tu_kgsl_dma_type
 struct tu_queue_family {
    enum tu_queue_type type;
    const VkQueueFamilyProperties *properties;
+};
+
+enum tu_kgsl_sync_impl_type {
+   TU_KGSL_SYNC_IMPL_TYPE_SYNCOBJ,
+   TU_KGSL_SYNC_IMPL_TYPE_TIMELINE,
 };
 
 extern uint64_t os_page_size;
@@ -189,7 +211,9 @@ struct tu_physical_device
    /* Heap usage, shared with other instances using the same device */
    struct vk_memory_budget *memory_budget;
 
+   enum tu_kgsl_sync_impl_type kgsl_sync_impl_type;
    struct vk_sync_type syncobj_type;
+   struct vk_sync_binary_type binary_type;
    struct vk_sync_timeline_type timeline_type;
    const struct vk_sync_type *sync_types[3];
 
@@ -377,6 +401,9 @@ struct tu_device
    /* Lazily allocated, protected by the device mutex. */
    struct tu_bo *tess_bo;
 
+   /* A8 AQE storage, lazy and protected by mutex; owned until device teardown. */
+   struct tu_bo *mesh_aqe_bo;
+
    struct ir3_shader_variant *global_shader_variants[GLOBAL_SH_COUNT];
    struct ir3_shader *global_shaders[GLOBAL_SH_COUNT];
    uint64_t global_shader_va[GLOBAL_SH_COUNT];
@@ -463,6 +490,12 @@ struct tu_device
 
    struct tu_cs *dbg_cmdbuf_stomp_cs;
    struct tu_cs *dbg_renderpass_stomp_cs;
+
+   /* Recovered indexed-draw compatibility path: device/application default
+    * plus an explicit diagnostic environment override.
+    */
+   bool diagnostic_split_indexed;
+   uint32_t diagnostic_indexed_chunk;
 
 #ifdef TU_HAS_VIRTIO
    struct tu_virtio_device *vdev;
@@ -638,6 +671,18 @@ tu_device_get_u_trace(struct tu_device *device);
  */
 VkResult
 tu_get_scratch_bo(struct tu_device *dev, uint64_t size, struct tu_bo **bo);
+
+/* Original hardware/drirc eligibility only; this does not establish that
+ * mesh compiler/context integration is ready or enable the extension.
+ */
+bool
+tu_mesh_shader_hw_eligible(const struct tu_physical_device *pdevice);
+
+/* Returns a fully mapped/zero-initialized device-owned A8 AQE BO. No draw
+ * synchronization or cross-queue sharing policy is established by this call.
+ */
+VkResult
+tu_get_mesh_aqe_bo(struct tu_device *dev, struct tu_bo **bo);
 
 void tu_setup_dynamic_framebuffer(struct tu_cmd_buffer *cmd_buffer,
                                   const VkRenderingInfo *pRenderingInfo);

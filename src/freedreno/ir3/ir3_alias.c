@@ -24,6 +24,23 @@ supports_alias_srcs(struct ir3_instruction *instr)
    return true;
 }
 
+/* AK: GameHub's a8xx Turnip doesn't use alias.tex in compute-like stages. */
+static bool
+alias_tex_allowed(struct ir3 *ir)
+{
+   if (ir->compiler->gen < 8)
+      return true;
+   switch (ir->type) {
+   case MESA_SHADER_COMPUTE:
+   case MESA_SHADER_KERNEL:
+   case MESA_SHADER_TASK:
+   case MESA_SHADER_MESH:
+      return false;
+   default:
+      return true;
+   }
+}
+
 static bool
 has_valid_alias_flags(struct ir3_register *src)
 {
@@ -175,6 +192,8 @@ ir3_create_alias_tex_regs(struct ir3 *ir)
    if (!ir->compiler->has_alias_tex)
       return false;
    if (ir3_shader_debug & IR3_DBG_NOALIASTEX)
+      return false;
+   if (!alias_tex_allowed(ir))
       return false;
 
    bool progress = false;
@@ -656,6 +675,8 @@ ir3_insert_alias_tex(struct ir3 *ir)
       return false;
    if (ir3_shader_debug & IR3_DBG_NOALIASTEX)
       return false;
+   if (!alias_tex_allowed(ir))
+      return false;
 
    bool progress = false;
 
@@ -784,6 +805,9 @@ ir3_create_alias_rt(struct ir3 *ir, struct ir3_shader_variant *v)
    if (v->type != MESA_SHADER_FRAGMENT)
       return false;
    if (v->shader_options.fragdata_dynamic_remap)
+      return false;
+   if (v->dual_src_blend &&
+       ir3_find_output(v, (gl_varying_slot)FRAG_RESULT_DATA0) < 0)
       return false;
 
    struct ir3_instruction *end = ir3_find_end(ir);

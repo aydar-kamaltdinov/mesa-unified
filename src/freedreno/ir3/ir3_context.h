@@ -34,6 +34,8 @@ struct ir3_context {
 
    struct ir3 *ir;
    struct ir3_shader_variant *so;
+   struct hash_table_u64 *per_vertex_inputs;
+   bool flat_inputs_are_per_vertex;
 
    /* Tables of scalar inputs/outputs.  Because of the way varying packing
     * works, we could have inputs w/ fractional location, which is a bit
@@ -68,9 +70,10 @@ struct ir3_context {
 
    /* For vertex shaders, keep track of the system values sources */
    struct ir3_instruction *vertex_id, *instance_id, *view_index;
+   struct ir3_instruction *first_vertex, *base_instance, *draw_id;
 
    /* For fragment shaders: */
-   struct ir3_instruction *samp_id, *samp_mask_in;
+   struct ir3_instruction *samp_id, *samp_mask_in, *fully_covered;
 
    /* For geometry shaders: */
    struct ir3_instruction *primitive_id;

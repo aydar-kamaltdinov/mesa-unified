@@ -19,6 +19,10 @@ union tu_scratch_ram {
    struct {
       uint32_t RB_CNTL;
       uint32_t RB_BUFFER_CNTL;
+      /* AK: saved separately, it is not identical to RB_CNTL
+       * (force_lrz_dis only exists in GRAS_SC_BIN_CNTL).
+       */
+      uint32_t GRAS_SC_BIN_CNTL;
    } store_3d_blit;
 
    /**

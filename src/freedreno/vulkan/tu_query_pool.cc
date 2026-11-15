@@ -39,7 +39,22 @@
  * Depending on how/if they shuffle around in the future, we might need
  * to shift to reading them individually, like gallium does.
  */
-#define STAT_COUNT ((__COUNTER_REG(A6XX, CSINVOCATIONS).reg - __COUNTER_REG(A6XX, IAVERTICES).reg) / 2 + 1)
+#define LEGACY_STAT_COUNT ((__COUNTER_REG(A6XX, CSINVOCATIONS).reg - __COUNTER_REG(A6XX, IAVERTICES).reg) / 2 + 1)
+#define MAX_STAT_COUNT ((__COUNTER_REG(A8XX, MSPRIMITIVES).reg - __COUNTER_REG(A8XX, IAVERTICES).reg) / 2 + 1)
+
+template <chip CHIP>
+static unsigned
+statistics_count(uint32_t statistics)
+{
+   /* The original A8 snapshot reads all fourteen registers. The trailing
+    * counters are only consumed by mesh queries here; retain the existing
+    * eleven-counter work for ordinary pipeline-statistics requests.
+    */
+   return CHIP >= A8XX &&
+      (statistics & (VK_QUERY_PIPELINE_STATISTIC_TASK_SHADER_INVOCATIONS_BIT_EXT |
+                     VK_QUERY_PIPELINE_STATISTIC_MESH_SHADER_INVOCATIONS_BIT_EXT)) ?
+      MAX_STAT_COUNT : LEGACY_STAT_COUNT;
+}
 
 struct alignas(8) query_slot {
    alignas(8) uint64_t available;
@@ -66,11 +81,16 @@ struct alignas(8) primitive_slot_value {
 
 struct alignas(8) pipeline_stat_query_slot {
    struct query_slot common;
-   uint64_t results[STAT_COUNT];
+   uint64_t results[MAX_STAT_COUNT];
 
-   uint64_t begin[STAT_COUNT];
-   uint64_t end[STAT_COUNT];
+   uint64_t begin[MAX_STAT_COUNT];
+   uint64_t end[MAX_STAT_COUNT];
 } PACKED;
+
+/* Original query-pool pipeline-stat slot is 0x158 bytes. A6/A7 keep reading
+ * only their eleven valid counters; A8 adds AS/MS invocation/primitive slots.
+ */
+static_assert(sizeof(pipeline_stat_query_slot) == 0x158);
 
 struct alignas(8) primitive_query_slot {
    struct query_slot common;
@@ -301,7 +321,7 @@ tu_query_pool_destroy(struct tu_device *device, struct tu_query_pool *pool,
          if (perf_query->data[i].pass == 0)
             fd_perfcntr_release(device->perfcntrs, perf_query->data[i].counter);
       }
-   } else if (is_perf_query_raw(pool)) {
+   } else if (is_perf_query_derived(pool)) {
       struct tu_perf_query_derived *perf_query = &pool->perf_query.derived;
       struct fd_derived_counter_collection *collection = perf_query->collection;
 
@@ -340,6 +360,7 @@ tu_CreateQueryPool(VkDevice _device,
       slot_size = sizeof(struct primitive_query_slot);
       break;
    case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+   case VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT:
       slot_size = sizeof(struct primitives_generated_query_slot);
       break;
    case VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR: {
@@ -514,6 +535,7 @@ get_result_count(struct tu_query_pool *pool)
    case VK_QUERY_TYPE_OCCLUSION:
    case VK_QUERY_TYPE_TIMESTAMP:
    case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+   case VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT:
    case VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR:
    case VK_QUERY_TYPE_ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR:
    case VK_QUERY_TYPE_ACCELERATION_STRUCTURE_SERIALIZATION_BOTTOM_LEVEL_POINTERS_KHR:
@@ -567,6 +589,12 @@ statistics_index(uint32_t *statistics)
       return COUNTER_OFFSET(DSINVOCATIONS);
    case VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT:
       return COUNTER_OFFSET(CSINVOCATIONS);
+   case VK_QUERY_PIPELINE_STATISTIC_TASK_SHADER_INVOCATIONS_BIT_EXT:
+      return CHIP >= A8XX ?
+         (__COUNTER_REG(A8XX, ASINVOCATIONS).reg - __COUNTER_REG(A8XX, IAVERTICES).reg) / 2 : 0;
+   case VK_QUERY_PIPELINE_STATISTIC_MESH_SHADER_INVOCATIONS_BIT_EXT:
+      return CHIP >= A8XX ?
+         (__COUNTER_REG(A8XX, MSINVOCATIONS).reg - __COUNTER_REG(A8XX, IAVERTICES).reg) / 2 : 0;
    default:
       return 0;
    }
@@ -584,7 +612,9 @@ is_pipeline_query_with_vertex_stage(uint32_t pipeline_statistics)
            VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT |
            VK_QUERY_PIPELINE_STATISTIC_CLIPPING_PRIMITIVES_BIT |
            VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_CONTROL_SHADER_PATCHES_BIT |
-           VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT);
+           VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT |
+           VK_QUERY_PIPELINE_STATISTIC_TASK_SHADER_INVOCATIONS_BIT_EXT |
+           VK_QUERY_PIPELINE_STATISTIC_MESH_SHADER_INVOCATIONS_BIT_EXT);
 }
 
 static bool
@@ -811,6 +841,7 @@ tu_GetQueryPoolResults(VkDevice _device,
    case VK_QUERY_TYPE_TIMESTAMP:
    case VK_QUERY_TYPE_TRANSFORM_FEEDBACK_STREAM_EXT:
    case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+   case VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT:
    case VK_QUERY_TYPE_PIPELINE_STATISTICS:
    case VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR:
    case VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR:
@@ -971,6 +1002,7 @@ tu_CmdCopyQueryPoolResults(VkCommandBuffer commandBuffer,
    case VK_QUERY_TYPE_TIMESTAMP:
    case VK_QUERY_TYPE_TRANSFORM_FEEDBACK_STREAM_EXT:
    case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+   case VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT:
    case VK_QUERY_TYPE_PIPELINE_STATISTICS:
    case VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR:
    case VK_QUERY_TYPE_ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR:
@@ -1044,6 +1076,49 @@ emit_reset_query_pool(struct tu_cmd_buffer *cmdbuf, struct tu_query_pool *pool, 
       tu7_wait_for_rb_done(cs, CP_SET_THREAD_BR, true);
    }
 
+   /* Fast path for every query type except KHR_performance_query: each
+    * query's full pool->query_stride-sized slot (available + result, plus
+    * any begin/end/padding fields the per-field reset below skips) is safe
+    * to zero wholesale, because begin/end are always unconditionally
+    * overwritten by CmdBeginQuery/CmdEndQuery before ever being read --
+    * never read-before-write. query_stride == sizeof(that type's slot
+    * struct) exactly, with no gaps between consecutive queries (see
+    * tu_CreateQueryPool), so [firstQuery, firstQuery+queryCount) is one
+    * contiguous region we can zero with a handful of large CP_MEM_WRITE
+    * packets instead of one tiny packet per field per query -- the same
+    * bulk-write idiom tu_write_buffer_cp() already uses elsewhere. This
+    * turns e.g. a 256-query occlusion pool reset from 512 packets into 1.
+    *
+    * Performance-counter queries keep the old per-field path: their slot
+    * layout includes a variable-length, app-configured counter array
+    * that's less straightforward to reason about wholesale, and they
+    * aren't a per-frame gameplay hot path the way occlusion/timestamp
+    * query pools commonly are.
+    */
+   if (pool->vk.query_type != VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR &&
+       queryCount > 0) {
+      uint64_t base_iova =
+         pool->bo->iova + (uint64_t) pool->query_stride * firstQuery;
+      uint64_t total_dwords =
+         (uint64_t) pool->query_stride * queryCount / sizeof(uint32_t);
+
+      /* CP_MEM_WRITE's count field is the same 14-bit pkt7 count field as
+       * any other packet (16383 max, see TU_CS_FAIL_SINK_SIZE's comment);
+       * leave headroom and chunk if a single reset would exceed it.
+       */
+      const uint64_t max_data_dwords = 16000;
+      uint64_t off = 0;
+      while (off < total_dwords) {
+         uint32_t chunk =
+            (uint32_t) MIN2(total_dwords - off, max_data_dwords);
+         tu_cs_emit_pkt7(cs, CP_MEM_WRITE, 2 + chunk);
+         tu_cs_emit_qw(cs, base_iova + off * sizeof(uint32_t));
+         tu_cs_emit_zeros(cs, chunk);
+         off += chunk;
+      }
+      return;
+   }
+
    reset_query_pool<CHIP>(pool, firstQuery, queryCount, [cs](uint64_t result_iova) {
       tu_cs_emit_pkt7(cs, CP_MEM_WRITE, 4);
       tu_cs_emit_qw(cs, result_iova);
@@ -1066,6 +1141,7 @@ tu_CmdResetQueryPool(VkCommandBuffer commandBuffer,
    case VK_QUERY_TYPE_OCCLUSION:
    case VK_QUERY_TYPE_TRANSFORM_FEEDBACK_STREAM_EXT:
    case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+   case VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT:
    case VK_QUERY_TYPE_PIPELINE_STATISTICS:
    case VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR:
    case VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR:
@@ -1170,6 +1246,7 @@ emit_begin_stat_query(struct tu_cmd_buffer *cmdbuf,
                       struct tu_query_pool *pool,
                       uint32_t query)
 {
+   cmdbuf->state.statistics_query_may_be_running = true;
    struct tu_cs *cs = cmdbuf->state.pass ? &cmdbuf->draw_cs : &cmdbuf->cs;
    uint64_t begin_iova = pipeline_stat_query_iova(pool, query, begin, 0);
 
@@ -1227,7 +1304,7 @@ emit_begin_stat_query(struct tu_cmd_buffer *cmdbuf,
    emit_counter_barrier<CHIP>(cs);
 
    cs->reg_to_mem(begin_iova, COUNTER_REG(IAVERTICES), {
-      .cnt = STAT_COUNT * 2,
+      .cnt = statistics_count<CHIP>(pool->vk.pipeline_statistics) * 2,
       .is_64b = true,
    });
 }
@@ -1419,6 +1496,7 @@ emit_begin_prim_generated_query(struct tu_cmd_buffer *cmdbuf,
                                 struct tu_query_pool *pool,
                                 uint32_t query)
 {
+   cmdbuf->state.statistics_query_may_be_running = true;
    struct tu_cs *cs = cmdbuf->state.pass ? &cmdbuf->draw_cs : &cmdbuf->cs;
    uint64_t begin_iova = primitives_generated_query_iova(pool, query, begin);
 
@@ -1477,6 +1555,7 @@ tu_CmdBeginQueryIndexedEXT(VkCommandBuffer commandBuffer,
       emit_begin_xfb_query<CHIP>(cmdbuf, pool, query, index);
       break;
    case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+   case VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT:
       emit_begin_prim_generated_query<CHIP>(cmdbuf, pool, query);
       break;
    case VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR:
@@ -1641,7 +1720,8 @@ emit_stop_primitive_ctrs(struct tu_cmd_buffer *cmdbuf,
    if (cmdbuf->state.prim_counters_running == 0) {
       bool need_cond_exec =
          is_secondary &&
-         query_type == VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT &&
+         (query_type == VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT ||
+          query_type == VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT) &&
          is_pipeline_query_with_vertex_stage(cmdbuf->inherited_pipeline_statistics);
 
       if (!need_cond_exec) {
@@ -1715,11 +1795,11 @@ emit_end_stat_query(struct tu_cmd_buffer *cmdbuf,
    emit_counter_barrier<CHIP>(cs);
 
    cs->reg_to_mem(end_iova, COUNTER_REG(IAVERTICES), {
-      .cnt = STAT_COUNT * 2,
+      .cnt = statistics_count<CHIP>(pool->vk.pipeline_statistics) * 2,
       .is_64b = true,
    });
 
-   for (int i = 0; i < STAT_COUNT; i++) {
+   for (unsigned i = 0; i < statistics_count<CHIP>(pool->vk.pipeline_statistics); i++) {
       result_iova = query_result_iova(pool, query, uint64_t, i);
       stat_start_iova = pipeline_stat_query_iova(pool, query, begin, i);
       stat_stop_iova = pipeline_stat_query_iova(pool, query, end, i);
@@ -2014,7 +2094,7 @@ emit_end_prim_generated_query(struct tu_cmd_buffer *cmdbuf,
    /* Should be after waiting for mem writes to have up to date info
     * about which query is running.
     */
-   emit_stop_primitive_ctrs<CHIP>(cmdbuf, cs, VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT);
+   emit_stop_primitive_ctrs<CHIP>(cmdbuf, cs, pool->vk.query_type);
 
    if (cmdbuf->state.pass) {
       tu_cond_exec_end(cs);
@@ -2087,6 +2167,7 @@ tu_CmdEndQueryIndexedEXT(VkCommandBuffer commandBuffer,
       emit_end_xfb_query<CHIP>(cmdbuf, pool, query, index);
       break;
    case VK_QUERY_TYPE_PRIMITIVES_GENERATED_EXT:
+   case VK_QUERY_TYPE_MESH_PRIMITIVES_GENERATED_EXT:
       emit_end_prim_generated_query<CHIP>(cmdbuf, pool, query);
       break;
    case VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR:
