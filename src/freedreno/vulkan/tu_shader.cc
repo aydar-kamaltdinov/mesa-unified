@@ -4458,7 +4458,13 @@ tu_shader_key_subgroup_size(struct tu_shader_key *key,
                             struct tu_device *dev)
 {
    enum ir3_wavesize_option api_wavesize, real_wavesize;
-   if (!dev->physical_device->expose_double_threadsize) {
+   if (subgroup_info &&
+       subgroup_info->requiredSubgroupSize < dev->compiler->info->threadsize_base &&
+       dev->physical_device->info->props.has_getfiberid) {
+      /* Each half of a single wave acts as one subgroup. */
+      api_wavesize = IR3_HALF_ONLY;
+      real_wavesize = IR3_SINGLE_ONLY;
+   } else if (!dev->physical_device->expose_double_threadsize) {
       api_wavesize = IR3_SINGLE_ONLY;
       real_wavesize = IR3_SINGLE_ONLY;
    } else {
