@@ -706,6 +706,72 @@ kgsl_bo_init_dmabuf(struct tu_device *dev,
    return VK_SUCCESS;
 }
 
+/* VK_EXT_external_memory_host: let KGSL pin the application's pages and map
+ * them into the GPU address space. The memory types offered for import are
+ * HOST_COHERENT, so the import must be IO-coherent with the CPU caches;
+ * reject it if the kernel couldn't make it so.
+ */
+static VkResult
+kgsl_bo_init_userptr(struct tu_device *dev,
+                     struct tu_bo **out_bo,
+                     void *host_ptr,
+                     uint64_t size)
+{
+   int fd = dev->physical_device->local_fd;
+
+   struct kgsl_gpuobj_import_useraddr useraddr = {
+      .virtaddr = reinterpret_cast<uintptr_t>(host_ptr),
+   };
+   /* For KGSL_USER_MEM_TYPE_ADDR, priv_len is the length of the range. */
+   struct kgsl_gpuobj_import req = {
+      .priv = reinterpret_cast<uintptr_t>(&useraddr),
+      .priv_len = size,
+      .flags = KGSL_MEMFLAGS_IOCOHERENT,
+      .type = KGSL_USER_MEM_TYPE_ADDR,
+   };
+
+   if (safe_ioctl(fd, IOCTL_KGSL_GPUOBJ_IMPORT, &req)) {
+      return vk_errorf(dev, VK_ERROR_INVALID_EXTERNAL_HANDLE,
+                       "Failed to import host memory (%s)", strerror(errno));
+   }
+
+   struct kgsl_gpuobj_info info_req = {
+      .id = req.id,
+   };
+
+   if (safe_ioctl(fd, IOCTL_KGSL_GPUOBJ_INFO, &info_req) ||
+       info_req.size < size ||
+       !(info_req.flags & KGSL_MEMFLAGS_IOCOHERENT)) {
+      struct kgsl_gpumem_free_id free_req = {
+         .id = req.id,
+      };
+      safe_ioctl(fd, IOCTL_KGSL_GPUMEM_FREE_ID, &free_req);
+
+      return vk_errorf(dev, VK_ERROR_INVALID_EXTERNAL_HANDLE,
+                       "Imported host memory is not usable (%s)",
+                       strerror(errno));
+   }
+
+   struct tu_bo *bo = tu_device_lookup_bo(dev, req.id);
+   assert(bo && bo->gem_handle == 0);
+
+   *bo = (struct tu_bo) {
+      .gem_handle = req.id,
+      .size = size,
+      .iova = info_req.gpuaddr,
+      .map = host_ptr,
+      .name = tu_debug_bos_add(dev, size, "host-import"),
+      .refcnt = 1,
+      .shared_fd = -1,
+   };
+
+   tu_dump_bo_init(dev, bo);
+
+   *out_bo = bo;
+
+   return VK_SUCCESS;
+}
+
 static int
 kgsl_bo_export_dmabuf(struct tu_device *dev, struct tu_bo *bo)
 {
@@ -753,7 +819,7 @@ kgsl_bo_finish(struct tu_device *dev, struct tu_bo *bo)
    tu_debug_bos_del(dev, bo);
    tu_dump_bo_del(dev, bo);
 
-   if (bo->map) {
+   if (bo->map && !bo->host_import) {
       TU_RMV(bo_unmap, dev, bo);
       munmap(bo->map, bo->size);
    }
@@ -3348,6 +3414,7 @@ static const struct tu_knl kgsl_knl_funcs = {
       .submitqueue_close = kgsl_submitqueue_close,
       .bo_init = kgsl_bo_init,
       .bo_init_dmabuf = kgsl_bo_init_dmabuf,
+      .bo_init_userptr = kgsl_bo_init_userptr,
       .bo_export_dmabuf = kgsl_bo_export_dmabuf,
       .bo_map = kgsl_bo_map,
       .bo_allow_dump = kgsl_bo_allow_dump,

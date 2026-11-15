@@ -237,6 +237,35 @@ tu_uncharted_legacy_adreno_compat(const struct tu_physical_device *device)
           device->instance->drirc.misc.uncharted_legacy_adreno_compat;
 }
 
+/* VK_EXT_external_memory_host needs a kernel backend that can import user
+ * pages, and IO-coherent memory since the imported memory is offered with
+ * HOST_COHERENT types. Opt out with setprop debug.mesa.tu.no.host.import.
+ */
+static bool
+tu_has_host_import(const struct tu_physical_device *device)
+{
+   static const bool disabled =
+      debug_get_bool_option("TU_NO_HOST_IMPORT", false);
+   return !disabled && device->instance->knl->bo_init_userptr &&
+          device->has_cached_coherent_memory;
+}
+
+/* Memory types an imported host allocation may use: every host-visible,
+ * host-coherent non-lazy type.
+ */
+static uint32_t
+tu_host_import_memory_type_bits(const struct tu_physical_device *device)
+{
+   uint32_t bits = 0;
+   for (uint32_t i = 0; i < device->memory.non_lazy_type_count; i++) {
+      const VkMemoryPropertyFlags flags = device->memory.types[i];
+      if ((flags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) &&
+          (flags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT))
+         bits |= 1u << i;
+   }
+   return bits;
+}
+
 static void
 get_device_extensions(const struct tu_physical_device *device,
                       struct vk_device_extension_table *ext)
@@ -388,6 +417,7 @@ get_device_extensions(const struct tu_physical_device *device,
       .EXT_extended_dynamic_state3 = true,
       .EXT_frame_boundary = true,
       .EXT_external_memory_dma_buf = true,
+      .EXT_external_memory_host = tu_has_host_import(device),
       .EXT_filter_cubic = device->info->props.has_tex_filter_cubic,
       .EXT_fragment_density_map = true,
       .EXT_fragment_density_map_offset = true,
@@ -1524,6 +1554,9 @@ tu_get_properties(struct tu_physical_device *pdevice,
 
    /* VK_KHR_push_descriptor */
    props->maxPushDescriptors = MAX_PUSH_DESCRIPTORS;
+
+   /* VK_EXT_external_memory_host: KGSL pins whole pages. */
+   props->minImportedHostPointerAlignment = os_page_size;
 
    /* VK_EXT_transform_feedback */
    props->maxTransformFeedbackStreams = pdevice->info->props.num_xfb_streams;
@@ -3988,7 +4021,27 @@ tu_AllocateMemory(VkDevice _device,
                            BUFFER_DEVICE_ADDRESS_ALIGNMENT_ALLOCATE_INFO_VALVE);
    uint64_t alignment = align_info ? align_info->alignment : 0;
 
-   if (fd_info && fd_info->handleType) {
+   const VkImportMemoryHostPointerInfoEXT *host_info =
+      vk_find_struct_const(pAllocateInfo->pNext,
+                           IMPORT_MEMORY_HOST_POINTER_INFO_EXT);
+
+   if (host_info && host_info->handleType) {
+      const struct tu_physical_device *pdev = device->physical_device;
+      const uintptr_t ptr = reinterpret_cast<uintptr_t>(host_info->pHostPointer);
+
+      if (host_info->handleType !=
+             VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT ||
+          (ptr % os_page_size) ||
+          (pAllocateInfo->allocationSize % os_page_size) ||
+          !(tu_host_import_memory_type_bits(pdev) &
+            (1u << pAllocateInfo->memoryTypeIndex))) {
+         result = vk_error(device, VK_ERROR_INVALID_EXTERNAL_HANDLE);
+      } else {
+         result = tu_bo_init_userptr(device, &mem->bo,
+                                     host_info->pHostPointer,
+                                     pAllocateInfo->allocationSize);
+      }
+   } else if (fd_info && fd_info->handleType) {
       assert(fd_info->handleType ==
                 VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT ||
              fd_info->handleType ==
@@ -4722,6 +4775,23 @@ tu_GetMemoryFdKHR(VkDevice _device,
       tu_bo_set_metadata(device, memory->bo, &metadata, sizeof(metadata));
    }
 
+   return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL
+tu_GetMemoryHostPointerPropertiesEXT(
+   VkDevice _device,
+   VkExternalMemoryHandleTypeFlagBits handleType,
+   const void *pHostPointer,
+   VkMemoryHostPointerPropertiesEXT *pMemoryHostPointerProperties)
+{
+   VK_FROM_HANDLE(tu_device, device, _device);
+
+   if (handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT)
+      return vk_error(device, VK_ERROR_INVALID_EXTERNAL_HANDLE);
+
+   pMemoryHostPointerProperties->memoryTypeBits =
+      tu_host_import_memory_type_bits(device->physical_device);
    return VK_SUCCESS;
 }
 
