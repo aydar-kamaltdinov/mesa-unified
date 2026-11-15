@@ -565,6 +565,11 @@ struct fd_dev_info {
        */
       bool multi_subpass_msaa_no_input_requires_sysmem;
       bool msaa_input_d32s8_requires_gmem;
+
+      /* On a8xx sampling a cube map with a direction that has no defined
+       * face projection (NaN, the zero vector) may hang the GPU.
+       */
+      bool cube_coord_hang_quirk;
    } props;
 
 #define FD_QUIRK(info, name) (info)->quirks.name
