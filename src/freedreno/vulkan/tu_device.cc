@@ -212,6 +212,16 @@ tu_subgroup_size(const struct tu_physical_device *device)
           (device->expose_double_threadsize ? 2 : 1);
 }
 
+/* Subgroups of half a wave are emulated on top of the hardware subgroup
+ * operations.
+ */
+static uint32_t
+tu_min_subgroup_size(const struct tu_physical_device *device)
+{
+   return device->info->threadsize_base /
+          (device->info->props.has_getfiberid ? 2 : 1);
+}
+
 static bool
 tu_has_cooperative_matrix(const struct tu_physical_device *device)
 {
@@ -1184,19 +1194,21 @@ static void
 tu_get_physical_device_properties_1_3(struct tu_physical_device *pdevice,
                                       struct vk_properties *p)
 {
-   p->minSubgroupSize = pdevice->info->threadsize_base;
-   /* GameSir's opt-in compatibility range does not change native wave size. */
+   p->minSubgroupSize = tu_min_subgroup_size(pdevice);
+   /* GameSir's opt-in compatibility range does not change native wave size;
+    * it only matters on chips that can't emulate half-wave subgroups.
+    */
    if (pdevice->instance->drirc.misc.advertise_wave32_compat)
       p->minSubgroupSize = MIN2(p->minSubgroupSize, 32);
    p->maxSubgroupSize = tu_subgroup_size(pdevice);
-   p->maxComputeWorkgroupSubgroups = pdevice->info->max_waves;
+   p->maxComputeWorkgroupSubgroups = pdevice->info->max_waves *
+      pdevice->info->threadsize_base / p->minSubgroupSize;
    /* Only compute and fragment shaders can run with a doubled wave size, the
-    * geometry stages always run at threadsize_base.  So when we expose more
-    * than one possible subgroup size we can't honor a required subgroup size
-    * in those stages.
+    * geometry stages always run at threadsize_base.  So when we expose the
+    * doubled size we can't honor a required subgroup size in those stages.
     */
    p->requiredSubgroupSizeStages =
-      p->minSubgroupSize == p->maxSubgroupSize
+      !pdevice->expose_double_threadsize
          ? VK_SHADER_STAGE_ALL
          : (VK_SHADER_STAGE_COMPUTE_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
 

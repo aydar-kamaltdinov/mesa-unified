@@ -1867,6 +1867,11 @@ tu_append_executable(struct tu_pipeline *pipeline,
    struct tu_pipeline_executable exe = {
       .stage = variant->type,
       .stats = variant->info,
+      .subgroup_size =
+         variant->shader_options.api_wavesize == IR3_HALF_ONLY
+            ? variant->compiler->info->threadsize_base / 2
+            : variant->compiler->info->threadsize_base *
+                 (variant->info.double_threadsize ? 2 : 1),
       .is_binning = variant->binning_pass,
       .nir_from_spirv = nir_from_spirv,
       .nir_final = ralloc_strdup(pipeline->executables_mem_ctx, variant->disasm_info.nir),
@@ -5924,7 +5929,6 @@ tu_GetPipelineExecutablePropertiesKHR(
       uint32_t* pExecutableCount,
       VkPipelineExecutablePropertiesKHR* pProperties)
 {
-   VK_FROM_HANDLE(tu_device, dev, _device);
    VK_FROM_HANDLE(tu_pipeline, pipeline, pPipelineInfo->pipeline);
    VK_OUTARRAY_MAKE_TYPED(VkPipelineExecutablePropertiesKHR, out,
                           pProperties, pExecutableCount);
@@ -5941,8 +5945,7 @@ tu_GetPipelineExecutablePropertiesKHR(
 
          VK_COPY_STR(props->description, _mesa_shader_stage_to_string(stage));
 
-         props->subgroupSize =
-            dev->compiler->info->threadsize_base * (exe->stats.double_threadsize ? 2 : 1);
+         props->subgroupSize = exe->subgroup_size;
       }
    }
 
