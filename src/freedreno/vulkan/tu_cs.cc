@@ -51,24 +51,6 @@ tu_cs_init_ib1(struct tu_cs *cs, struct tu_device *device, enum tu_cs_mode mode,
 }
 
 /**
- * Initialize a command stream as a wrapper to an external buffer.
- */
-void
-tu_cs_init_external(struct tu_cs *cs, struct tu_device *device,
-                    uint32_t *start, uint32_t *end, uint64_t iova,
-                    bool writeable)
-{
-   memset(cs, 0, sizeof(*cs));
-
-   cs->device = device;
-   cs->mode = TU_CS_MODE_EXTERNAL;
-   cs->start = cs->reserved_end = cs->cur = start;
-   cs->end = end;
-   cs->external_iova = iova;
-   cs->writeable = writeable;
-}
-
-/**
  * Initialize a sub-command stream as a wrapper to an externally sub-allocated
  * buffer.
  */
@@ -121,6 +103,18 @@ tu_cs_current_bo(const struct tu_cs *cs)
       assert(bos->bo_count);
       return bos->bos[bos->bo_count - 1];
    }
+}
+
+/* The BO new data goes into, or NULL while the stream has no BO yet. One
+ * lookup for the per-draw paths below, which used to repeat it 2-3 times.
+ */
+static inline struct tu_bo *
+tu_cs_current_bo_or_null(const struct tu_cs *cs)
+{
+   if (cs->refcount_bo)
+      return cs->refcount_bo;
+   const struct tu_bo_array *bos = cs->writeable ? &cs->read_write : &cs->read_only;
+   return bos->bo_count ? bos->bos[bos->bo_count - 1] : NULL;
 }
 
 /**
@@ -369,6 +363,23 @@ tu_cs_begin_sub_stream_aligned(struct tu_cs *cs, uint32_t count,
    assert(cs->mode == TU_CS_MODE_SUB_STREAM);
    assert(size);
 
+   /* Fast path: room in the current BO for the data and its alignment. */
+   struct tu_bo *bo = tu_cs_current_bo_or_null(cs);
+   if (likely(cs->status == VK_SUCCESS && bo)) {
+      uint32_t *map = static_cast<uint32_t *>(bo->map);
+      uint32_t padding = (size - (uint32_t)(cs->start - map)) % size;
+      if (tu_cs_get_space(cs) >= count * size + padding) {
+         cs->reserved_end = cs->cur + count * size + padding;
+         cs->start += padding;
+         cs->cur = cs->start;
+         tu_cs_init_external_reserved(sub_cs, cs->device, cs->cur,
+                                      cs->reserved_end,
+                                      bo->iova + (cs->cur - map) * sizeof(uint32_t),
+                                      cs->writeable);
+         return VK_SUCCESS;
+      }
+   }
+
    VkResult result;
    if (tu_cs_get_space(cs) < count * size) {
       /* When we have to allocate a new BO, assume that the alignment of the
@@ -420,22 +431,26 @@ tu_cs_alloc(struct tu_cs *cs,
       return VK_SUCCESS;
    }
 
-   uint32_t current_offset = tu_cs_get_offset(cs);
+   struct tu_bo *bo = tu_cs_current_bo_or_null(cs);
+   uint32_t current_offset =
+      bo ? cs->start - static_cast<uint32_t *>(bo->map) : 0;
    uint32_t padding = align(current_offset, size) - current_offset;
    uint32_t needed = count * size + padding;
+   size_t offset;
    /* Fast path: the current BO almost always has room, so skip the
     * out-of-line call (sub-streams never need a GROW entry).
     */
-   if (likely(cs->status == VK_SUCCESS && tu_cs_get_space(cs) >= needed)) {
+   if (likely(cs->status == VK_SUCCESS && bo &&
+              tu_cs_get_space(cs) >= needed)) {
       cs->reserved_end = cs->cur + needed;
+      offset = current_offset + padding;
    } else {
       VkResult result = tu_cs_reserve_space(cs, needed);
       if (result != VK_SUCCESS)
          return result;
+      bo = tu_cs_current_bo(cs);
+      offset = align(tu_cs_get_offset(cs), size);
    }
-
-   struct tu_bo *bo = tu_cs_current_bo(cs);
-   size_t offset = align(tu_cs_get_offset(cs), size);
 
    memory->map = static_cast<uint32_t *>(bo->map) + offset;
    memory->iova = bo->iova + offset * sizeof(uint32_t);
@@ -472,10 +487,12 @@ tu_cs_end_sub_stream(struct tu_cs *cs, struct tu_cs *sub_cs)
 
    cs->cur = sub_cs->cur;
 
+   struct tu_bo *bo = tu_cs_current_bo(cs);
    struct tu_cs_entry entry = {
-      .bo = tu_cs_current_bo(cs),
+      .bo = bo,
       .size = tu_cs_get_size(cs) * sizeof(uint32_t),
-      .offset = tu_cs_get_offset(cs) * sizeof(uint32_t),
+      .offset = (uint32_t)(cs->start - static_cast<uint32_t *>(bo->map)) *
+                sizeof(uint32_t),
    };
 
    cs->start = cs->cur;
