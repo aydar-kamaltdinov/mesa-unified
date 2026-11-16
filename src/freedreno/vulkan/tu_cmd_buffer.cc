@@ -5491,7 +5491,13 @@ tu_bind_descriptor_sets(struct tu_cmd_buffer *cmd,
             for (unsigned k = 0; k < binding->array_size; k++, dyn_idx++) {
                assert(dyn_idx < info->dynamicOffsetCount);
                uint32_t offset = info->pDynamicOffsets[dyn_idx];
-               memcpy(dst, src, binding->size);
+               /* Fixed-size copy for the common one-descriptor case, so it
+                * is inlined instead of calling memcpy on every bind.
+                */
+               if (binding->size == FDL6_TEX_CONST_DWORDS * 4)
+                  memcpy(dst, src, FDL6_TEX_CONST_DWORDS * 4);
+               else
+                  memcpy(dst, src, binding->size);
 
                if (binding->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC) {
                   /* Note: we can assume here that the addition won't roll
@@ -5602,8 +5608,16 @@ tu_upload_dynamic_descriptors(struct tu_cmd_buffer *cmd,
       return result;
    }
 
-   memcpy(dynamic_desc_set.map, descriptors_state->dynamic_descriptors,
-          descriptors_state->max_dynamic_offset_size);
+   /* The size is a whole number of descriptors; copy them as fixed-size
+    * blocks, which inline, instead of one variable-size memcpy per draw.
+    */
+   const uint32_t desc_count = descriptors_state->max_dynamic_offset_size /
+                               (4 * FDL6_TEX_CONST_DWORDS);
+   for (uint32_t i = 0; i < desc_count; i++) {
+      memcpy(dynamic_desc_set.map + i * FDL6_TEX_CONST_DWORDS,
+             descriptors_state->dynamic_descriptors + i * FDL6_TEX_CONST_DWORDS,
+             4 * FDL6_TEX_CONST_DWORDS);
+   }
    descriptors_state->set_iova[reserved_set_idx] =
       dynamic_desc_set.iova | BINDLESS_DESCRIPTOR_64B;
    return VK_SUCCESS;
