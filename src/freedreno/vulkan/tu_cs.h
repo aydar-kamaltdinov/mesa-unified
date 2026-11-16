@@ -261,10 +261,39 @@ void
 tu_cs_init_ib1(
    struct tu_cs *cs, struct tu_device *device, enum tu_cs_mode mode, uint32_t initial_size, const char *name);
 
-void
+/**
+ * Initialize a command stream as a wrapper to an external buffer.
+ *
+ * Inline: draws set up several external streams each, and inlining turns the
+ * fixed-size clear into a few stores instead of a memset call.
+ */
+static inline void
 tu_cs_init_external(struct tu_cs *cs, struct tu_device *device,
                     uint32_t *start, uint32_t *end, uint64_t iova,
-                    bool writeable);
+                    bool writeable)
+{
+   memset(cs, 0, sizeof(*cs));
+
+   cs->device = device;
+   cs->mode = TU_CS_MODE_EXTERNAL;
+   cs->start = cs->reserved_end = cs->cur = start;
+   cs->end = end;
+   cs->external_iova = iova;
+   cs->writeable = writeable;
+}
+
+/**
+ * tu_cs_init_external() followed by tu_cs_begin() and a
+ * tu_cs_reserve_space() of the whole buffer, without the out-of-line calls.
+ */
+static inline void
+tu_cs_init_external_reserved(struct tu_cs *cs, struct tu_device *device,
+                             uint32_t *start, uint32_t *end, uint64_t iova,
+                             bool writeable)
+{
+   tu_cs_init_external(cs, device, start, end, iova, writeable);
+   cs->reserved_end = end;
+}
 
 void
 tu_cs_init_suballoc(struct tu_cs *cs, struct tu_device *device,
@@ -349,10 +378,9 @@ tu_cs_draw_state(struct tu_cs *sub_cs, struct tu_cs *cs, uint32_t size)
       tu_cs_fail(cs, result);
       return (struct tu_draw_state) {};
    }
-   tu_cs_init_external(cs, sub_cs->device, memory.map, memory.map + size,
-                       memory.iova, memory.writeable);
-   tu_cs_begin(cs);
-   tu_cs_reserve_space(cs, size);
+   tu_cs_init_external_reserved(cs, sub_cs->device, memory.map,
+                                memory.map + size, memory.iova,
+                                memory.writeable);
 
    return (struct tu_draw_state) {
       .iova = memory.iova,
