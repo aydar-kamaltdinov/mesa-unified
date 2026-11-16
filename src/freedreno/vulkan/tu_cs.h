@@ -475,7 +475,15 @@ static inline void
 tu_cs_emit_array(struct tu_cs *cs, const uint32_t *values, uint32_t length)
 {
    assert(cs->cur + length <= cs->reserved_end);
-   memcpy(cs->cur, values, sizeof(uint32_t) * length);
+   /* Per-draw callers emit a handful of dwords (descriptor set addresses),
+    * where a plain loop beats an out-of-line memcpy call.
+    */
+   if (length <= 16) {
+      for (uint32_t i = 0; i < length; i++)
+         cs->cur[i] = values[i];
+   } else {
+      memcpy(cs->cur, values, sizeof(uint32_t) * length);
+   }
    cs->cur += length;
 }
 
