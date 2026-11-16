@@ -239,14 +239,19 @@ tu_uncharted_legacy_adreno_compat(const struct tu_physical_device *device)
 
 /* VK_EXT_external_memory_host needs a kernel backend that can import user
  * pages, and IO-coherent memory since the imported memory is offered with
- * HOST_COHERENT types. Opt out with setprop debug.mesa.tu.no.host.import.
+ * HOST_COHERENT types.
+ *
+ * It is opt-in (TU_HOST_IMPORT=1 / setprop debug.mesa.tu.host.import true),
+ * like GameSir Rutabaga's "host-import" debug flag: Xenia (Xendroid) switches
+ * its guest memory to host imports as soon as the extension is exposed, and
+ * that path flickers on A830 (NFS menu text).
  */
 static bool
 tu_has_host_import(const struct tu_physical_device *device)
 {
-   static const bool disabled =
-      debug_get_bool_option("TU_NO_HOST_IMPORT", false);
-   return !disabled && device->instance->knl->bo_init_userptr &&
+   static const bool enabled =
+      debug_get_bool_option("TU_HOST_IMPORT", false);
+   return enabled && device->instance->knl->bo_init_userptr &&
           device->has_cached_coherent_memory;
 }
 
