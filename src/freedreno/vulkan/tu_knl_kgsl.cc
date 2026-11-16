@@ -2916,6 +2916,17 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
    const uint64_t previous_submit_timeline_seqno = queue->kgsl_queue_timeline_seqno;
    const uint64_t current_submit_timeline_seqno = previous_submit_timeline_seqno + 1;
 
+   /* Only submissions without commands (the empty-submit fast path and
+    * sparse binds) wait on the previous queue-timeline point. Commands on
+    * one KGSL context already execute in submission order, and the queue
+    * point is signaled after them by the aux command below. Waiting on it
+    * here kept KGSL from queueing a submission until the previous one had
+    * retired: back-to-back submits ran no faster than one at a time and
+    * stalled up to 6x on A830 (0.27-4.6 ms vs 0.17-0.61 ms per submit,
+    * 0.26-0.73 ms of GPU work each), and vkQueueSubmit blocked ~2.5x longer.
+    */
+   const bool self_wait = submit->commands.size == 0;
+
    uint32_t wait_timeline_vals_count = 0;
    uint32_t wait_fences_count = 0;
    uint32_t wait_signaled_fences_count = 0;
@@ -2938,9 +2949,10 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
          }
       }
 
-      ++wait_timeline_vals_count;
+      if (self_wait)
+         ++wait_timeline_vals_count;
       assert(wait_timeline_vals_count + wait_fences_count +
-                wait_signaled_fences_count == wait_count + 1);
+                wait_signaled_fences_count == wait_count + self_wait);
    }
 
    STACK_ARRAY(struct kgsl_timeline_val, wait_timeline_vals, wait_timeline_vals_count);
@@ -2969,10 +2981,12 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
          }
       }
 
-      wait_timeline_vals[wait_timeline_vals_idx++] = (struct kgsl_timeline_val) {
-         .seqno = previous_submit_timeline_seqno,
-         .timeline = queue->kgsl_queue_timeline_id
-      };
+      if (self_wait) {
+         wait_timeline_vals[wait_timeline_vals_idx++] = (struct kgsl_timeline_val) {
+            .seqno = previous_submit_timeline_seqno,
+            .timeline = queue->kgsl_queue_timeline_id
+         };
+      }
       assert(wait_timeline_vals_idx == wait_timeline_vals_count);
    }
 
