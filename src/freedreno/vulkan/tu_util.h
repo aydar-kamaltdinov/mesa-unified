@@ -93,6 +93,8 @@ enum tu_debug_flags : uint64_t
     * GMEM (by default they stay in SYSMEM, see use_sysmem_rendering()).
     */
    TU_DEBUG_GMEM_ALL                 = BITFIELD64_BIT(42),
+   /* Expose VK_EXT_external_memory_host (KGSL host-pointer import). */
+   TU_DEBUG_HOST_IMPORT              = BITFIELD64_BIT(43),
 };
 
 struct tu_env {

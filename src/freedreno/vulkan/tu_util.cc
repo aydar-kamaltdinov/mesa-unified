@@ -61,6 +61,7 @@ static const struct debug_control tu_debug_options[] = {
    { "e5ubwc", TU_DEBUG_E5_UBWC },
    { "noubwcquirk", TU_DEBUG_NO_UBWC_QUIRK },
    { "gmemall", TU_DEBUG_GMEM_ALL },
+   { "host-import", TU_DEBUG_HOST_IMPORT },
    { NULL, 0 }
 };
 
