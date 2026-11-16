@@ -241,17 +241,14 @@ tu_uncharted_legacy_adreno_compat(const struct tu_physical_device *device)
  * pages, and IO-coherent memory since the imported memory is offered with
  * HOST_COHERENT types.
  *
- * It is opt-in (TU_HOST_IMPORT=1 / setprop debug.mesa.tu.host.import true),
- * like GameSir Rutabaga's "host-import" debug flag: Xenia (Xendroid) switches
- * its guest memory to host imports as soon as the extension is exposed, and
+ * It is opt-in with TU_DEBUG=host-import: Xenia (Xendroid) switches its
+ * guest memory to host imports as soon as the extension is exposed, and
  * that path flickers on A830 (NFS menu text).
  */
 static bool
 tu_has_host_import(const struct tu_physical_device *device)
 {
-   static const bool enabled =
-      debug_get_bool_option("TU_HOST_IMPORT", false);
-   return enabled && device->instance->knl->bo_init_userptr &&
+   return TU_DEBUG(HOST_IMPORT) && device->instance->knl->bo_init_userptr &&
           device->has_cached_coherent_memory;
 }
 
