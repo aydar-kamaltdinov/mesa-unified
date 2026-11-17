@@ -12238,3 +12238,91 @@ tu_flush_buffer_write_cp(VkCommandBuffer commandBuffer)
    TU_CALLX(cmd->device, tu_flush_for_access)(cache, TU_ACCESS_CP_WRITE,
                                               static_cast<enum tu_cmd_access_mask>(0));
 }
+
+/* Direct entrypoints for Vulkan 1.0-style commands that DXVK records per
+ * draw. The common vk_common_* versions only repack the arguments and call
+ * the newer variant back through the dispatch table; call it directly.
+ */
+VKAPI_ATTR void VKAPI_CALL
+tu_CmdBindVertexBuffers(VkCommandBuffer commandBuffer,
+                        uint32_t firstBinding,
+                        uint32_t bindingCount,
+                        const VkBuffer *pBuffers,
+                        const VkDeviceSize *pOffsets)
+{
+   tu_CmdBindVertexBuffers2(commandBuffer, firstBinding, bindingCount,
+                            pBuffers, pOffsets, NULL, NULL);
+}
+
+template <chip CHIP>
+VKAPI_ATTR void VKAPI_CALL
+tu_CmdBindIndexBuffer(VkCommandBuffer commandBuffer,
+                      VkBuffer buffer,
+                      VkDeviceSize offset,
+                      VkIndexType indexType)
+{
+   tu_CmdBindIndexBuffer2KHR<CHIP>(commandBuffer, buffer, offset,
+                                   VK_WHOLE_SIZE, indexType);
+}
+TU_GENX(tu_CmdBindIndexBuffer);
+
+VKAPI_ATTR void VKAPI_CALL
+tu_CmdPushConstants(VkCommandBuffer commandBuffer,
+                    VkPipelineLayout layout,
+                    VkShaderStageFlags stageFlags,
+                    uint32_t offset,
+                    uint32_t size,
+                    const void *pValues)
+{
+   const VkPushConstantsInfoKHR info = {
+      .sType = VK_STRUCTURE_TYPE_PUSH_CONSTANTS_INFO_KHR,
+      .layout = layout,
+      .stageFlags = stageFlags,
+      .offset = offset,
+      .size = size,
+      .pValues = pValues,
+   };
+   tu_CmdPushConstants2KHR(commandBuffer, &info);
+}
+
+template <chip CHIP>
+VKAPI_ATTR void VKAPI_CALL
+tu_CmdPushDescriptorSetKHR(VkCommandBuffer commandBuffer,
+                           VkPipelineBindPoint pipelineBindPoint,
+                           VkPipelineLayout layout,
+                           uint32_t set,
+                           uint32_t descriptorWriteCount,
+                           const VkWriteDescriptorSet *pDescriptorWrites)
+{
+   const VkPushDescriptorSetInfoKHR info = {
+      .sType = VK_STRUCTURE_TYPE_PUSH_DESCRIPTOR_SET_INFO_KHR,
+      .stageFlags = vk_shader_stages_from_bind_point(pipelineBindPoint),
+      .layout = layout,
+      .set = set,
+      .descriptorWriteCount = descriptorWriteCount,
+      .pDescriptorWrites = pDescriptorWrites,
+   };
+   tu_CmdPushDescriptorSet2KHR<CHIP>(commandBuffer, &info);
+}
+TU_GENX(tu_CmdPushDescriptorSetKHR);
+
+VKAPI_ATTR void VKAPI_CALL
+tu_CmdSetDescriptorBufferOffsetsEXT(VkCommandBuffer commandBuffer,
+                                    VkPipelineBindPoint pipelineBindPoint,
+                                    VkPipelineLayout layout,
+                                    uint32_t firstSet,
+                                    uint32_t setCount,
+                                    const uint32_t *pBufferIndices,
+                                    const VkDeviceSize *pOffsets)
+{
+   const VkSetDescriptorBufferOffsetsInfoEXT info = {
+      .sType = VK_STRUCTURE_TYPE_SET_DESCRIPTOR_BUFFER_OFFSETS_INFO_EXT,
+      .stageFlags = vk_shader_stages_from_bind_point(pipelineBindPoint),
+      .layout = layout,
+      .firstSet = firstSet,
+      .setCount = setCount,
+      .pBufferIndices = pBufferIndices,
+      .pOffsets = pOffsets,
+   };
+   tu_CmdSetDescriptorBufferOffsets2EXT(commandBuffer, &info);
+}
