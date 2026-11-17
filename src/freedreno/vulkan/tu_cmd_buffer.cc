@@ -5621,6 +5621,38 @@ tu_CmdBindDescriptorSets2KHR(
 }
 TU_GENX(tu_CmdBindDescriptorSets2KHR);
 
+/* Direct entrypoint for the Vulkan 1.0 call, which DXVK makes on almost
+ * every draw. The common vk_common_CmdBindDescriptorSets() repacks the
+ * arguments and goes back through the dispatch table to the *2KHR variant.
+ */
+template <chip CHIP>
+VKAPI_ATTR void VKAPI_CALL
+tu_CmdBindDescriptorSets(VkCommandBuffer commandBuffer,
+                         VkPipelineBindPoint pipelineBindPoint,
+                         VkPipelineLayout layout,
+                         uint32_t firstSet,
+                         uint32_t descriptorSetCount,
+                         const VkDescriptorSet *pDescriptorSets,
+                         uint32_t dynamicOffsetCount,
+                         const uint32_t *pDynamicOffsets)
+{
+   VK_FROM_HANDLE(tu_cmd_buffer, cmd, commandBuffer);
+
+   const VkBindDescriptorSetsInfoKHR info = {
+      .sType = VK_STRUCTURE_TYPE_BIND_DESCRIPTOR_SETS_INFO_KHR,
+      .stageFlags = vk_shader_stages_from_bind_point(pipelineBindPoint),
+      .layout = layout,
+      .firstSet = firstSet,
+      .descriptorSetCount = descriptorSetCount,
+      .pDescriptorSets = pDescriptorSets,
+      .dynamicOffsetCount = dynamicOffsetCount,
+      .pDynamicOffsets = pDynamicOffsets,
+   };
+
+   tu_bind_descriptor_sets<CHIP>(cmd, &info, pipelineBindPoint);
+}
+TU_GENX(tu_CmdBindDescriptorSets);
+
 VKAPI_ATTR void VKAPI_CALL
 tu_CmdBindDescriptorBuffersEXT(
    VkCommandBuffer commandBuffer,
