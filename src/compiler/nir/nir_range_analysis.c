@@ -1624,7 +1624,7 @@ get_phi_query(struct analysis_state *state, struct scalar_query q, uint32_t *res
    nir_cf_node *prev = nir_cf_node_prev(&phi->instr.block->cf_node);
    if (!prev || prev->type == nir_cf_node_block) {
       /* Resolve cycles by inserting safe_value into range_ht. */
-      scalar_insert(state->range_ht, get_scalar_key(&q.head), safe_value);
+      state->insert(state->range_ht, get_scalar_key(&q.head), safe_value);
 
       struct set *visited = _mesa_pointer_set_create(NULL);
       nir_scalar *defs = alloca(sizeof(nir_scalar) * 64);
@@ -2243,27 +2243,111 @@ process_uub_query(struct analysis_state *state, struct analysis_query *aq, uint3
       get_phi_uub(state, q, result, src);
 }
 
-uint32_t
-nir_unsigned_upper_bound(nir_shader *shader, struct hash_table *range_ht,
-                         nir_scalar scalar)
+static uint32_t
+unsigned_upper_bound(nir_shader *shader, void *table,
+                     bool (*lookup)(void *table, uint32_t key, uint32_t *value),
+                     void (*insert)(void *table, uint32_t key, uint32_t value),
+                     nir_scalar scalar)
 {
    struct scalar_query query_alloc[16];
    uint32_t result_alloc[16];
 
    struct analysis_state state;
    state.shader = shader;
-   state.range_ht = range_ht;
+   state.range_ht = table;
    util_dynarray_init_from_stack(&state.query_stack, query_alloc, sizeof(query_alloc));
    util_dynarray_init_from_stack(&state.result_stack, result_alloc, sizeof(result_alloc));
    state.query_size = sizeof(struct scalar_query);
    state.get_key = &get_uub_scalar_key;
-   state.lookup = &scalar_lookup,
-   state.insert = &scalar_insert,
+   state.lookup = lookup;
+   state.insert = insert;
    state.process_query = &process_uub_query;
 
    push_scalar_query(&state, nir_scalar_chase_movs(scalar));
 
    return perform_analysis(&state);
+}
+
+uint32_t
+nir_unsigned_upper_bound(nir_shader *shader, struct hash_table *range_ht,
+                         nir_scalar scalar)
+{
+   return unsigned_upper_bound(shader, range_ht, scalar_lookup, scalar_insert,
+                               scalar);
+}
+
+/* Keys come from get_scalar_key(): ((index + 1) << 4) | comp. */
+#define UUB_KEY_SHIFT (ffs(NIR_MAX_VEC_COMPONENTS) - 1)
+
+static bool
+uub_cache_slot(nir_uub_cache *cache, uint32_t key, uint32_t *slot)
+{
+   uint32_t comp = key & (NIR_MAX_VEC_COMPONENTS - 1);
+   if (comp >= 4)
+      return false;
+   *slot = ((key >> UUB_KEY_SHIFT) - 1) * 4 + comp;
+   return true;
+}
+
+static bool
+uub_cache_lookup(void *table, uint32_t key, uint32_t *value)
+{
+   nir_uub_cache *cache = table;
+   uint32_t slot;
+   if (!uub_cache_slot(cache, key, &slot))
+      return scalar_lookup(cache->wide, key, value);
+   if (slot >= cache->size || !BITSET_TEST(cache->valid, slot))
+      return false;
+   *value = cache->values[slot];
+   return true;
+}
+
+static void
+uub_cache_insert(void *table, uint32_t key, uint32_t value)
+{
+   nir_uub_cache *cache = table;
+   uint32_t slot;
+   if (!uub_cache_slot(cache, key, &slot)) {
+      scalar_insert(cache->wide, key, value);
+      return;
+   }
+   if (slot >= cache->size) {
+      /* The pass created new definitions. */
+      uint32_t size = MAX2(slot + 1, cache->size * 2);
+      size = align(size, BITSET_WORDBITS);
+      cache->values = realloc(cache->values, size * sizeof(*cache->values));
+      cache->valid = realloc(cache->valid, BITSET_BYTES(size));
+      memset(cache->valid + BITSET_WORDS(cache->size), 0,
+             BITSET_BYTES(size) - BITSET_BYTES(cache->size));
+      cache->size = size;
+   }
+   BITSET_SET(cache->valid, slot);
+   cache->values[slot] = value;
+}
+
+void
+nir_uub_cache_init(nir_uub_cache *cache, uint32_t num_ssa_defs)
+{
+   cache->size = align(MAX2(num_ssa_defs, 1) * 4, BITSET_WORDBITS);
+   cache->values = malloc(cache->size * sizeof(*cache->values));
+   cache->valid = calloc(1, BITSET_BYTES(cache->size));
+   cache->wide = _mesa_pointer_hash_table_create(NULL);
+}
+
+void
+nir_uub_cache_fini(nir_uub_cache *cache)
+{
+   free(cache->values);
+   free(cache->valid);
+   _mesa_hash_table_destroy(cache->wide, NULL);
+}
+
+uint32_t
+nir_unsigned_upper_bound_cached(nir_shader *shader, nir_uub_cache *cache,
+                                nir_scalar scalar)
+{
+   return unsigned_upper_bound(shader, cache, uub_cache_lookup,
+                               uub_cache_insert, scalar);
 }
 
 bool
