@@ -3409,14 +3409,29 @@ regmask_get(regmask_t *regmask, struct ir3_register *reg)
    enum ir3_reg_file file;
    unsigned num = post_ra_reg_num(reg);
    unsigned n = ir3_reg_file_offset(reg, num, regmask->mergedregs, &file);
-   if (reg->flags & IR3_REG_RELATIV) {
+   if (reg->flags & IR3_REG_RELATIV)
       return __regmask_get(regmask, file, n, size * reg->size);
-   } else {
-      for (unsigned mask = reg->wrmask; mask; mask >>= 1, n += size)
-         if (mask & 1)
-            if (__regmask_get(regmask, file, n, size))
-               return true;
+
+   /* Component i covers bits [n + i * size, n + (i + 1) * size), so for the
+    * usual vec4 or smaller register all of them fit in one extract.
+    */
+   unsigned mask = reg->wrmask;
+   unsigned comps = util_last_bit(mask);
+   if (comps && comps <= 4) {
+      unsigned span = comps * size;
+      unsigned bits = mask;
+      if (size == 2) {
+         bits = (bits | (bits << 2)) & 0x33;
+         bits = (bits | (bits << 1)) & 0x55;
+         bits |= bits << 1;
+      }
+      return __bitset_extract(__regmask_file(regmask, file), n, span) & bits;
    }
+
+   for (; mask; mask >>= 1, n += size)
+      if (mask & 1)
+         if (__regmask_get(regmask, file, n, size))
+            return true;
    return false;
 }
 
