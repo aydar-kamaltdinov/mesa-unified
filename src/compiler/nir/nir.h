@@ -7438,6 +7438,23 @@ uint32_t
 nir_unsigned_upper_bound(nir_shader *shader, struct hash_table *range_ht,
                          nir_scalar scalar);
 
+/* Same results as nir_unsigned_upper_bound() with a range_ht, for passes that
+ * query most of the shader: the bounds are kept in arrays indexed by SSA
+ * index instead of a hash table.
+ */
+typedef struct nir_uub_cache {
+   BITSET_WORD *valid;
+   uint32_t *values;
+   uint32_t size; /* in scalars, 4 per SSA index */
+   struct hash_table *wide; /* components >= 4 */
+} nir_uub_cache;
+
+void nir_uub_cache_init(nir_uub_cache *cache, uint32_t num_ssa_defs);
+void nir_uub_cache_fini(nir_uub_cache *cache);
+uint32_t
+nir_unsigned_upper_bound_cached(nir_shader *shader, nir_uub_cache *cache,
+                                nir_scalar scalar);
+
 bool
 nir_addition_might_overflow(nir_shader *shader, struct hash_table *range_ht,
                             nir_scalar ssa, unsigned const_val);

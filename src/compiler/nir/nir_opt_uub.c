@@ -11,14 +11,14 @@
 typedef struct {
    const nir_opt_uub_options *options;
    nir_shader *shader;
-   struct hash_table *range_ht;
+   nir_uub_cache range_cache;
    struct hash_table *num_lsb_zero_ht;
 } opt_uub_state;
 
 static uint32_t
 uub(opt_uub_state *state, nir_scalar s)
 {
-   return nir_unsigned_upper_bound(state->shader, state->range_ht, s);
+   return nir_unsigned_upper_bound_cached(state->shader, &state->range_cache, s);
 }
 
 static uint32_t
@@ -744,14 +744,18 @@ nir_opt_uub(nir_shader *shader, const nir_opt_uub_options *options)
    opt_uub_state state = {
       .options = options,
       .shader = shader,
-      .range_ht = _mesa_pointer_hash_table_create(NULL),
       .num_lsb_zero_ht = _mesa_pointer_hash_table_create(NULL),
    };
+
+   uint32_t num_ssa_defs = 0;
+   nir_foreach_function_impl(impl, shader)
+      num_ssa_defs = MAX2(num_ssa_defs, impl->ssa_alloc);
+   nir_uub_cache_init(&state.range_cache, num_ssa_defs);
 
    bool progress =
       nir_shader_alu_pass(shader, opt_uub, nir_metadata_control_flow, &state);
 
-   _mesa_hash_table_destroy(state.range_ht, NULL);
+   nir_uub_cache_fini(&state.range_cache);
    _mesa_hash_table_destroy(state.num_lsb_zero_ht, NULL);
    return progress;
 }
