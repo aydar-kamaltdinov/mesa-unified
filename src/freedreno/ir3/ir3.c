@@ -1003,6 +1003,8 @@ ir3_instr_clone(struct ir3_instruction *instr)
    new_instr->dsts = dsts;
    new_instr->srcs = srcs;
    new_instr->uses = NULL;
+   new_instr->uses_count = 0;
+   new_instr->uses_cap = 0;
    new_instr->rpt_prev = NULL;
    new_instr->rpt_next = NULL;
 
@@ -1522,19 +1524,89 @@ void ir3_find_ssa_uses_for(struct ir3 *ir, void *mem_ctx, use_filter_cb filter)
     * are always sorted.  Which currently might not always be true.
     * (In particular after ir3_group pass, but maybe other places.)
     */
-   foreach_block (block, &ir->block_list)
-      foreach_instr (instr, &block->instr_list)
+   foreach_block (block, &ir->block_list) {
+      foreach_instr (instr, &block->instr_list) {
          instr->uses = NULL;
+         instr->uses_count = 0;
+         instr->uses_cap = 0;
+      }
+   }
+
+   /* Count first so that all the lists can share one allocation. A source
+    * listed twice in one instruction is counted twice here and stored once
+    * below, so the slices may have a little slack.
+    */
+   unsigned total = 0;
+   foreach_block (block, &ir->block_list) {
+      foreach_instr (instr, &block->instr_list) {
+         foreach_ssa_src_n (src, n, instr) {
+            if (!filter(instr, n))
+               continue;
+            src->uses_cap++;
+            total++;
+         }
+      }
+   }
+
+   if (!total)
+      return;
+
+   struct ir3_instruction **storage =
+      ralloc_array(mem_ctx, struct ir3_instruction *, total);
+   foreach_block (block, &ir->block_list) {
+      foreach_instr (instr, &block->instr_list) {
+         if (instr->uses_cap) {
+            instr->uses = storage;
+            storage += instr->uses_cap;
+         }
+      }
+   }
 
    foreach_block (block, &ir->block_list) {
       foreach_instr (instr, &block->instr_list) {
          foreach_ssa_src_n (src, n, instr) {
             if (!filter(instr, n))
                continue;
-            if (!src->uses)
-               src->uses = _mesa_pointer_set_create(mem_ctx);
-            _mesa_set_add(src->uses, instr);
+            /* Sources of one instruction are visited together, so a
+             * repeated source can only match the last entry.
+             */
+            if (src->uses_count && src->uses[src->uses_count - 1] == instr)
+               continue;
+            src->uses[src->uses_count++] = instr;
          }
+      }
+   }
+}
+
+void
+ir3_instr_add_use(void *mem_ctx, struct ir3_instruction *def,
+                  struct ir3_instruction *use)
+{
+   for (unsigned i = 0; i < def->uses_count; i++) {
+      if (def->uses[i] == use)
+         return;
+   }
+
+   if (def->uses_count == def->uses_cap) {
+      unsigned cap = MAX2(4, def->uses_cap * 2);
+      struct ir3_instruction **uses =
+         ralloc_array(mem_ctx, struct ir3_instruction *, cap);
+      if (def->uses_count)
+         memcpy(uses, def->uses, def->uses_count * sizeof(*uses));
+      def->uses = uses;
+      def->uses_cap = cap;
+   }
+
+   def->uses[def->uses_count++] = use;
+}
+
+void
+ir3_instr_remove_use(struct ir3_instruction *def, struct ir3_instruction *use)
+{
+   for (unsigned i = 0; i < def->uses_count; i++) {
+      if (def->uses[i] == use) {
+         def->uses[i] = def->uses[--def->uses_count];
+         return;
       }
    }
 }

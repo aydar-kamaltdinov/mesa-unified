@@ -56,8 +56,8 @@ try_shared_folding(struct ir3_instruction *mov, void *mem_ctx)
             pred_mov->cat1.src_type = pred_mov->cat1.dst_type =
                (src_flags & IR3_REG_HALF) ? TYPE_U16 : TYPE_U32;
 
-            _mesa_set_remove_key(src->srcs[i]->def->instr->uses, src);
-            _mesa_set_add(src->srcs[i]->def->instr->uses, pred_mov);
+            ir3_instr_remove_use(src->srcs[i]->def->instr, src);
+            ir3_instr_add_use(mem_ctx, src->srcs[i]->def->instr, pred_mov);
             src->srcs[i]->def = pred_mov->dsts[0];
          }
          src->srcs[i]->flags &= ~IR3_REG_SHARED;
@@ -100,14 +100,13 @@ try_shared_folding(struct ir3_instruction *mov, void *mem_ctx)
             ir3_builder_at(ir3_after_instr_and_phis(src));
          shared_mov = ir3_MOV(&build, src, mov->cat1.src_type);
          shared_mov->dsts[0]->flags |= IR3_REG_SHARED;
-         shared_mov->uses = _mesa_pointer_set_create(mem_ctx);
       }
 
       for (unsigned i = 0; i < use->srcs_count; i++) {
          if (use->srcs[i]->def == src->dsts[0])
             use->srcs[i]->def = shared_mov->dsts[0];
       }
-      _mesa_set_add(shared_mov->uses, use);
+      ir3_instr_add_use(mem_ctx, shared_mov, use);
    }
 
    return true;

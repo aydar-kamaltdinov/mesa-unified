@@ -289,10 +289,9 @@ split_addr(struct ir3_sched_ctx *ctx, struct ir3_instruction **addr,
             new_addr = split_instr(ctx, *addr);
             /* original addr is scheduled, but new one isn't: */
             new_addr->flags &= ~IR3_INSTR_MARK;
-            new_addr->uses = _mesa_pointer_set_create(ctx);
          }
          indirect->address->def = new_addr->dsts[0];
-         _mesa_set_add(new_addr->uses, indirect);
+         ir3_instr_add_use(ctx, new_addr, indirect);
          /* don't need to remove old dag edge since old addr is
           * already scheduled:
           */
@@ -343,7 +342,7 @@ schedule(struct ir3_sched_ctx *ctx, struct ir3_instruction *instr)
          ctx->addr0_uses = 0;
       } else {
          ctx->addr0 = instr;
-         ctx->addr0_uses = instr->uses->entries;
+         ctx->addr0_uses = instr->uses_count;
       }
 
       ctx->addr0_scheduled_uses = 0;
@@ -361,7 +360,7 @@ schedule(struct ir3_sched_ctx *ctx, struct ir3_instruction *instr)
          ctx->addr1_uses = 0;
       } else {
          ctx->addr1 = instr;
-         ctx->addr1_uses = instr->uses->entries;
+         ctx->addr1_uses = instr->uses_count;
       }
 
       ctx->addr1_scheduled_uses = 0;
@@ -541,7 +540,7 @@ check_instr(struct ir3_sched_ctx *ctx, struct ir3_sched_notes *notes,
     * make sure there is at least one instruction that uses the
     * addr value which is otherwise ready.
     */
-   if (writes_addr0(instr) && instr->uses) {
+   if (writes_addr0(instr) && instr->uses_count) {
       struct ir3 *ir = ctx->ir;
       bool ready = false;
       bool has_users = false;
@@ -562,7 +561,7 @@ check_instr(struct ir3_sched_ctx *ctx, struct ir3_sched_notes *notes,
          return false;
    }
 
-   if (writes_addr1(instr) && instr->uses) {
+   if (writes_addr1(instr) && instr->uses_count) {
       struct ir3 *ir = ctx->ir;
       bool ready = false;
       bool has_users = false;
@@ -718,7 +717,7 @@ live_effect(struct ir3_instruction *instr)
 {
    struct ir3_sched_node *n = instr->data;
    int new_live =
-      (n->partially_live || !instr->uses || instr->uses->entries == 0)
+      (n->partially_live || instr->uses_count == 0)
          ? 0
          : new_regs(instr);
    int freed_live = 0;

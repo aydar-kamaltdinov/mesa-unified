@@ -567,8 +567,13 @@ struct ir3_instruction {
 
    /**
     * Valid if pass calls ir3_find_ssa_uses().. see foreach_ssa_use()
+    *
+    * Each user is listed once, in no particular order. ir3_find_ssa_uses()
+    * hands out slices of one array per pass, so use ir3_instr_add_use() and
+    * ir3_instr_remove_use() to change the list.
     */
-   struct set *uses;
+   struct ir3_instruction **uses;
+   unsigned uses_count, uses_cap;
 
    int use_count; /* currently just updated/used by cp */
 
@@ -1230,12 +1235,16 @@ ir3_get_cond_for_nonzero_compare(struct ir3_instruction *instr);
 
 bool ir3_supports_rpt(struct ir3_compiler *compiler, unsigned opc);
 
-#include "util/set.h"
 #define foreach_ssa_use(__use, __instr)                                        \
-   for (struct ir3_instruction *__use = (void *)~0; __use && (__instr)->uses;  \
-        __use = NULL)                                                          \
-      set_foreach ((__instr)->uses, __entry)                                   \
-         if ((__use = (void *)__entry->key))
+   for (struct ir3_instruction **__use##_p = (__instr)->uses,                  \
+                               **__use##_end = __use##_p + (__instr)->uses_count, \
+                               *__use;                                         \
+        __use##_p < __use##_end && (__use = *__use##_p, true); __use##_p++)
+
+void ir3_instr_add_use(void *mem_ctx, struct ir3_instruction *def,
+                       struct ir3_instruction *use);
+void ir3_instr_remove_use(struct ir3_instruction *def,
+                          struct ir3_instruction *use);
 
 static inline uint32_t
 reg_num(const struct ir3_register *reg)
