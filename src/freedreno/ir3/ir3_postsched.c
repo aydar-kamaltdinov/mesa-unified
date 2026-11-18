@@ -208,9 +208,11 @@ choose_instr(struct ir3_postsched_ctx *ctx)
    /* Needed sync flags and nop delays potentially change after scheduling an
     * instruction. Update them for all schedulable instructions.
     */
+   regmask_t sync_regs;
+   ir3_legalize_state_sync_regs(&bd->legalize_state, &sync_regs);
    foreach_sched_node (n, &ctx->dag->heads) {
-      enum ir3_instruction_flags sync_flags = ir3_required_sync_flags(
-         &bd->legalize_state, ctx->v->compiler, n->instr);
+      enum ir3_instruction_flags sync_flags = ir3_required_sync_flags_filtered(
+         &bd->legalize_state, ctx->v->compiler, n->instr, &sync_regs);
       n->instr->flags &= ~(IR3_INSTR_SS | IR3_INSTR_SY);
       n->instr->flags |= sync_flags;
       n->delay =

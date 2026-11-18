@@ -72,10 +72,39 @@ needs_sy_war(struct ir3_legalize_state *state, struct ir3_register *dst)
    return regmask_get(&state->needs_sy_war, dst);
 }
 
+/* Union of all the per-register masks ir3_required_sync_flags() reads. A
+ * register outside of it can't add (ss) or (sy), which lets callers that
+ * query many instructions against the same state skip most of the lookups.
+ */
+void
+ir3_legalize_state_sync_regs(struct ir3_legalize_state *state,
+                             regmask_t *sync_regs)
+{
+   regmask_t *masks[] = {
+      &state->needs_ss_scalar_full, &state->needs_ss_scalar_half,
+      &state->needs_ss_war,         &state->needs_sy_war,
+      &state->needs_ss_or_sy_war,   &state->needs_ss_scalar_war,
+      &state->needs_ss_or_sy_scalar_war, &state->needs_sy,
+   };
+   *sync_regs = state->needs_ss;
+   for (unsigned i = 0; i < ARRAY_SIZE(masks); i++)
+      regmask_or(sync_regs, sync_regs, masks[i]);
+}
+
 enum ir3_instruction_flags
 ir3_required_sync_flags(struct ir3_legalize_state *state,
                         struct ir3_compiler *compiler,
                         struct ir3_instruction *n)
+{
+   return ir3_required_sync_flags_filtered(state, compiler, n, NULL);
+}
+
+/* sync_regs is either NULL or ir3_legalize_state_sync_regs() of state. */
+enum ir3_instruction_flags
+ir3_required_sync_flags_filtered(struct ir3_legalize_state *state,
+                                 struct ir3_compiler *compiler,
+                                 struct ir3_instruction *n,
+                                 regmask_t *sync_regs)
 {
    if (n->opc == OPC_SHPE || (compiler->gen >= 8 && n->opc == OPC_BAR)) {
       return IR3_INSTR_SS | IR3_INSTR_SY;
@@ -113,6 +142,8 @@ ir3_required_sync_flags(struct ir3_legalize_state *state,
          continue;
 
       if (is_reg_gpr(reg)) {
+         if (sync_regs && !regmask_get(sync_regs, reg))
+            continue;
 
          /* TODO: we probably only need (ss) for alu
           * instr consuming sfu result.. need to make
@@ -180,6 +211,8 @@ ir3_required_sync_flags(struct ir3_legalize_state *state,
 
    foreach_dst (reg, n) {
       if (reg->flags & (IR3_REG_RT | IR3_REG_DUMMY))
+         continue;
+      if (sync_regs && !regmask_get(sync_regs, reg))
          continue;
       if (needs_sy_war(state, reg)) {
          flags |= IR3_INSTR_SY;
