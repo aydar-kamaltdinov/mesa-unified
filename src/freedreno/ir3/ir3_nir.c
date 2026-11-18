@@ -309,24 +309,49 @@ ir3_optimize_loop(struct ir3_compiler *compiler,
                          (s->options->lower_flrp32 ? 32 : 0) |
                          (s->options->lower_flrp64 ? 64 : 0);
 
+   /* Every pass here only looks at the IR (and options that stay fixed for
+    * the whole loop), so a pass that made no progress will make none again
+    * until some other pass changes the IR. Count the changes and skip a pass
+    * when nothing changed since its last no-progress run. Without this the
+    * last iteration reruns every pass just to confirm that nothing changes.
+    * Each call site gets its own slot through __COUNTER__.
+    */
+   enum { opt_slot_base = __COUNTER__ + 1 };
+   unsigned changes = 0;
+   unsigned clean_at[64];
+   memset(clean_at, 0xff, sizeof(clean_at));
+#define LOOP_OPT(nir, pass, ...)                                               \
+   ({                                                                          \
+      const unsigned slot = __COUNTER__ - opt_slot_base;                       \
+      bool pass_progress = false;                                              \
+      if (clean_at[slot] != changes) {                                         \
+         pass_progress = OPT(nir, pass, ##__VA_ARGS__);                        \
+         if (pass_progress)                                                    \
+            changes++;                                                         \
+         else                                                                  \
+            clean_at[slot] = changes;                                          \
+      }                                                                        \
+      pass_progress;                                                           \
+   })
+
    do {
       progress = false;
 
-      OPT(s, nir_lower_vars_to_ssa);
-      progress |= OPT(s, nir_lower_alu_to_scalar, NULL, NULL);
-      progress |= OPT(s, nir_lower_phis_to_scalar, NULL, NULL);
+      LOOP_OPT(s, nir_lower_vars_to_ssa);
+      progress |= LOOP_OPT(s, nir_lower_alu_to_scalar, NULL, NULL);
+      progress |= LOOP_OPT(s, nir_lower_phis_to_scalar, NULL, NULL);
 
-      progress |= OPT(s, nir_opt_copy_prop);
-      progress |= OPT(s, nir_opt_deref);
-      progress |= OPT(s, nir_opt_dce);
-      progress |= OPT(s, nir_opt_cse);
+      progress |= LOOP_OPT(s, nir_opt_copy_prop);
+      progress |= LOOP_OPT(s, nir_opt_deref);
+      progress |= LOOP_OPT(s, nir_opt_dce);
+      progress |= LOOP_OPT(s, nir_opt_cse);
 
-      progress |= OPT(s, nir_opt_find_array_copies);
-      progress |= OPT(s, nir_opt_copy_prop_vars);
-      progress |= OPT(s, nir_opt_dead_write_vars);
-      progress |= OPT(s, nir_split_struct_vars, nir_var_function_temp);
-      progress |= OPT(s, nir_opt_shrink_stores, true);
-      progress |= OPT(s, nir_shrink_vec_array_vars, nir_var_function_temp | nir_var_mem_shared);
+      progress |= LOOP_OPT(s, nir_opt_find_array_copies);
+      progress |= LOOP_OPT(s, nir_opt_copy_prop_vars);
+      progress |= LOOP_OPT(s, nir_opt_dead_write_vars);
+      progress |= LOOP_OPT(s, nir_split_struct_vars, nir_var_function_temp);
+      progress |= LOOP_OPT(s, nir_opt_shrink_stores, true);
+      progress |= LOOP_OPT(s, nir_shrink_vec_array_vars, nir_var_function_temp | nir_var_mem_shared);
 
       /* AK: tried enabling GCM by default for reg_size_vec4>=96 devices
        * (2026-08-29, sourced from a community patch that itself flagged it
@@ -348,16 +373,16 @@ ir3_optimize_loop(struct ir3_compiler *compiler,
          gcm_env = debug_get_num_option("GCM", 0);
       int gcm = gcm_env;
       if (gcm == 1)
-         progress |= OPT(s, nir_opt_gcm, true);
+         progress |= LOOP_OPT(s, nir_opt_gcm, true);
       else if (gcm == 2)
-         progress |= OPT(s, nir_opt_gcm, false);
+         progress |= LOOP_OPT(s, nir_opt_gcm, false);
       nir_opt_peephole_select_options peephole_select_options = {
          .limit = 16,
          .indirect_load_ok = true,
          .expensive_alu_ok = true,
       };
-      progress |= OPT(s, nir_opt_peephole_select, &peephole_select_options);
-      progress |= OPT(s, nir_opt_intrinsics);
+      progress |= LOOP_OPT(s, nir_opt_peephole_select, &peephole_select_options);
+      progress |= LOOP_OPT(s, nir_opt_intrinsics);
       /* NOTE: GS lowering inserts an output var with varying slot that
        * is larger than VARYING_SLOT_MAX (ie. GS_VERTEX_FLAGS_IR3),
        * which triggers asserts in nir_shader_gather_info().  To work
@@ -369,15 +394,15 @@ ir3_optimize_loop(struct ir3_compiler *compiler,
        * for other stages.
        */
       if (is_compute_or_frag(s->info.stage)) {
-         progress |= OPT(s, nir_opt_phi_precision);
+         progress |= LOOP_OPT(s, nir_opt_phi_precision);
       }
-      progress |= OPT(s, nir_opt_fp_math_ctrl);
-      progress |= OPT(s, nir_opt_algebraic);
-      progress |= OPT(s, nir_lower_alu);
-      progress |= OPT(s, nir_lower_pack);
-      progress |= OPT(s, nir_lower_bit_size, ir3_lower_bit_size, NULL);
-      progress |= OPT(s, nir_opt_constant_folding);
-      progress |= OPT(s, nir_opt_uub, &options->opt_uub_options);
+      progress |= LOOP_OPT(s, nir_opt_fp_math_ctrl);
+      progress |= LOOP_OPT(s, nir_opt_algebraic);
+      progress |= LOOP_OPT(s, nir_lower_alu);
+      progress |= LOOP_OPT(s, nir_lower_pack);
+      progress |= LOOP_OPT(s, nir_lower_bit_size, ir3_lower_bit_size, NULL);
+      progress |= LOOP_OPT(s, nir_opt_constant_folding);
+      progress |= LOOP_OPT(s, nir_opt_uub, &options->opt_uub_options);
 
       const nir_opt_offsets_options offset_options = {
          /* How large an offset we can encode in the instr's immediate field.
@@ -394,10 +419,10 @@ ir3_optimize_loop(struct ir3_compiler *compiler,
          .cb_data = compiler,
          .allow_offset_wrap_cb = ir3_nir_allow_base_offset_wrap,
       };
-      progress |= OPT(s, nir_opt_offsets, &offset_options);
+      progress |= LOOP_OPT(s, nir_opt_offsets, &offset_options);
 
       if (lower_flrp != 0) {
-         OPT(s, nir_lower_flrp, lower_flrp, false /* always_precise */);
+         LOOP_OPT(s, nir_lower_flrp, lower_flrp, false /* always_precise */);
 
          /* Nothing should rematerialize any flrps, so we only
           * need to do this lowering once.
@@ -405,23 +430,26 @@ ir3_optimize_loop(struct ir3_compiler *compiler,
          lower_flrp = 0;
       }
 
-      progress |= OPT(s, nir_opt_dead_cf);
-      if (OPT(s, nir_opt_loop)) {
+      progress |= LOOP_OPT(s, nir_opt_dead_cf);
+      if (LOOP_OPT(s, nir_opt_loop)) {
          progress |= true;
          /* If nir_opt_loop makes progress, then we need to clean
           * things up if we want any hope of nir_opt_if or nir_opt_loop_unroll
           * to make progress.
           */
-         OPT(s, nir_opt_copy_prop);
-         OPT(s, nir_opt_dce);
+         LOOP_OPT(s, nir_opt_copy_prop);
+         LOOP_OPT(s, nir_opt_dce);
       }
-      progress |= OPT(s, nir_opt_if, nir_opt_if_optimize_phi_true_false);
-      progress |= OPT(s, nir_opt_loop_unroll);
-      progress |= OPT(s, nir_opt_phi_to_bool);
-      progress |= OPT(s, nir_opt_remove_phis);
-      progress |= OPT(s, nir_opt_undef);
+      progress |= LOOP_OPT(s, nir_opt_if, nir_opt_if_optimize_phi_true_false);
+      progress |= LOOP_OPT(s, nir_opt_loop_unroll);
+      progress |= LOOP_OPT(s, nir_opt_phi_to_bool);
+      progress |= LOOP_OPT(s, nir_opt_remove_phis);
+      progress |= LOOP_OPT(s, nir_opt_undef);
       did_progress |= progress;
    } while (progress);
+
+#undef LOOP_OPT
+   STATIC_ASSERT(__COUNTER__ - opt_slot_base <= ARRAY_SIZE(clean_at));
 
    OPT(s, nir_lower_var_copies);
    return did_progress;
