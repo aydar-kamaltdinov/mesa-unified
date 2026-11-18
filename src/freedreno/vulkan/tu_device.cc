@@ -9,6 +9,10 @@
 
 #include "tu_device.h"
 
+#if DETECT_OS_ANDROID
+#include <malloc.h>
+#endif
+
 #include "drm-uapi/drm_fourcc.h"
 #include "git_sha1.h"
 #include "perfcntrs/freedreno_perfcntr.h"
@@ -2150,6 +2154,25 @@ tu_init_dri_options(struct tu_instance *instance)
 
 static uint32_t instance_count = 0;
 
+/* Android's scudo allocator starts with two shared per-thread caches for the
+ * whole process. Shader compiles are malloc-heavy (ralloc), and with several
+ * compile threads (DXVK runs 5+) most of them end up waiting on those two
+ * locks: compiling 248 real D3D11 shaders on 5 threads took 64% more CPU
+ * than on one thread. Asking for the maximum (scudo caps it at 8) made the
+ * same run 17% faster in both wall and CPU time. scudo only ever grows the
+ * count, so this can't undo a larger value set by the application.
+ */
+static void
+tu_android_raise_malloc_caches(void)
+{
+#if DETECT_OS_ANDROID
+#ifndef M_TSDS_COUNT_MAX
+#define M_TSDS_COUNT_MAX -202
+#endif
+   mallopt(M_TSDS_COUNT_MAX, 8);
+#endif
+}
+
 VKAPI_ATTR VkResult VKAPI_CALL
 tu_CreateInstance(const VkInstanceCreateInfo *pCreateInfo,
                   const VkAllocationCallbacks *pAllocator,
@@ -2159,6 +2182,7 @@ tu_CreateInstance(const VkInstanceCreateInfo *pCreateInfo,
    VkResult result;
 
    tu_env_init();
+   tu_android_raise_malloc_caches();
 
    assert(pCreateInfo->sType == VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO);
 
