@@ -124,23 +124,36 @@ void
 dag_init_node(struct dag *dag, struct dag_node *node)
 {
    util_dynarray_init(&node->edges, dag);
+   node->traverse_gen = 0;
    list_addtail(&node->link, &dag->heads);
 }
 
+/* Nodes processed by the current traversal carry its generation, which is
+ * cheaper than a set of visited nodes. The stack is shared by all heads.
+ */
 struct dag_traverse_bottom_up_state {
-   struct set *seen;
+   uint32_t gen;
+   struct util_dynarray stack;
    void (*cb)(struct dag_node *node, void *data);
    void *data;
 };
+
+static inline bool
+dag_node_seen(const struct dag_node *node,
+              const struct dag_traverse_bottom_up_state *state)
+{
+   return node->traverse_gen == state->gen;
+}
 
 static void
 dag_traverse_bottom_up_node(struct dag_node *node,
                             struct dag_traverse_bottom_up_state *state)
 {
-   if (_mesa_set_search(state->seen, node))
+   if (dag_node_seen(node, state))
       return;
 
-   struct util_dynarray stack = UTIL_DYNARRAY_INIT;
+   struct util_dynarray stack = state->stack;
+   stack.size = 0;
 
    do {
       assert(node);
@@ -153,7 +166,7 @@ dag_traverse_bottom_up_node(struct dag_node *node,
           * stack.
           */
          util_dynarray_foreach_reverse(&node->edges, struct dag_edge, edge) {
-            if (!_mesa_set_search(state->seen, edge->child)) {
+            if (!dag_node_seen(edge->child, state)) {
                util_dynarray_append(&stack, edge->child);
             }
          }
@@ -170,7 +183,7 @@ dag_traverse_bottom_up_node(struct dag_node *node,
 
       /* Process the node */
       state->cb(node, state->data);
-      _mesa_set_add(state->seen, node);
+      node->traverse_gen = state->gen;
 
       /* Find the next unprocessed node in the stack */
       do {
@@ -179,10 +192,10 @@ dag_traverse_bottom_up_node(struct dag_node *node,
             break;
 
          node = util_dynarray_pop(&stack, struct dag_node *);
-      } while (_mesa_set_search(state->seen, node));
+      } while (dag_node_seen(node, state));
    } while (node);
 
-   util_dynarray_fini(&stack);
+   state->stack = stack;
 }
 
 /**
@@ -194,7 +207,8 @@ dag_traverse_bottom_up(struct dag *dag, void (*cb)(struct dag_node *node,
                                                    void *data), void *data)
 {
    struct dag_traverse_bottom_up_state state = {
-      .seen = _mesa_pointer_set_create(NULL),
+      .gen = ++dag->traverse_gen,
+      .stack = UTIL_DYNARRAY_INIT,
       .data = data,
       .cb = cb,
    };
@@ -203,7 +217,7 @@ dag_traverse_bottom_up(struct dag *dag, void (*cb)(struct dag_node *node,
       dag_traverse_bottom_up_node(node, &state);
    }
 
-   ralloc_free(state.seen);
+   util_dynarray_fini(&state.stack);
 }
 
 /**

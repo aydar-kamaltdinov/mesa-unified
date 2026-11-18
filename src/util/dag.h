@@ -44,10 +44,13 @@ struct dag_node {
    /* Array struct edge to the children. */
    struct util_dynarray edges;
    uint32_t parent_count;
+   /* dag::traverse_gen of the last traversal that processed this node. */
+   uint32_t traverse_gen;
 };
 
 struct dag {
    struct list_head heads;
+   uint32_t traverse_gen;
 };
 
 struct dag *dag_create(void *mem_ctx);
