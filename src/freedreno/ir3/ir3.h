@@ -3494,6 +3494,13 @@ enum ir3_instruction_flags
 ir3_required_sync_flags(struct ir3_legalize_state *state,
                         struct ir3_compiler *compiler,
                         struct ir3_instruction *n);
+void ir3_legalize_state_sync_regs(struct ir3_legalize_state *state,
+                                  regmask_t *sync_regs);
+enum ir3_instruction_flags
+ir3_required_sync_flags_filtered(struct ir3_legalize_state *state,
+                                 struct ir3_compiler *compiler,
+                                 struct ir3_instruction *n,
+                                 regmask_t *sync_regs);
 unsigned ir3_required_delay(struct ir3_legalize_state *state,
                             struct ir3_compiler *compiler,
                             struct ir3_instruction *instr);
