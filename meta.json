@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "name": "AK Turnip 1.18 GS Rutabaga",
+  "description": "AK-Turnip 1.18 GS Rutabaga: GameSir Rutabaga + AK-Turnip changes on upstream Mesa main (2026-11-15), with VK_EXT_external_memory_host on KGSL (opt-in: TU_DEBUG=host-import), A8xx cube-direction sanitizing and IB alias (FF7 Rebirth hang fixes), half-wave subgroups for WaveSize(32), subgroup rules for FF XVI / Crimson Desert / Borderlands 4. Built with platform-sdk-version=35: exposes the API 34/35 KHR extensions (maintenance5/6, shader_maximal_reconvergence, quad_control, ...). KGSL: command submits no longer wait for the previous submit to retire (GPU stays fed). Lower driver CPU per draw (command-stream and descriptor paths). Built for all ARMv8.2+ CPUs (fixes crashes on Snapdragon 865/888-class cores). Faster shader compilation: about a third less CPU when DXVK compiles on several threads (shorter loading and fewer hitches; generated shader code is unchanged). Fewer redundant vertex-buffer and descriptor-set rebinds per draw; sync, sparse-memory and error-path fixes.",
+  "author": "aydar",
+  "packageVersion": "1",
+  "vendor": "Mesa",
+  "driverVersion": "AK-1.18-GS-Rutabaga",
+  "minApi": 29,
+  "libraryName": "libvulkan_freedreno.so"
+}
