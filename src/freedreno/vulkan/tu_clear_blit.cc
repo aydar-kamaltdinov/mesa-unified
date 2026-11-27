@@ -3393,20 +3393,22 @@ tu_copy_memory_to_image(struct tu_device *device,
 static VkResult
 tu_host_copy_ensure_image_mapped(struct tu_device *device, struct tu_image *image)
 {
-   if (image->map)
+   if (likely(p_atomic_read(&image->map)))
       return VK_SUCCESS;
 
    if (!image->mem || !image->mem->bo)
       return VK_ERROR_MEMORY_MAP_FAILED;
 
-   if (!image->mem->bo->map) {
-      VkResult result = tu_bo_map(device, image->mem->bo, NULL);
-      if (result != VK_SUCCESS)
-         return result;
+   mtx_lock(&device->mutex);
+   VkResult result = VK_SUCCESS;
+   if (!image->map) {
+      if (!image->mem->bo->map)
+         result = tu_bo_map(device, image->mem->bo, NULL);
+      if (result == VK_SUCCESS)
+         p_atomic_set(&image->map, (char *)image->mem->bo->map + image->mem_offset);
    }
-
-   image->map = (char *)image->mem->bo->map + image->mem_offset;
-   return VK_SUCCESS;
+   mtx_unlock(&device->mutex);
+   return result;
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL

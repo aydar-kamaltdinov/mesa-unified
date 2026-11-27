@@ -4371,8 +4371,7 @@ tu6_render_tiles_bin_loop(struct tu_cmd_buffer *cmd,
    const uint32_t max_tiles =
       vsc->tile_count.width * vsc->tile_count.height;
 
-   struct tu_tile_config *tiles = (struct tu_tile_config *)
-      malloc(max_tiles * sizeof(*tiles));
+   STACK_ARRAY(struct tu_tile_config, tiles, max_tiles);
    if (!tiles)
       return false;
 
@@ -4430,7 +4429,7 @@ tu6_render_tiles_bin_loop(struct tu_cmd_buffer *cmd,
    uint32_t *prefixes = stride ? (uint32_t *)
       malloc((size_t) tile_count * stride * sizeof(uint32_t)) : NULL;
    if (!prefixes) {
-      free(tiles);
+      STACK_ARRAY_FINISH(tiles);
       return false;
    }
 
@@ -4438,17 +4437,22 @@ tu6_render_tiles_bin_loop(struct tu_cmd_buffer *cmd,
       (struct tu_bin_prefix_fixups *) calloc(tile_count, sizeof(*fixups)) : nullptr;
    if (selected_bin_data && !fixups) {
       free(prefixes);
-      free(tiles);
+      STACK_ARRAY_FINISH(tiles);
       return false;
    }
 
-   for (uint32_t i = 0; i < tile_count; i++) {
+   /* Tile 0 was already emitted into scratch/probe_fixups above. */
+   memcpy(prefixes, scratch, stride * sizeof(uint32_t));
+   if (fixups)
+      fixups[0] = probe_fixups;
+
+   for (uint32_t i = 1; i < tile_count; i++) {
       uint32_t size = tu_emit_bin_prefix<CHIP>(
          cmd, &tiles[i], scratch, fixups ? &fixups[i] : nullptr);
       if (size == 0 || size > stride) {
          free(fixups);
          free(prefixes);
-         free(tiles);
+         STACK_ARRAY_FINISH(tiles);
          return false;
       }
       uint32_t *dst = prefixes + (size_t) i * stride;
@@ -4475,7 +4479,7 @@ tu6_render_tiles_bin_loop(struct tu_cmd_buffer *cmd,
       vk_command_buffer_set_error(&cmd->vk, result);
       free(fixups);
       free(prefixes);
-      free(tiles);
+      STACK_ARRAY_FINISH(tiles);
       return true;
    }
    uint32_t *prefix_map = prefix_cs.cur;
@@ -4529,7 +4533,7 @@ tu6_render_tiles_bin_loop(struct tu_cmd_buffer *cmd,
 
    tu_cs_emit_pkt7(cs, CP_END_BIN, 0);
 
-   free(tiles);
+   STACK_ARRAY_FINISH(tiles);
    return true;
 }
 
