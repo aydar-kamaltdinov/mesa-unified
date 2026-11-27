@@ -80,7 +80,6 @@ ir3_context_init(struct ir3_compiler *compiler, struct ir3_shader *shader,
       _mesa_hash_table_create(ctx, _mesa_hash_pointer, _mesa_key_pointer_equal);
    ctx->sel_cond_conversions =
       _mesa_hash_table_create(ctx, _mesa_hash_pointer, _mesa_key_pointer_equal);
-   ctx->predicate_conversions = _mesa_pointer_hash_table_create(ctx);
 
    /* TODO: maybe generate some sort of bitmask of what key
     * lowers vs what shader has (ie. no need to lower
@@ -461,10 +460,14 @@ ir3_get_predicate(struct ir3_context *ctx, struct ir3_instruction *src)
 {
    src = ir3_get_cond_for_nonzero_compare(src);
 
-   struct hash_entry *src_entry =
-      _mesa_hash_table_search(ctx->predicate_conversions, src);
-   if (src_entry)
-      return src_entry->data;
+   if (!ctx->predicate_conversions) {
+      ctx->predicate_conversions = _mesa_pointer_hash_table_create(ctx);
+   } else {
+      struct hash_entry *src_entry =
+         _mesa_hash_table_search(ctx->predicate_conversions, src);
+      if (src_entry)
+         return src_entry->data;
+   }
 
    struct ir3_builder b = ir3_builder_at(ir3_after_instr_and_phis(src));
    struct ir3_instruction *cond;

@@ -47,10 +47,14 @@ static struct ir3_instruction *
 clone_with_predicate_dst(struct opt_predicates_ctx *ctx,
                          struct ir3_instruction *instr)
 {
-   struct hash_entry *entry =
-      _mesa_hash_table_search(ctx->predicate_clones, instr);
-   if (entry)
-      return entry->data;
+   if (!ctx->predicate_clones) {
+      ctx->predicate_clones = _mesa_pointer_hash_table_create(NULL);
+   } else {
+      struct hash_entry *entry =
+         _mesa_hash_table_search(ctx->predicate_clones, instr);
+      if (entry)
+         return entry->data;
+   }
 
    assert(instr->dsts_count == 1);
 
@@ -174,12 +178,13 @@ opt_blocks(struct opt_predicates_ctx *ctx)
 bool
 ir3_opt_predicates(struct ir3 *ir, struct ir3_shader_variant *v)
 {
-   struct opt_predicates_ctx *ctx = rzalloc(NULL, struct opt_predicates_ctx);
-   ctx->ir = ir;
-   ctx->predicate_clones = _mesa_pointer_hash_table_create(ctx);
+   struct opt_predicates_ctx ctx = {
+      .ir = ir,
+   };
 
-   bool progress = opt_blocks(ctx);
+   bool progress = opt_blocks(&ctx);
 
-   ralloc_free(ctx);
+   if (ctx.predicate_clones)
+      _mesa_hash_table_destroy(ctx.predicate_clones, NULL);
    return progress;
 }

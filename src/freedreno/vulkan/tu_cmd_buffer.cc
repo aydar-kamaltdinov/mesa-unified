@@ -11777,6 +11777,108 @@ tu_ak_no_ubwc_coherency_quirk(void)
    return disabled;
 }
 
+static void
+tu_barrier_apply(struct tu_cmd_buffer *cmd,
+                 BITMASK_ENUM(tu_cmd_access_mask) src_flags,
+                 BITMASK_ENUM(tu_cmd_access_mask) dst_flags,
+                 VkPipelineStageFlags2 srcStage,
+                 VkPipelineStageFlags2 dstStage,
+                 bool no_sync)
+{
+   bool by_region = false;
+   if (cmd->state.pass) {
+      const VkPipelineStageFlags2 framebuffer_space_stages =
+         VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT |
+         VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT |
+         VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT |
+         VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
+
+      /* We cannot have non-by-region "fb-space to fb-space" barriers.
+       *
+       * From the Vulkan 1.2.185 spec, section 7.6.1 "Subpass Self-dependency":
+       *
+       *    If the source and destination stage masks both include
+       *    framebuffer-space stages, then dependencyFlags must include
+       *    VK_DEPENDENCY_BY_REGION_BIT.
+       *    [...]
+       *    Each of the synchronization scopes and access scopes of a
+       *    vkCmdPipelineBarrier2 or vkCmdPipelineBarrier command inside
+       *    a render pass instance must be a subset of the scopes of one of
+       *    the self-dependencies for the current subpass.
+       *
+       *    If the self-dependency has VK_DEPENDENCY_BY_REGION_BIT or
+       *    VK_DEPENDENCY_VIEW_LOCAL_BIT set, then so must the pipeline barrier.
+       *
+       * By-region barriers are ok for gmem. All other barriers would involve
+       * vtx stages which are NOT ok for gmem rendering.
+       * See dep_invalid_for_gmem().
+       */
+      if ((srcStage & ~framebuffer_space_stages) ||
+          (dstStage & ~framebuffer_space_stages)) {
+         cmd->state.rp.disable_gmem = true;
+         cmd->state.rp.force_render_mode_reason = "Non-framebuffer-space barrier";
+         by_region = false;
+      } else {
+         by_region = true;
+      }
+   }
+
+   struct tu_cache_state *cache =
+      cmd->state.pass ? &cmd->state.renderpass_cache : &cmd->state.cache;
+
+   /* Assume that pipeline barriers outside of the renderpass that use
+    * INPUT_ATTACHMENT_READ_BIT refer to read-only input attachments.
+    */
+   if (!cmd->state.pass && (dst_flags & TU_ACCESS_UCHE_READ_GMEM)) {
+      if (cmd->device->vk.enabled_features.sparseResidencyAliased)
+         dst_flags |= TU_ACCESS_UCHE_INCOHERENT_READ;
+      else
+         dst_flags |= TU_ACCESS_UCHE_READ;
+   }
+
+   /* a750 has a HW bug where writing a UBWC compressed image with a compute
+    * shader followed by reading it as a texture (or readonly image) requires
+    * a CACHE_CLEAN event. Some notes about this bug:
+    * - It only happens after a blit happens.
+    * - It's fast-clear related, it happens when the image is fast cleared
+    *   before the write and the value read is (incorrectly) the fast clear
+    *   color.
+    * - CACHE_FLUSH is supposed to be the same as CACHE_CLEAN +
+    *   CACHE_INVALIDATE, but it doesn't work whereas CACHE_CLEAN +
+    *   CACHE_INVALIDATE does.
+    *
+    * The srcAccess can be replaced by a OpMemoryBarrier(MakeAvailable), so
+    * we can't use that to insert the flush. Instead we use the shader source
+    * stage.
+    */
+   if (cmd->device->physical_device->info->props.ubwc_coherency_quirk &&
+       !tu_ak_no_ubwc_coherency_quirk() &&
+       (srcStage &
+        (VK_PIPELINE_STAGE_2_VERTEX_SHADER_BIT |
+         VK_PIPELINE_STAGE_2_TESSELLATION_CONTROL_SHADER_BIT |
+         VK_PIPELINE_STAGE_2_TESSELLATION_EVALUATION_SHADER_BIT |
+         VK_PIPELINE_STAGE_2_GEOMETRY_SHADER_BIT |
+         VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT |
+         VK_PIPELINE_STAGE_2_COMPUTE_SHADER_BIT |
+         VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT |
+         VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT))) {
+      cache->flush_bits |= TU_CMD_FLAG_CACHE_CLEAN;
+      cache->pending_flush_bits &= ~TU_CMD_FLAG_CACHE_CLEAN;
+   }
+
+   if (cmd->state.pass && (dst_flags & TU_ACCESS_UCHE_READ_GMEM))
+      cmd->state.rp.input_attachment_read_barrier = true;
+
+   TU_CALLX(cmd->device, tu_flush_for_access)(cache, src_flags, dst_flags);
+
+   if (!no_sync) {
+      enum tu_stage src_stage = vk2tu_src_stage(cmd->device, srcStage);
+      enum tu_stage dst_stage = vk2tu_dst_stage(cmd->device, dstStage);
+      TU_CALLX(cmd->device, tu_flush_for_stage)(cache, src_stage, dst_stage,
+                                                by_region);
+   }
+}
+
 void
 tu_barrier(struct tu_cmd_buffer *cmd,
            uint32_t dep_count,
@@ -11899,98 +12001,80 @@ tu_barrier(struct tu_cmd_buffer *cmd,
       }
    }
 
-   bool by_region = false;
-   if (cmd->state.pass) {
-      const VkPipelineStageFlags2 framebuffer_space_stages =
-         VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT |
-         VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT |
-         VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT |
-         VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
+   tu_barrier_apply(cmd, src_flags, dst_flags, srcStage, dstStage, no_sync);
+}
 
-      /* We cannot have non-by-region "fb-space to fb-space" barriers.
-       *
-       * From the Vulkan 1.2.185 spec, section 7.6.1 "Subpass Self-dependency":
-       *
-       *    If the source and destination stage masks both include
-       *    framebuffer-space stages, then dependencyFlags must include
-       *    VK_DEPENDENCY_BY_REGION_BIT.
-       *    [...]
-       *    Each of the synchronization scopes and access scopes of a
-       *    vkCmdPipelineBarrier2 or vkCmdPipelineBarrier command inside
-       *    a render pass instance must be a subset of the scopes of one of
-       *    the self-dependencies for the current subpass.
-       *
-       *    If the self-dependency has VK_DEPENDENCY_BY_REGION_BIT or
-       *    VK_DEPENDENCY_VIEW_LOCAL_BIT set, then so must the pipeline barrier.
-       *
-       * By-region barriers are ok for gmem. All other barriers would involve
-       * vtx stages which are NOT ok for gmem rendering.
-       * See dep_invalid_for_gmem().
-       */
-      if ((srcStage & ~framebuffer_space_stages) ||
-          (dstStage & ~framebuffer_space_stages)) {
-         cmd->state.rp.disable_gmem = true;
-         cmd->state.rp.force_render_mode_reason = "Non-framebuffer-space barrier";
-         by_region = false;
-      } else {
-         by_region = true;
+VKAPI_ATTR void VKAPI_CALL
+tu_CmdPipelineBarrier(VkCommandBuffer commandBuffer,
+                      VkPipelineStageFlags srcStageMask,
+                      VkPipelineStageFlags dstStageMask,
+                      VkDependencyFlags dependencyFlags,
+                      uint32_t memoryBarrierCount,
+                      const VkMemoryBarrier *pMemoryBarriers,
+                      uint32_t bufferMemoryBarrierCount,
+                      const VkBufferMemoryBarrier *pBufferMemoryBarriers,
+                      uint32_t imageMemoryBarrierCount,
+                      const VkImageMemoryBarrier *pImageMemoryBarriers)
+{
+   VK_FROM_HANDLE(tu_cmd_buffer, cmd, commandBuffer);
+
+   const VkPipelineStageFlags2 sanitized_src_stage =
+      sanitize_src_stage((VkPipelineStageFlags2) srcStageMask);
+   const VkPipelineStageFlags2 sanitized_dst_stage =
+      sanitize_dst_stage((VkPipelineStageFlags2) dstStageMask);
+   const bool gmem = cmd->state.ccu_state == TU_CMD_CCU_GMEM && !cmd->state.pass;
+   const bool dev_sparse_aliasing =
+      cmd->device->vk.enabled_features.sparseResidencyAliased;
+
+   BITMASK_ENUM(tu_cmd_access_mask) src_flags = 0;
+   BITMASK_ENUM(tu_cmd_access_mask) dst_flags = 0;
+
+   for (uint32_t i = 0; i < memoryBarrierCount; i++) {
+      const VkMemoryBarrier *barrier = &pMemoryBarriers[i];
+      src_flags |= vk2tu_access(barrier->srcAccessMask, 0,
+                                sanitized_src_stage, false, gmem,
+                                dev_sparse_aliasing);
+      dst_flags |= vk2tu_access(barrier->dstAccessMask, 0,
+                                sanitized_dst_stage, false, gmem,
+                                dev_sparse_aliasing);
+   }
+
+   for (uint32_t i = 0; i < bufferMemoryBarrierCount; i++) {
+      const VkBufferMemoryBarrier *barrier = &pBufferMemoryBarriers[i];
+      VK_FROM_HANDLE(tu_buffer, buffer, barrier->buffer);
+      bool sparse_aliasing =
+         buffer->vk.create_flags & VK_BUFFER_CREATE_SPARSE_ALIASED_BIT;
+      src_flags |= vk2tu_access(barrier->srcAccessMask, 0,
+                                sanitized_src_stage, false, gmem,
+                                sparse_aliasing);
+      dst_flags |= vk2tu_access(barrier->dstAccessMask, 0,
+                                sanitized_dst_stage, false, gmem,
+                                sparse_aliasing);
+   }
+
+   for (uint32_t i = 0; i < imageMemoryBarrierCount; i++) {
+      const VkImageMemoryBarrier *barrier = &pImageMemoryBarriers[i];
+      VK_FROM_HANDLE(tu_image, image, barrier->image);
+      bool sparse_aliasing =
+         image->vk.create_flags & VK_IMAGE_CREATE_SPARSE_ALIASED_BIT;
+      if (barrier->oldLayout == VK_IMAGE_LAYOUT_UNDEFINED ||
+          barrier->oldLayout == VK_IMAGE_LAYOUT_ZERO_INITIALIZED_EXT) {
+         if (vk_format_is_depth_or_stencil(image->vk.format)) {
+            src_flags |= TU_ACCESS_CCU_DEPTH_INCOHERENT_WRITE;
+         } else {
+            src_flags |= TU_ACCESS_CCU_COLOR_INCOHERENT_WRITE;
+         }
       }
+      src_flags |= vk2tu_access(barrier->srcAccessMask, 0,
+                                sanitized_src_stage, true, gmem,
+                                sparse_aliasing);
+      dst_flags |= vk2tu_access(barrier->dstAccessMask, 0,
+                                sanitized_dst_stage, true, gmem,
+                                sparse_aliasing);
    }
 
-   struct tu_cache_state *cache =
-      cmd->state.pass ? &cmd->state.renderpass_cache : &cmd->state.cache;
-
-   /* Assume that pipeline barriers outside of the renderpass that use
-    * INPUT_ATTACHMENT_READ_BIT refer to read-only input attachments.
-    */
-   if (!cmd->state.pass && (dst_flags & TU_ACCESS_UCHE_READ_GMEM)) {
-      if (cmd->device->vk.enabled_features.sparseResidencyAliased)
-         dst_flags |= TU_ACCESS_UCHE_INCOHERENT_READ;
-      else
-         dst_flags |= TU_ACCESS_UCHE_READ;
-   }
-
-   /* a750 has a HW bug where writing a UBWC compressed image with a compute
-    * shader followed by reading it as a texture (or readonly image) requires
-    * a CACHE_CLEAN event. Some notes about this bug:
-    * - It only happens after a blit happens.
-    * - It's fast-clear related, it happens when the image is fast cleared
-    *   before the write and the value read is (incorrectly) the fast clear
-    *   color.
-    * - CACHE_FLUSH is supposed to be the same as CACHE_CLEAN +
-    *   CACHE_INVALIDATE, but it doesn't work whereas CACHE_CLEAN +
-    *   CACHE_INVALIDATE does.
-    *
-    * The srcAccess can be replaced by a OpMemoryBarrier(MakeAvailable), so
-    * we can't use that to insert the flush. Instead we use the shader source
-    * stage.
-    */
-   if (cmd->device->physical_device->info->props.ubwc_coherency_quirk &&
-       !tu_ak_no_ubwc_coherency_quirk() &&
-       (srcStage &
-        (VK_PIPELINE_STAGE_2_VERTEX_SHADER_BIT |
-         VK_PIPELINE_STAGE_2_TESSELLATION_CONTROL_SHADER_BIT |
-         VK_PIPELINE_STAGE_2_TESSELLATION_EVALUATION_SHADER_BIT |
-         VK_PIPELINE_STAGE_2_GEOMETRY_SHADER_BIT |
-         VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT |
-         VK_PIPELINE_STAGE_2_COMPUTE_SHADER_BIT |
-         VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT |
-         VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT))) {
-      cache->flush_bits |= TU_CMD_FLAG_CACHE_CLEAN;
-      cache->pending_flush_bits &= ~TU_CMD_FLAG_CACHE_CLEAN;
-   }
-
-   if (cmd->state.pass && (dst_flags & TU_ACCESS_UCHE_READ_GMEM))
-      cmd->state.rp.input_attachment_read_barrier = true;
-
-   TU_CALLX(cmd->device, tu_flush_for_access)(cache, src_flags, dst_flags);
-
-   if (!no_sync) {
-      enum tu_stage src_stage = vk2tu_src_stage(cmd->device, srcStage);
-      enum tu_stage dst_stage = vk2tu_dst_stage(cmd->device, dstStage);
-      TU_CALLX(cmd->device, tu_flush_for_stage)(cache, src_stage, dst_stage,
-                                                by_region);
-   }
+   tu_barrier_apply(cmd, src_flags, dst_flags, sanitized_src_stage,
+                    sanitized_dst_stage, false);
 }
 
 VKAPI_ATTR void VKAPI_CALL
