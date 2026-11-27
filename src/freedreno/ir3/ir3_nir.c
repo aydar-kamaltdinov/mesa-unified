@@ -1234,8 +1234,6 @@ ir3_nir_post_finalize(struct ir3_shader *shader)
             .lower_inverse_ballot = true,
             .lower_quad_vote = true,
             .lower_reduce = true,
-            /* AK: as in GameHub's Turnip. */
-            .lower_quad_vote = true,
             .filter = ir3_nir_lower_subgroups_filter,
             .filter_data = compiler,
       };

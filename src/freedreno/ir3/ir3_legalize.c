@@ -1632,15 +1632,6 @@ dbg_sync_sched(struct ir3 *ir, struct ir3_shader_variant *so)
 static void
 a8xx_volatile_uav_sync(struct ir3 *ir)
 {
-   bool has_volatile = false;
-   foreach_block (block, &ir->block_list) {
-      foreach_instr (instr, &block->instr_list) {
-         if (instr->opc == OPC_LDIB && (instr->flags & IR3_INSTR_VOLATILE))
-            has_volatile = true;
-      }
-   }
-   if (!has_volatile)
-      return;
 
    foreach_block (block, &ir->block_list) {
       foreach_instr_safe (instr, &block->instr_list) {
@@ -2595,6 +2586,7 @@ ir3_legalize(struct ir3 *ir, struct ir3_shader_variant *so, int *max_bary,
    /* Gather information to determine whether we can enable early preamble.
     */
    bool has_bindless_atomic = false;
+   bool has_volatile_ldib = false;
    bool gpr_in_preamble = false;
    bool pred_in_preamble = false;
    bool relative_in_preamble = false;
@@ -2618,6 +2610,8 @@ ir3_legalize(struct ir3 *ir, struct ir3_shader_variant *so, int *max_bary,
 
          has_bindless_atomic |= instr->opc >= OPC_ATOMIC_B_ADD &&
                                 instr->opc <= OPC_ATOMIC_B_XOR;
+         has_volatile_ldib |= instr->opc == OPC_LDIB &&
+                              (instr->flags & IR3_INSTR_VOLATILE);
 
          foreach_src (reg, instr) {
             if (in_preamble) {
@@ -2738,7 +2732,7 @@ ir3_legalize(struct ir3 *ir, struct ir3_shader_variant *so, int *max_bary,
       dbg_sync_sched(ir, so);
    }
 
-   if (so->compiler->gen >= 8)
+   if (so->compiler->gen >= 8 && has_volatile_ldib)
       a8xx_volatile_uav_sync(ir);
 
    if (ir3_shader_debug & IR3_DBG_FULLNOP) {

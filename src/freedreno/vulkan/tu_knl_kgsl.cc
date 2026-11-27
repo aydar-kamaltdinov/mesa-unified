@@ -924,12 +924,16 @@ static void
 kgsl_sparse_vma_finish(struct tu_device *dev,
                        struct tu_sparse_vma *vma)
 {
+   struct tu_bo *bo = vma->kgsl.virtual_bo;
+   if (bo->map)
+      munmap(bo->map, bo->size);
+
    struct kgsl_gpuobj_free req = {
-      .id = vma->kgsl.virtual_bo->gem_handle
+      .id = bo->gem_handle
    };
 
    /* Tell sparse array that entry is free */
-   memset(vma->kgsl.virtual_bo, 0, sizeof(*vma->kgsl.virtual_bo));
+   memset(bo, 0, sizeof(*bo));
 
    safe_ioctl(dev->physical_device->local_fd, IOCTL_KGSL_GPUOBJ_FREE, &req);
 }
@@ -2131,6 +2135,9 @@ vk_kgsl_binary_wait_many(struct vk_device *_device,
    if (wait_count == 0)
       return VK_SUCCESS;
 
+   if (wait_flags & VK_SYNC_WAIT_PENDING)
+      return VK_SUCCESS;
+
    for (uint32_t i = 0; i < wait_count; ++i) {
       struct vk_kgsl_binary *binary = container_of(waits[i].sync, struct vk_kgsl_binary, vk);
       if (binary->type == VK_KGSL_SYNC_TYPE_FENCE)
@@ -2955,11 +2962,11 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
             ++signal_timeline_vals_count;
             break;
          case VK_KGSL_SYNC_TYPE_BINARY:
+         case VK_KGSL_SYNC_TYPE_FENCE:
             all_signals_native_timeline = false;
             ++signal_timeline_vals_count;
             break;
          case VK_KGSL_SYNC_TYPE_INVALID:
-         case VK_KGSL_SYNC_TYPE_FENCE:
             assert(!"invalid sync type");
             break;
          }
@@ -2984,11 +2991,13 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
             break;
          }
          case VK_KGSL_SYNC_TYPE_BINARY:
+         case VK_KGSL_SYNC_TYPE_FENCE:
          {
-            struct vk_kgsl_binary_timeline *binary_timeline = vk_kgsl_get_binary_timeline(signals[i].sync);
+            struct vk_kgsl_binary *binary =
+               container_of(signals[i].sync, struct vk_kgsl_binary, vk);
             signal_timeline_vals[signal_timeline_vals_idx++] = (struct kgsl_timeline_val) {
-               .seqno = ++binary_timeline->next_point,
-               .timeline = binary_timeline->id,
+               .seqno = ++binary->binary_timeline.next_point,
+               .timeline = binary->binary_timeline.id,
             };
             break;
          }
@@ -3135,6 +3144,16 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
          result = vk_device_set_lost(&queue->device->vk,
                                      "timeline signal aux command submit failed\n");
       } else {
+         for (uint32_t i = 0; i < signal_count; ++i) {
+            if (vk_kgsl_get_sync_type(signals[i].sync) == VK_KGSL_SYNC_TYPE_FENCE) {
+               struct vk_kgsl_binary *binary =
+                  container_of(signals[i].sync, struct vk_kgsl_binary, vk);
+               if (binary->sync_file.fd != -1)
+                  close(binary->sync_file.fd);
+               binary->sync_file.fd = -1;
+               binary->type = VK_KGSL_SYNC_TYPE_BINARY;
+            }
+         }
          queue->kgsl_queue_timeline_seqno = current_submit_timeline_seqno;
       }
 
@@ -3281,6 +3300,17 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
                                   "timeline submit failed: %s\n",
                                   strerror(errno));
       goto fail_submit;
+   }
+
+   for (uint32_t i = 0; i < signal_count; ++i) {
+      if (vk_kgsl_get_sync_type(signals[i].sync) == VK_KGSL_SYNC_TYPE_FENCE) {
+         struct vk_kgsl_binary *binary =
+            container_of(signals[i].sync, struct vk_kgsl_binary, vk);
+         if (binary->sync_file.fd != -1)
+            close(binary->sync_file.fd);
+         binary->sync_file.fd = -1;
+         binary->type = VK_KGSL_SYNC_TYPE_BINARY;
+      }
    }
 
    timestamp = aux_cmd.timestamp;

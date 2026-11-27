@@ -4938,8 +4938,8 @@ tu_emit_draw_state(struct tu_cmd_buffer *cmd)
    emit_draw_state(&cmd->vk.dynamic_graphics_state, tu_##name##_state,        \
                    ARRAY_SIZE(tu_##name##_state))
 #define DRAW_STATE_COND(name, id, extra_cond, ...)                            \
-   if ((EMIT_STATE(name) || (extra_cond)) &&                                  \
-       !(cmd->state.pipeline_draw_states & (1u << id))) {                     \
+   if (!(cmd->state.pipeline_draw_states & (1u << id)) &&                     \
+       (EMIT_STATE(name) || (extra_cond))) {                                  \
       unsigned size = tu6_##name##_size<CHIP>(cmd->device, __VA_ARGS__);      \
       if (size > 0) {                                                         \
          tu_cs_begin_sub_stream(&cmd->sub_cs, size, &cs);                     \
@@ -4952,10 +4952,10 @@ tu_emit_draw_state(struct tu_cmd_buffer *cmd)
       dirty_draw_states |= (1u << id);                                        \
    }
 #define DRAW_STATE_FDM(name, id, ...)                                         \
-   if ((EMIT_STATE(name) || (cmd->state.dirty &                               \
+   if (!(cmd->state.pipeline_draw_states & (1u << id)) &&                     \
+       (EMIT_STATE(name) || (cmd->state.dirty &                               \
                              (TU_CMD_DIRTY_FDM |                              \
-                              TU_CMD_DIRTY_PER_VIEW_VIEWPORT))) &&            \
-       !(cmd->state.pipeline_draw_states & (1u << id))) {                     \
+                              TU_CMD_DIRTY_PER_VIEW_VIEWPORT)))) {            \
       if (cmd->state.has_fdm || cmd->state.per_layer_viewport) {              \
          tu_cs_set_writeable(&cmd->sub_cs, true);                             \
          tu6_emit_##name##_fdm(&cs, cmd, __VA_ARGS__);                        \
