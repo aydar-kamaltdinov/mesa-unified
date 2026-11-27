@@ -925,6 +925,8 @@ ensure_src_live(struct ra_ctx *ctx, struct ir3_instruction *instr,
             /* Stash away the original def to use later in case we actually have
              * to insert a reload.
              */
+            if (!ctx->pcopy_src_map)
+               ctx->pcopy_src_map = _mesa_pointer_hash_table_create(NULL);
             _mesa_hash_table_insert(ctx->pcopy_src_map, src, src->def);
          }
          src->def = interval->spill_def;
@@ -1556,7 +1558,7 @@ ir3_ra_shared(struct ir3_shader_variant *v, struct ir3_liveness **live_ptr)
                               live->block_count);
    ctx.start = 0;
    ctx.live = live;
-   ctx.pcopy_src_map = _mesa_pointer_hash_table_create(NULL);
+   ctx.pcopy_src_map = NULL;
 
    /* Used to detect instructions inserted by this pass. */
    unsigned last_old_serialno = v->ir->instr_count;
@@ -1572,7 +1574,8 @@ ir3_ra_shared(struct ir3_shader_variant *v, struct ir3_liveness **live_ptr)
    }
 
    ralloc_free(ctx.intervals);
-   ralloc_free(ctx.pcopy_src_map);
+   if (ctx.pcopy_src_map)
+      _mesa_hash_table_destroy(ctx.pcopy_src_map, NULL);
    ralloc_free(ctx.blocks);
 
    ir3_ra_validate(v, RA_FULL_SIZE, RA_HALF_SIZE, live->block_count, true);

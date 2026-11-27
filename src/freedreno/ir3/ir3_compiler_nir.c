@@ -991,8 +991,9 @@ emit_alu(struct ir3_context *ctx, nir_alu_instr *alu)
           * 16->32 or 32->16, but never both
           */
          if (is_half(src[1].rpts[rpt]) != is_half(cond)) {
-            struct hash_entry *prev_entry = _mesa_hash_table_search(
-               ctx->sel_cond_conversions, src[0].rpts[rpt]);
+            struct hash_entry *prev_entry = ctx->sel_cond_conversions ?
+               _mesa_hash_table_search(ctx->sel_cond_conversions, src[0].rpts[rpt]) :
+               NULL;
             if (prev_entry) {
                cond = prev_entry->data;
             } else {
@@ -1010,6 +1011,8 @@ emit_alu(struct ir3_context *ctx, nir_alu_instr *alu)
                } else {
                   cond = ir3_COV(b, cond, TYPE_U32, TYPE_U16);
                }
+               if (!ctx->sel_cond_conversions)
+                  ctx->sel_cond_conversions = _mesa_pointer_hash_table_create(ctx);
                _mesa_hash_table_insert(ctx->sel_cond_conversions,
                                        src[0].rpts[rpt], cond);
             }
@@ -4693,11 +4696,12 @@ get_block(struct ir3_context *ctx, const nir_block *nblock)
 static struct ir3_block *
 get_block_or_continue(struct ir3_context *ctx, const nir_block *nblock)
 {
-   struct hash_entry *hentry;
-
-   hentry = _mesa_hash_table_search(ctx->continue_block_ht, nblock);
-   if (hentry)
-      return hentry->data;
+   if (ctx->continue_block_ht) {
+      struct hash_entry *hentry =
+         _mesa_hash_table_search(ctx->continue_block_ht, nblock);
+      if (hentry)
+         return hentry->data;
+   }
 
    return get_block(ctx, nblock);
 }
@@ -4707,6 +4711,8 @@ create_continue_block(struct ir3_context *ctx, const nir_block *nblock)
 {
    struct ir3_block *block = ir3_block_create(ctx->ir);
    block->nblock = NULL;
+   if (!ctx->continue_block_ht)
+      ctx->continue_block_ht = _mesa_pointer_hash_table_create(ctx);
    _mesa_hash_table_insert(ctx->continue_block_ht, nblock, block);
    return block;
 }
@@ -4749,7 +4755,8 @@ emit_block(struct ir3_context *ctx, nir_block *nblock)
          ir3_JUMP(&ctx->build);
    }
 
-   _mesa_hash_table_clear(ctx->sel_cond_conversions, NULL);
+   if (ctx->sel_cond_conversions && ctx->sel_cond_conversions->entries)
+      _mesa_hash_table_clear(ctx->sel_cond_conversions, NULL);
 }
 
 static void emit_cf_list(struct ir3_context *ctx, struct exec_list *list);

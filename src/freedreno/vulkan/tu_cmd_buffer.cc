@@ -12445,3 +12445,42 @@ tu_CmdSetDescriptorBufferOffsetsEXT(VkCommandBuffer commandBuffer,
    };
    tu_CmdSetDescriptorBufferOffsets2EXT(commandBuffer, &info);
 }
+
+template <chip CHIP>
+VKAPI_ATTR void VKAPI_CALL
+tu_CmdBeginRenderPass(VkCommandBuffer commandBuffer,
+                      const VkRenderPassBeginInfo *pRenderPassBegin,
+                      VkSubpassContents contents)
+{
+   const VkSubpassBeginInfo info = {
+      .sType = VK_STRUCTURE_TYPE_SUBPASS_BEGIN_INFO,
+      .contents = contents,
+   };
+   tu_CmdBeginRenderPass2<CHIP>(commandBuffer, pRenderPassBegin, &info);
+}
+TU_GENX(tu_CmdBeginRenderPass);
+
+template <chip CHIP>
+VKAPI_ATTR void VKAPI_CALL
+tu_CmdNextSubpass(VkCommandBuffer commandBuffer,
+                  VkSubpassContents contents)
+{
+   const VkSubpassBeginInfo begin_info = {
+      .sType = VK_STRUCTURE_TYPE_SUBPASS_BEGIN_INFO,
+      .contents = contents,
+   };
+   const VkSubpassEndInfo end_info = {
+      .sType = VK_STRUCTURE_TYPE_SUBPASS_END_INFO,
+   };
+   tu_CmdNextSubpass2<CHIP>(commandBuffer, &begin_info, &end_info);
+}
+TU_GENX(tu_CmdNextSubpass);
+
+VKAPI_ATTR void VKAPI_CALL
+tu_CmdEndRenderPass(VkCommandBuffer commandBuffer)
+{
+   const VkSubpassEndInfo info = {
+      .sType = VK_STRUCTURE_TYPE_SUBPASS_END_INFO,
+   };
+   tu_CmdEndRenderPass2(commandBuffer, &info);
+}
