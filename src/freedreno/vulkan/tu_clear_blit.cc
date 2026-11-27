@@ -2904,13 +2904,12 @@ tu_CmdCopyMemoryToImageIndirectKHR(
       const struct tu_indirect_copy_format format =
          tu_get_indirect_copy_format(src_format, dst_format, subres->aspectMask);
       const struct util_format_description *desc = util_format_description(src_format);
-      r3d_setup<CHIP>(cmd, cs, src_format, dst_format, subres->aspectMask,
-                     R3D_INDIRECT | (format.integer ? R3D_INDIRECT_UINT : 0),
-                     false, image->layout[0].ubwc,
-                     VK_SAMPLE_COUNT_1_BIT, VK_SAMPLE_COUNT_1_BIT);
-
       struct fdl6_view dst;
       tu_image_view_copy<CHIP>(&dst, image, dst_format, subres, 0);
+      r3d_setup<CHIP>(cmd, cs, src_format, dst_format, subres->aspectMask,
+                     R3D_INDIRECT | (format.integer ? R3D_INDIRECT_UINT : 0),
+                     false, dst.ubwc_enabled,
+                     VK_SAMPLE_COUNT_1_BIT, VK_SAMPLE_COUNT_1_BIT);
       const uint64_t address = info->copyAddressRange.address +
                                uint64_t(i) * info->copyAddressRange.stride;
       for (uint32_t layer = 0; layer < layers; layer++) {

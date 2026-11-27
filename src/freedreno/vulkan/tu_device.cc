@@ -3728,6 +3728,12 @@ tu_get_mesh_aqe_bo(struct tu_device *dev, struct tu_bo **out_bo)
    if (!tu_mesh_shader_hw_eligible(dev->physical_device))
       return VK_ERROR_FEATURE_NOT_PRESENT;
 
+   struct tu_bo *cached = p_atomic_read(&dev->mesh_aqe_bo);
+   if (likely(cached)) {
+      *out_bo = cached;
+      return VK_SUCCESS;
+   }
+
    /* GameSir mesh_draw_begin lazily creates this device-owned allocation.
     * Publish only after map/initialization: its original direct-to-device
     * allocation would leave a non-NULL but unmapped BO on mapping failure.
@@ -3744,7 +3750,7 @@ tu_get_mesh_aqe_bo(struct tu_device *dev, struct tu_bo **out_bo)
          result = tu_bo_map(dev, bo, NULL);
          if (result == VK_SUCCESS) {
             memset(bo->map, 0, TU_A8_MESH_AQE_SIZE);
-            dev->mesh_aqe_bo = bo;
+            p_atomic_set(&dev->mesh_aqe_bo, bo);
          } else {
             tu_bo_finish(dev, bo);
          }

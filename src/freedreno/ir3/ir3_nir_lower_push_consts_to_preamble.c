@@ -22,18 +22,24 @@ ir3_nir_lower_push_consts_to_preamble(nir_shader *nir,
     * copies. TASK/MESH and mesh-multiview FS reserve the prefix at TU level.
     */
    bool reads_view_index = false;
-   nir_foreach_function_impl(impl, nir) {
-      nir_foreach_block(block, impl) {
-         nir_foreach_instr(instr, block) {
-            if (instr->type != nir_instr_type_intrinsic)
-               continue;
-            nir_intrinsic_instr *intr = nir_instr_as_intrinsic(instr);
-            if (intr->intrinsic == nir_intrinsic_load_const_ir3 &&
-                nir_intrinsic_base(intr) == 33)
-               reads_view_index = true;
+   if (mesa_shader_stage_is_mesh(nir->info.stage) ||
+       v->shader_options.mesh_multiview) {
+      nir_foreach_function_impl(impl, nir) {
+         nir_foreach_block(block, impl) {
+            nir_foreach_instr(instr, block) {
+               if (instr->type != nir_instr_type_intrinsic)
+                  continue;
+               nir_intrinsic_instr *intr = nir_instr_as_intrinsic(instr);
+               if (intr->intrinsic == nir_intrinsic_load_const_ir3 &&
+                   nir_intrinsic_base(intr) == 33) {
+                  reads_view_index = true;
+                  goto done_view_index_scan;
+               }
+            }
          }
       }
    }
+done_view_index_scan:;
 
    if (v->shader_options.push_consts_type == IR3_PUSH_CONSTS_SHARED_PREAMBLE) {
       uint32_t offset_vec4 =

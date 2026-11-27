@@ -2433,6 +2433,7 @@ tu_disable_draw_states(struct tu_cmd_buffer *cmd, struct tu_cs *cs)
    tu_cs_emit(cs, CP_SET_DRAW_STATE__2_ADDR_HI(0));
 
    cmd->state.dirty |= TU_CMD_DIRTY_DRAW_STATE;
+   cmd->state.last_gfx_pipeline = VK_NULL_HANDLE;
 }
 
 template <chip CHIP>
@@ -5212,8 +5213,9 @@ tu_CmdBindVertexBuffers2(VkCommandBuffer commandBuffer,
                          const VkDeviceSize *pStrides)
 {
    VK_FROM_HANDLE(tu_cmd_buffer, cmd, commandBuffer);
-   struct tu_cs cs;
 
+   bool changed = (firstBinding + bindingCount > cmd->state.max_vbs_bound) ||
+                  (cmd->state.vertex_buffers.size == 0);
    cmd->state.max_vbs_bound = MAX2(
       cmd->state.max_vbs_bound, firstBinding + bindingCount);
 
@@ -5222,29 +5224,27 @@ tu_CmdBindVertexBuffers2(VkCommandBuffer commandBuffer,
                                         pStrides);
    }
 
-   cmd->state.vertex_buffers.size = 4 * cmd->state.max_vbs_bound;
-   cmd->state.vertex_buffers.iova =
-      tu_cs_draw_state(&cmd->sub_cs, &cs, cmd->state.vertex_buffers.size).iova;
-
    for (uint32_t i = 0; i < bindingCount; i++) {
+      uint64_t base;
+      uint32_t size;
       if (pBuffers[i] == VK_NULL_HANDLE) {
-         cmd->state.vb[firstBinding + i].base = 0;
-         cmd->state.vb[firstBinding + i].size = 0;
+         base = 0;
+         size = 0;
       } else {
          struct tu_buffer *buf = tu_buffer_from_handle(pBuffers[i]);
-         cmd->state.vb[firstBinding + i].base = vk_buffer_address(&buf->vk, pOffsets[i]);
-         cmd->state.vb[firstBinding + i].size =
-            vk_buffer_range(&buf->vk, pOffsets[i], pSizes ? pSizes[i] : VK_WHOLE_SIZE);
+         base = vk_buffer_address(&buf->vk, pOffsets[i]);
+         size = vk_buffer_range(&buf->vk, pOffsets[i], pSizes ? pSizes[i] : VK_WHOLE_SIZE);
+      }
+      if (cmd->state.vb[firstBinding + i].base != base ||
+          cmd->state.vb[firstBinding + i].size != size) {
+         cmd->state.vb[firstBinding + i].base = base;
+         cmd->state.vb[firstBinding + i].size = size;
+         changed = true;
       }
    }
 
-   for (uint32_t i = 0; i < cmd->state.max_vbs_bound; i++) {
-      tu_cs_emit_regs(&cs,
-                      A6XX_VFD_VERTEX_BUFFER_BASE(i, .qword = cmd->state.vb[i].base),
-                      A6XX_VFD_VERTEX_BUFFER_SIZE(i, cmd->state.vb[i].size));
-   }
-
-   cmd->state.dirty |= TU_CMD_DIRTY_VERTEX_BUFFERS;
+   if (changed)
+      cmd->state.dirty |= TU_CMD_DIRTY_VERTEX_BUFFERS;
 }
 
 template <chip CHIP>
@@ -5387,13 +5387,6 @@ tu6_emit_descriptor_sets(struct tu_cmd_buffer *cmd,
 
    if (bind_point == VK_PIPELINE_BIND_POINT_GRAPHICS) {
       assert(cs->cur == cs->end); /* validate draw state size */
-      /* note: this also avoids emitting draw states before renderpass clears,
-       * which may use the 3D clear path (for MSAA cases)
-       */
-      if (!(cmd->state.dirty & TU_CMD_DIRTY_DRAW_STATE)) {
-         tu_cs_emit_pkt7(&cmd->draw_cs, CP_SET_DRAW_STATE, 3);
-         tu_cs_emit_draw_state(&cmd->draw_cs, TU_DRAW_STATE_DESC_SETS, cmd->state.desc_sets);
-      }
    }
 }
 
@@ -5425,6 +5418,9 @@ tu_bind_descriptor_sets(struct tu_cmd_buffer *cmd,
    struct tu_descriptor_state *descriptors_state =
       tu_get_descriptors_state(cmd, bind_point);
 
+   bool changed =
+      (info->firstSet + info->descriptorSetCount > descriptors_state->max_sets_bound) ||
+      info->dynamicOffsetCount > 0;
    descriptors_state->max_sets_bound =
       MAX2(descriptors_state->max_sets_bound,
            info->firstSet + info->descriptorSetCount);
@@ -5441,19 +5437,21 @@ tu_bind_descriptor_sets(struct tu_cmd_buffer *cmd,
       unsigned idx = i + info->firstSet;
       VK_FROM_HANDLE(tu_descriptor_set, set, info->pDescriptorSets[i]);
 
-      descriptors_state->sets[idx] = set;
       uint64_t set_iova = set ? (set->va | BINDLESS_DESCRIPTOR_64B) : 0;
-      descriptors_state->set_iova[idx] = set_iova;
-
-      /* Compute consts are emitted on every dispatch. */
-      if (bind_point == VK_PIPELINE_BIND_POINT_GRAPHICS && cmd->state.program.uses_bindless_base_addrs)
-         cmd->state.dirty |= TU_CMD_DIRTY_SHADER_CONSTS;
+      if (descriptors_state->sets[idx] != set ||
+          descriptors_state->set_iova[idx] != set_iova) {
+         descriptors_state->sets[idx] = set;
+         descriptors_state->set_iova[idx] = set_iova;
+         changed = true;
+      }
 
       if (!set)
          continue;
 
-      if (set->layout->has_inline_uniforms)
+      if (set->layout->has_inline_uniforms) {
          cmd->state.dirty |= TU_CMD_DIRTY_SHADER_CONSTS;
+         changed = true;
+      }
 
       if (!set->layout->dynamic_offset_size)
          continue;
@@ -5557,7 +5555,14 @@ tu_bind_descriptor_sets(struct tu_cmd_buffer *cmd,
       descriptors_state->set_iova[reserved_set_idx] = 0;
    }
 
-   tu_dirty_desc_sets(cmd, bind_point);
+   if (changed) {
+      /* Compute consts are emitted on every dispatch. */
+      if (bind_point == VK_PIPELINE_BIND_POINT_GRAPHICS &&
+          cmd->state.program.uses_bindless_base_addrs)
+         cmd->state.dirty |= TU_CMD_DIRTY_SHADER_CONSTS;
+
+      tu_dirty_desc_sets(cmd, bind_point);
+   }
 }
 
 static VkResult
@@ -6279,7 +6284,9 @@ tu_CmdBindPipeline(VkCommandBuffer commandBuffer,
     * render-pass-scoped tu_pipeline_update_rp_state() and the depth/stencil
     * dynamic-state masking below) still runs unconditionally, since it
     * depends on the current render pass, not just the pipeline identity. */
-   bool ak_same_pipeline = (_pipeline == cmd->state.last_gfx_pipeline);
+   bool ak_same_pipeline =
+      (_pipeline == cmd->state.last_gfx_pipeline &&
+       !(cmd->state.dirty & TU_CMD_DIRTY_DRAW_STATE));
    cmd->state.last_gfx_pipeline = _pipeline;
 
    struct tu_graphics_pipeline *gfx_pipeline = tu_pipeline_to_graphics(pipeline);
@@ -7431,6 +7438,7 @@ tu_CmdExecuteCommands(VkCommandBuffer commandBuffer,
       cmd->state.index_size = secondary->state.index_size; /* for restart index update */
    }
    cmd->state.dirty = ~0u; /* TODO: set dirty only what needs to be */
+   cmd->state.last_gfx_pipeline = VK_NULL_HANDLE;
 
    if (!cmd->state.lrz.gpu_dir_tracking && cmd->state.pass) {
       /* After a secondary command buffer is executed, LRZ is not valid
@@ -9601,6 +9609,21 @@ tu6_draw_common(struct tu_cmd_buffer *cmd,
    if (dirty & TU_CMD_DIRTY_DESC_SETS)
       tu6_emit_descriptor_sets<CHIP>(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS);
 
+   if (dirty & TU_CMD_DIRTY_VERTEX_BUFFERS) {
+      if (cmd->state.max_vbs_bound) {
+         struct tu_cs vb_cs;
+         cmd->state.vertex_buffers =
+            tu_cs_draw_state(&cmd->sub_cs, &vb_cs, 4 * cmd->state.max_vbs_bound);
+         for (uint32_t i = 0; i < cmd->state.max_vbs_bound; i++) {
+            tu_cs_emit_regs(&vb_cs,
+                            A6XX_VFD_VERTEX_BUFFER_BASE(i, .qword = cmd->state.vb[i].base),
+                            A6XX_VFD_VERTEX_BUFFER_SIZE(i, cmd->state.vb[i].size));
+         }
+      } else {
+         cmd->state.vertex_buffers = (struct tu_draw_state) {};
+      }
+   }
+
    if (BITSET_TEST(cmd->vk.dynamic_graphics_state.dirty,
                    MESA_VK_DYNAMIC_MS_RASTERIZATION_SAMPLES) ||
        BITSET_TEST(cmd->vk.dynamic_graphics_state.dirty,
@@ -9672,7 +9695,7 @@ tu6_draw_common(struct tu_cmd_buffer *cmd,
       uint32_t draw_state_count =
          util_bitcount(dynamic_draw_state_dirty) +
          ((dirty & TU_CMD_DIRTY_SHADER_CONSTS) ? 1 : 0) +
-         ((dirty & TU_CMD_DIRTY_DESC_SETS) ? 1 : 0) +
+         ((dirty & TU_CMD_DIRTY_DESC_SETS) ? 2 : 0) +
          ((dirty & TU_CMD_DIRTY_VERTEX_BUFFERS) ? 1 : 0) +
          ((dirty & TU_CMD_DIRTY_VS_PARAMS) ? 1 : 0) +
          (dirty_fs_params ? 1 : 0) +
@@ -9684,7 +9707,7 @@ tu6_draw_common(struct tu_cmd_buffer *cmd,
       if (dirty & TU_CMD_DIRTY_SHADER_CONSTS)
          tu_cs_emit_draw_state(cs, TU_DRAW_STATE_CONST, cmd->state.shader_const);
       if (dirty & TU_CMD_DIRTY_DESC_SETS) {
-         /* tu6_emit_descriptor_sets emitted the cmd->state.desc_sets draw state. */
+         tu_cs_emit_draw_state(cs, TU_DRAW_STATE_DESC_SETS, cmd->state.desc_sets);
          tu_cs_emit_draw_state(cs, TU_DRAW_STATE_DESC_SETS_LOAD, cmd->state.load_state);
       }
       if (dirty & TU_CMD_DIRTY_VERTEX_BUFFERS)

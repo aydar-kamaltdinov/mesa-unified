@@ -1472,64 +1472,73 @@ tu_update_descriptor_sets(const struct tu_device *device,
          accel_structs = vk_find_struct_const(writeset->pNext, WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR);
       }
 
-      ptr += binding_layout->size / 4 * writeset->dstArrayElement;
-      for (j = 0; j < writeset->descriptorCount; ++j) {
-         switch(writeset->descriptorType) {
-         case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
-         case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
+      const uint32_t stride = binding_layout->size / 4;
+      ptr += stride * writeset->dstArrayElement;
+      switch (writeset->descriptorType) {
+      case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
+      case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
+         for (j = 0; j < writeset->descriptorCount; ++j, ptr += stride)
             write_ubo_descriptor(ptr, writeset->pBufferInfo + j);
-            break;
-         case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
-         case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
+         break;
+      case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
+      case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
+         for (j = 0; j < writeset->descriptorCount; ++j, ptr += stride)
             write_buffer_descriptor<CHIP>(device, ptr, writeset->pBufferInfo + j);
-            break;
-         case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
-         case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
-            if (device->physical_device->compiler_options.enable_texel_buffer_emulation) {
+         break;
+      case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
+      case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
+         if (device->physical_device->compiler_options.enable_texel_buffer_emulation) {
+            for (j = 0; j < writeset->descriptorCount; ++j, ptr += stride)
                write_emulated_texel_buffer_descriptor<CHIP>(
                   ptr, writeset->pTexelBufferView[j]);
-            } else {
-               write_texel_buffer_descriptor(ptr,
-                                             writeset->pTexelBufferView[j]);
-            }
-            break;
-         case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
-         case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
-         case VK_DESCRIPTOR_TYPE_SAMPLE_WEIGHT_IMAGE_QCOM:
-         case VK_DESCRIPTOR_TYPE_BLOCK_MATCH_IMAGE_QCOM:
-         case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
+         } else {
+            for (j = 0; j < writeset->descriptorCount; ++j, ptr += stride)
+               write_texel_buffer_descriptor(ptr, writeset->pTexelBufferView[j]);
+         }
+         break;
+      case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
+      case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
+      case VK_DESCRIPTOR_TYPE_SAMPLE_WEIGHT_IMAGE_QCOM:
+      case VK_DESCRIPTOR_TYPE_BLOCK_MATCH_IMAGE_QCOM:
+      case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
+         for (j = 0; j < writeset->descriptorCount; ++j, ptr += stride)
             write_image_descriptor(ptr, writeset->descriptorType, writeset->pImageInfo + j);
-            break;
-         case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+         break;
+      case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+         for (j = 0; j < writeset->descriptorCount; ++j, ptr += stride) {
             write_combined_image_sampler_descriptor(
                ptr, writeset->descriptorType, writeset->pImageInfo + j, !samplers,
                sampler_has_subsampled_bit(samplers, writeset->dstArrayElement + j));
 
             if (copy_immutable_samplers)
                write_sampler_push(ptr + FDL6_TEX_CONST_DWORDS, &samplers[writeset->dstArrayElement + j]);
-            break;
-         case VK_DESCRIPTOR_TYPE_SAMPLER:
-            if (!binding_layout->immutable_samplers_offset)
+         }
+         break;
+      case VK_DESCRIPTOR_TYPE_SAMPLER:
+         if (!binding_layout->immutable_samplers_offset) {
+            for (j = 0; j < writeset->descriptorCount; ++j, ptr += stride)
                write_sampler_descriptor(ptr, writeset->pImageInfo[j].sampler);
-            else if (copy_immutable_samplers)
+         } else if (copy_immutable_samplers) {
+            for (j = 0; j < writeset->descriptorCount; ++j, ptr += stride)
                write_sampler_push(ptr, &samplers[writeset->dstArrayElement + j]);
-            break;
-         case VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR: {
+         }
+         break;
+      case VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR: {
+         uint32_t max_texel_elements = device->physical_device->info->props.max_texel_buffer_range_elements;
+         for (j = 0; j < writeset->descriptorCount; ++j, ptr += stride) {
             VK_FROM_HANDLE(vk_acceleration_structure, accel_struct, accel_structs->pAccelerationStructures[j]);
-            uint32_t max_texel_elements = device->physical_device->info->props.max_texel_buffer_range_elements;
             if (accel_struct) {
                write_accel_struct<CHIP>(ptr,
                                         vk_acceleration_structure_get_va(accel_struct), max_texel_elements);
             } else {
                write_accel_struct<CHIP>(ptr, device->null_accel_struct_bo->iova, max_texel_elements);
             }
-            break;
          }
-         default:
-            UNREACHABLE("unimplemented descriptor type");
-            break;
-         }
-         ptr += binding_layout->size / 4;
+         break;
+      }
+      default:
+         UNREACHABLE("unimplemented descriptor type");
+         break;
       }
    }
 

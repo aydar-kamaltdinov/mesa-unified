@@ -3634,7 +3634,7 @@ tu_update_shared_size(struct tu_device *dev, nir_shader *nir)
       MIN2((uint64_t)initial_size * 4,
            dev->physical_device->info->cs_shared_mem_size);
    uint32_t required_size = initial_size;
-   struct hash_table *range_ht = _mesa_pointer_hash_table_create(NULL);
+   struct hash_table *range_ht = NULL;
 
    nir_foreach_function_impl(impl, nir) {
       nir_foreach_block(block, impl) {
@@ -3664,15 +3664,24 @@ tu_update_shared_size(struct tu_device *dev, nir_shader *nir)
                continue;
             }
 
+            if (!range_ht)
+               range_ht = _mesa_pointer_hash_table_create(NULL);
+
             uint32_t upper = nir_unsigned_upper_bound(
                nir, range_ht, nir_scalar{intr->src[offset_src].ssa, 0});
             uint64_t end = (uint64_t)upper + bytes;
-            if (upper != UINT32_MAX && end <= limit)
+            if (upper != UINT32_MAX && end <= limit) {
                required_size = MAX2(required_size, (uint32_t)end);
+               if (required_size >= limit)
+                  goto done;
+            }
          }
       }
    }
-   _mesa_hash_table_destroy(range_ht, NULL);
+
+done:
+   if (range_ht)
+      _mesa_hash_table_destroy(range_ht, NULL);
 
    if (required_size > initial_size)
       nir->info.shared_size = align(required_size, 16);
@@ -4539,7 +4548,7 @@ tu_empty_shader_create(struct tu_device *dev,
 }
 
 static VkResult
-tu_empty_fs_create(struct tu_device *dev, struct tu_shader **shader,
+tu_empty_fs_create(struct tu_device *dev, struct tu_shader **shader_out,
                    bool fragment_density_map)
 {
    struct ir3_shader_key key = {};
@@ -4548,29 +4557,39 @@ tu_empty_fs_create(struct tu_device *dev, struct tu_shader **shader,
       ir3_get_compiler_options(dev->compiler);
    nir_builder fs_b;
 
-   *shader = tu_shader_init(dev, NULL, 0);
-   if (!*shader)
+   struct tu_shader *shader = tu_shader_init(dev, NULL, 0);
+   if (!shader)
       return VK_ERROR_OUT_OF_HOST_MEMORY;
 
    fs_b = nir_builder_init_simple_shader(MESA_SHADER_FRAGMENT, nir_options,
                                          "noop_fs");
 
-   (*shader)->fs.has_fdm = fragment_density_map;
+   shader->fs.has_fdm = fragment_density_map;
    if (fragment_density_map && dev->physical_device->info->chip < 7)
-      (*shader)->fs.lrz.status = TU_LRZ_FORCE_DISABLE_LRZ;
+      shader->fs.lrz.status = TU_LRZ_FORCE_DISABLE_LRZ;
 
    for (unsigned i = 0; i < MAX_SETS; i++)
-      (*shader)->dynamic_descriptor_sizes[i] = -1;
+      shader->dynamic_descriptor_sizes[i] = -1;
 
    struct ir3_shader *ir3_shader =
       ir3_shader_from_nir(dev->compiler, fs_b.shader, &options);
-   (*shader)->variant = ir3_shader_create_variant(ir3_shader, &key, false);
+   shader->variant = ir3_shader_create_variant(ir3_shader, &key, false);
    ir3_shader_destroy(ir3_shader);
 
-   if (!(*shader)->variant)
+   if (!shader->variant) {
+      vk_free(&dev->vk.alloc, shader);
       return VK_ERROR_OUT_OF_HOST_MEMORY;
+   }
 
-   return tu_upload_shader(dev, *shader);
+   VkResult result = tu_upload_shader(dev, shader);
+   if (result != VK_SUCCESS) {
+      ralloc_free(const_cast<struct ir3_shader_variant *>(shader->variant));
+      vk_free(&dev->vk.alloc, shader);
+      return result;
+   }
+
+   *shader_out = shader;
+   return VK_SUCCESS;
 }
 
 VkResult
