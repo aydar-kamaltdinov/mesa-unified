@@ -5404,8 +5404,10 @@ tu6_emit_descriptor_sets(struct tu_cmd_buffer *cmd,
    }
 
    tu_cs_emit_regs(cs, SP_UPDATE_CNTL(CHIP,
-      .cs_bindless = bind_point == VK_PIPELINE_BIND_POINT_COMPUTE ? CHIP == A6XX ? 0x1f : 0xff : 0,
-      .gfx_bindless = bind_point == VK_PIPELINE_BIND_POINT_GRAPHICS ? CHIP == A6XX ? 0x1f : 0xff : 0,
+      .cs_bindless = (bind_point == VK_PIPELINE_BIND_POINT_COMPUTE || mesh) ?
+                        (CHIP == A6XX ? 0x1f : 0xff) : 0,
+      .gfx_bindless = bind_point == VK_PIPELINE_BIND_POINT_GRAPHICS ?
+                         (CHIP == A6XX ? 0x1f : 0xff) : 0,
    ));
 
    if (mesh)

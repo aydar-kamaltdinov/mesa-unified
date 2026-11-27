@@ -1948,7 +1948,7 @@ vk_kgsl_binary_init(struct vk_device *_device,
                        "kgsl_timeline_create failed: %m");
    }
 
-   binary->binary_timeline.next_point = (initial_value == 0);
+   binary->binary_timeline.next_point = initial_value ? initial_value : 1;
    binary->sync_file.fd = -1;
    return VK_SUCCESS;
 }
@@ -3175,7 +3175,7 @@ kgsl_queue_submit_timeline(struct tu_queue *queue, void *_submit,
 
    struct kgsl_profiling profiling = { 0 };
    bool profiling_submitted = false;
-   if (u_trace_submission_data) {
+   if (u_trace_submission_data && submit->commands.size != 0) {
 #if HAVE_PERFETTO
       profiling.start_ts = tu_perfetto_begin_submit();
 #endif

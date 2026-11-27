@@ -3381,7 +3381,8 @@ tu_copy_memory_to_image(struct tu_device *device,
 
       if (dst_image->mem->bo->cached_non_coherent) {
          tu_bo_sync_cache(device, dst_image->mem->bo,
-                          dst_image->mem_offset + image_offset,
+                          dst_image->mem_offset + image_offset +
+                          (uint64_t) layer * dst_layer_stride,
                           dst_layer_size, TU_MEM_SYNC_CACHE_TO_GPU);
       }
    }
@@ -3610,7 +3611,8 @@ tu_copy_image_to_memory(struct tu_device *device,
         src += src_layer_stride, dst += dst_layer_stride) {
       if (src_image->mem->bo->cached_non_coherent) {
          tu_bo_sync_cache(device, src_image->mem->bo,
-                          src_image->mem_offset + image_offset,
+                          src_image->mem_offset + image_offset +
+                          (uint64_t) layer * src_layer_stride,
                           src_layer_size, TU_MEM_SYNC_CACHE_FROM_GPU);
       }
 
@@ -3773,14 +3775,14 @@ tu_copy_image_to_image(struct tu_cmd_buffer *cmd,
    } else if (is_swapped_format<CHIP>(src_format,
                                       src_image->layout[0].is_mutable) ||
               is_swapped_format<CHIP>(dst_format,
-                                      src_image->layout[0].is_mutable)) {
+                                      dst_image->layout[0].is_mutable)) {
       /* If either format has a non-identity swap, then we can't copy
        * to/from it.
        */
       use_staging_blit = true;
    } else if (!src_image->layout[0].ubwc || src_image->layout[0].is_mutable) {
       src_format = dst_format;
-   } else if (!dst_image->layout[0].ubwc || src_image->layout[0].is_mutable) {
+   } else if (!dst_image->layout[0].ubwc || dst_image->layout[0].is_mutable) {
       dst_format = src_format;
    } else {
       /* Both formats use UBWC and so neither can be reinterpreted.
@@ -4008,7 +4010,8 @@ tu_copy_image_to_image_cpu(struct tu_device *device,
         src += src_layer_stride, dst += dst_layer_stride) {
       if (src_image->mem->bo->cached_non_coherent) {
          tu_bo_sync_cache(device, src_image->mem->bo,
-                          src_image->mem_offset + src_image_offset,
+                          src_image->mem_offset + src_image_offset +
+                          (uint64_t) layer * src_layer_stride,
                           src_layer_size, TU_MEM_SYNC_CACHE_FROM_GPU);
       }
 
@@ -4088,7 +4091,8 @@ tu_copy_image_to_image_cpu(struct tu_device *device,
 
       if (dst_image->mem->bo->cached_non_coherent) {
          tu_bo_sync_cache(device, dst_image->mem->bo,
-                          dst_image->mem_offset + dst_image_offset,
+                          dst_image->mem_offset + dst_image_offset +
+                          (uint64_t) layer * dst_layer_stride,
                           dst_layer_size, TU_MEM_SYNC_CACHE_TO_GPU);
       }
    }
@@ -4472,6 +4476,9 @@ tu_CmdResolveImage2(VkCommandBuffer commandBuffer,
             &pResolveImageInfo->pRegions[i], mode_info);
       }
       if (written) {
+         /* The 3D path leaves its own pipeline bound. */
+         tu_disable_draw_states(cmd, cs);
+
          /* Shader resolves write through the color CCU, including DS images. */
          tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_CLEAN_COLOR);
          tu_emit_event_write<CHIP>(cmd, cs, FD_CCU_INVALIDATE_COLOR);
@@ -6668,22 +6675,16 @@ resolve_3d_blit(struct tu_cmd_buffer *cmd,
    const struct fdl6_view *src_fdl_view = tu_image_view_fdl_view(src_iview, false);
    const struct fdl6_view *dst_fdl_view = tu_image_view_fdl_view(dst_iview, false);
 
+   /* Wait before CP_REG_TO_SCRATCH so we don't read stale register values. */
+   tu_cs_emit_wfi(cs);
+
    /* Save RB_CNTL/GRAS_SC_BIN_CNTL/RB_BUFFER_CNTL -- same rationale as
     * store_3d_blit(): they're normally only set once binning mode is
     * known, and we want this callable before that decision if needed. */
-   tu_cs_emit_pkt7(cs, CP_REG_TO_SCRATCH, 1);
-   tu_cs_emit(cs, CP_REG_TO_SCRATCH_0_REG(RB_CNTL(CHIP).reg) |
-                  CP_REG_TO_SCRATCH_0_SCRATCH(0) |
-                  CP_REG_TO_SCRATCH_0_CNT(1 - 1));
-   tu_cs_emit_pkt7(cs, CP_REG_TO_SCRATCH, 1);
-   tu_cs_emit(cs, CP_REG_TO_SCRATCH_0_REG(GRAS_SC_BIN_CNTL(CHIP).reg) |
-                  CP_REG_TO_SCRATCH_0_SCRATCH(1) |
-                  CP_REG_TO_SCRATCH_0_CNT(1 - 1));
+   cs->reg_to_scratch(tu_scratch(store_3d_blit.RB_CNTL), RB_CNTL(CHIP), 1);
+   cs->reg_to_scratch(tu_scratch(store_3d_blit.GRAS_SC_BIN_CNTL), GRAS_SC_BIN_CNTL(CHIP), 1);
    if (CHIP >= A7XX) {
-      tu_cs_emit_pkt7(cs, CP_REG_TO_SCRATCH, 1);
-      tu_cs_emit(cs, CP_REG_TO_SCRATCH_0_REG(RB_BUFFER_CNTL(CHIP).reg) |
-                     CP_REG_TO_SCRATCH_0_SCRATCH(2) |
-                     CP_REG_TO_SCRATCH_0_CNT(1 - 1));
+      cs->reg_to_scratch(tu_scratch(store_3d_blit.RB_BUFFER_CNTL), RB_BUFFER_CNTL(CHIP), 1);
    }
 
    r3d_setup<CHIP>(cmd, cs, src_format, dst_format, VK_IMAGE_ASPECT_COLOR_BIT,
@@ -6744,21 +6745,10 @@ resolve_3d_blit(struct tu_cmd_buffer *cmd,
    tu6_emit_flushes<CHIP>(cmd, cs, &cmd->state.renderpass_cache);
 
    /* Restore RB_CNTL/GRAS_SC_BIN_CNTL/RB_BUFFER_CNTL saved above. */
-   tu_cs_emit_pkt7(cs, CP_SCRATCH_TO_REG, 1);
-   tu_cs_emit(cs, CP_SCRATCH_TO_REG_0_REG(RB_CNTL(CHIP).reg) |
-                  CP_SCRATCH_TO_REG_0_SCRATCH(0) |
-                  CP_SCRATCH_TO_REG_0_CNT(1 - 1));
-
-   tu_cs_emit_pkt7(cs, CP_SCRATCH_TO_REG, 1);
-   tu_cs_emit(cs, CP_SCRATCH_TO_REG_0_REG(GRAS_SC_BIN_CNTL(CHIP).reg) |
-                  CP_SCRATCH_TO_REG_0_SCRATCH(1) |
-                  CP_SCRATCH_TO_REG_0_CNT(1 - 1));
-
+   cs->scratch_to_reg(RB_CNTL(CHIP), tu_scratch(store_3d_blit.RB_CNTL), 1);
+   cs->scratch_to_reg(GRAS_SC_BIN_CNTL(CHIP), tu_scratch(store_3d_blit.GRAS_SC_BIN_CNTL), 1);
    if (CHIP >= A7XX) {
-      tu_cs_emit_pkt7(cs, CP_SCRATCH_TO_REG, 1);
-      tu_cs_emit(cs, CP_SCRATCH_TO_REG_0_REG(RB_BUFFER_CNTL(CHIP).reg) |
-                        CP_SCRATCH_TO_REG_0_SCRATCH(2) |
-                        CP_SCRATCH_TO_REG_0_CNT(1 - 1));
+      cs->scratch_to_reg(RB_BUFFER_CNTL(CHIP), tu_scratch(store_3d_blit.RB_BUFFER_CNTL), 1);
    }
 
 }
@@ -7062,7 +7052,8 @@ tu_choose_gmem_layout(struct tu_cmd_buffer *cmd)
       const VkResolveModeFlags shader_modes = VK_RESOLVE_MODE_MIN_BIT |
          VK_RESOLVE_MODE_MAX_BIT | VK_RESOLVE_MODE_AVERAGE_BIT;
       if (subpass->resolve_depth_stencil &&
-          ((subpass->depth_resolve_mode | subpass->stencil_resolve_mode) & shader_modes))
+          (((subpass->depth_resolve_mode | subpass->stencil_resolve_mode) & shader_modes) ||
+           subpass->depth_resolve_mode != subpass->stencil_resolve_mode))
          cmd->state.gmem_layout = TU_GMEM_LAYOUT_AVOID_CCU;
 
       if (subpass->custom_resolve)
