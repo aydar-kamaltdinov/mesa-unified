@@ -8146,10 +8146,23 @@ tu_CmdBeginRendering(VkCommandBuffer commandBuffer,
 
          cmd->state.attachments[a] = view;
 
-         if (!msrtss && cmd->dynamic_subpasses[0].resolve_count >
+         const struct VkRenderingAttachmentInfo *resolve_info =
+            (pRenderingInfo->pDepthAttachment &&
+             pRenderingInfo->pDepthAttachment->imageView != VK_NULL_HANDLE &&
+             pRenderingInfo->pDepthAttachment->resolveMode != VK_RESOLVE_MODE_NONE &&
+             pRenderingInfo->pDepthAttachment->resolveImageView != VK_NULL_HANDLE) ?
+            pRenderingInfo->pDepthAttachment :
+            (pRenderingInfo->pStencilAttachment &&
+             pRenderingInfo->pStencilAttachment->imageView != VK_NULL_HANDLE &&
+             pRenderingInfo->pStencilAttachment->resolveMode != VK_RESOLVE_MODE_NONE &&
+             pRenderingInfo->pStencilAttachment->resolveImageView != VK_NULL_HANDLE) ?
+            pRenderingInfo->pStencilAttachment : NULL;
+
+         if (!msrtss && resolve_info &&
+             cmd->dynamic_subpasses[0].resolve_count >
              cmd->dynamic_subpasses[0].color_count) {
             VK_FROM_HANDLE(tu_image_view, resolve_view,
-                           common_info->resolveImageView);
+                           resolve_info->resolveImageView);
             a = cmd->dynamic_subpasses[0].resolve_attachments[cmd->dynamic_subpasses[0].color_count].attachment;
             cmd->state.attachments[a] = resolve_view;
          }
@@ -8157,13 +8170,13 @@ tu_CmdBeginRendering(VkCommandBuffer commandBuffer,
          /* A fixed-function resolve mixed into a custom resolve pass lives on
           * the main subpass, not the custom resolve subpass.
           */
-         if (cmd->dynamic_pass.subpass_count > 1 &&
+         if (resolve_info && cmd->dynamic_pass.subpass_count > 1 &&
              cmd->dynamic_subpasses[1].depth_stencil_attachment.attachment !=
              VK_ATTACHMENT_UNUSED) {
             a = cmd->dynamic_subpasses[1].depth_stencil_attachment.attachment;
             if (a != VK_ATTACHMENT_UNUSED) {
                VK_FROM_HANDLE(tu_image_view, resolve_view,
-                              common_info->resolveImageView);
+                              resolve_info->resolveImageView);
                cmd->state.attachments[a] = resolve_view;
             }
          }
@@ -11846,7 +11859,7 @@ tu_barrier(struct tu_cmd_buffer *cmd,
          VkImageLayout old_layout = barrier->oldLayout;
 
          bool sparse_aliasing =
-            image->vk.create_flags & VK_BUFFER_CREATE_SPARSE_ALIASED_BIT;
+            image->vk.create_flags & VK_IMAGE_CREATE_SPARSE_ALIASED_BIT;
          if (old_layout == VK_IMAGE_LAYOUT_UNDEFINED ||
              old_layout == VK_IMAGE_LAYOUT_ZERO_INITIALIZED_EXT) {
             /* The underlying memory for this image may have been used earlier

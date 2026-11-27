@@ -1860,90 +1860,122 @@ tu_update_descriptor_set_with_template(
                   descriptorUpdateTemplate);
 
    for (uint32_t i = 0; i < templ->entry_count; i++) {
+      const struct tu_descriptor_update_template_entry *entry = &templ->entry[i];
       uint32_t *ptr = set->mapped_ptr;
-      const void *src = static_cast<const char *>(pData) + templ->entry[i].src_offset;
-      const struct tu_descriptor_update_template_sampler *samplers = templ->entry[i].immutable_samplers;
+      const char *src = static_cast<const char *>(pData) + entry->src_offset;
+      const struct tu_descriptor_update_template_sampler *samplers = entry->immutable_samplers;
 
-      if (templ->entry[i].descriptor_type == VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK) {
-         memcpy(reinterpret_cast<uint8_t *>(ptr) + templ->entry[i].dst_offset, src,
-                templ->entry[i].descriptor_count);
+      if (entry->descriptor_type == VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK) {
+         memcpy(reinterpret_cast<uint8_t *>(ptr) + entry->dst_offset, src,
+                entry->descriptor_count);
          continue;
       }
 
-      ptr += templ->entry[i].dst_offset;
-      unsigned dst_offset = templ->entry[i].dst_offset;
-      for (unsigned j = 0; j < templ->entry[i].descriptor_count; ++j) {
-         switch(templ->entry[i].descriptor_type) {
-         case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC: {
-            assert(!(set->layout->flags & VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR));
-            write_ubo_descriptor(set->dynamic_descriptors + dst_offset,
-                                 static_cast<const VkDescriptorBufferInfo *>(src));
-            break;
+      const uint32_t count = entry->descriptor_count;
+      const size_t src_stride = entry->src_stride;
+      const uint32_t dst_stride = entry->dst_stride;
+
+      switch (entry->descriptor_type) {
+      case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC: {
+         assert(!(set->layout->flags & VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR));
+         uint32_t *dst = set->dynamic_descriptors + entry->dst_offset;
+         for (unsigned j = 0; j < count; ++j, src += src_stride, dst += dst_stride) {
+            write_ubo_descriptor(dst, reinterpret_cast<const VkDescriptorBufferInfo *>(src));
          }
-         case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
-            write_ubo_descriptor(ptr, static_cast<const VkDescriptorBufferInfo *>(src));
-            break;
-         case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC: {
-            assert(!(set->layout->flags & VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR));
-            write_buffer_descriptor<CHIP>(device,
-                                          set->dynamic_descriptors + dst_offset,
-                                          static_cast<const VkDescriptorBufferInfo *>(src));
-            break;
+         break;
+      }
+      case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
+         ptr += entry->dst_offset;
+         for (unsigned j = 0; j < count; ++j, src += src_stride, ptr += dst_stride) {
+            write_ubo_descriptor(ptr, reinterpret_cast<const VkDescriptorBufferInfo *>(src));
          }
-         case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
+         break;
+      case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC: {
+         assert(!(set->layout->flags & VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR));
+         uint32_t *dst = set->dynamic_descriptors + entry->dst_offset;
+         for (unsigned j = 0; j < count; ++j, src += src_stride, dst += dst_stride) {
+            write_buffer_descriptor<CHIP>(device, dst,
+                                          reinterpret_cast<const VkDescriptorBufferInfo *>(src));
+         }
+         break;
+      }
+      case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
+         ptr += entry->dst_offset;
+         for (unsigned j = 0; j < count; ++j, src += src_stride, ptr += dst_stride) {
             write_buffer_descriptor<CHIP>(device, ptr,
-                                          static_cast<const VkDescriptorBufferInfo *>(src));
-            break;
-         case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
-         case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
-            if (device->physical_device->compiler_options.enable_texel_buffer_emulation) {
-               write_emulated_texel_buffer_descriptor<CHIP>(
-                  ptr, *static_cast<const VkBufferView *>(src));
-            } else {
-               write_texel_buffer_descriptor(ptr, *static_cast<const VkBufferView *>(src));
-            }
-            break;
-         case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
-         case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
-         case VK_DESCRIPTOR_TYPE_SAMPLE_WEIGHT_IMAGE_QCOM:
-         case VK_DESCRIPTOR_TYPE_BLOCK_MATCH_IMAGE_QCOM:
-         case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT: {
-            write_image_descriptor(ptr, templ->entry[i].descriptor_type,
-                                   static_cast<const VkDescriptorImageInfo *>(src));
-            break;
+                                          reinterpret_cast<const VkDescriptorBufferInfo *>(src));
          }
-         case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
-            write_combined_image_sampler_descriptor(ptr, templ->entry[i].descriptor_type,
-                                                    static_cast<const VkDescriptorImageInfo *>(src), !samplers,
-                                                    sampler_has_subsampled_bit(samplers, j));
-            if (templ->entry[i].copy_immutable_samplers)
+         break;
+      case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
+      case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
+         ptr += entry->dst_offset;
+         if (device->physical_device->compiler_options.enable_texel_buffer_emulation) {
+            for (unsigned j = 0; j < count; ++j, src += src_stride, ptr += dst_stride) {
+               write_emulated_texel_buffer_descriptor<CHIP>(
+                  ptr, *reinterpret_cast<const VkBufferView *>(src));
+            }
+         } else {
+            for (unsigned j = 0; j < count; ++j, src += src_stride, ptr += dst_stride) {
+               write_texel_buffer_descriptor(ptr, *reinterpret_cast<const VkBufferView *>(src));
+            }
+         }
+         break;
+      case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
+      case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
+      case VK_DESCRIPTOR_TYPE_SAMPLE_WEIGHT_IMAGE_QCOM:
+      case VK_DESCRIPTOR_TYPE_BLOCK_MATCH_IMAGE_QCOM:
+      case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
+         ptr += entry->dst_offset;
+         for (unsigned j = 0; j < count; ++j, src += src_stride, ptr += dst_stride) {
+            write_image_descriptor(ptr, entry->descriptor_type,
+                                   reinterpret_cast<const VkDescriptorImageInfo *>(src));
+         }
+         break;
+      case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER: {
+         ptr += entry->dst_offset;
+         const bool write_samplers = !samplers;
+         const bool copy_immutable = entry->copy_immutable_samplers;
+         for (unsigned j = 0; j < count; ++j, src += src_stride, ptr += dst_stride) {
+            write_combined_image_sampler_descriptor(
+               ptr, entry->descriptor_type,
+               reinterpret_cast<const VkDescriptorImageInfo *>(src), write_samplers,
+               sampler_has_subsampled_bit(samplers, j));
+            if (copy_immutable)
                write_sampler_push(ptr + FDL6_TEX_CONST_DWORDS, &samplers[j]);
-            break;
-         case VK_DESCRIPTOR_TYPE_SAMPLER:
-            if (!templ->entry[i].immutable_samplers)
-               write_sampler_descriptor(ptr, static_cast<const VkDescriptorImageInfo *>(src)->sampler);
-            else if (templ->entry[i].copy_immutable_samplers)
+         }
+         break;
+      }
+      case VK_DESCRIPTOR_TYPE_SAMPLER:
+         ptr += entry->dst_offset;
+         if (!samplers) {
+            for (unsigned j = 0; j < count; ++j, src += src_stride, ptr += dst_stride) {
+               write_sampler_descriptor(
+                  ptr, reinterpret_cast<const VkDescriptorImageInfo *>(src)->sampler);
+            }
+         } else if (entry->copy_immutable_samplers) {
+            for (unsigned j = 0; j < count; ++j, src += src_stride, ptr += dst_stride) {
                write_sampler_push(ptr, &samplers[j]);
-            break;
-         case VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR: {
+            }
+         }
+         break;
+      case VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR: {
+         ptr += entry->dst_offset;
+         uint32_t max_texel_elements = device->physical_device->info->props.max_texel_buffer_range_elements;
+         for (unsigned j = 0; j < count; ++j, src += src_stride, ptr += dst_stride) {
             VK_FROM_HANDLE(vk_acceleration_structure, accel_struct,
-                           *static_cast<const VkAccelerationStructureKHR *>(src));
-            uint32_t max_texel_elements = device->physical_device->info->props.max_texel_buffer_range_elements;
+                           *reinterpret_cast<const VkAccelerationStructureKHR *>(src));
             if (accel_struct) {
                write_accel_struct<CHIP>(ptr,
                                         vk_acceleration_structure_get_va(accel_struct), max_texel_elements);
             } else {
                write_accel_struct<CHIP>(ptr, device->null_accel_struct_bo->iova, max_texel_elements);
             }
-            break;
          }
-         default:
-            UNREACHABLE("unimplemented descriptor type");
-            break;
-         }
-         src = static_cast<const char *>(src) + templ->entry[i].src_stride;
-         ptr += templ->entry[i].dst_stride;
-         dst_offset += templ->entry[i].dst_stride;
+         break;
+      }
+      default:
+         UNREACHABLE("unimplemented descriptor type");
+         break;
       }
    }
 }

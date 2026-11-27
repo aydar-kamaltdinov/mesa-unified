@@ -1786,11 +1786,21 @@ tu_setup_dynamic_render_pass(struct tu_cmd_buffer *cmd_buffer,
          }
 
          if (!att_is_msrtss) {
-            if (common_info->resolveMode != VK_RESOLVE_MODE_NONE &&
-                common_info->resolveImageView) {
+            const struct VkRenderingAttachmentInfo *resolve_info =
+               (info->pDepthAttachment &&
+                info->pDepthAttachment->imageView != VK_NULL_HANDLE &&
+                info->pDepthAttachment->resolveMode != VK_RESOLVE_MODE_NONE &&
+                info->pDepthAttachment->resolveImageView != VK_NULL_HANDLE) ?
+               info->pDepthAttachment :
+               (info->pStencilAttachment &&
+                info->pStencilAttachment->imageView != VK_NULL_HANDLE &&
+                info->pStencilAttachment->resolveMode != VK_RESOLVE_MODE_NONE &&
+                info->pStencilAttachment->resolveImageView != VK_NULL_HANDLE) ?
+               info->pStencilAttachment : NULL;
+            if (resolve_info) {
                struct tu_render_pass_attachment *resolve_att = &pass->attachments[a];
                VK_FROM_HANDLE(tu_image_view, resolve_view,
-                              common_info->resolveImageView);
+                              resolve_info->resolveImageView);
                tu_setup_dynamic_attachment(resolve_att, resolve_view,
                                            VK_SAMPLE_COUNT_1_BIT);
                resolve_att->gmem = false;
@@ -1799,7 +1809,7 @@ tu_setup_dynamic_render_pass(struct tu_cmd_buffer *cmd_buffer,
                                   VK_ATTACHMENT_LOAD_OP_DONT_CARE,
                                   VK_ATTACHMENT_STORE_OP_STORE,
                                   VK_ATTACHMENT_STORE_OP_STORE);
-               if (common_info->resolveMode == VK_RESOLVE_MODE_CUSTOM_BIT_EXT) {
+               if (resolve_info->resolveMode == VK_RESOLVE_MODE_CUSTOM_BIT_EXT) {
                   resolve_subpass->depth_stencil_attachment.attachment = a++;
                   att->will_be_resolved = false;
                   resolve_att->used_views = info->viewMask;
